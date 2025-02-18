@@ -23,8 +23,6 @@
 	$stotal_budget = 0;
 
 	foreach($produk[$m0->id] as $m2 => $m1) { 
-		// debug($m1->product_name);die;
-		// debug(isset($m1['product_name']) ? $m1['product_name'] : '');die;
 			$no++;
 						
 		$bgedit ="";
@@ -34,8 +32,8 @@
 
 			<td rowspan ="5" style="vertical-align: middle; "><?php echo isset($m1->product_name) ? $m1->product_name : ''; ?></td>
 			<td rowspan ="5" style="vertical-align: middle; "><?php echo isset($m1->code) ? $m1->code : ''; ?></td>
-			<td rowspan ="5" style="vertical-align: middle; "></td>
-			<td rowspan ="5" style="vertical-align: middle; "></td>
+			<td rowspan ="5" style="vertical-align: middle; "><?php echo isset($m1->destination) ? $m1->destination : ''; ?></td>
+			<td rowspan ="5" style="vertical-align: middle; "><?php echo isset($m1->batch_size) ? number_format($m1->batch_size) : ''; ?></td>
 			<td>Begining Stock</td>
 			<?php
 
@@ -44,8 +42,17 @@
 			$contentedit ="true" ;
 			// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 			for ($i = 1; $i <= 12; $i++) {
-				$x1 = number_format(0) ;
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$x1.'</td>';
+
+				$field0 = 'P_' . sprintf('%02d', $i);
+				$xxx2 =0;
+				foreach($sto_awal[$m0->id] as $s2 => $s1) { 
+					// debug($s1->product_code);die;
+					if($s1->product_code == $m1->code) {
+						$xxx2 = number_format($s1->$field0) ;
+					}
+				}
+				
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$xxx2.'</td>';
 			}
 
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value=""><b>'.number_format(0).'</b></td>';
@@ -54,14 +61,14 @@
 
 		</tr>
 		<tr>
-			<td>Prod</td>
+			<td style="background-color:; color: #0101fd;">Prod</td>
 			<?php
 			$bgedit ="";
 			$contentedit ="true" ;
 			// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 			for ($i = 1; $i <= 12; $i++) {
 				$x1 = number_format(0) ;
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$x1.'</td>';
+				echo '<td style="background-color:; color: #0101fd;""><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$x1.'</td>';
 			}
 
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value=""><b>'.number_format(0).'</b></td>';
@@ -72,16 +79,28 @@
 		<tr>
 			<td>Sales</td>
 			<?php
+
 				$bgedit ="";
 				$contentedit ="true" ;
 				// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 				for ($i = 1; $i <= 12; $i++) {
-					$x1 = number_format(0) ;
-					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$x1.'</td>';
+					$field0 = 'P_' . sprintf('%02d', $i);
+					$xxx1 = 0;
+					foreach($sales[$m0->id] as $s2 => $s1) { 
+						// debug($s1->product_code);die;
+						if($s1->product_code == $m1->code) {
+							$xxx1 = number_format($s1->$field0) ;
+						}
+					}
+					
+					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$xxx1.'</td>';
 				}
-	
+
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value=""><b>'.number_format(0).'</b></td>';
+
+
 	
+		
 			?>
 		</tr>
 		<tr>
@@ -91,8 +110,16 @@
 				$contentedit ="true" ;
 				// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 				for ($i = 1; $i <= 12; $i++) {
-					$x1 = number_format(0) ;
-					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$x1.'</td>';
+					$field0 = 'P_' . sprintf('%02d', $i);
+
+					$xxx3 = 0;
+					foreach($sto_end[$m0->id] as $s2 => $s1) { 
+						// debug($s1->product_code);die;
+						if($s1->product_code == $m1->code) {
+							$xxx3 = number_format($s1->$field0) ;
+						}
+					}
+					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$xxx3.'</td>';
 				}
 	
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value=""><b>'.number_format(0).'</b></td>';
@@ -100,14 +127,14 @@
 			?>
 		</tr>
 		<tr>
-			<td>M. Cov</td>
+		<td style="background-color: #ffded7; color: #fd0501;">M. Cov</td>
 			<?php
 			$bgedit ="";
 			$contentedit ="true" ;
 			// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 			for ($i = 1; $i <= 12; $i++) {
 				$x1 = number_format(0) ;
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$x1.'</td>';
+				echo '<td style="background-color: #ffded7; color: #fd0501;"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$x1.'</td>';
 			}
 
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value=""><b>'.number_format(0).'</b></td>';

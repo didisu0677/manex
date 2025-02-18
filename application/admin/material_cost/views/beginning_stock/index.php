@@ -1,93 +1,123 @@
+<div class="content-header page-data" data-additional="<?= $access_additional ?>">
+	<div class="main-container position-relative">
+		<div class="header-info">
+			<div class="content-title"><?php echo $title; ?></div>
+			<?php echo breadcrumb(); ?>
+		</div>
 
+		<div class="float-right">
+			<label class=""><?php echo lang('tahun'); ?> &nbsp</label>
+			<select class="select2 infinity custom-select" style="width: 80px;" id="filter_tahun">
+				<?php foreach ($tahun as $tahun) { ?>
+					<option value="<?php echo $tahun->tahun; ?>" <?php if ($tahun->tahun == user('tahun_budget')) echo ' selected'; ?>><?php echo $tahun->tahun; ?></option>
+				<?php } ?>
+			</select>
+
+			<label class=""><?php echo lang('factory'); ?>  &nbsp</label>
+			<select class="select2 infinity custom-select" style="width: 180px;" id="filter_cost_centre">
+				<option value="ALL">ALL FACTORY</option>
+				<?php foreach ($cc as $c) { ?>
+                <option value="<?php echo $c->kode; ?>"><?php echo $c->cost_centre; ?></option>
+                <?php } ?>
+			</select>
+
+			<?php
+
+			if($access['access_input']==1)
+			echo '<button class="btn btn-success btn-save" href="javascript:;" ><i class="fa-save"></i> Save</button>';
+			// echo '<button class="btn btn-warning btn-export" href="javascript:;" >Export</button>';
+			// echo '<button class="btn btn-primary btn-import" id="btn-import">Import</button>';
+			$arr = [];
+			$arr = [
+				// ['btn-save','Save Data','fa-save'],
+				['btn-export','Export Data','fa-upload'],
+				($access['access_input'] ? ['btn-act-import','Import Data','fa-download'] :''),
+				// ['btn-template','Template Import','fa-reg-file-alt']
+			];
+			echo access_button('',$arr); 
+			?>
+		</div>
+		<div class="clearfix"></div>
+
+	</div>
+</div>
+
+<div class="content-body mt-6">
+	
+	<div class="main-container mt-6">
+
+		<div class="card">
+			<div class="card-body">
+				<div class="table-responsive tab-pane fade active show height-window" id="result">
+					<?php
+					table_open('table table-bordered table-app table-hover table-1');
+					thead();
+					tr();
+					th('Product', '', 'class="text-center align-middle headcol"');
+					th('Code', '', 'class="text-center align-middle headcol"');
+					th('Batch Size', '', 'class="text-center align-middle headcol"');
+					// for ($i = setting('actual_budget'); $i <= 12; $i++) {
+					// for ($i = 1; $i <= 12; $i++) {
+					// 	th(month_lang($i), '', 'class="text-center" style="min-width:60px"');
+					// }
+
+					th('Total Stock', '', 'class="text-center align-middle headcol"style="min-width:60px"');
+					tbody();
+					table_close();
+					?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<?php
+modal_open('modal-import',lang('impor'));
+modal_body();
+	form_open(base_url('material_cost/beginning_stock/import'),'post','form-import');
+		col_init(3,9);
+		input('text',lang('tahun'),'tahun','','','readonly');
+		input('hidden',lang('tab'),'tab','','','readonly');
+		input('hidden',lang('import_data'),'judul','','','readonly');
+		
+		fileupload('File Excel','fileimport','required','data-accept="xls|xlsx"');
+        form_button(lang('impor'),lang('batal'));
+		// echo '<br><button onclick="window.open(\''.base_url('material_cost/price_list/template').'\', \'_blank\')" type="button" class="btn btn-success btn-block" id="btn-download-template">Download Template Import</button>';
+		// echo '<br><button onclick="download_template()" type="button" class="btn btn-success btn-block" id="btn-download-template">Download Template Import</button>';
+
+		// echo '<button class="btn btn-primary btn-block">Import</button>';
+	form_close();
+modal_close();
+?>
+
+<script type="text/javascript">
 	$(document).ready(function() {
-		$('#filter_divisi').trigger('change')
+		getData();
 		$(document).on('keyup', '.budget', function(e) {
-			calculate();
+			// calculate();
 			// calculateTotal();
 			// console.log('y');
 		});
 
-		getData();
 	});
 
 	$('#filter_tahun').change(function() {
 		getData()
 	});
 
-	$('#filter_divisi').change(function() {
-		// getCategory();
-		// getSector();
-		$('#filter_sub_account').removeAttr('disabled');
-		$('#filter_sector').removeAttr('disabled');
-
-		if ($('#filter_divisi').val() == 'ALL') {
-			$('#filter_sub_account').prop('disabled', true);
-			$('#filter_sector').prop('disabled', true);
-		}
-        getSubaccount()
-		
-	});
-
-	$('#filter_sub_account').change(function() {
-		getData();
-	});
-
-	$('#filter_sector').change(function() {
-		getData();
+	$('#filter_cost_centre').change(function() {
+		getData()
 	});
 
 
-    function getSubaccount() {
-        console.log('ok');
-        $('#filter_sub_account').html('');
-        $.ajax({
-                url : base_url + 'budget_sales/unit_cogs/get_subaccount',
-                data : {divisi : $('#filter_divisi').val()},
-                type : 'post',
-                dataType : 'json',
-                success : function(response) {
-                    var konten = '<option value="ALL">ALL</option>';
-                    $.each(response,function(k,v){
-                        konten += '<option value="'+v.subaccount_code+'">'+v.subaccount_desc+'</option>';
-                    });
-                    $('#filter_sub_account').html(konten);
-					$('#filter_sub_account').trigger('change');
-                }
-        });
-    }
-
-	function getSector() {
-		$('#filter_sector').html('');
-		$.ajax({
-			url: base_url + 'budget_sales/unit_cogs/get_sector',
-			data: {
-				divisi: $('#filter_divisi').val(),
-				category: $('#filter_category').val()
-			},
-			type: 'post',
-			dataType: 'json',
-			success: function(response) {
-				// console.log(response);
-				var konten = '';
-				konten += '<option value="ALL">ALL</option>';
-				$.each(response, function(k, v) {
-					konten += '<option value="' + v.sector + '">' + v.sector + '</option>';
-				});
-				$('#filter_sector').html(konten);
-				$('#filter_sector').trigger('change');
-			}
-		});
-	}
 
     function getData() {
 
         cLoader.open(lang.memuat_data + '...');
         $('.overlay-wrap').removeClass('hidden');
-        var page = base_url + 'budget_sales/unit_cogs/data';
+        var page = base_url + 'material_cost/beginning_stock/data';
             page 	+= '/'+$('#filter_tahun').val();
-            page 	+= '/'+$('#filter_divisi').val();
-            page 	+= '/'+$('#filter_sub_account').val();
-			page 	+= '/'+$('#filter_sector').val();
+			page 	+= '/'+$('#filter_cost_centre').val();
 
         $.ajax({
             url 	: page,
@@ -96,8 +126,6 @@
             dataType: 'json',
             success	: function(response) {
                 $('.table-1 tbody').html(response.table);
-				$('.table-2 tbody').html(response.table2);
-				$('.table-3 tbody').html(response.table3);
                 cLoader.close();
                 $('.overlay-wrap').addClass('hidden');	
             }
@@ -156,7 +184,7 @@
 	});
 
 	function calculate() {
-		$('.table-1 tbody tr').each(function() {
+		$('.table-2 tbody tr').each(function() {
 			let totalMonthly = [];
 			var grandTotal = 0;
 
@@ -180,6 +208,7 @@
 				total_budget = B_01 + B_02 + B_03 + B_04 + B_05 + B_06 + B_07 + B_08 + B_09 + B_10 + B_11 + B_12
 
 				$(this).find('.total_budget').text(customFormat(total_budget))
+
 			}
 
 			for (let i = 1; i <= 12; i++) {
@@ -200,6 +229,29 @@
 
 			$('#grand_total').text(customFormat(grandTotal))
 
+		});
+
+		$('.table-1 tbody tr').each(function(){
+			if ($(this).find('.budget').text() != '') {
+				let EST_01 = moneyToNumber($(this).find('.EST_01').text().replace(/\,/g, ''))
+				let EST_02 = moneyToNumber($(this).find('.EST_02').text().replace(/\,/g, ''))
+				let EST_03 = moneyToNumber($(this).find('.EST_03').text().replace(/\,/g, ''))
+				let EST_04 = moneyToNumber($(this).find('.EST_04').text().replace(/\,/g, ''))
+				let EST_05 = moneyToNumber($(this).find('.EST_05').text().replace(/\,/g, ''))
+				let EST_06 = moneyToNumber($(this).find('.EST_06').text().replace(/\,/g, ''))
+				let EST_07 = moneyToNumber($(this).find('.EST_07').text().replace(/\,/g, ''))
+				let EST_08 = moneyToNumber($(this).find('.EST_08').text().replace(/\,/g, ''))
+				let EST_09 = moneyToNumber($(this).find('.EST_09').text().replace(/\,/g, ''))
+				let EST_10 = moneyToNumber($(this).find('.EST_10').text().replace(/\,/g, ''))
+				let EST_11 = moneyToNumber($(this).find('.EST_11').text().replace(/\,/g, ''))
+				let EST_12 = moneyToNumber($(this).find('.EST_12').text().replace(/\,/g, ''))
+
+				let total_est = 0
+
+				total_est = EST_01 + EST_02 + EST_03 + EST_04 + EST_05 + EST_06 + EST_07 + EST_08 + EST_09 + EST_10 + EST_11 + EST_12
+
+				$(this).find('.total_est').text(customFormat(total_est))
+			}
 		});
 	}
 
@@ -235,7 +287,7 @@
 
 		console.log(jsonString);
 		$.ajax({
-			url: base_url + 'budget_sales/unit_cogs/save_perubahan',
+			url: base_url + 'material_cost/beginning_stock/save_perubahan',
 			data: {
 				'json': jsonString,
 				'tahun': $('#filter_tahun').val(),
@@ -286,10 +338,7 @@
 
 		// Add table rows
 		table += '<tr><td colspan="1">PT Otsuka Indonesia</td></tr>';
-		table += '<tr><td colspan="1">' + judul + ' Unit COGS </td></tr>';
-		table += '<tr><td colspan="1"> Divisi </td><td>: ' + $('#filter_divisi option:selected').text() + '</td></tr>';
-		table += '<tr><td colspan="1"> Sector </td><td>: ' + $('#filter_sector option:selected').text() + '</td></tr>';
-		table += '<tr><td colspan="1"> Group Product </td><td>: ' + $('#filter_sub_account option:selected').text() + '</td></tr>';
+		table += '<tr><td colspan="1">' + judul + ' Quantity Sales </td></tr>';
 		table += '<tr><td colspan="1"> Print date </td><td>: ' + datetime + '</td></tr>';
 		table += '</table><br><br>';
 
@@ -306,21 +355,46 @@
 		// });
 	});
 
+	function download_template(){
+		let tahun = $('#tahun').val();
+		window.open(base_url + 'material_cost/beginning_stock/template?tahun='+tahun)
+	}
+
 	$('.btn-act-import').click(function(){
 		$("#modal-import").modal()
 		$('#form-import')[0].reset();
 		$('#tahun').val($('#filter_tahun').val())
 		$('#divisi').val($('#filter_divisi').val())
-		$('#sector').val($('#filter_sector').val())
 		$('#tab').val(activeTable)
 		$('#judul').val(judul)
 	});
 
+	// function do_import(){
+	// 	$.ajax({
+	// 		url: base_url + 'material_cost/beginning_stock/import',
+	// 		data: {
+	// 			tahun: $('#tahun').val(),
+	// 			fileimport: $('#fileimport').val(),
+	// 		},
+	// 		type: 'post',
+	// 		dataType: 'json',
+	// 		success: function(response) {
+	// 			if (response.status == 'success') {            
+    //                 cAlert.open(response.message, response.status, refresh_page());
+    //             } else {
+    //                 cAlert.open(response.message, response.status);
+    //             }
+	// 			// console.log(response);
+	// 		}
+	// 	});
+	// }
+
 	function refresh_page() {
         $(document).on('click', '.swal-button--confirm', function(){
             setTimeout(function () {
-                window.location.href = 'http://localhost/manex/budget_sales/unit_cogs';
+                window.location.href = '<?php echo site_url('material_cost/budget_production') ?>';
             }, 1000);
         })
     }
 
+</script>
