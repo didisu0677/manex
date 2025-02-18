@@ -11,3 +11,5 @@ config.php
 # /assets/cache/
 bootstrap_helper.php
 /assets/cache/*
+db.php
+.env
