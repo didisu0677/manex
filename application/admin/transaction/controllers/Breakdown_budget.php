@@ -803,13 +803,18 @@ class Breakdown_budget extends BE_Controller {
         $tahun = post('tahun');
 
         $pic = get_data('tbl_fact_pic_budget','cost_centre',$cost_centre)->row();
-        $id_pic = json_decode($pic->user_id,true);
+        $id_pic = '';
+        if(isset($pic->user_id)) {
+           $id_pic = json_decode($pic->user_id,true) ;
+        } 
 
         if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT,MPD,ENG,SCM,ADMIN]) or user('id_group') == HRD) {
+            $where = '';
+            if(!empty($id_pic)) $where = 'id IN (' . implode(',',$id_pic) . ') OR';
+
             $res['user'] = get_data('tbl_user', [
                 'where' => [
-                    'id' => user('id'),
-                    'id' => $id_pic,
+                    '__m' => $where . ' id="' . user('id') . '"',
                 ]
             ])->result_array(); 
 
