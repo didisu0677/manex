@@ -117,8 +117,6 @@ class Breakdown_budget extends BE_Controller {
 
             $data_view['grup']    = get_data($table . ' a',$arr)->result_array();
 
-            // debug($data_view['grup']);die;
-
             $attr = [
                 'select' => "a.*,b.account_name, c.sub_account as sub_account_name, d.cost_centre as cost_centre_name",
                 'join'   => ['tbl_fact_account b on a.account_code = b.account_code type LEFT',
@@ -801,6 +799,7 @@ class Breakdown_budget extends BE_Controller {
     function get_user(){
         $cost_centre = post('cost_centre');
         $tahun = post('tahun');
+        $table = 'tbl_fact_breakdown_budget_' . $tahun;
 
         $pic = get_data('tbl_fact_pic_budget','cost_centre',$cost_centre)->row();
         $id_pic = '';
@@ -808,9 +807,21 @@ class Breakdown_budget extends BE_Controller {
            $id_pic = json_decode($pic->user_id,true) ;
         } 
 
+        $pic_in = get_data($table,[
+            'select' => 'distinct user_id',
+            'where'  => [
+                'cost_centre' => $cost_centre,
+                'user_id' => $id_pic
+            ]
+        ])->result();
+        $id_pic2 = [];
+        foreach($pic_in as $p) {
+            $id_pic2[] = $p->user_id;
+        }
+
         if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT,MPD,ENG,SCM,ADMIN]) or user('id_group') == HRD) {
             $where = '';
-            if(!empty($id_pic)) $where = 'id IN (' . implode(',',$id_pic) . ') OR';
+            if(!empty($id_pic2)) $where = 'id IN (' . implode(',',$id_pic2) . ') OR';
 
             $res['user'] = get_data('tbl_user', [
                 'where' => [
