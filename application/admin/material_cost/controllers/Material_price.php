@@ -7,7 +7,18 @@ class Material_price extends BE_Controller {
 	}
 
 	function index() {
-		render();
+		$data['tahun'] = get_data('tbl_fact_tahun_budget', 'is_active',1)->result();   
+		if(user('id_group') == 1) {
+			$data['user_id'] = get_data('tbl_user','is_active',1)->result_array();
+		}else{
+			$data['user_id'] = get_data('tbl_user',[
+				'where' => [
+					'is_active' => 1,
+					'id'	=> user('id'),
+				],
+			])->result_array();
+		}
+		render($data);
 	}
 
 	function data() {

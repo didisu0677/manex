@@ -24,7 +24,7 @@
 
 			<td><?php echo isset($m1->product_name) ? $m1->product_name : ''; ?></td>
 			<td><?php echo isset($m1->code) ? $m1->code : ''; ?></td>
-			<td><?php echo isset($m1->batch_size) ? $m1->batch_size : ''; ?></td>
+			<td class="text-right"><?php echo isset($m1->batch_size) ? number_format($m1->batch_size) : ''; ?></td>
 			<?php
 
 

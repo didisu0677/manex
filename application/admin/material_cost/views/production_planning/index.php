@@ -32,11 +32,7 @@
                     ['btn-import','Import Data Begining Stock','fa-download'],
                     ['btn-template','Template Import','fa-reg-file-alt']
                 ];
-            
-            
             echo access_button('',$arr); 
-
-                        
             ?>
 	
         </div>
@@ -49,16 +45,14 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="card">
-	    			<div class="card-header"><?= $title ?></div>
-	    			<div class="card-body">
+	    			<!-- <div class="card-body"> -->
 	    				<div class="table-responsive tab-pane fade active show height-window">
 	    				<?php
 						table_open('table table-bordered table-app table-hover table-1');
 							thead();
 								tr();
-									th('Revisi ke : ','','width="60" class="text-left"');
-                                    th(lang('standar'),'','width="60" colspan="4" class="text-left"');
-									for ($i = 1; $i <= 12; $i++) { 
+									th('Revisi ke : ','','width="60" colspan="5" class="text-left"');
+  									for ($i = 1; $i <= 12; $i++) { 
 										th('','','class="text-center" style="min-width:80px"');		
 									}
 									th(lang('total'),'','width="60" rowspan="2" class="text-center align-middle headcol"');
@@ -72,13 +66,11 @@
 									for ($i = 1; $i <= 12; $i++) { 
 										th(month_lang($i),'','class="text-center" style="min-width:80px"');		
 									}
-			             
-							
 							tbody();
 						table_close();
 						?>
 	    				</div>
-	    			</div>
+	    			<!-- </div> -->
 	    		</div>
 	    	</div>
 	    </div>
@@ -88,7 +80,11 @@
 <script>
 	$(document).ready(function() {
 		getData();
-		$(document).on('keyup', '.budget', function(e) {
+		$(document).on('keyup', '.xproduksi', function(e) {
+			// calculate();
+			if (e.keyCode === 13 || e.key === 'Enter' || e.keyCode === 9 || e.key === 'Tab') {
+				calculate(); // Panggil fungsi calculate()
+			}
 		});
 
 	});
@@ -117,6 +113,7 @@
                 $('.table-1 tbody').html(response.table);
                 cLoader.close();
                 $('.overlay-wrap').addClass('hidden');	
+				// money_init();
             }
         });
     }    
@@ -185,4 +182,102 @@ function save_perubahan() {
 		}
 	})
 }
+
+	$(document).on('keyup', '.xproduksi', function(e) {
+		var wh = e.which;
+		if ((48 <= wh && wh <= 57) || (96 <= wh && wh <= 105) || wh == 8) {
+			if ($(this).text() == '') {
+				$(this).text('');
+			} else {
+				var n = parseInt($(this).text().replace(/[^0-9\-]/g, ''), 10);
+				$(this).text(n.toLocaleString());
+				var selection = window.getSelection();
+				var range = document.createRange();
+				selection.removeAllRanges();
+				range.selectNodeContents($(this)[0]);
+				range.collapse(false);
+				selection.addRange(range);
+				$(this)[0].focus();
+			}
+		}
+	});
+
+	$(document).on('keypress', '.xproduksi', function(e) {
+		var wh = e.which;
+		if (e.shiftKey) {
+			if (wh == 0) return true;
+		}
+		if (e.metaKey || e.ctrlKey) {
+			if (wh == 86 || wh == 118) {
+				$(this)[0].onchange = function() {
+					$(this)[0].innerHTML = $(this)[0].innerHTML.replace(/[^0-9\-]/g, '');
+				}
+			}
+			return true;
+		}
+		if (wh == 0 || wh == 8 || wh == 45 || (48 <= wh && wh <= 57) || (96 <= wh && wh <= 105))
+			return true;
+		return false;
+	});
+
+	function calculate() {
+	// Objek untuk menyimpan data per kolom
+		$('.table-1 tbody tr').each(function() {
+			let columnData = {
+			B_01: 0,
+			B_02: 0,
+			B_03: 0,
+			B_04: 0,
+			B_05: 0,
+			B_06: 0,
+			B_07: 0,
+			B_08: 0,
+			B_09: 0,
+			B_10: 0,
+			B_11: 0,
+			B_12: 0
+		};
+
+		let columnData1 = {
+			prod_01: 0,
+			prod_02: 0,
+			prod_03: 0,
+			prod_04: 0,
+			prod_05: 0,
+			prod_06: 0,
+			prod_07: 0,
+			prod_08: 0,
+			prod_09: 0,
+			prod_10: 0,
+			prod_11: 0,
+			prod_12: 0
+		};
+
+			if ($(this).find('.xproduksi').text() !== '') {
+				for (let i = 1; i <= 12; i++) {
+					let key = `B_${String(i).padStart(2, '0')}`; // Membuat key seperti B_01, B_02, dst.
+					let key1 = `prod_${String(i).padStart(2, '0')}`; 
+					let budget = moneyToNumber($(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).text().replace(/\,/g, ''));
+					let nilai = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('nilai');
+					let idx = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('id');
+					let total = budget * nilai ;
+
+					columnData[key] += budget * nilai;		
+					columnData1[key1] += budget * nilai;	
+					$('#'+key1+idx).text(columnData1[key1]);
+
+				}
+			}
+
+			// for (let key1 in columnData1) {
+			// 	$(this).find('.'+key1+'').text(columnData1[key1]); // Perbaikan di sini
+			// }
+
+		});
+
+
+		// Menampilkan data per kolom
+		
+
+	}
 </script>

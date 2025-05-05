@@ -193,6 +193,10 @@ class Beginning_stock extends BE_Controller {
                     $save = update_data($table, $data, [
                         'id' => $cek->id
                     ]);
+
+                    $data_imported++;
+
+                    
                 }
 
             }

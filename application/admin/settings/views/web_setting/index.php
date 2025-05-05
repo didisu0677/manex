@@ -253,6 +253,13 @@
 									<input type="text" name="actual_budget" id="actual_budget" class="form-control" autocomplete="off" value="<?php echo setting('actual_budget'); ?>">
 								</div>
 							</div>
+
+							<div class="form-group row">
+								<label class="col-sm-3 col-form-label" for="month_coverage"><?php echo lang('month_coverage'); ?></label>
+								<div class="col-sm-9">
+									<input type="text" name="month_coverage" id="month_coverage" class="form-control" autocomplete="off" value="<?php echo setting('month_coverage'); ?>">
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

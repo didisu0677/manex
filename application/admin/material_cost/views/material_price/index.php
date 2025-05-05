@@ -5,6 +5,20 @@
 			<?php echo breadcrumb(); ?>
 		</div>
 		<div class="float-right">
+			<label class=""><?php echo lang('tahun'); ?>  &nbsp</label>
+			<select class="select2 infinity custom-select" style="width: 80px;" id="filter_tahun">
+				<?php foreach ($tahun as $tahun) { ?>
+                <option value="<?php echo $tahun->tahun; ?>"<?php if($tahun->tahun == user('tahun_budget')) echo ' selected'; ?>><?php echo $tahun->tahun; ?></option>
+                <?php } ?>
+			</select>
+
+			<label class=""><?php echo lang('users'); ?>  &nbsp</label>
+			<select class="select2 infinity custom-select" style="width: 180px;" id="filter_username">
+				<?php foreach ($user_id as $c) { ?>
+                <option value="<?php echo $c['id']; ?>"><?php echo $c['nama']; ?></option>
+                <?php } ?>
+			</select>
+
 			<?php echo access_button('delete,active,inactive,export,import'); ?>
 		</div>
 		<div class="clearfix"></div>
@@ -56,6 +70,8 @@ modal_open('modal-import',lang('impor'));
 	modal_body();
 		form_open(base_url('material_cost/material_price/import'),'post','form-import');
 			col_init(3,9);
+			select2(lang('users'),'user_id','required',$user_id,'id','nama');
+			input('text',lang('year'),'tahun_import');
 			fileupload('File Excel','fileimport','required','data-accept="xls|xlsx"');
 			form_button(lang('impor'),lang('batal'));
 		form_close();

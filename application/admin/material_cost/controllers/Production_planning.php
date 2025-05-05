@@ -40,8 +40,11 @@ class Production_planning extends BE_Controller {
         $table_prod = 'tbl_production_planning_' . $tahun ;
 
         $arr = [
-            'select' => 'a.cost_centre as kode, b.id, b.cost_centre',
-            'join' => 'tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
+            'select' => 'a.cost_centre as kode, b.id, b.cost_centre, c.kapasitas,
+                        WD_01,WD_02,WD_03,WD_04,WD_05,WD_06,WD_07,WD_08,WD_09,WD_10,WD_11,WD_12',
+            'join' => ['tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
+                       'tbl_kapasitas_produksi c on a.cost_centre = c.cost_centre type LEFT'
+                      ],
             'where' => [
                 'a.is_active' => 1,
                 'a.id_cost_centre !=' => 0,
@@ -56,8 +59,19 @@ class Production_planning extends BE_Controller {
 
 	    $data['grup'][0]= get_data('tbl_fact_product a',$arr)->result();
 
-
+        $data['kprod'] = [];
+        $data['wday'] = [];
+        $data['sprod'] = [];
         foreach($data['grup'][0] as $m0) {	
+            $data['kprod'][$m0->id] = $m0->kapasitas;
+     
+            $field1 = '';
+            for ($i = 1; $i <= 12; $i++) { 
+                $field1 = 'WD_' . sprintf('%02d', $i);
+                $data['wday'][$m0->id][$i] = $m0->$field1;
+                $data['sprod'][$m0->id][$i] = ($m0->kapasitas * $m0->$field1);
+            }
+            
 
             $cproduk = get_data('tbl_fact_product a',[
                 'where' => [
@@ -130,6 +144,17 @@ class Production_planning extends BE_Controller {
                     'a.posting_code' => 'STE',
                 ]
             ])->result();
+
+            $data['m_cov'][$m0->id] = get_data($table_prod .' a',[
+                'select' => 'a.*',
+                    'join' =>  ['tbl_fact_product b on a.product_code = b.code',
+                                'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
+                                ],
+                'where' => [
+                    'c.id' => $m0->id,
+                    'a.posting_code' => 'COV',
+                ]
+            ])->result();
    
         }
 
@@ -168,7 +193,7 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.tahun' => $tahun,
-                'a.budget_product_code' => 'CIHODD5PDM',
+                // 'a.budget_product_code' => 'CIHODD5PDM',
             ],
             'group_by' => 'a.budget_product_code'
         ];
@@ -226,7 +251,7 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.tahun' => $tahun,
-                'a.budget_product_code' => 'CIHODD5PDM'
+                // 'a.budget_product_code' => 'CIHODD5PDM'
             ],
             'group_by' => 'a.budget_product_code'
         ];
@@ -300,6 +325,7 @@ class Production_planning extends BE_Controller {
 
             // proses end stock - 
             $this->end_stock($s->budget_product_code,$tahun);
+            $this->month_coverage($s->budget_product_code,$tahun);
             //
         }
 
@@ -428,7 +454,95 @@ class Production_planning extends BE_Controller {
 
     }
 
-    function month_coverage() {
+    function month_coverage($product_code="",$tahun="") {
+        ini_set('memory_limit', '-1');
+		ini_set('max_execution_time', 0);
+        $table_prod = 'tbl_production_planning_' . $tahun ;
+        $select1 = '';
+        for ($i = 1; $i <= 12; $i++) {
+            if($select1==""){
+                $select1 = "MAX(CASE WHEN posting_code = 'SLS' THEN " ."P_" . sprintf('%02d',$i) . " END) AS " . "S_" . sprintf('%02d',$i);
+            }else{
+                $select1 .= " ," . "MAX(CASE WHEN posting_code = 'SLS' THEN " ."P_" . sprintf('%02d',$i) . " END) AS " . "S_" . sprintf('%02d',$i);
+            }
+        }
+
+        $select2 = '';
+        for ($i = 1; $i <= 12; $i++) {
+            if($select2==""){
+                $select2 = "MAX(CASE WHEN a.posting_code = 'STE' THEN " ."P_" . sprintf('%02d',$i) . " END) AS " . "E_" . sprintf('%02d',$i);
+            }else{
+                $select2 .= " ," . "MAX(CASE WHEN a.posting_code = 'STE' THEN " ."P_" . sprintf('%02d',$i) . " END) AS " . "E_" . sprintf('%02d',$i);
+            }
+        }
+
+        $select = $select1 . ' , ' . $select2 ;
+
+        $prod = get_data($table_prod . ' a',[
+            'select' => 'a.id,a.product_code,a.product_name,a.cost_centre,a.id_cost_centre,a.product_line,
+                         b.destination, ' . $select ,
+            'join'   => ['tbl_fact_product b on a.product_code = b.code type LEFT',
+                        'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
+                        ],
+            'where' => [
+                'a.product_code' => $product_code,
+            ],
+        ])->row();
+
+        $data_sls = [
+            'revision' => 0,
+            'posting_code' => 'COV',
+            'product_code' => $product_code,
+            'product_name' => $prod->product_name,
+            'cost_centre' => $prod->cost_centre,
+            'dest' => $prod->destination,
+            'id_cost_centre' => ($prod->id_cost_centre == null) ? 0 : $prod->id_cost_centre,
+            'product_line' => $prod->product_line,
+        ];
+
+        for ($i = 1; $i <= 12; $i++) {
+            $mCov = 'MC_' . sprintf('%02d',$i);
+            $field = 'P_' . sprintf('%02d',$i);
+            if($i==1) {
+                $$mCov = (($prod->S_01+$prod->S_02+$prod->S_03+$prod->S_04) / 4) != 0 ? $prod->E_01 / (($prod->S_01+$prod->S_02+$prod->S_03+$prod->S_04) / 4) : 0 ;
+            }elseif($i==2){
+                $$mCov = (($prod->S_02+$prod->S_03+$prod->S_04+$prod->S_05) / 4) != 0 ? $prod->E_02 / (($prod->S_02+$prod->S_03+$prod->S_04+$prod->S_05) / 4) : 0 ;
+            }elseif($i==3){
+                $$mCov = (($prod->S_03+$prod->S_04+$prod->S_05+$prod->S_06) / 4) != 0 ? $prod->E_03 / (($prod->S_03+$prod->S_04+$prod->S_05+$prod->S_06) / 4) : 0 ;
+            }elseif($i==4){
+                $$mCov = (($prod->S_04+$prod->S_05+$prod->S_06+$prod->S_07) / 4) != 0 ? $prod->E_04 / (($prod->S_04+$prod->S_05+$prod->S_06+$prod->S_07) / 4) : 0 ;
+            }elseif($i==5){
+                $$mCov = (($prod->S_05+$prod->S_06+$prod->S_07+$prod->S_08) / 4) != 0 ? $prod->E_05 / (($prod->S_05+$prod->S_06+$prod->S_07+$prod->S_08) / 4) : 0 ;
+            }elseif($i==6){
+                $$mCov = (($prod->S_06+$prod->S_07+$prod->S_08+$prod->S_09) / 4) != 0 ? $prod->E_06 / (($prod->S_06+$prod->S_07+$prod->S_08+$prod->S_09) / 4) : 0 ;
+            }elseif($i==7){
+                $$mCov = (($prod->S_07+$prod->S_08+$prod->S_09+$prod->S_10) / 4) != 0 ? $prod->E_07 / (($prod->S_07+$prod->S_08+$prod->S_09+$prod->S_10) / 4) : 0 ;
+            }elseif($i==8){
+                $$mCov = (($prod->S_08+$prod->S_09+$prod->S_10+$prod->S_11) / 4) != 0 ? $prod->E_08 / (($prod->S_08+$prod->S_09+$prod->S_10+$prod->S_11) / 4) : 0 ;
+            }elseif($i==9){
+                $$mCov = (($prod->S_09+$prod->S_10+$prod->S_11+$prod->S_12) / 4) != 0 ? $prod->E_09 / (($prod->S_09+$prod->S_10+$prod->S_11+$prod->S_12) / 4) : 0 ;
+            }elseif($i==10){
+                $$mCov = (($prod->S_10+$prod->S_11+$prod->S_12) / 3) != 0 ? $prod->E_10 / (($prod->S_10+$prod->S_11+$prod->S_12) / 3) : 0 ;
+            }elseif($i==11){
+                $$mCov = (($prod->S_11+$prod->S_12) / 2) != 0 ? $prod->E_11 / (($prod->S_11+$prod->S_12) / 2) : 0 ;
+            }else{
+                $$mCov = $prod->S_12 != 0 ? $prod->E_12 / $prod->S_12 : 0 ;
+            }
+            $data_sls[$field] = $$mCov ;
+        }
+
+        $cek = get_data($table_prod,[
+            'where' => [
+                'product_code' => $product_code,
+                'posting_code' => 'COV',
+            ],
+        ])->row();
+
+        if(!isset($cek->id)){
+            insert_data($table_prod,$data_sls);
+        }else{
+            update_data($table_prod,$data_sls,['id'=>$cek->id]);
+        }
 
     }
 }
