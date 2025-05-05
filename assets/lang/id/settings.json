@@ -473,5 +473,6 @@
     "actual_budget": "Actual Budget",
     "sector": "Sector",
     "member_of": "Member of",
-    "material": "Material"
+    "material": "Material",
+    "month_coverage" : "Month Coverage"
 }

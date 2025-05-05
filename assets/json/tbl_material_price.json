@@ -1,0 +1,32 @@
+{
+    "field": {
+        "id": "primary_key",
+        "year": "varchar",
+        "material_code": "varchar",
+        "kode_budget": "varchar",
+        "nama": "varchar",
+        "vcode": "varchar",
+        "loc": "varchar",
+        "bm": "varchar",
+        "curr": "varchar",
+        "price_us": "int",
+        "user_id": "int",
+        "is_active": "boolean"
+    },
+    "label": {
+        "id": "Id",
+        "year": "Year",
+        "material_code": "Material Code",
+        "kode_budget": "Kode Budget",
+        "nama": "Nama",
+        "vcode": "Vcode",
+        "loc": "Loc",
+        "bm": "Bm",
+        "curr": "Curr",
+        "price_us": "Price Us",
+        "user_id": "User Id",
+        "is_active": "Aktif"
+    },
+    "validation": [],
+    "alias": []
+}

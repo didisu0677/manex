@@ -34,6 +34,7 @@ class Mst_account extends BE_Controller {
 			} else {
 				$data['access_edit']	= $mst_account['access_edit'];
 				$data['access_delete']	= $mst_account['access_delete'];
+
 				$response	= array(
 					'table'		=> $this->load->view('settings/mst_account/table',$data,true),
 					'option'	=> $this->load->view('settings/mst_account/option',$data,true)

@@ -36,7 +36,7 @@ class Cron extends MY_Controller {
         }
     }
 
-function create_file_budget($tahun="") {
+    function create_file_budget($tahun="") {
 
         $tahun1 = $tahun ;
         $tahun0 = $tahun - 1 ;
@@ -64,5 +64,4 @@ function create_file_budget($tahun="") {
 
         if ($jum > 0) echo "Berhasil create $jum table";
     }
-    
 }

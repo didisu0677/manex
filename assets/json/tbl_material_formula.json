@@ -1,0 +1,36 @@
+{
+    "field": {
+        "id": "primary_key",
+        "parent_item": "varchar",
+        "item_name": "varchar",
+        "description": "varchar",
+        "component_item": "varchar",
+        "material_name": "varchar",
+        "um": "varchar",
+        "quantity": "decimal",
+        "scrap": "decimal",
+        "total": "decimal",
+        "operation": "int",
+        "article_number": "varchar",
+        "start_effective": "date",
+        "is_active": "boolean"
+    },
+    "label": {
+        "id": "Id",
+        "parent_item": "Parent Item",
+        "item_name": "Item Name",
+        "description": "Description",
+        "component_item": "Component Item",
+        "material_name": "Material Name",
+        "um": "Um",
+        "quantity": "Quantity",
+        "scrap": "Scrap",
+        "total": "Total",
+        "operation": "Operation",
+        "article_number": "Article Number",
+        "start_effective": "Start Effective",
+        "is_active": "Aktif"
+    },
+    "validation": [],
+    "alias": []
+}

@@ -300,7 +300,7 @@
 	function refresh_page() {
         $(document).on('click', '.swal-button--confirm', function(){
             setTimeout(function () {
-                window.location.href = 'https://development.otsuka.co.id/manex/transaction/budget_production';
+                window.location.href = 'http://localhost/manex/transaction/budget_production';
             }, 1000);
         })
     }

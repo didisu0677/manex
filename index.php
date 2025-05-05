@@ -1,4 +1,5 @@
 <?php
+// require_once "_env.php";
 header('X-Frame-Options: SAMEORIGIN');
 
 ini_set('display_errors', '1');

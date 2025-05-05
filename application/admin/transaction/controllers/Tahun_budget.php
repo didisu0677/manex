@@ -7,18 +7,18 @@ class Tahun_budget extends BE_Controller {
 	}
 
 	function index() {
-		$data['menu'][0] = get_data('tbl_menu',array('where_array'=>array('parent_id'=>0,'id'=>[49,288]),'sort_by'=>'urutan'))->result();
-		foreach($data['menu'][0] as $m0) {
-			$data['menu'][$m0->id] = get_data('tbl_menu',array('where_array'=>array('parent_id'=>$m0->id),'sort_by'=>'urutan'))->result();
-			foreach($data['menu'][$m0->id] as $m1) {
-				$data['menu'][$m1->id] = get_data('tbl_menu',array('where_array'=>array('parent_id'=>$m1->id),'sort_by'=>'urutan'))->result();
-				foreach($data['menu'][$m1->id] as $m2) {
-					$data['menu'][$m2->id] = get_data('tbl_menu',array('where_array'=>array('parent_id'=>$m2->id),'sort_by'=>'urutan'))->result();
-				}
-			}
-		}
+		// $data['menu'][0] = get_data('tbl_menu',array('where_array'=>array('parent_id'=>0,'id'=>[49,288]),'sort_by'=>'urutan'))->result();
+		// foreach($data['menu'][0] as $m0) {
+		// 	$data['menu'][$m0->id] = get_data('tbl_menu',array('where_array'=>array('parent_id'=>$m0->id),'sort_by'=>'urutan'))->result();
+		// 	foreach($data['menu'][$m0->id] as $m1) {
+		// 		$data['menu'][$m1->id] = get_data('tbl_menu',array('where_array'=>array('parent_id'=>$m1->id),'sort_by'=>'urutan'))->result();
+		// 		foreach($data['menu'][$m1->id] as $m2) {
+		// 			$data['menu'][$m2->id] = get_data('tbl_menu',array('where_array'=>array('parent_id'=>$m2->id),'sort_by'=>'urutan'))->result();
+		// 		}
+		// 	}
+		// }
 
-		render($data);
+		render();
 	}
 
 	function data() {

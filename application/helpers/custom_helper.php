@@ -1714,6 +1714,16 @@ function custom_format($value,$absolute=false,$decimal=0) {
         return $value == 0 ? 0 : '';
     }
 }
+
+function custom_format2($value,$absolute=false,$decimal=2) {
+    if($value) {
+        if($absolute) $value = abs($value);
+        return $value < 0 ? '<span class="currency-negative">('.number_format(abs($value),$decimal,',','.').')</span>' : number_format($value,$decimal,',','.');
+    } else {
+        return $value == 0 ? 0 : '';
+    }
+}
+
 function c_upper($data='') {
     if(is_array($data)) {
         $res = array();
