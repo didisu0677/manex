@@ -13,3 +13,4 @@ bootstrap_helper.php
 /assets/cache/*
 db.php
 .env
+./vendor/
