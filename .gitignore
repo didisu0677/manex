@@ -11,6 +11,7 @@ config.php
 # /assets/cache/
 bootstrap_helper.php
 /assets/cache/*
+/assets/uploads/setting/*
 db.php
 .env
 ./vendor/
