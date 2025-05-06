@@ -9,7 +9,12 @@ class Material_price extends BE_Controller {
 	function index() {
 		$data['tahun'] = get_data('tbl_fact_tahun_budget', 'is_active',1)->result();   
 		if(user('id_group') == 1) {
-			$data['user_id'] = get_data('tbl_user','is_active',1)->result_array();
+			$data['user_id'] = get_data('tbl_user',[
+				'where' => [
+					'is_active' => 1,
+					'id_group' => SCM
+				],
+			])->result_array();
 		}else{
 			$data['user_id'] = get_data('tbl_user',[
 				'where' => [
@@ -21,8 +26,17 @@ class Material_price extends BE_Controller {
 		render($data);
 	}
 
-	function data() {
-		$data = data_serverside();
+	function data($tahun="",$user_id="") {
+		$config =[];
+		if($tahun) {
+	    	$config['where']['year']	= $tahun;	
+	    }
+
+		if($user_id && $user_id != 0) {
+	    	$config['where']['id_user']	= $user_id;	
+	    }
+
+		$data = data_serverside($config);
 		render($data,'json');
 	}
 
@@ -43,7 +57,7 @@ class Material_price extends BE_Controller {
 
 	function template() {
 		ini_set('memory_limit', '-1');
-		$arr = ['year' => 'year','material_code' => 'material_code','kode_budget' => 'kode_budget','nama' => 'nama','vcode' => 'vcode','loc' => 'loc','bm' => 'bm','curr' => 'curr','price_us' => 'price_us','user_id' => 'user_id','is_active' => 'is_active'];
+		$arr = ['year' => 'year','material_code' => 'material_code','kode_budget' => 'kode_budget','nama' => 'nama','vcode' => 'vcode','loc' => 'loc','bm' => 'bm','curr' => 'curr','price_us' => 'price_us','id_user' => 'id_user','is_active' => 'is_active'];
 		$config[] = [
 			'title' => 'template_import_material_price',
 			'header' => $arr,
@@ -55,7 +69,7 @@ class Material_price extends BE_Controller {
 	function import() {
 		ini_set('memory_limit', '-1');
 		$file = post('fileimport');
-		$col = ['year','material_code','kode_budget','nama','vcode','loc','bm','curr','price_us','user_id','is_active'];
+		$col = ['year','material_code','kode_budget','nama','vcode','loc','bm','curr','price_us','id_user','is_active'];
 		$this->load->library('simpleexcel');
 		$this->simpleexcel->define_column($col);
 		$jml = $this->simpleexcel->read($file);
@@ -66,7 +80,24 @@ class Material_price extends BE_Controller {
 					$data = $this->simpleexcel->parsing($i,$j);
 					$data['create_at'] = date('Y-m-d H:i:s');
 					$data['create_by'] = user('nama');
-					$save = insert_data('tbl_material_price',$data);
+					$data['id_user'] = post('user_import');
+
+					$cek = get_data('tbl_material_price',[
+						'select' => 'id',
+						'where' => [
+							'year' => $data['year'],
+							'material_code' => $data['material_code'],
+							'kode_budget' => $data['kode_budget'],
+							'vcode' => $data['vcode'],
+							'loc' => $data['loc'],
+							'curr' => $data['curr']
+						],
+					])->row();
+					if(empty($cek->id)) {
+						$save = insert_data('tbl_material_price',$data);
+					}else{
+						$save = update_data('tbl_material_price',$data,'id',$cek->id);
+					}
 					if($save) $c++;
 				}
 			}
@@ -81,7 +112,7 @@ class Material_price extends BE_Controller {
 
 	function export() {
 		ini_set('memory_limit', '-1');
-		$arr = ['year' => 'Year','material_code' => 'Material Code','kode_budget' => 'Kode Budget','nama' => 'Nama','vcode' => 'Vcode','loc' => 'Loc','bm' => 'Bm','curr' => 'Curr','price_us' => 'Price Us','user_id' => 'User Id','is_active' => 'Aktif'];
+		$arr = ['year' => 'Year','material_code' => 'Material Code','kode_budget' => 'Kode Budget','nama' => 'Nama','vcode' => 'Vcode','loc' => 'Loc','bm' => 'Bm','curr' => 'Curr','price_us' => 'Price Us','id_user' => 'User Id','is_active' => 'Aktif'];
 		$data = get_data('tbl_material_price')->result_array();
 		$config = [
 			'title' => 'data_material_price',
