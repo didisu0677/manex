@@ -34,7 +34,9 @@ class Material_price extends BE_Controller {
 
 		if($user_id && $user_id != 0) {
 	    	$config['where']['id_user']	= $user_id;	
-	    }
+	    }elseif($user_id == 0 && user('id_group') == SCM){
+			$config['where']['id_user']	= user('id');
+		}
 
 		$data = data_serverside($config);
 		render($data,'json');
@@ -90,7 +92,8 @@ class Material_price extends BE_Controller {
 							'kode_budget' => $data['kode_budget'],
 							'vcode' => $data['vcode'],
 							'loc' => $data['loc'],
-							'curr' => $data['curr']
+							'curr' => $data['curr'],
+							'id_user' => $data['id_user'],
 						],
 					])->row();
 					if(empty($cek->id)) {
