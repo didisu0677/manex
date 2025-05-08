@@ -11,7 +11,6 @@ class Beginning_stock extends BE_Controller {
         $data['tahun'] = get_data('tbl_fact_tahun_budget', [
             'where' => [
                 'is_active' => 1,
-                'tahun' => user('tahun_budget')
             ]
         ])->result();     
         
