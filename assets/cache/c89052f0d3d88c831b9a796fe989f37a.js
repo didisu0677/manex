@@ -26,6 +26,13 @@ $('#bulan').change(function(){
 	refreshData();
 });
 
+$('.btn-act-import').click(function(){
+	$('#form-import')[0].reset();
+	$('#tahun_import').val($('#filter_tahun').val());
+	$('#bulan_import').val($('#bulan').val());
+});
+
+
 var id_proses = '';
 	var tahun = 0;
 	$(document).on('click','.btn-proses',function(e){
