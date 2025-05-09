@@ -95,6 +95,8 @@ modal_open('modal-import',lang('impor'));
 	modal_body();
 		form_open(base_url('transaction/actual_sales/import'),'post','form-import');
 			col_init(3,9);
+			input('text',lang('tahun'),'tahun_import','','','readonly');
+			input('text',lang('bulan'),'bulan_import','','','readonly');
 			fileupload('File Excel','fileimport','required','data-accept="xls|xlsx"');
 			form_button(lang('impor'),lang('batal'));
 		form_close();
@@ -128,6 +130,13 @@ $('#bulan').change(function(){
 	
 	refreshData();
 });
+
+$('.btn-act-import').click(function(){
+	$('#form-import')[0].reset();
+	$('#tahun_import').val($('#filter_tahun').val());
+	$('#bulan_import').val($('#bulan').val());
+});
+
 
 var id_proses = '';
 	var tahun = 0;

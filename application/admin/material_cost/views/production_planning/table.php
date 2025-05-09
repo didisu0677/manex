@@ -131,10 +131,24 @@
 			<?php
 			$bgedit ="#CCCCFF";
 			$contentedit ="true" ;
+
+			$t_xprod = "";
+			for ($i = 1; $i <= 12; $i++) {
+				$t_xprod = 'xprod' . sprintf('%02d', $i);
+				$$t_xprod = 0;
+			}
 			
 			for ($i = 1; $i <= 12; $i++) {
+
+				$field0 = 'P_' . sprintf('%02d', $i);
+				$xxx5 =0;
+				$t_xprod = 'xprod' . sprintf('%02d', $i);
+				$gt_xprod = 'txprod' . sprintf('%02d', $i);
+
 				$field0x = 'xproduksi_' . sprintf('%02d', $i);
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$m1->id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="id="'.$field0x.$m1->id.'""></div></td>';	
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$m1->id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="id="'.$field0x.$m1->id.'"></td>';
+
+				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$m1->id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="id="'.$field0x.$m1->id.'""></div>'.number_format($xxx5).'</td>';	
 			}
 			?>
 		</tr>
@@ -145,9 +159,21 @@
 			$contentedit ="true" ;
 			// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 			for ($i = 1; $i <= 12; $i++) {
-				$x1 = number_format(0) ;
 				$fieldp = 'prod_' . sprintf('%02d', $i);
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right produksi '.$fieldp.'" data-name="'.$fieldp.'" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"></div></td>';	
+				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right produksi '.$fieldp.'" data-name="'.$fieldp.'" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"></div></td>';	
+				$field0 = 'P_' . sprintf('%02d', $i);
+				$xxx4 = 0;
+				foreach($m_cov[$m0->id] as $s2 => $s1) { 
+					// debug($s1->product_code);die;
+					if($s1->product_code == $m1->code) {
+						$xxx4 = ($s1->$field0 < 1.98 ? $m1->batch_size : 0) ;
+					}
+				}
+				$stotal_prsn = 0;
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right produksi '.$fieldp.'" data-name="'.$fieldp.'" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"></div>'.$xxx4.'</td>';	
+
+				// echo '<td class="money-custom" style="background-color: #ffded7; color: #fd0501;"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$xxx4.'">'.$xxx4.'</td>';
+
 			}
 
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value=""><b>'.number_format(0).'</b></td>';
@@ -276,7 +302,6 @@
 			$$t_prod = 0;
 		}
 
-		// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 		for ($i = 1; $i <= 12; $i++) {				
 			$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"><b>'.number_format($$sumtotalfield0).'</b></td>';

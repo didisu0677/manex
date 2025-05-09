@@ -40,7 +40,8 @@ $('#filter_estimate').change(function(){
 
 $('.btn-act-import').click(function(){
 	$('#form-import')[0].reset();
-
+	$('#tahun_import').val($('#filter_tahun').val());
+	$('#bulan_import').val($('#bulan').val());
 	$('#filter_import').val($('#filter_estimate').val()).trigger('change')
 });
 
