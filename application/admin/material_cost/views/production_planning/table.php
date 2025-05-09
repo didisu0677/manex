@@ -166,11 +166,11 @@
 				foreach($m_cov[$m0->id] as $s2 => $s1) { 
 					// debug($s1->product_code);die;
 					if($s1->product_code == $m1->code) {
-						$xxx4 = ($s1->$field0 < 1.98 ? $m1->batch_size : 0) ;
+						$xxx4 = ($s1->$field0 < 1.98 &&  $s1->$field0 != 0 ? $m1->batch_size : 0) ;
 					}
 				}
 				$stotal_prsn = 0;
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right produksi '.$fieldp.'" data-name="'.$fieldp.'" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"></div>'.$xxx4.'</td>';	
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right produksi '.$fieldp.'" data-name="'.$fieldp.'" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'">'.$xxx4.'</div></td>';	
 
 				// echo '<td class="money-custom" style="background-color: #ffded7; color: #fd0501;"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$xxx4.'">'.$xxx4.'</td>';
 
