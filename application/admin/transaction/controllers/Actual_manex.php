@@ -96,22 +96,22 @@ class Actual_manex extends BE_Controller {
 					$data['create_at'] = date('Y-m-d H:i:s');
 					$data['create_by'] = user('nama');
 
-					$cek = get_data('tbl_actual_manex', [
-						'where' => [
-							'tahun' => $data['tahun'],
-							'bulan' => $data['bulan'],
-							'account_code' => $data['account_code'],
-							'cost_centre' => $data['cost_centre'],
-							'sub_account' => $data['sub_account'],
-							'is_estimate' => $estimate,
-						]
-					])->row();
+					// $cek = get_data('tbl_actual_manex', [
+					// 	'where' => [
+					// 		'tahun' => $data['tahun'],
+					// 		'bulan' => $data['bulan'],
+					// 		'account_code' => $data['account_code'],
+					// 		'cost_centre' => $data['cost_centre'],
+					// 		'sub_account' => $data['sub_account'],
+					// 		'is_estimate' => $estimate,
+					// 	]
+					// ])->row();
 
-					if(!isset($cek->id)) {
+					// if(!isset($cek->id)) {
 						$save = insert_data('tbl_actual_manex',$data);
-					}else{
-						$save = update_data('tbl_actual_manex',$data,['id'=>$cek->id]);
-					}
+					// }else{
+					// 	$save = update_data('tbl_actual_manex',$data,['id'=>$cek->id]);
+					// }
 					if($save) $c++;
 				}
 			}
