@@ -69,11 +69,18 @@ class Actual_sales extends BE_Controller {
 		ini_set('memory_limit', '-1');
         ini_set('max_execution_time', -1);
 		$file = post('fileimport');
+
 		$col = ['tahun','bulan','product_code','description','pl_code','desc_pl','factory','address','sector','group_sector','qty_sales','sales_amount','discount','cogs','unit_cogs','cogs_idle','cogs_loss','gross_prpofit','customer','is_active'];
 		$this->load->library('simpleexcel');
 		$this->simpleexcel->define_column($col);
 		$jml = $this->simpleexcel->read($file);
 		$c = 0;
+
+		delete_data('tbl_actual_gross_profit',[
+			'tahun' => post('tahun_import'),
+			'bulan' => post('bulan_import')
+		]);
+
 		foreach($jml as $i => $k) {
 			if($i==0) {
 				for($j = 2; $j <= $k; $j++) {

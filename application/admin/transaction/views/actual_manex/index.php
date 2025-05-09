@@ -62,8 +62,8 @@ modal_open('modal-form');
 		form_open(base_url('transaction/actual_manex/save'),'post','form');
 			col_init(3,9);
 			input('hidden','id','id');
-			input('text',lang('tahun'),'tahun');
-			input('text',lang('bulan'),'bulan');
+			input('text',lang('tahun'),'tahun','','','readonly');
+			input('text',lang('bulan'),'bulan','','','readonly');
 			input('text',lang('account_code'),'account_code');
 			input('text',lang('cost_centre'),'cost_centre');
 			input('text',lang('initial_cc'),'initial_cc');
@@ -77,6 +77,8 @@ modal_open('modal-import',lang('impor'));
 	modal_body();
 		form_open(base_url('transaction/actual_manex/import'),'post','form-import');
 			col_init(3,9);
+			input('text',lang('tahun'),'tahun_import','','','readonly');
+			input('text',lang('bulan'),'bulan_import','','','readonly');
 			?>
 			<div class="form-group row">
 				<label class="col-form-label col-sm-3 required"><?php echo lang('estimate') . ' / ' . lang('actual'); ?></label>
@@ -137,7 +139,8 @@ $('#filter_estimate').change(function(){
 
 $('.btn-act-import').click(function(){
 	$('#form-import')[0].reset();
-
+	$('#tahun_import').val($('#filter_tahun').val());
+	$('#bulan_import').val($('#bulan').val());
 	$('#filter_import').val($('#filter_estimate').val()).trigger('change')
 });
 
