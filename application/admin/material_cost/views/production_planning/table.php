@@ -166,7 +166,7 @@
 				foreach($m_cov[$m0->id] as $s2 => $s1) { 
 					// debug($s1->product_code);die;
 					if($s1->product_code == $m1->code) {
-						$xxx4 = ($s1->$field0 < 1.98 &&  $s1->$field0 != 0 ? $m1->batch_size : 0) ;
+						$xxx4 = (($s1->$field0 * -1) < 1.98 && $s1->$field0 != 0 ? $m1->batch_size : 0) ;
 					}
 				}
 				$stotal_prsn = 0;

@@ -262,10 +262,11 @@ function save_perubahan() {
 					let idx = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('id');
 					let total = budget * nilai ;
 
-					columnData[key] += budget * nilai;		
-					columnData1[key1] += budget * nilai;	
-					$('#'+key1+idx).text(columnData1[key1]);
-
+					if(parseInt(budget) > 0){
+						columnData[key] += budget * nilai;		
+						columnData1[key1] += budget * nilai;	
+						$('#'+key1+idx).text(columnData1[key1]);
+					}
 				}
 			}
 
