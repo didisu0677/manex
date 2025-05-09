@@ -82,7 +82,8 @@ class Actual_manex extends BE_Controller {
 		$this->simpleexcel->define_column($col);
 		$jml = $this->simpleexcel->read($file);
 		$c = 0;
-
+        
+		// delete dulu sebelum import
 		delete_data('tbl_actual_manex',[
 			'tahun' => post('tahun_import'),
 			'bulan' => post('bulan_import')
