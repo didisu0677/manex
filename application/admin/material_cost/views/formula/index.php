@@ -5,6 +5,12 @@
 			<?php echo breadcrumb(); ?>
 		</div>
 		<div class="float-right">
+			<label class=""><?php echo lang('tahun'); ?>  &nbsp</label>
+			<select class="select2 infinity custom-select" style="width: 80px;" id="filter_tahun">
+				<?php foreach ($tahun as $tahun) { ?>
+                <option value="<?php echo $tahun->tahun; ?>"<?php if($tahun->tahun == user('tahun_budget')) echo ' selected'; ?>><?php echo $tahun->tahun; ?></option>
+                <?php } ?>
+			</select>
 
 			<label class=""><?php echo lang('item_product'); ?> &nbsp</label>
 			<select class="select2 custom-select" style="width: 280px;" id="filter_produk">
@@ -25,6 +31,7 @@
 		thead();
 			tr();
 				th('checkbox','text-center','width="30" data-content="id"');
+				th(lang('tahun'),'','data-content="tahun"');
 				th(lang('parent_item'),'','data-content="parent_item"');
 				th(lang('item_name'),'','data-content="item_name"');
 				th(lang('description'),'','data-content="description"');
@@ -79,14 +86,24 @@ modal_close();
 
 $(document).ready(function() {
 	var url = base_url + 'material_cost/formula/data/' ;
-		url 	+= '/'+$('#filter_produk').val() 
+		url 	+= '/'+$('#filter_tahun').val(); 
+		url 	+= '/'+$('#filter_produk').val(); 
 	$('[data-serverside]').attr('data-serverside',url);
 	refreshData();
 });	
 
 $('#filter_produk').change(function(){
 	var url = base_url + 'material_cost/formula/data/' ;
-		url 	+= '/'+$('#filter_produk').val() 
+		url 	+= '/'+$('#filter_tahun').val(); 
+		url 	+= '/'+$('#filter_produk').val() ;
+	$('[data-serverside]').attr('data-serverside',url);
+	refreshData();
+});
+
+$('#filter_tahun').change(function(){
+	var url = base_url + 'material_cost/formula/data/' ;
+		url 	+= '/'+$('#filter_tahun').val(); 
+		url 	+= '/'+$('#filter_produk').val() ;
 	$('[data-serverside]').attr('data-serverside',url);
 	refreshData();
 });

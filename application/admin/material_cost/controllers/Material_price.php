@@ -8,21 +8,21 @@ class Material_price extends BE_Controller {
 
 	function index() {
 		$data['tahun'] = get_data('tbl_fact_tahun_budget', 'is_active',1)->result();   
-		if(user('id_group') == 1) {
+		// if(user('id_group') == 1) {
 			$data['user_id'] = get_data('tbl_user',[
 				'where' => [
 					'is_active' => 1,
 					'id_group' => SCM
 				],
 			])->result_array();
-		}else{
-			$data['user_id'] = get_data('tbl_user',[
-				'where' => [
-					'is_active' => 1,
-					'id'	=> user('id'),
-				],
-			])->result_array();
-		}
+		// }//else{
+		// 	$data['user_id'] = get_data('tbl_user',[
+		// 		'where' => [
+		// 			'is_active' => 1,
+		// 			'id'	=> user('id'),
+		// 		],
+		// 	])->result_array();
+		// }
 		render($data);
 	}
 
@@ -32,10 +32,14 @@ class Material_price extends BE_Controller {
 	    	$config['where']['year']	= $tahun;	
 	    }
 
+		// if($user_id && $user_id != 0) {
+	    // 	$config['where']['id_user']	= $user_id;	
+	    // }elseif($user_id == 0 && user('id_group') == SCM){
+		// 	$config['where']['id_user']	= user('id');
+		// }
+
 		if($user_id && $user_id != 0) {
 	    	$config['where']['id_user']	= $user_id;	
-	    }elseif($user_id == 0 && user('id_group') == SCM){
-			$config['where']['id_user']	= user('id');
 		}
 
 		$data = data_serverside($config);

@@ -7,6 +7,8 @@ class Formula extends BE_Controller {
 	}
 
 	function index() {
+		$data['tahun'] = get_data('tbl_fact_tahun_budget', 'is_active',1)->result();   
+
 		$arr = [
             'select' => 'distinct a.parent_item,a.item_name',
             'where' => [
@@ -19,8 +21,12 @@ class Formula extends BE_Controller {
 		render($data);
 	}
 
-	function data($produk="") {
+	function data($tahun="",$produk="") {
 		$config =[];
+
+		if($tahun) {
+	    	$config['where']['tahun']	= $tahun;	
+	    }
 		
 		if($produk && $produk != 'ALL') {
 	    	$config['where']['parent_item']	= $produk;	
@@ -47,7 +53,7 @@ class Formula extends BE_Controller {
 
 	function template() {
 		ini_set('memory_limit', '-1');
-		$arr = ['parent_item' => 'parent_item','item_name' => 'item_name','description' => 'description','component_item' => 'component_item','material_name' => 'material_name','um' => 'um','quantity' => 'quantity','scrap' => 'scrap','total' => 'total','operation' => 'operation','article_number' => 'article_number','start_effective' => 'start_effective','is_active' => 'is_active'];
+		$arr = ['tahun' => 'tahun','parent_item' => 'parent_item','item_name' => 'item_name','description' => 'description','component_item' => 'component_item','material_name' => 'material_name','um' => 'um','quantity' => 'quantity','scrap' => 'scrap','total' => 'total','operation' => 'operation','article_number' => 'article_number','start_effective' => 'start_effective','is_active' => 'is_active'];
 
 		$config[] = [
 			'title' => 'template_import',
@@ -62,7 +68,7 @@ class Formula extends BE_Controller {
 		ini_set('memory_limit', '-1');
         ini_set('max_execution_time', -1);
 		$file = post('fileimport');
-		$col = ['parent_item','item_name','description','component_item','material_name','um','quantity','scrap','total','operation','article_number','start_effective','is_active'];
+		$col = ['tahun','parent_item','item_name','description','component_item','material_name','um','quantity','scrap','total','operation','article_number','start_effective','is_active'];
 		$this->load->library('simpleexcel');
 		$this->simpleexcel->define_column($col);
 		$jml = $this->simpleexcel->read($file);
@@ -89,7 +95,7 @@ class Formula extends BE_Controller {
 
 	function export() {
 		ini_set('memory_limit', '-1');
-		$arr = ['parent_item' => 'Parent Item','item_name' => 'Item Name','description' => 'Description','component_item' => 'Component Item','material_name' => 'Material Name','um' => 'Um','quantity' => 'Quantity','scrap' => 'Scrap','total' => 'Total','operation' => 'Operation','article_number' => 'Article Number','start_effective' => '-dStart Effective','is_active' => 'Aktif'];
+		$arr = ['tahun' => 'Tahun','parent_item' => 'Parent Item','item_name' => 'Item Name','description' => 'Description','component_item' => 'Component Item','material_name' => 'Material Name','um' => 'Um','quantity' => 'Quantity','scrap' => 'Scrap','total' => 'Total','operation' => 'Operation','article_number' => 'Article Number','start_effective' => '-dStart Effective','is_active' => 'Aktif'];
 		$data = get_data('tbl_material_formula')->result_array();
 		$config = [
 			'title' => 'data_formula',

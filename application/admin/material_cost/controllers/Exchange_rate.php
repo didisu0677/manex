@@ -32,7 +32,7 @@ class Exchange_rate extends BE_Controller {
 
 	function template() {
 		ini_set('memory_limit', '-1');
-		$arr = ['curr' => 'curr','rates' => 'rates','is_active' => 'is_active'];
+		$arr = ['curr' => 'curr','rates' => 'rates','pph' => 'pph','ppn' => 'ppn','is_active' => 'is_active'];
 		$config[] = [
 			'title' => 'template_import_exchange_rate',
 			'header' => $arr,
@@ -70,7 +70,7 @@ class Exchange_rate extends BE_Controller {
 
 	function export() {
 		ini_set('memory_limit', '-1');
-		$arr = ['curr' => 'Curr','rates' => 'Rates','is_active' => 'Aktif'];
+		$arr = ['curr' => 'Curr','rates' => 'Rates', 'pph' => 'PPh', 'ppn' => 'PPn','is_active' => 'Aktif'];
 		$data = get_data('tbl_currency_rates')->result_array();
 		$config = [
 			'title' => 'data_exchange_rate',

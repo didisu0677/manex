@@ -43,5 +43,7 @@
     "wd_10": "WD 10",
     "wd_11": "WD 11",
     "wd_12": "WD 12",
-    "users" : "User"
+    "users" : "User",
+    "pph" : "PPh",
+    "ppn" : "PPn"
 }

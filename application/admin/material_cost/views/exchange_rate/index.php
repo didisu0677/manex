@@ -18,6 +18,8 @@
 				th('checkbox','text-center','width="30" data-content="id"');
 				th(lang('curr'),'','data-content="curr"');
 				th(lang('rates'),'','data-content="rates"');
+				th(lang('pph'),'','data-content="pph"');
+				th(lang('ppn'),'','data-content="ppn"');
 				th(lang('aktif').'?','text-center','data-content="is_active" data-type="boolean"');
 				th('&nbsp;','','width="30" data-content="action_button"');
 	table_close();
@@ -31,6 +33,8 @@ modal_open('modal-form');
 			input('hidden','id','id');
 			input('text',lang('curr'),'curr');
 			input('text',lang('rates'),'rates');
+			input('text',lang('pph'),'pph');
+			input('text',lang('ppn'),'ppn');
 			toggle(lang('aktif').'?','is_active');
 			form_button(lang('simpan'),lang('batal'));
 		form_close();
