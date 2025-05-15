@@ -533,7 +533,26 @@ function input($tipe='',$label='',$nama='',$validation='',$value='',$attr='',$la
 				}
 				$html .= '</div>' . PHP_EOL;
 			}
-		} elseif($tipe == 'percent') {
+		} elseif($tipe == 'money2') {
+			if($label_group) {
+				$html .= '<div class="input-group">' . PHP_EOL;
+				if($label_prepend) {
+					$html .= '<div class="input-group-prepend">' . PHP_EOL;
+					$html .= '<span class="input-group-text">'.$label_prepend.'</span>' . PHP_EOL;
+					$html .= '</div>' . PHP_EOL;
+				}
+			}
+			$html .= '<input type="text" name="'.$nama.'" id="'.$_id.'" autocomplete="off" class="form-control money2" data-validation="'.$validation.'" value="'.$value.'"'.$attr.'>' . PHP_EOL;
+			if($label_group) {
+				if($label_append) {
+					$html .= '<div class="input-group-append">' . PHP_EOL;
+					$html .= '<span class="input-group-text">'.$label_append.'</span>' . PHP_EOL;
+					$html .= '</div>' . PHP_EOL;
+				}
+				$html .= '</div>' . PHP_EOL;
+			}
+		} 
+		elseif($tipe == 'percent') {
 			$html .= '<div class="input-group">' . PHP_EOL;
 			$html .= '<input type="text" name="'.$nama.'" id="'.$_id.'" autocomplete="off" class="form-control percent" data-validation="'.$validation.'" value="'.$value.'"'.$attr.'>' . PHP_EOL;
 			$html .= '<div class="input-group-append">' . PHP_EOL;

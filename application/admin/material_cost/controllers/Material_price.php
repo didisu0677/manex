@@ -63,7 +63,7 @@ class Material_price extends BE_Controller {
 
 	function template() {
 		ini_set('memory_limit', '-1');
-		$arr = ['year' => 'year','material_code' => 'material_code','kode_budget' => 'kode_budget','nama' => 'nama','vcode' => 'vcode','loc' => 'loc','bm' => 'bm','curr' => 'curr','price_us' => 'price_us','id_user' => 'id_user','is_active' => 'is_active'];
+		$arr = ['year' => 'year','material_code' => 'material_code','kode_budget' => 'kode_budget','nama' => 'nama','vcode' => 'vcode','loc' => 'loc','bm' => 'bm','curr' => 'curr','price_us' => 'price_us','bank_charges' => 'bank_charges' ,'handling_charges' => 'handling_charges','id_user' => 'id_user','is_active' => 'is_active'];
 		$config[] = [
 			'title' => 'template_import_material_price',
 			'header' => $arr,
@@ -75,7 +75,7 @@ class Material_price extends BE_Controller {
 	function import() {
 		ini_set('memory_limit', '-1');
 		$file = post('fileimport');
-		$col = ['year','material_code','kode_budget','nama','vcode','loc','bm','curr','price_us','id_user','is_active'];
+		$col = ['year','material_code','kode_budget','nama','vcode','loc','bm','curr','price_us','bank_charges','handling_charges','id_user','is_active'];
 		$this->load->library('simpleexcel');
 		$this->simpleexcel->define_column($col);
 		$jml = $this->simpleexcel->read($file);
@@ -119,7 +119,7 @@ class Material_price extends BE_Controller {
 
 	function export() {
 		ini_set('memory_limit', '-1');
-		$arr = ['year' => 'Year','material_code' => 'Material Code','kode_budget' => 'Kode Budget','nama' => 'Nama','vcode' => 'Vcode','loc' => 'Loc','bm' => 'Bm','curr' => 'Curr','price_us' => 'Price Us','id_user' => 'User Id','is_active' => 'Aktif'];
+		$arr = ['year' => 'Year','material_code' => 'Material Code','kode_budget' => 'Kode Budget','nama' => 'Nama','vcode' => 'Vcode','loc' => 'Loc','bm' => 'Bm','curr' => 'Curr','price_us' => 'Price Us','bank_charges' => 'Bank Charges','handling_charges' => 'Handling Charges','id_user' => 'User Id','is_active' => 'Aktif'];
 		$data = get_data('tbl_material_price')->result_array();
 		$config = [
 			'title' => 'data_material_price',

@@ -47,6 +47,8 @@
 				th(lang('bm'),'','data-content="bm"');
 				th(lang('curr'),'','data-content="curr"');
 				th(lang('price_us'),'','data-content="price_us"');
+				th(lang('bank_charges'),'','data-content="bank_charges"');
+				th(lang('handling_charges'),'','data-content="handling_charges"');
 				th(lang('user_id'),'','data-content="nama", data-table ="tbl_user"');
 				th(lang('aktif').'?','text-center','data-content="is_active" data-type="boolean"');
 				th('&nbsp;','','width="30" data-content="action_button"');

@@ -288,6 +288,7 @@ function money_init() {
 			$(this).val('');
 		}
 	});
+
 	$(".money2:not([readonly])").inputmask({
 		prefix: "",
 		groupSeparator: ".",

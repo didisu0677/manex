@@ -33,8 +33,8 @@ modal_open('modal-form');
 			input('hidden','id','id');
 			input('text',lang('curr'),'curr');
 			input('text',lang('rates'),'rates');
-			input('text',lang('pph'),'pph');
-			input('text',lang('ppn'),'ppn');
+			input('money2',lang('pph'),'pph');
+			input('money2',lang('ppn'),'ppn');
 			toggle(lang('aktif').'?','is_active');
 			form_button(lang('simpan'),lang('batal'));
 		form_close();
@@ -49,3 +49,9 @@ modal_open('modal-import',lang('impor'));
 		form_close();
 modal_close();
 ?>
+
+<script>
+$(document).ready(function() {
+	money_init();
+});	
+</script>	
