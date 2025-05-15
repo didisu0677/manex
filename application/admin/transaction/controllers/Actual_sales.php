@@ -271,6 +271,7 @@ class Actual_sales extends BE_Controller {
 					);
 				}
 
+
 				if(!isset($cek2->id)){
 					insert_data($table2,
 					['tahun' => $tahun, 'divisi' => $p->divisi, 'product_line' => $p->product_line, 'id_budget_product'=>$p->id, 'budget_product_code'=>$p->code, 
@@ -330,7 +331,32 @@ class Actual_sales extends BE_Controller {
 			}
 		}
 
+		$this->db->where('CONCAT(divisi,budget_product_code,product_line) not in (select CONCAT(divisi,code,product_line) from tbl_fact_product)');
+		$this->db->delete($table1);
 
+		$this->db->where('CONCAT(divisi,budget_product_code,product_line) not in (select CONCAT(divisi,code,product_line) from tbl_fact_product)');
+		$this->db->delete($table2);
+
+		$this->db->where('CONCAT(divisi,budget_product_code,product_line) not in (select CONCAT(divisi,code,product_line) from tbl_fact_product)');
+		$this->db->delete($table3);
+		
+		$this->db->where('CONCAT(divisi,budget_product_code,product_line) not in (select CONCAT(divisi,code,product_line) from tbl_fact_product)');
+		$this->db->delete($table4);
+		
+		$this->db->where('CONCAT(divisi,budget_product_code,product_line) not in (select CONCAT(divisi,code,product_line) from tbl_fact_product)');
+		$this->db->delete($table5);
+		
+		$this->db->where('CONCAT(divisi,budget_product_code,product_line) not in (select CONCAT(divisi,code,product_line) from tbl_fact_product)');
+		$this->db->delete($table6);
+		
+		$this->db->where('CONCAT(divisi,budget_product_code,product_line) not in (select CONCAT(divisi,code,product_line) from tbl_fact_product)');
+		$this->db->delete($table7);
+		
+		$this->db->where('CONCAT(divisi,budget_product_code,product_line) not in (select CONCAT(divisi,code,product_line) from tbl_fact_product)');
+		$this->db->delete($table8);
+
+		$this->db->where('CONCAT(divisi,budget_product_code,product_line) not in (select CONCAT(divisi,code,product_line) from tbl_fact_product)');
+		$this->db->delete($table9);
 
 		$actual = get_data('tbl_actual_gross_profit',[
             'select' => 'pl_code,product_code,bulan,sector,sum(qty_sales) as qty_sales, sum(sales_amount) as sales_amount,

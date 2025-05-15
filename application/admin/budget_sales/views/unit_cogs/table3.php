@@ -51,4 +51,46 @@
 		</tr>
 	<?php 
 	} ?>
+<tr>
+		<td class="sub-1" colspan="3"><b>TOTAL <?php echo $m0->sub_product  ?></b></td>
+		<?php
+			$bgedit ="";
+			$contentedit ="false" ;
+			// for ($i = setting('actual_budget'); $i <= 12; $i++) {
+			for ($i = 1; $i <= 12; $i++) {
+				if($i <= setting('actual_budget')) {       
+					$bgedit = '#F7F7EB';
+					$contentedit = "false";
+				}else{
+					$bgedit = '';
+					$contentedit = "true";
+				}
+
+				$totalfield0 = 'TotalB_' . sprintf('%02d', $i);
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$totalfield0.'"><b>'.number_format(0).'</b></td>';
+			}
+			?>
+	</tr>
+	
 <?php } ?>
+
+<tr>
+		<td class="sub-1" colspan="3"><b>GRAND TOTAL</b></td>
+		<?php
+			$bgedit ="";
+			$contentedit ="false" ;
+			// for ($i = setting('actual_budget'); $i <= 12; $i++) {
+			for ($i = 1; $i <= 12; $i++) {
+				if($i <= setting('actual_budget')) {
+					$bgedit = '#F7F7EB';
+					$contentedit = "false";
+				}else{
+					$bgedit = '';
+					$contentedit = "true";
+				}
+				
+				$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"><b>'.number_format(0).'</b></td>';
+			}
+			?>
+	</tr>

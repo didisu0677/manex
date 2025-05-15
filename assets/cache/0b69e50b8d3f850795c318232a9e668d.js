@@ -365,7 +365,7 @@
 	function refresh_page() {
         $(document).on('click', '.swal-button--confirm', function(){
             setTimeout(function () {
-                window.location.href = 'https://development.otsuka.co.id/manex/budget_sales/cogs_total';
+                window.location.href = 'http://localhost/manex/budget_sales/cogs_total';
             }, 1000);
         })
     }

@@ -94,7 +94,7 @@
 			}
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$stotal_est.'"><b>'.number_format( $stotal_budget).'</b></td>';
 			?>
-	</tr
+	</tr>
 	
 <?php } ?>
 	<tr>
@@ -117,4 +117,4 @@
 			}
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 			?>
-	</tr
+	</tr>
