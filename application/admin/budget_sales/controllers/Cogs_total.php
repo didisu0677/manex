@@ -170,6 +170,8 @@ class Cogs_total extends BE_Controller {
                 $arr['where']['a.budget_product_sector'] = $sector;
             }
             
+            $arr['sort_by'] = 'a.budget_product_code,a.budget_product_sector';
+
             $data['produk'][$m0->product_line]= get_data($table1 . ' a',$arr)->result();
 
         }

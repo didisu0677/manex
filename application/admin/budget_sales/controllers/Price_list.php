@@ -149,6 +149,8 @@ class Price_list extends BE_Controller {
             if($sector != 'ALL') {
                 $arr['where']['a.budget_product_sector'] = $sector;
             }
+
+            $arr['sort_by'] = 'a.budget_product_code,a.budget_product_sector';
             
             $data['produk'][$m0->product_line]= get_data($table . ' a',$arr)->result();
 
