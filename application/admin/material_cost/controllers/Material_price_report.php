@@ -33,7 +33,7 @@ class Material_price_report extends BE_Controller {
     function data($tahun="",$product="",$tipe = 'table'){
 		ini_set('memory_limit', '-1');
 
-
+        //// 
         $arr = [
             'select' => 'a.*,b.rates as kurs, b.pph, b.ppn , 
                         (b.rates * a.price_us) as total_price,a.bank_charges,a.handling_charges,a.update_by',
