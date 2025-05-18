@@ -67,12 +67,30 @@ class Production_planning extends BE_Controller {
             $data['kprod'][$m0->id] = $m0->kapasitas;
      
             $field1 = '';
+            $field2 = '';
             for ($i = 1; $i <= 12; $i++) { 
                 $field1 = 'WD_' . sprintf('%02d', $i);
                 $data['wday'][$m0->id][$i] = $m0->$field1;
                 $data['sprod'][$m0->id][$i] = ($m0->kapasitas * $m0->$field1);
+
+                if($field2 == '') {
+                    $field2 = 'sum('. 'P_' . sprintf('%02d', $i).')' . ' as ' . 'P_' . sprintf('%02d', $i);
+                }else{
+                    $field2 = $field2 . ' , ' . 'sum('. 'P_' . sprintf('%02d', $i).')' . ' as ' . 'P_' . sprintf('%02d', $i);
+    
+                }
             }
             
+            $data['prod'][$m0->id] = get_data($table_prod,[
+                'select' => 'id_cost_centre,cost_centre, ' . $field2 ,
+                'where'  => [
+                    'posting_code' => 'PRD',
+                    'id_cost_centre' => $m0->id,
+                ],
+                'group_by' => 'id_cost_centre',
+            ])->row_array();
+
+            // debug($data['prod']);die;
 
             $cproduk = get_data('tbl_fact_product a',[
                 'where' => [

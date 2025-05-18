@@ -33,17 +33,8 @@
 			$contentedit ="true" ;
 			$tpord = "";
 			for ($i = 1; $i <= 12; $i++) {
-					$field0 = 'P_' . sprintf('%02d', $i);
-					$xxx4 =0;
-
-					$t_prod = 'prod_' . sprintf('%02d', $i);
-					foreach($m_cov[$m0->id] as $s2 => $s1) { 
-						if($s1->product_code == $m1->code) {
-							$xxx4 = (($s1->$field0 * -1) < 1.98 && $s1->$field0 != 0 ? $m1->batch_size : 0) ;
-						}
-						$$t_prod +=  $xxx4 ;
-					}
-				echo '<th class = "text-right" style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($$t_prod).'</font></th>';
+				$field0 = 'P_' . sprintf('%02d', $i);
+				echo '<th class = "text-right" style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($prod[$m0->id][$field0]).'</font></th>';
 			}
 			?>
 			<th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font>
