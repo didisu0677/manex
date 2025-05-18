@@ -6,6 +6,7 @@
 	for ($i = 1; $i <= 12; $i++) {
 		$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
 		$$sumtotalfield0 = 0;
+
 		$gt_begining = 'tbegining' . sprintf('%02d', $i);
 		$$gt_begining = 0;
 		
@@ -109,7 +110,7 @@
 				$t_begining = 'begining' . sprintf('%02d', $i);
 				$$t_begining = 0;
 			}
-
+			
 			for ($i = 1; $i <= 12; $i++) {
 				$field0 = 'P_' . sprintf('%02d', $i);
 				$xxx2 =0;
@@ -121,7 +122,7 @@
 						$xxx2 = number_format($s1->$field0) ;
 					}
 					$$t_begining +=  $s1->$field0 ;
-					$$gt_begining +=  $s1->$field0 ;
+					// $$gt_begining +=  $s1->$field0 ;
 
 				}
 				
@@ -171,7 +172,7 @@
 				$xxx5 = 0;
 				foreach($m_cov[$m0->id] as $s2 => $s1) { 
 					if($s1->product_code == $m1->code) {
-						$xxx5 = (($s1->$field0) < 1.98 && $s1->$field0 != 0 ? $m1->batch_size : 0) ;
+						$xxx5 = (($s1->$field0 * -1)  < 1.98 && $s1->$field0 != 0 ? $m1->batch_size : 0) ;
 					}
 
 				}
@@ -212,7 +213,7 @@
 							$xxx1 = number_format($s1->$field0) ;
 						}
 						$$t_sales +=  $s1->$field0 ;
-						$$gt_sales +=  $s1->$field0 ;
+						// $$gt_sales +=  $s1->$field0 ;
 					}
 					
 					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$xxx1.'</td>';
@@ -245,7 +246,7 @@
 							$xxx3 = number_format($s1->$field0) ;
 						}
 						$$t_end +=  $s1->$field0 ;
-						$$gt_end +=  $s1->$field0 ;
+						// $$gt_end +=  $s1->$field0 ;
 					}
 					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$xxx3.'</td>';
 				}
@@ -289,7 +290,8 @@
 		// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 		for ($i = 1; $i <= 12; $i++) {				
 			$t_begining = 'begining' . sprintf('%02d', $i);
-			
+			$gt_begining = 'tbegining' . sprintf('%02d', $i);
+			$$gt_begining +=  $$t_begining ;
 			$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"><b>'.number_format($$t_begining).'</b></td>';
 		}
@@ -336,6 +338,8 @@
 		// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 		for ($i = 1; $i <= 12; $i++) {				
 			$t_sales = 'sales' . sprintf('%02d', $i);
+			$gt_sales = 'tsales' . sprintf('%02d', $i);
+			$$gt_sales += $$t_sales;
 
 			$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$t_sales.'"><b>'.number_format($$t_sales).'</b></td>';
@@ -351,6 +355,8 @@
 		// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 		for ($i = 1; $i <= 12; $i++) {				
 			$t_end = 'end' . sprintf('%02d', $i);
+            $gt_end = 'tend' . sprintf('%02d', $i);
+			$$gt_end += $$t_end ; 
 
 			$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"><b>'.number_format($$t_end).'</b></td>';
@@ -381,7 +387,7 @@
 		$bgedit ="";
 		$contentedit ="false" ;
 		// for ($i = setting('actual_budget'); $i <= 12; $i++) {
-		for ($i = 1; $i <= 12; $i++) {				
+		for ($i = 1; $i <= 12; $i++) {		
 			$gt_begining = 'tbegining' . sprintf('%02d', $i);
 			// $sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"><b>'.number_format($$gt_begining).'</b></td>';
