@@ -168,6 +168,7 @@
 
 			// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 			for ($i = 1; $i <= 12; $i++) {
+				$fieldp = 'prod_' . sprintf('%02d', $i);
 				$field0 = 'P_' . sprintf('%02d', $i);
 				$xxx5 = 0;
 				foreach($m_cov[$m0->id] as $s2 => $s1) { 
