@@ -16,10 +16,10 @@
   	<?php
 
 	for ($i = 1; $i <= 12; $i++) {
-		$sub_totalfield0 = 'sub_TotalB_' . sprintf('%02d', $i);
-		$$sub_totalfield0 = 0;
+		$totalfield0 = 'TotalB_' . sprintf('%02d', $i);
+		$$totalfield0 = 0;
 	}
-
+	
 	$sub_stotal_budget = 0;
 
 	foreach($produk[$m0->product_line] as $m2 => $m1) { 
