@@ -86,7 +86,8 @@ class Actual_manex extends BE_Controller {
 		// delete dulu sebelum import
 		delete_data('tbl_actual_manex',[
 			'tahun' => post('tahun_import'),
-			'bulan' => post('bulan_import')
+			'bulan' => post('bulan_import'),
+			'is_estimate' => $estimate,
 		]);
 		foreach($jml as $i => $k) {
 			if($i==0) {

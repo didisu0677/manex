@@ -43,6 +43,7 @@
 				th(lang('total'),'','data-content="total"');
 				th(lang('operation'),'','data-content="operation"');
 				th(lang('article_number'),'','data-content="article_number"');
+				th(lang('group_formula'),'','data-content="group_formula"');
 				th(lang('start_effective'),'','data-content="start_effective" data-type="daterange"');
 				th(lang('aktif').'?','text-center','data-content="is_active" data-type="boolean"');
 				th('&nbsp;','','width="30" data-content="action_button"');
