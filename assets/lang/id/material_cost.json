@@ -55,5 +55,6 @@
     "qty": "Qty",
     "scr": "Scr",
     "group": "Group",
-    "group_formula" : "Group Formula"
+    "group_formula": "Group Formula",
+    "kode": "Kode"
 }
