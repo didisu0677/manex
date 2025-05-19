@@ -1,0 +1,26 @@
+{
+    "field": {
+        "id": "primary_key",
+        "pc": "varchar",
+        "pc_um": "varchar",
+        "mc": "varchar",
+        "mc_um": "varchar",
+        "qty": "varchar",
+        "scr": "varchar",
+        "group": "varchar",
+        "is_active": "boolean"
+    },
+    "label": {
+        "id": "Id",
+        "pc": "Pc",
+        "pc_um": "Pc Um",
+        "mc": "Mc",
+        "mc_um": "Mc Um",
+        "qty": "Qty",
+        "scr": "Scr",
+        "group": "Group",
+        "is_active": "Aktif"
+    },
+    "validation": [],
+    "alias": []
+}

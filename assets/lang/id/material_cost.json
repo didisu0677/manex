@@ -43,9 +43,16 @@
     "wd_10": "WD 10",
     "wd_11": "WD 11",
     "wd_12": "WD 12",
-    "users" : "User",
-    "pph" : "PPh",
-    "ppn" : "PPn",
-    "bank_charges" : "Bank Charges",
-    "handling_charges" : "Handling_charges"
+    "users": "User",
+    "pph": "PPh",
+    "ppn": "PPn",
+    "bank_charges": "Bank Charges",
+    "handling_charges": "Handling_charges",
+    "pc": "Pc",
+    "pc_um": "Pc Um",
+    "mc": "Mc",
+    "mc_um": "Mc Um",
+    "qty": "Qty",
+    "scr": "Scr",
+    "group": "Group"
 }

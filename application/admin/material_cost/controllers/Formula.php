@@ -106,4 +106,26 @@ class Formula extends BE_Controller {
 		$this->simpleexcel->export();
 	}
 
+	function group_formula() {
+		ini_set('memory_limit', '-1');
+        ini_set('max_execution_time', -1);
+
+		$group = get_data('tbl_material_formula a',[
+			'select' => 'a.* , b.group',
+			'join'   => 'tbl_group_material b on a.parent_item = b.pc and a.component_item = b.mc type LEFT',
+			'where' => [
+				'a.is_active' => 1
+			],
+		])->result();
+
+		
+		$no = 0;
+		foreach($group as $g) {
+			$save = update_data('tbl_material_formula',['group_formula'=>$g->group],['id'=>$g->id]);
+			if($save){
+				$no++;
+			}
+		}
+		echo 'success ' . $no . 'Update Data' ;
+	}
 }
