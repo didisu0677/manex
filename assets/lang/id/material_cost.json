@@ -54,5 +54,6 @@
     "mc_um": "Mc Um",
     "qty": "Qty",
     "scr": "Scr",
-    "group": "Group"
+    "group": "Group",
+    "group_formula" : "Group Formula"
 }

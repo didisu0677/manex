@@ -112,9 +112,9 @@ class Formula extends BE_Controller {
 
 		$group = get_data('tbl_material_formula a',[
 			'select' => 'a.* , b.group',
-			'join'   => 'tbl_group_material b on a.parent_item = b.pc and a.component_item = b.mc type LEFT',
+			'join'   => 'tbl_group_material b on SUBSTRING(a.parent_item, 3) = b.pc and SUBSTRING(a.component_item, 3) = b.mc type LEFT',
 			'where' => [
-				'a.is_active' => 1
+				'a.is_active' => 1,
 			],
 		])->result();
 
