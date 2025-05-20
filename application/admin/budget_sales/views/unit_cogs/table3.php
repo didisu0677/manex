@@ -52,7 +52,7 @@
 	<?php 
 	} ?>
 <tr>
-		<td class="sub-1" colspan="3"><b>TOTAL <?php echo $m0->sub_product  ?></b></td>
+		<td class="" colspan="3"></td>
 		<?php
 			$bgedit ="";
 			$contentedit ="false" ;
@@ -67,7 +67,7 @@
 				}
 
 				$totalfield0 = 'TotalB_' . sprintf('%02d', $i);
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$totalfield0.'"><b>'.number_format(0).'</b></td>';
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$totalfield0.'"></td>';
 			}
 			?>
 	</tr>
@@ -75,7 +75,7 @@
 <?php } ?>
 
 <tr>
-		<td class="sub-1" colspan="3"><b>GRAND TOTAL</b></td>
+		<td class="" colspan="3"></td>
 		<?php
 			$bgedit ="";
 			$contentedit ="false" ;
@@ -90,7 +90,7 @@
 				}
 				
 				$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"><b>'.number_format(0).'</b></td>';
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"></td>';
 			}
 			?>
 	</tr>

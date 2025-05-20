@@ -9,16 +9,8 @@
 			<label class=""><?php echo lang('tahun'); ?> &nbsp</label>
 			<select class="select2 infinity custom-select" style="width: 80px;" id="filter_tahun">
 				<?php foreach ($tahun as $tahun) { ?>
-                	<option value="<?php echo $tahun->tahun; ?>"<?php if($tahun->tahun == user('tahun_budget')) echo ' selected'; ?>><?php echo $tahun->tahun; ?></option>
-                <?php } ?>
-			</select>
-
-			<label class=""><?php echo lang('factory'); ?>  &nbsp</label>
-			<select class="select2 infinity custom-select" style="width: 180px;" id="filter_cost_centre">
-				<option value="ALL">ALL FACTORY</option>
-				<?php foreach ($cc as $c) { ?>
-                <option value="<?php echo $c->kode; ?>"><?php echo $c->cost_centre; ?></option>
-                <?php } ?>
+					<option value="<?php echo $tahun->tahun; ?>" <?php if ($tahun->tahun == user('tahun_budget')) echo ' selected'; ?>><?php echo $tahun->tahun; ?></option>
+				<?php } ?>
 			</select>
 
 			<?php
@@ -29,7 +21,7 @@
 			// echo '<button class="btn btn-primary btn-import" id="btn-import">Import</button>';
 			$arr = [];
 			$arr = [
-				// ['btn-save','Save Data','fa-save'],///
+				// ['btn-save','Save Data','fa-save'],
 				['btn-export','Export Data','fa-upload'],
 				($access['access_input'] ? ['btn-act-import','Import Data','fa-download'] :''),
 				// ['btn-template','Template Import','fa-reg-file-alt']
@@ -53,16 +45,14 @@
 					table_open('table table-bordered table-app table-hover table-1');
 					thead();
 					tr();
-					th('Product', '', 'class="text-center align-middle headcol"');
+					th('Material_name', '', 'class="text-center align-middle headcol"');
 					th('Code', '', 'class="text-center align-middle headcol"');
-					th('Batch Size', '', 'class="text-center align-middle headcol"');
-					th('yield', '', 'class="text-center align-middle headcol"');
 					// for ($i = setting('actual_budget'); $i <= 12; $i++) {
-					// for ($i = 1; $i <= 12; $i++) {
-					// 	th(month_lang($i), '', 'class="text-center" style="min-width:60px"');
-					// }
+					for ($i = 1; $i <= 12; $i++) {
+						th(month_lang($i), '', 'class="text-center" style="min-width:60px"');
+					}
 
-					th('Total Stock', '', 'class="text-center align-middle headcol"style="min-width:60px"');
+					th('Total', '', 'class="text-center align-middle headcol"style="min-width:60px"');
 					tbody();
 					table_close();
 					?>
@@ -75,7 +65,7 @@
 <?php
 modal_open('modal-import',lang('impor'));
 modal_body();
-	form_open(base_url('material_cost/beginning_stock/import'),'post','form-import');
+	form_open(base_url('material_cost/rencana_pemakaian/import'),'post','form-import');
 		col_init(3,9);
 		input('text',lang('tahun'),'tahun','','','readonly');
 		input('hidden',lang('tab'),'tab','','','readonly');
@@ -106,17 +96,12 @@ modal_close();
 		getData()
 	});
 
-	$('#filter_cost_centre').change(function() {
-		getData()
-	});
-
-
 
     function getData() {
 
         cLoader.open(lang.memuat_data + '...');
         $('.overlay-wrap').removeClass('hidden');
-        var page = base_url + 'material_cost/beginning_stock/data';
+        var page = base_url + 'material_cost/rencana_pemakaian/data';
             page 	+= '/'+$('#filter_tahun').val();
 			page 	+= '/'+$('#filter_cost_centre').val();
 
@@ -288,7 +273,7 @@ modal_close();
 
 		console.log(jsonString);
 		$.ajax({
-			url: base_url + 'material_cost/beginning_stock/save_perubahan',
+			url: base_url + 'material_cost/rencana_pemakaian/save_perubahan',
 			data: {
 				'json': jsonString,
 				'tahun': $('#filter_tahun').val(),
@@ -358,7 +343,7 @@ modal_close();
 
 	function download_template(){
 		let tahun = $('#tahun').val();
-		window.open(base_url + 'material_cost/beginning_stock/template?tahun='+tahun)
+		window.open(base_url + 'material_cost/rencana_pemakaian/template?tahun='+tahun)
 	}
 
 	$('.btn-act-import').click(function(){
@@ -372,7 +357,7 @@ modal_close();
 
 	// function do_import(){
 	// 	$.ajax({
-	// 		url: base_url + 'material_cost/beginning_stock/import',
+	// 		url: base_url + 'material_cost/rencana_pemakaian/import',
 	// 		data: {
 	// 			tahun: $('#tahun').val(),
 	// 			fileimport: $('#fileimport').val(),
@@ -393,7 +378,7 @@ modal_close();
 	function refresh_page() {
         $(document).on('click', '.swal-button--confirm', function(){
             setTimeout(function () {
-                window.location.href = '<?php echo site_url('material_cost/budget_production') ?>';
+                window.location.href = '<?php echo site_url('material_cost/rencana_pemakaian') ?>';
             }, 1000);
         })
     }

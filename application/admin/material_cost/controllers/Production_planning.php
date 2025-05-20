@@ -50,6 +50,7 @@ class Production_planning extends BE_Controller {
                 'a.is_active' => 1,
                 'a.id_cost_centre !=' => 0,
                 // 'a.cost_centre' => '2110'
+                // 'a.code' => 'CIPTLRHPDM'
             ],
             'group_by' => 'a.id_cost_centre',
             'sort_by' => 'b.id', 
@@ -125,11 +126,13 @@ class Production_planning extends BE_Controller {
                            ],
                 'where' => [
                     'a.tahun' => $tahun,
+                    'd.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id,
-                    // 'a.budget_product_code' => 'CIHODD5PDM'
+                    // 'a.budget_product_code' => 'CIPTLRHPDM'
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
+
 
             $data['sales'][$m0->id] = get_data($table_prod .' a',[
                 'select' => 'a.*',

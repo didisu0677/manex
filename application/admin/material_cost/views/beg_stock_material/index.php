@@ -75,7 +75,7 @@
 <?php
 modal_open('modal-import',lang('impor'));
 modal_body();
-	form_open(base_url('material_cost/beginning_stock/import'),'post','form-import');
+	form_open(base_url('material_cost/beg_stock_material/import'),'post','form-import');
 		col_init(3,9);
 		input('text',lang('tahun'),'tahun','','','readonly');
 		input('hidden',lang('tab'),'tab','','','readonly');
@@ -116,7 +116,7 @@ modal_close();
 
         cLoader.open(lang.memuat_data + '...');
         $('.overlay-wrap').removeClass('hidden');
-        var page = base_url + 'material_cost/beginning_stock/data';
+        var page = base_url + 'material_cost/beg_stock_material/data';
             page 	+= '/'+$('#filter_tahun').val();
 			page 	+= '/'+$('#filter_cost_centre').val();
 
@@ -288,7 +288,7 @@ modal_close();
 
 		console.log(jsonString);
 		$.ajax({
-			url: base_url + 'material_cost/beginning_stock/save_perubahan',
+			url: base_url + 'material_cost/beg_stock_material/save_perubahan',
 			data: {
 				'json': jsonString,
 				'tahun': $('#filter_tahun').val(),
@@ -358,7 +358,7 @@ modal_close();
 
 	function download_template(){
 		let tahun = $('#tahun').val();
-		window.open(base_url + 'material_cost/beginning_stock/template?tahun='+tahun)
+		window.open(base_url + 'material_cost/beg_stock_material/template?tahun='+tahun)
 	}
 
 	$('.btn-act-import').click(function(){
@@ -372,7 +372,7 @@ modal_close();
 
 	// function do_import(){
 	// 	$.ajax({
-	// 		url: base_url + 'material_cost/beginning_stock/import',
+	// 		url: base_url + 'material_cost/beg_stock_material/import',
 	// 		data: {
 	// 			tahun: $('#tahun').val(),
 	// 			fileimport: $('#fileimport').val(),

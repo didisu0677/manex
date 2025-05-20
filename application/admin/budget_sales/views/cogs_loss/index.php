@@ -498,7 +498,7 @@ modal_close();
 
 		// Add table rows
 		table += '<tr><td colspan="1">PT Otsuka Indonesia</td></tr>';
-		table += '<tr><td colspan="1">' + judul + ' COGS IDLE </td></tr>';
+		table += '<tr><td colspan="1">' + judul + ' COGS INVENTORY LOSS </td></tr>';
 		table += '<tr><td colspan="1"> Divisi </td><td>: ' + $('#filter_divisi option:selected').text() + '</td></tr>';
 		table += '<tr><td colspan="1"> Sector </td><td>: ' + $('#filter_sector option:selected').text() + '</td></tr>';
 		table += '<tr><td colspan="1"> Group Product </td><td>: ' + $('#filter_sub_account option:selected').text() + '</td></tr>';
