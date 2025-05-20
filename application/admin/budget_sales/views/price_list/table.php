@@ -17,7 +17,6 @@
 		$contentedit ="false" ;
 		?>
 		<tr>
-
 			<td><?php echo isset($m1->product_name) ? $m1->product_name : ''; ?></td>
 			<td><?php echo isset($m1->code) ? $m1->code : ''; ?></td>
 			<td><?php echo isset($m1->segment) ? $m1->segment : ''; ?></td>
