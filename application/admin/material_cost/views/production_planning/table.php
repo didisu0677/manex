@@ -103,7 +103,7 @@
 
 		
 			$bgedit ="";
-			$contentedit ="true" ;
+			$contentedit ="false" ;
 			$t_begining = "";
 
 			for ($i = 1; $i <= 12; $i++) {
@@ -152,11 +152,17 @@
 				$xxx5 =0;
 				$t_xprod = 'xprod' . sprintf('%02d', $i);
 				$gt_xprod = 'txprod' . sprintf('%02d', $i);
-
 				$field0x = 'xproduksi_' . sprintf('%02d', $i);
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$m1->id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="id="'.$field0x.$m1->id.'"></td>';
 
-				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$m1->id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="id="'.$field0x.$m1->id.'""></div>'.number_format($xxx5).'</td>';	
+				foreach($xprod[$m0->id] as $sp => $sp1) { 
+					if($sp1->product_code == $m1->code) {
+						$id = $sp1->id ;
+					}
+				}
+
+				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$m1->id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="id="'.$field0x.$m1->id.'"></td>';
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="id="'.$field0x.$m1->id.'"></td>';
+
 			}
 			?>
 		</tr>
@@ -164,7 +170,7 @@
 			<td style="background-color:; color: #0101fd;">Prod</td>
 			<?php
 			$bgedit ="";
-			$contentedit ="true" ;
+			$contentedit ="false" ;
 
 			// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 			for ($i = 1; $i <= 12; $i++) {
@@ -194,7 +200,7 @@
 			<td>Sales</td>
 			<?php
 				$bgedit ="";
-				$contentedit ="true" ;
+				$contentedit ="false" ;
 
 				for ($i = 1; $i <= 12; $i++) {
 					$t_sales = 'sales' . sprintf('%02d', $i);
@@ -227,7 +233,7 @@
 			<td>End Stock</td>
 			<?php
 				$bgedit ="";
-				$contentedit ="true" ;
+				$contentedit ="false" ;
 				for ($i = 1; $i <= 12; $i++) {
 					$t_end = 'end' . sprintf('%02d', $i);
 					$$t_end = 0;
@@ -260,7 +266,7 @@
 			<td>M. Cov</td>
 			<?php
 				$bgedit ="";
-				$contentedit ="true" ;
+				$contentedit ="false" ;
 				// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 				for ($i = 1; $i <= 12; $i++) {
 					$field0 = 'P_' . sprintf('%02d', $i);

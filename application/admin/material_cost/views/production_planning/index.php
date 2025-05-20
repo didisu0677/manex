@@ -78,69 +78,122 @@
 </div>
 
 <script>
-	$(document).ready(function() {
-		getData();
-		$(document).on('keyup', '.xproduksi', function(e) {
-			// calculate();
-			if (e.keyCode === 13 || e.key === 'Enter' || e.keyCode === 9 || e.key === 'Tab') {
-				calculate(); // Panggil fungsi calculate()
-			}
-		});
-
+$(document).ready(function() {
+	getData();
+	$(document).on('keyup', '.xproduksi', function(e) {
+		// calculate();
+		if (e.keyCode === 13 || e.key === 'Enter' || e.keyCode === 9 || e.key === 'Tab') {
+			calculate(); // Panggil fungsi calculate()
+		}
 	});
 
-	$('#filter_tahun').change(function() {
-		getData()
+});
+
+$('#filter_tahun').change(function() {
+	getData()
+});
+
+$('#filter_cost_centre').change(function() {
+	getData()
+});
+
+function getData() {
+	cLoader.open(lang.memuat_data + '...');
+	$('.overlay-wrap').removeClass('hidden');
+	var page = base_url + 'material_cost/production_planning/data';
+		page 	+= '/'+$('#filter_tahun').val();
+		page 	+= '/'+$('#filter_cost_centre').val();
+
+	$.ajax({
+		url 	: page,
+		data 	: {},
+		type	: 'get',
+		dataType: 'json',
+		success	: function(response) {
+			$('.table-1 tbody').html(response.table);
+			cLoader.close();
+			$('.overlay-wrap').addClass('hidden');	
+			// money_init();
+		}
 	});
+}    
 
-	$('#filter_cost_centre').change(function() {
-		getData()
+var id_proses = '';
+var tahun = 0;
+$(document).on('click','.btn-proses',function(e){
+	e.preventDefault();
+	id_proses = 'proses';
+	tahun = $('#filter_tahun').val();
+	factory = $('#filter_cost_centre').val();
+	cConfirm.open(lang.apakah_anda_yakin + '?','lanjut');
+});
+
+function lanjut() {
+	$.ajax({
+		url : base_url + 'material_cost/production_planning/proses',
+		data : {id:id_proses,tahun : tahun, factory : factory},
+		type : 'post',
+		dataType : 'json',
+		success : function(res) {
+			cAlert.open(res.message,res.status,'refreshData');
+		}
 	});
+}
 
-    function getData() {
-        cLoader.open(lang.memuat_data + '...');
-        $('.overlay-wrap').removeClass('hidden');
-        var page = base_url + 'material_cost/production_planning/data';
-            page 	+= '/'+$('#filter_tahun').val();
-			page 	+= '/'+$('#filter_cost_centre').val();
+$(document).on('focus','.edit-value',function(){
+	$(this).parent().removeClass('edited');
+});
 
-        $.ajax({
-            url 	: page,
-            data 	: {},
-            type	: 'get',
-            dataType: 'json',
-            success	: function(response) {
-                $('.table-1 tbody').html(response.table);
-                cLoader.close();
-                $('.overlay-wrap').addClass('hidden');	
-				// money_init();
-            }
-        });
-    }    
-
-	var id_proses = '';
-	var tahun = 0;
-	$(document).on('click','.btn-proses',function(e){
-		e.preventDefault();
-		id_proses = 'proses';
-		tahun = $('#filter_tahun').val();
-		factory = $('#filter_cost_centre').val();
-		cConfirm.open(lang.apakah_anda_yakin + '?','lanjut');
-	});
-
-	function lanjut() {
-		$.ajax({
-			url : base_url + 'material_cost/production_planning/proses',
-			data : {id:id_proses,tahun : tahun, factory : factory},
-			type : 'post',
-			dataType : 'json',
-			success : function(res) {
-				cAlert.open(res.message,res.status,'refreshData');
-			}
-		});
+$(document).on('blur','.edit-value',function(){
+	var tr = $(this).closest('tr');
+	if($(this).text() != $(this).attr('data-value')) {
+		$(this).addClass('edited');
 	}
+	if(tr.find('td.edited').length > 0) {
+		tr.addClass('edited-row');
+	} else {
+		tr.removeClass('edited-row');
+	}
+});
 
-	$(document).on('click','.btn-save',function(){
+$(document).on('keyup','.edit-value',function(e){
+	var wh 			= e.which;
+	if((48 <= wh && wh <= 57) || (96 <= wh && wh <= 105) || wh == 8) {
+		if($(this).text() == '') {
+			$(this).text('');
+		} else {
+			var n = parseInt($(this).text().replace(/[^0-9\-]/g,''),10);
+			$(this).text(n.toLocaleString());
+			var selection = window.getSelection();
+			var range = document.createRange();
+			selection.removeAllRanges();
+			range.selectNodeContents($(this)[0]);
+			range.collapse(false);
+			selection.addRange(range);
+			$(this)[0].focus();
+		}
+	}
+});
+
+$(document).on('keypress','.edit-value',function(e){
+	var wh 			= e.which;
+	if (e.shiftKey) {
+		if(wh == 0) return true;
+	}
+	if(e.metaKey || e.ctrlKey) {
+		if(wh == 86 || wh == 118) {
+			$(this)[0].onchange = function(){
+				$(this)[0].innerHTML = $(this)[0].innerHTML.replace(/[^0-9\-]/g, '');
+			}
+		}
+		return true;
+	}
+	if(wh == 0 || wh == 8 || wh == 45 || (48 <= wh && wh <= 57) || (96 <= wh && wh <= 105)) 
+		return true;
+	return false;
+});
+
+$(document).on('click','.btn-save',function(){
 	var i = 0;
 	$('.edited').each(function(){
 		i++;
@@ -174,7 +227,7 @@ function save_perubahan() {
 		data 	: {
 			'json' : jsonString,
 			verifikasi : i,
-			tahun : $('#tahun').val(),
+			tahun : $('#filter_tahun').val(),
 		},
 		type : 'post',
 		success : function(response) {

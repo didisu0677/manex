@@ -174,6 +174,17 @@ class Production_planning extends BE_Controller {
                     'a.posting_code' => 'COV',
                 ]
             ])->result();
+
+            $data['xprod'][$m0->id] = get_data($table_prod .' a',[
+                'select' => 'a.*',
+                    'join' =>  ['tbl_fact_product b on a.product_code = b.code',
+                                'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
+                                ],
+                'where' => [
+                    'c.id' => $m0->id,
+                    'a.posting_code' => 'XPR',
+                ]
+            ])->result();
    
         }
 
@@ -359,6 +370,24 @@ class Production_planning extends BE_Controller {
 			'message'	=> 'MRP Process has benn succesfuly'
 		],'json');	
 	}
+
+    function save_perubahan() {       
+        
+        $tahun = post('tahun');
+
+        $table = 'tbl_production_planning_' . $tahun ;
+
+        $data   = json_decode(post('json'),true);
+
+        debug($data);die;
+
+        foreach($data as $id => $record) {
+            $result = $record;
+             foreach ($result as $r => $v) {       
+                update_data($table, $result,'id',$id);
+            }      
+        }
+    }
 
     function end_stock($product_code ="",$tahun="") {
         ini_set('memory_limit', '-1');
@@ -666,4 +695,6 @@ class Production_planning extends BE_Controller {
             }
         }
     }
+
+
 }

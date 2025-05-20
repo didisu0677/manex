@@ -364,7 +364,7 @@ class Actual_sales extends BE_Controller {
             'where' => [
 			    'tahun' => $tahun_actual,
 				'bulan' => $bulan,
-                // 'product_code' => 'CIKOTD5NDM',
+                // 'product_code' => 'CIKKN3BNDM',
             ],
             'group_by' => 'pl_code,product_code,bulan,sector',
 		    ])->result();
