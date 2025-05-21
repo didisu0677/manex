@@ -315,10 +315,11 @@ function save_perubahan() {
 					let key_end_stock = `end_stock_${String(i).padStart(2, '0')}`;
 					let key_m_cov = `m_cov_${String(i).padStart(2, '0')}`;
 					let budget = moneyToNumber($(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).text().replace(/\,/g, ''));
+					let value_xproduction = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).text().replace(/\,/g, '')
 					let nilai = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('nilai');
 					let idx = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('id');
 					let total = budget * nilai ;
-					if(parseInt(budget) > 0){	
+					if(value_xproduction != ''){
 						columnData[key] += budget * nilai;		
 						columnData1[key1] += budget * nilai;	
 						$('#'+key1+idx).text(columnData1[key1]);
@@ -344,6 +345,11 @@ function save_perubahan() {
 						let coverage = new_end_stock / (value_total_sales / divide_number);
 						$('#'+key_m_cov+idx).text(numberFormat(coverage, 2));
 
+						// update begining stock
+						for(let j=i; j<=12; j++){
+							let value_end_stock = $(`#end_stock_${String(j).padStart(2, '0')}${idx}`).text();
+							$(`#begining_stock_${String(j+1).padStart(2, '0')}${idx}`).text(value_end_stock);
+						}
 					}
 				}
 			}
