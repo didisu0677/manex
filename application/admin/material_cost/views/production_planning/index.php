@@ -318,8 +318,7 @@ function save_perubahan() {
 					let nilai = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('nilai');
 					let idx = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('id');
 					let total = budget * nilai ;
-
-					if(parseInt(budget) > 0){
+					if(parseInt(budget) > 0){	
 						columnData[key] += budget * nilai;		
 						columnData1[key1] += budget * nilai;	
 						$('#'+key1+idx).text(columnData1[key1]);
@@ -331,7 +330,6 @@ function save_perubahan() {
 						let new_end_stock = parseInt(value_begining_stock) + parseInt(value_production) - parseInt(value_sales)
 						let txt_new_end_stock = new_end_stock < 0 ? '-'+(numberFormat(new_end_stock, 0).replace(/[()]/g,'')) : numberFormat(new_end_stock)
 						$('#'+key_end_stock+idx).text(txt_new_end_stock);
-
 						let value_total_sales = 0
 						let divide_number = 0
 						for(let j=0;j<4;j++){

@@ -132,7 +132,7 @@ class Beginning_stock extends BE_Controller {
         $filter = post();
 
 
-        $col = ['PRODUCT', 'CODE', 'BATCH_SIZE', 'TOTAL_STOCK'];
+        $col = ['PRODUCT', 'CODE', 'BATCH_SIZE', 'YEALD' , 'TOTAL_STOCK'];
  
         $this->load->library('simpleexcel');
 		$this->simpleexcel->define_column($col);
@@ -171,7 +171,7 @@ class Beginning_stock extends BE_Controller {
                 $data['budget_product_code'] = $loop_data['CODE'];
                 $data['budget_product_name'] = $loop_data['PRODUCT'];
                 $data['batch_size'] = $loop_data['BATCH_SIZE'];
-
+                $data['yield'] = $loop_data['YIELD'];
                 $data['TOTAL_STOCK'] = (isset($loop_data['TOTAL_STOCK']) ? str_replace(['.',','],'', $loop_data['TOTAL_STOCK']) : 0);
                
 
