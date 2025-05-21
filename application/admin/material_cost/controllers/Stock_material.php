@@ -96,7 +96,7 @@ class Stock_material extends BE_Controller {
                
                 $data['tahun'] = post('tahun');      
  
-                $data['material_code'] = $loop_data['MATERIAL_CODE'];
+                $data['material_code'] = $loop_data['MATERIAL_CODE'] ?? '';
                 $product = get_data('tbl_material_formula a',[
                     'select' => 'a.*',
                     'where' => [
@@ -108,8 +108,8 @@ class Stock_material extends BE_Controller {
                 $data['um'] = '';
 
                 if(isset($product->component_item)) {
-                    $data['material_name'] =  $product->material_name;
-                    $data['um'] =  $product->um;
+                    $data['material_name'] =  $product->material_name ?? '';
+                    $data['um'] =  $product->um ?? '';
                 }
                 
                 $data['supplier'] = $loop_data['SUPPLIER'];
@@ -126,13 +126,13 @@ class Stock_material extends BE_Controller {
                 $arr   = [
                     'select'    => 'a.*',
                     'where'     => [
-                        'a.material_code' => $loop_data['material_code'],
+                        'a.material_code' => $loop_data['MATERIAL_CODE'] ?? '',
                 		'a.tahun' => $tahun,
                     ],
                 ];
 
                 $cek = get_data($table . ' a',$arr)->row();
-                if(isset($cek->budget_product_code)) {	
+                if(isset($cek->material_code)) {	
                     $save = update_data($table, $data, [
                         'id' => $cek->id
                     ]);
