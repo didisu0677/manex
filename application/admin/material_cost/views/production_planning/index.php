@@ -310,6 +310,10 @@ function save_perubahan() {
 				for (let i = 1; i <= 12; i++) {
 					let key = `B_${String(i).padStart(2, '0')}`; // Membuat key seperti B_01, B_02, dst.
 					let key1 = `prod_${String(i).padStart(2, '0')}`; 
+					let key_begining_stock = `begining_stock_${String(i).padStart(2, '0')}`;
+					let key_sales = `sales_${String(i).padStart(2, '0')}`;
+					let key_end_stock = `end_stock_${String(i).padStart(2, '0')}`;
+					let key_m_cov = `m_cov_${String(i).padStart(2, '0')}`;
 					let budget = moneyToNumber($(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).text().replace(/\,/g, ''));
 					let nilai = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('nilai');
 					let idx = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('id');
@@ -319,6 +323,29 @@ function save_perubahan() {
 						columnData[key] += budget * nilai;		
 						columnData1[key1] += budget * nilai;	
 						$('#'+key1+idx).text(columnData1[key1]);
+						let value_sales = $('#'+key_sales+idx).text().replace(/\,/g, '');
+						let value_end_stock = $('#'+key_end_stock+idx).text().replace(/\,/g, '');
+						let value_begining_stock = $('#'+key_begining_stock+idx).text().replace(/\,/g, '');
+						let value_production = columnData1[key1];
+
+						let new_end_stock = parseInt(value_begining_stock) + parseInt(value_production) - parseInt(value_sales)
+						let txt_new_end_stock = new_end_stock < 0 ? '-'+(numberFormat(new_end_stock, 0).replace(/[()]/g,'')) : numberFormat(new_end_stock)
+						$('#'+key_end_stock+idx).text(txt_new_end_stock);
+
+						let value_total_sales = 0
+						let divide_number = 0
+						for(let j=0;j<4;j++){
+							if(j+i > 12){
+								continue;
+							}
+							let value_sales = parseInt($(`#sales_${String(j+i).padStart(2, '0')}${idx}`).text().replace(/\,/g,''))
+							value_total_sales += !isNaN(value_sales) ? value_sales : 0
+							divide_number++;
+						}
+
+						let coverage = new_end_stock / (value_total_sales / divide_number);
+						$('#'+key_m_cov+idx).text(numberFormat(coverage, 2));
+
 					}
 				}
 			}
