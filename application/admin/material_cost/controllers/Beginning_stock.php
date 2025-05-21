@@ -144,7 +144,7 @@ class Beginning_stock extends BE_Controller {
 
         // $totalData = array();
   
-            for ($i=8; $i <= $count_import[0]; $i++) { 
+            for ($i=7; $i <= $count_import[0]; $i++) { 
                 $loop_data = $this->simpleexcel->parsing(0,$i+1);
                 
 
