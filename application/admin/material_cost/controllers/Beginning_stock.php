@@ -132,7 +132,7 @@ class Beginning_stock extends BE_Controller {
         $filter = post();
 
 
-        $col = ['PRODUCT', 'CODE', 'BATCH_SIZE', 'YEALD' , 'TOTAL_STOCK'];
+        $col = ['PRODUCT', 'CODE', 'BATCH_SIZE', 'YIELD' , 'TOTAL_STOCK'];
  
         $this->load->library('simpleexcel');
 		$this->simpleexcel->define_column($col);
