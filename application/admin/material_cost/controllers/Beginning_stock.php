@@ -170,7 +170,7 @@ class Beginning_stock extends BE_Controller {
 
                 $data['budget_product_code'] = $loop_data['CODE'];
                 $data['budget_product_name'] = $loop_data['PRODUCT'];
-                $data['batch'] = (isset($loop_data['BATCH']) ? str_replace(['.',','],'', $loop_data['BATCH']) : 0);
+                $data['batch_size'] = (isset($loop_data['BATCH_SIZE']) ? str_replace(['.',','],'', $loop_data['BATCH_SIZE']) : 0);
                 $data['yield'] = $loop_data['YIELD'];
                 $data['TOTAL_STOCK'] = (isset($loop_data['TOTAL_STOCK']) ? str_replace(['.',','],'', $loop_data['TOTAL_STOCK']) : 0);
                
