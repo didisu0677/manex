@@ -13,14 +13,6 @@
                 <?php } ?>
 			</select>
 
-			<label class=""><?php echo lang('factory'); ?>  &nbsp</label>
-			<select class="select2 infinity custom-select" style="width: 180px;" id="filter_cost_centre">
-				<option value="ALL">ALL FACTORY</option>
-				<?php foreach ($cc as $c) { ?>
-                <option value="<?php echo $c->kode; ?>"><?php echo $c->cost_centre; ?></option>
-                <?php } ?>
-			</select>
-
 			<?php
 
 			if($access['access_input']==1)
@@ -53,15 +45,13 @@
 					table_open('table table-bordered table-app table-hover table-1');
 					thead();
 					tr();
-					th('Product', '', 'class="text-center align-middle headcol"');
-					th('Code', '', 'class="text-center align-middle headcol"');
-					th('Batch Size', '', 'class="text-center align-middle headcol"');
-					th('yield', '', 'class="text-center align-middle headcol"');
-					// for ($i = setting('actual_budget'); $i <= 12; $i++) {
-					// for ($i = 1; $i <= 12; $i++) {
-					// 	th(month_lang($i), '', 'class="text-center" style="min-width:60px"');
-					// }
-
+					th('Material Code', '', 'class="text-center align-middle headcol"');
+					th('Material Name', '', 'class="text-center align-middle headcol"');
+					th('Um', '', 'class="text-center align-middle headcol"');
+					th('supplier', '', 'class="text-center align-middle headcol"');
+					th('moq', '', 'class="text-center align-middle headcol"');
+					th('order multiple', '', 'class="text-center align-middle headcol"');
+					th('m_cov', '', 'class="text-center align-middle headcol"');
 					th('Total Stock', '', 'class="text-center align-middle headcol"style="min-width:60px"');
 					tbody();
 					table_close();
@@ -75,7 +65,7 @@
 <?php
 modal_open('modal-import',lang('impor'));
 modal_body();
-	form_open(base_url('material_cost/beg_stock_material/import'),'post','form-import');
+	form_open(base_url('material_cost/stock_material/import'),'post','form-import');
 		col_init(3,9);
 		input('text',lang('tahun'),'tahun','','','readonly');
 		input('hidden',lang('tab'),'tab','','','readonly');
@@ -94,12 +84,6 @@ modal_close();
 <script type="text/javascript">
 	$(document).ready(function() {
 		getData();
-		$(document).on('keyup', '.budget', function(e) {
-			// calculate();
-			// calculateTotal();
-			// console.log('y');
-		});
-
 	});
 
 	$('#filter_tahun').change(function() {
@@ -116,7 +100,7 @@ modal_close();
 
         cLoader.open(lang.memuat_data + '...');
         $('.overlay-wrap').removeClass('hidden');
-        var page = base_url + 'material_cost/beg_stock_material/data';
+        var page = base_url + 'material_cost/stock_material/data';
             page 	+= '/'+$('#filter_tahun').val();
 			page 	+= '/'+$('#filter_cost_centre').val();
 
@@ -184,77 +168,6 @@ modal_close();
 		return false;
 	});
 
-	function calculate() {
-		$('.table-2 tbody tr').each(function() {
-			let totalMonthly = [];
-			var grandTotal = 0;
-
-			if ($(this).find('.budget').text() != '') {
-
-				let B_01 = moneyToNumber($(this).find('.B_01').text().replace(/\,/g, ''))
-				let B_02 = moneyToNumber($(this).find('.B_02').text().replace(/\,/g, ''))
-				let B_03 = moneyToNumber($(this).find('.B_03').text().replace(/\,/g, ''))
-				let B_04 = moneyToNumber($(this).find('.B_04').text().replace(/\,/g, ''))
-				let B_05 = moneyToNumber($(this).find('.B_05').text().replace(/\,/g, ''))
-				let B_06 = moneyToNumber($(this).find('.B_06').text().replace(/\,/g, ''))
-				let B_07 = moneyToNumber($(this).find('.B_07').text().replace(/\,/g, ''))
-				let B_08 = moneyToNumber($(this).find('.B_08').text().replace(/\,/g, ''))
-				let B_09 = moneyToNumber($(this).find('.B_09').text().replace(/\,/g, ''))
-				let B_10 = moneyToNumber($(this).find('.B_10').text().replace(/\,/g, ''))
-				let B_11 = moneyToNumber($(this).find('.B_11').text().replace(/\,/g, ''))
-				let B_12 = moneyToNumber($(this).find('.B_12').text().replace(/\,/g, ''))
-
-				let total_budget = 0
-
-				total_budget = B_01 + B_02 + B_03 + B_04 + B_05 + B_06 + B_07 + B_08 + B_09 + B_10 + B_11 + B_12
-
-				$(this).find('.total_budget').text(customFormat(total_budget))
-
-			}
-
-			for (let i = 1; i <= 12; i++) {
-				let total = 0;
-
-				$('.B_' + ('0' + i).slice(-2)).each(function() {
-					let value = moneyToNumber($(this).text().replace(/\,/g, ''));
-					total += value;
-				});
-
-				totalMonthly.push(total);
-				grandTotal += total;
-			}
-
-			for (let i = 0; i < totalMonthly.length; i++) {
-				$('#totalB' + ('0' + (i + 1)).slice(-2)).text(customFormat(totalMonthly[i]));
-			}
-
-			$('#grand_total').text(customFormat(grandTotal))
-
-		});
-
-		$('.table-1 tbody tr').each(function(){
-			if ($(this).find('.budget').text() != '') {
-				let EST_01 = moneyToNumber($(this).find('.EST_01').text().replace(/\,/g, ''))
-				let EST_02 = moneyToNumber($(this).find('.EST_02').text().replace(/\,/g, ''))
-				let EST_03 = moneyToNumber($(this).find('.EST_03').text().replace(/\,/g, ''))
-				let EST_04 = moneyToNumber($(this).find('.EST_04').text().replace(/\,/g, ''))
-				let EST_05 = moneyToNumber($(this).find('.EST_05').text().replace(/\,/g, ''))
-				let EST_06 = moneyToNumber($(this).find('.EST_06').text().replace(/\,/g, ''))
-				let EST_07 = moneyToNumber($(this).find('.EST_07').text().replace(/\,/g, ''))
-				let EST_08 = moneyToNumber($(this).find('.EST_08').text().replace(/\,/g, ''))
-				let EST_09 = moneyToNumber($(this).find('.EST_09').text().replace(/\,/g, ''))
-				let EST_10 = moneyToNumber($(this).find('.EST_10').text().replace(/\,/g, ''))
-				let EST_11 = moneyToNumber($(this).find('.EST_11').text().replace(/\,/g, ''))
-				let EST_12 = moneyToNumber($(this).find('.EST_12').text().replace(/\,/g, ''))
-
-				let total_est = 0
-
-				total_est = EST_01 + EST_02 + EST_03 + EST_04 + EST_05 + EST_06 + EST_07 + EST_08 + EST_09 + EST_10 + EST_11 + EST_12
-
-				$(this).find('.total_est').text(customFormat(total_est))
-			}
-		});
-	}
 
 	$(document).on('click', '.btn-save', function() {
 		var i = 0;
@@ -288,7 +201,7 @@ modal_close();
 
 		console.log(jsonString);
 		$.ajax({
-			url: base_url + 'material_cost/beg_stock_material/save_perubahan',
+			url: base_url + 'material_cost/stock_material/save_perubahan',
 			data: {
 				'json': jsonString,
 				'tahun': $('#filter_tahun').val(),
@@ -302,22 +215,7 @@ modal_close();
 	}
 
 	let activeTable = '#result';
-	let judul = 'Actual and Estimate' 
-
-	$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-        var activeTab = $(e.target).attr('href'); // Get the current active tab href attribute
-        if(activeTab == '#overall'){
-			activeTable = '#result'
-			judul = 'Actual and Estimate'
-		}else if(activeTab == '#budget'){
-			activeTable = '#result2'
-			judul = "Budget by Month"
-		}else if(activeTab == '#detail'){
-			activeTable = '#result3'
-			judul = 'Yearly Budget'
-		}
-    });
-
+	
 	$(document).on('click', '.btn-export', function() {
 		var currentdate = new Date();
 		var datetime = currentdate.getDate() + "/" +
@@ -339,7 +237,7 @@ modal_close();
 
 		// Add table rows
 		table += '<tr><td colspan="1">PT Otsuka Indonesia</td></tr>';
-		table += '<tr><td colspan="1">' + judul + ' Quantity Sales </td></tr>';
+		table += '<tr><td colspan="1">Beginnning Stock Material </td></tr>';
 		table += '<tr><td colspan="1"> Print date </td><td>: ' + datetime + '</td></tr>';
 		table += '</table><br><br>';
 
@@ -358,7 +256,7 @@ modal_close();
 
 	function download_template(){
 		let tahun = $('#tahun').val();
-		window.open(base_url + 'material_cost/beg_stock_material/template?tahun='+tahun)
+		window.open(base_url + 'material_cost/stock_material/template?tahun='+tahun)
 	}
 
 	$('.btn-act-import').click(function(){
@@ -372,7 +270,7 @@ modal_close();
 
 	// function do_import(){
 	// 	$.ajax({
-	// 		url: base_url + 'material_cost/beg_stock_material/import',
+	// 		url: base_url + 'material_cost/stock_material/import',
 	// 		data: {
 	// 			tahun: $('#tahun').val(),
 	// 			fileimport: $('#fileimport').val(),
