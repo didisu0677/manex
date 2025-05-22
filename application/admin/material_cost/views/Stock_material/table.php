@@ -13,7 +13,7 @@
 			<td><?php echo isset($m1->supplier) ? $m1->supplier : ''; ?></td>
 			<td><?php echo isset($m1->moq) ? number_format($m1->moq) : ''; ?></td>
 			<td><?php echo isset($m1->order_multiple) ? number_format($m1->order_multiple) : ''; ?></td>
-			<td><?php echo isset($m1->m_cov) ? custom_format($m1->m_cov,2) : ''; ?></td>
+			<td><?php echo isset($m1->m_cov) ? $m1->m_cov : ''; ?></td>
 			<?php
 
 			$bgedit ="";
