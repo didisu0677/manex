@@ -6,7 +6,6 @@
 
 # Ignore system files
 db.*
-database.php
 config.php
 # /assets/cache/
 bootstrap_helper.php

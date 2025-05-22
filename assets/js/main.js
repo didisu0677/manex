@@ -1591,12 +1591,37 @@ $( window ).resize(function() {
 	}
 });
 
-function htmlToExcel(target){
-	var dataUri = 'data:application/vnd.ms-excel,' + encodeURIComponent(target)
-    var link = document.createElement("a")
-    link.href = dataUri
-    link.download = "file.xls"
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-}
+	function htmlToExcel(target){
+		var dataUri = 'data:application/vnd.ms-excel,' + encodeURIComponent(target)
+	    var link = document.createElement("a")
+	    link.href = dataUri
+	    link.download = "file.xls"
+	    document.body.appendChild(link)
+	    link.click()
+	    document.body.removeChild(link)
+	}
+
+// function htmlToExcel(target) {
+//      // Pastikan SheetJS udah dimuat
+// 	 if (typeof XLSX === 'undefined') {
+//         console.error("SheetJS belum dimuat. Tambahkan <script src='https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js'></script>");
+//         return;
+//     }
+
+//     // Buat elemen virtual dari string HTML
+//     const tempContainer = document.createElement('div');
+//     tempContainer.innerHTML = target;
+
+//     // Ambil elemen <table> pertama
+//     const table = tempContainer.querySelector('table');
+//     if (!table) {
+//         console.error("HTML target tidak mengandung <table>");
+//         return;
+//     }
+
+//     // Convert ke workbook Excel
+//     const workbook = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+
+//     // Simpan sebagai .xlsx
+//     XLSX.writeFile(workbook, "file.xlsx");
+// }

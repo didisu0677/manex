@@ -395,6 +395,7 @@ Asset::js('custom.js', true);
 Asset::js('table.js', true);
 echo Asset::render();
 ?>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
 <?php echo $js_content; ?>
 <?php if(setting('realtime_notification')) { ?>
 <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
