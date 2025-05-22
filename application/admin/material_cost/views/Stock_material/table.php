@@ -7,8 +7,6 @@
 		?>
 		<tr>
 
-		//////////////////////////
-
 			<td><?php echo isset($m1->material_code) ? $m1->material_code : ''; ?></td>
 			<td><?php echo isset($m1->material_name) ? $m1->material_name : ''; ?></td>
 			<td><?php echo isset($m1->um) ? $m1->um : ''; ?></td>
