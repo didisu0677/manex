@@ -455,8 +455,7 @@ class Production_planning extends BE_Controller {
                     if($i == 1) {
                         $$field4 = ($$field3 + $$field5) - $$field2 ;
 
-                        // debug($$field4);
-                        //  debug($$field3);
+                            // debug
                             debug($$field3);
                             debug($$field5);
                            debug($$field2);
