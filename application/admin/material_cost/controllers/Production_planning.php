@@ -49,7 +49,7 @@ class Production_planning extends BE_Controller {
             'where' => [
                 'a.is_active' => 1,
                 'a.id_cost_centre !=' => 0,
-                // 'a.cost_centre' => '2110'
+                'a.cost_centre' => '2110'
                 // 'a.code' => 'CIPTLRHPDM'
             ],
             'group_by' => 'a.id_cost_centre',
@@ -128,7 +128,7 @@ class Production_planning extends BE_Controller {
                     'a.tahun' => $tahun,
                     'd.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id,
-                    // 'a.budget_product_code' => 'CIPTLRHPDM'
+                    'a.budget_product_code' => 'CIPTLRHPDM'
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
@@ -226,7 +226,7 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.tahun' => $tahun,
-                // 'a.budget_product_code' => 'CIHODD5PDM',
+                'a.budget_product_code' => 'CIPTLRHPDM',
             ],
             'group_by' => 'a.budget_product_code'
         ];
@@ -284,7 +284,7 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.tahun' => $tahun,
-                // 'a.budget_product_code' => 'CIHODD5PDM'
+                'a.budget_product_code' => 'CIPTLRHPDM'
             ],
             'group_by' => 'a.budget_product_code'
         ];
@@ -320,12 +320,6 @@ class Production_planning extends BE_Controller {
                 }else{
                     update_data($table_prod,$data_sls,['id'=>$cek->id]);
                 }
-
-                
-
-                // proses end stock - 
-                $this->end_stock($s->budget_product_code,$tahun);
-                //
             }
 
             /// end stock awal //
@@ -381,8 +375,6 @@ class Production_planning extends BE_Controller {
         $table = 'tbl_production_planning_' . $tahun ;
 
         $data   = json_decode(post('json'),true);
-
-        debug($data);die;
 
         foreach($data as $id => $record) {
             $result = $record;
@@ -462,6 +454,14 @@ class Production_planning extends BE_Controller {
 
                     if($i == 1) {
                         $$field4 = ($$field3 + $$field5) - $$field2 ;
+
+                        // debug($$field4);
+                        //  debug($$field3);
+                            debug($$field3);
+                            debug($$field5);
+                           debug($$field2);
+
+                           die;
 
                         if($p->posting_code == 'STE'){
                             $data_sls[$field1] = $$field4 ;
