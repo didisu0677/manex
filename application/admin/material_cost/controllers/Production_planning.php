@@ -128,7 +128,7 @@ class Production_planning extends BE_Controller {
                     'a.tahun' => $tahun,
                     'd.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id,
-                    'a.budget_product_code' => 'CIPTLRHPDM'
+                    // 'a.budget_product_code' => 'CIPTLRHPDM'
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
