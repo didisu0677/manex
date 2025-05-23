@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Production_planning extends BE_Controller {
+class Material_planning extends BE_Controller {
 
 	function __construct() {
 		parent::__construct();
@@ -118,82 +118,77 @@ class Production_planning extends BE_Controller {
                 }
             }
 
-            $data['produk'][$m0->id]= get_data('tbl_budget_production a',[
-                'select' => 'a.*,b.code,b.product_name,b.destination, c.abbreviation as initial, c.cost_centre, d.batch_size',
-                'join' =>  ['tbl_fact_product b on a.budget_product_code = b.code',
-                            'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
-                            'tbl_beginning_stock d on a.budget_product_code = d.budget_product_code'
-                           ],
+            $data['produk']= get_data('tbl_beginning_stock_material a',[
+                'select' => 'a.*',
                 'where' => [
                     'a.tahun' => $tahun,
-                    'd.tahun' => $tahun,
-                    'a.id_cost_centre' =>$m0->id,
-                    'a.budget_product_code' => 'CIPTLRHPDM'
+                    'a.material_code' => 'TMRTGRASUR',
                 ],
-                'sort_by' => 'a.id_cost_centre'
             ])->result();
 
+            // debug($data['produk']) ;die;
 
-            $data['sales'][$m0->id] = get_data($table_prod .' a',[
-                'select' => 'a.*',
-                    'join' =>  ['tbl_fact_product b on a.product_code = b.code',
-                                'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
-                                ],
-                'where' => [
-                    'c.id' => $m0->id,
-                    'a.posting_code' => 'SLS',
-                ]
-            ])->result();
 
-            $data['sto_awal'][$m0->id] = get_data($table_prod .' a',[
-                'select' => 'a.*',
-                    'join' =>  ['tbl_fact_product b on a.product_code = b.code',
-                                'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
-                                ],
-                'where' => [
-                    'c.id' => $m0->id,
-                    'a.posting_code' => 'STA',
-                ]
-            ])->result();
+            // $data['sales'][$m0->id] = get_data($table_prod .' a',[
+            //     'select' => 'a.*',
+            //         'join' =>  ['tbl_fact_product b on a.product_code = b.code',
+            //                     'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
+            //                     ],
+            //     'where' => [
+            //         'c.id' => $m0->id,
+            //         'a.posting_code' => 'SLS',
+            //     ]
+            // ])->result();
 
-            $data['sto_end'][$m0->id] = get_data($table_prod .' a',[
-                'select' => 'a.*',
-                    'join' =>  ['tbl_fact_product b on a.product_code = b.code',
-                                'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
-                                ],
-                'where' => [
-                    'c.id' => $m0->id,
-                    'a.posting_code' => 'STE',
-                ]
-            ])->result();
+            // $data['sto_awal'][$m0->id] = get_data($table_prod .' a',[
+            //     'select' => 'a.*',
+            //         'join' =>  ['tbl_fact_product b on a.product_code = b.code',
+            //                     'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
+            //                     ],
+            //     'where' => [
+            //         'c.id' => $m0->id,
+            //         'a.posting_code' => 'STA',
+            //     ]
+            // ])->result();
 
-            $data['m_cov'][$m0->id] = get_data($table_prod .' a',[
-                'select' => 'a.*',
-                    'join' =>  ['tbl_fact_product b on a.product_code = b.code',
-                                'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
-                                ],
-                'where' => [
-                    'c.id' => $m0->id,
-                    'a.posting_code' => 'COV',
-                ]
-            ])->result();
+            // $data['sto_end'][$m0->id] = get_data($table_prod .' a',[
+            //     'select' => 'a.*',
+            //         'join' =>  ['tbl_fact_product b on a.product_code = b.code',
+            //                     'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
+            //                     ],
+            //     'where' => [
+            //         'c.id' => $m0->id,
+            //         'a.posting_code' => 'STE',
+            //     ]
+            // ])->result();
 
-            $data['xprod'][$m0->id] = get_data($table_prod .' a',[
-                'select' => 'a.*',
-                    'join' =>  ['tbl_fact_product b on a.product_code = b.code',
-                                'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
-                                ],
-                'where' => [
-                    'c.id' => $m0->id,
-                    'a.posting_code' => 'XPR',
-                ]
-            ])->result();
+            // $data['m_cov'][$m0->id] = get_data($table_prod .' a',[
+            //     'select' => 'a.*',
+            //         'join' =>  ['tbl_fact_product b on a.product_code = b.code',
+            //                     'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
+            //                     ],
+            //     'where' => [
+            //         'c.id' => $m0->id,
+            //         'a.posting_code' => 'COV',
+            //     ]
+            // ])->result();
+
+            // $data['xprod'][$m0->id] = get_data($table_prod .' a',[
+            //     'select' => 'a.*',
+            //         'join' =>  ['tbl_fact_product b on a.product_code = b.code',
+            //                     'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
+            //                     ],
+            //     'where' => [
+            //         'c.id' => $m0->id,
+            //         'a.posting_code' => 'XPR',
+            //     ]
+            // ])->result();
    
         }
 
 
         $response	= array(
-            'table'		=> $this->load->view('material_cost/production_planning/table',$data,true),
+            'table'		=> $this->load->view('material_cost/material_planning/table',$data,true),
         );
 	   
 	    render($response,'json');
@@ -355,12 +350,10 @@ class Production_planning extends BE_Controller {
                 
 
                 // proses end stock - 
-                
+                $this->production($s->budget_product_code,$tahun);
                 $this->end_stock($s->budget_product_code,$tahun);
                 $this->month_coverage($s->budget_product_code,$tahun);
-                $this->production0($s->budget_product_code,$tahun);
-
-                // $this->xxend_stock($s->budget_product_code,$tahun);
+                $this->xxend_stock($s->budget_product_code,$tahun);
                 //
             }
         }
@@ -819,172 +812,6 @@ class Production_planning extends BE_Controller {
         $table_prod = 'tbl_production_planning_' . $tahun ;
 
         $cov = get_data($table_prod . ' a',[
-            'select' => 'a.product_code,a.product_name,a.cost_centre,a.id_cost_centre,a.product_line,a.dest,
-                                MAX(CASE WHEN a.posting_code = "SLS" THEN P_01 END) AS SLS_01,
-                                MAX(CASE WHEN a.posting_code = "COV" THEN P_01 END) AS COV_01,
-                                MAX(CASE WHEN a.posting_code = "STA" THEN P_01 END) AS STA_01,
-                                MAX(CASE WHEN a.posting_code = "STE" THEN P_01 END) AS STE_01,
-                                MAX(CASE WHEN a.posting_code = "PRD" THEN P_01 END) AS PRD_01,
-                                MAX(CASE WHEN a.posting_code = "XPR" THEN P_01 END) AS XPR_01,
-                                MAX(CASE WHEN a.posting_code = "SLS" THEN P_02 END) AS SLS_02,
-                                MAX(CASE WHEN a.posting_code = "COV" THEN P_02 END) AS COV_02,
-                                MAX(CASE WHEN a.posting_code = "STA" THEN P_02 END) AS STA_02,
-                                MAX(CASE WHEN a.posting_code = "STE" THEN P_02 END) AS STE_02,
-                                MAX(CASE WHEN a.posting_code = "PRD" THEN P_02 END) AS PRD_02,
-                                MAX(CASE WHEN a.posting_code = "XPR" THEN P_02 END) AS XPR_02,
-                                MAX(CASE WHEN a.posting_code = "SLS" THEN P_03 END) AS SLS_03,
-                                MAX(CASE WHEN a.posting_code = "COV" THEN P_04 END) AS COV_03,
-                                MAX(CASE WHEN a.posting_code = "STA" THEN P_03 END) AS STA_03,
-                                MAX(CASE WHEN a.posting_code = "STE" THEN P_03 END) AS STE_03,
-                                MAX(CASE WHEN a.posting_code = "PRD" THEN P_03 END) AS PRD_03,
-                                MAX(CASE WHEN a.posting_code = "XPR" THEN P_03 END) AS XPR_03,
-                                MAX(CASE WHEN a.posting_code = "SLS" THEN P_04 END) AS SLS_04,
-                                MAX(CASE WHEN a.posting_code = "COV" THEN P_04 END) AS COV_04,
-                                MAX(CASE WHEN a.posting_code = "STA" THEN P_04 END) AS STA_04,
-                                MAX(CASE WHEN a.posting_code = "STE" THEN P_04 END) AS STE_04,
-                                MAX(CASE WHEN a.posting_code = "PRD" THEN P_04 END) AS PRD_04,
-                                MAX(CASE WHEN a.posting_code = "XPR" THEN P_04 END) AS XPR_04,
-                                MAX(CASE WHEN a.posting_code = "SLS" THEN P_05 END) AS SLS_05,
-                                MAX(CASE WHEN a.posting_code = "COV" THEN P_05 END) AS COV_05,
-                                MAX(CASE WHEN a.posting_code = "STA" THEN P_05 END) AS STA_05,
-                                MAX(CASE WHEN a.posting_code = "STE" THEN P_05 END) AS STE_05,
-                                MAX(CASE WHEN a.posting_code = "PRD" THEN P_05 END) AS PRD_05,
-                                MAX(CASE WHEN a.posting_code = "XPR" THEN P_05 END) AS XPR_05,
-                                MAX(CASE WHEN a.posting_code = "SLS" THEN P_06 END) AS SLS_06,
-                                MAX(CASE WHEN a.posting_code = "COV" THEN P_06 END) AS COV_06,
-                                MAX(CASE WHEN a.posting_code = "STA" THEN P_06 END) AS STA_06,
-                                MAX(CASE WHEN a.posting_code = "STE" THEN P_06 END) AS STE_06,
-                                MAX(CASE WHEN a.posting_code = "PRD" THEN P_06 END) AS PRD_06,
-                                MAX(CASE WHEN a.posting_code = "XPR" THEN P_06 END) AS XPR_06,
-                                MAX(CASE WHEN a.posting_code = "SLS" THEN P_07 END) AS SLS_07,
-                                MAX(CASE WHEN a.posting_code = "COV" THEN P_07 END) AS COV_07,
-                                MAX(CASE WHEN a.posting_code = "STA" THEN P_07 END) AS STA_07,
-                                MAX(CASE WHEN a.posting_code = "STE" THEN P_07 END) AS STE_07,
-                                MAX(CASE WHEN a.posting_code = "PRD" THEN P_07 END) AS PRD_07,
-                                MAX(CASE WHEN a.posting_code = "XPR" THEN P_08 END) AS XPR_07,
-                                MAX(CASE WHEN a.posting_code = "SLS" THEN P_08 END) AS SLS_08,
-                                MAX(CASE WHEN a.posting_code = "COV" THEN P_08 END) AS COV_08,
-                                MAX(CASE WHEN a.posting_code = "STA" THEN P_08 END) AS STA_08,
-                                MAX(CASE WHEN a.posting_code = "STE" THEN P_08 END) AS STE_08,
-                                MAX(CASE WHEN a.posting_code = "PRD" THEN P_08 END) AS PRD_08,
-                                MAX(CASE WHEN a.posting_code = "XPR" THEN P_08 END) AS XPR_08,
-                                MAX(CASE WHEN a.posting_code = "SLS" THEN P_09 END) AS SLS_09,
-                                MAX(CASE WHEN a.posting_code = "COV" THEN P_09 END) AS COV_09,
-                                MAX(CASE WHEN a.posting_code = "STA" THEN P_09 END) AS STA_09,
-                                MAX(CASE WHEN a.posting_code = "STE" THEN P_09 END) AS STE_09,
-                                MAX(CASE WHEN a.posting_code = "PRD" THEN P_09 END) AS PRD_09,
-                                MAX(CASE WHEN a.posting_code = "XPR" THEN P_10 END) AS XPR_09,
-                                MAX(CASE WHEN a.posting_code = "SLS" THEN P_10 END) AS SLS_10,
-                                MAX(CASE WHEN a.posting_code = "COV" THEN P_10 END) AS COV_10,
-                                MAX(CASE WHEN a.posting_code = "STA" THEN P_10 END) AS STA_10,
-                                MAX(CASE WHEN a.posting_code = "STE" THEN P_10 END) AS STE_10,
-                                MAX(CASE WHEN a.posting_code = "PRD" THEN P_10 END) AS PRD_10,
-                                MAX(CASE WHEN a.posting_code = "XPR" THEN P_10 END) AS XPR_10,
-                                MAX(CASE WHEN a.posting_code = "SLS" THEN P_11 END) AS SLS_11,
-                                MAX(CASE WHEN a.posting_code = "COV" THEN P_11 END) AS COV_11,
-                                MAX(CASE WHEN a.posting_code = "STA" THEN P_11 END) AS STA_11,
-                                MAX(CASE WHEN a.posting_code = "STE" THEN P_11 END) AS STE_11,
-                                MAX(CASE WHEN a.posting_code = "PRD" THEN P_11 END) AS PRD_11,
-                                MAX(CASE WHEN a.posting_code = "XPR" THEN P_11 END) AS XPR_11,
-                                MAX(CASE WHEN a.posting_code = "SLS" THEN P_12 END) AS SLS_12,
-                                MAX(CASE WHEN a.posting_code = "COV" THEN P_12 END) AS COV_12,
-                                MAX(CASE WHEN a.posting_code = "STA" THEN P_12 END) AS STA_12,
-                                MAX(CASE WHEN a.posting_code = "STE" THEN P_12 END) AS STE_12,
-                                MAX(CASE WHEN a.posting_code = "PRD" THEN P_12 END) AS PRD_12,
-                                MAX(CASE WHEN a.posting_code = "XPR" THEN P_12 END) AS XPR_12,',                     
-            'join'   => ['tbl_fact_product b on a.product_code = b.code type LEFT',
-                        'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
-                        ],
-            'where' => [
-                'a.product_code' => $product_code,
-            ],
-        ])->row();
-
-         
-        if($cov) {
-
-
-                $cek_prod = get_data($table_prod,[
-                'where' => [
-                    'product_code' => $product_code,
-                    'posting_code' => 'PRD',
-                ],
-                ])->row();
-
-                $data_prod = [
-                    'revision' => 0,
-                    'posting_code' => 'PRD',
-                    'product_code' => $product_code,
-                    'product_name' => $c->product_name,
-                    'cost_centre' => $c->cost_centre,
-                    'dest' => $c->destination,
-                    'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
-                    'product_line' => $c->product_line,
-                ];
-
-                $field = '';
-                for ($i = 1; $i <= 12; $i++) {
-                    $field = 'P_' . sprintf('%02d',$i);
-                    if(($c->$field * -1) < 1.98 && $c->$field != 0) {
-                        $data_prod[$field] = $c->batch_size ;
-                    }else{
-                        $data_prod[$field] = 0;
-                    }
-                }
-                
-                if(!isset($cek_prod->id)){
-                    insert_data($table_prod,$data_prod);
-                }else{
-                    update_data($table_prod,$data_prod,['id'=>$cek_prod->id]);
-                }
-
-                $cek_xprod = get_data($table_prod,[
-                'where' => [
-                    'product_code' => $product_code,
-                    'posting_code' => 'XPR',
-                ],
-                ])->row();
-
-                $data_xprod = [
-                    'revision' => 0,
-                    'posting_code' => 'XPR',
-                    'product_code' => $product_code,
-                    'product_name' => $c->product_name,
-                    'cost_centre' => $c->cost_centre,
-                    'dest' => $c->destination,
-                    'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
-                    'product_line' => $c->product_line,
-                ];
-
-                $field ="";
-                for ($i = 1; $i <= 12; $i++) {
-                    $field = 'P_' . sprintf('%02d',$i);
-                    if(($c->$field * -1) < 1.98 && $c->$field != 0) {
-                        $data_xprod[$field] = 1 ;
-                    }else{
-                        $data_xprod[$field] = 0 ;
-                    }
-                }
-                    
-
-                if(!isset($cek_xprod->id)){
-                    insert_data($table_prod,$data_xprod);
-                }else{
-                    update_data($table_prod,$data_xprod,['id'=>$cek_xprod->id]);
-                }
-
-                // $this->xxend_stock($product_code,$tahun);
-            
-        }
-    }
-
-    function production0($product_code="",$tahun="") {
-        ini_set('memory_limit', '-1');
-		ini_set('max_execution_time', 0);
-        
-        $table_prod = 'tbl_production_planning_' . $tahun ;
-
-        $cov = get_data($table_prod . ' a',[
             'select' => 'a.*,b.destination, d.batch_size',
             'join'   => ['tbl_fact_product b on a.product_code = b.code type LEFT',
                         'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
@@ -1067,9 +894,7 @@ class Production_planning extends BE_Controller {
                     update_data($table_prod,$data_xprod,['id'=>$cek_xprod->id]);
                 }
 
-                $this->end_stock($product_code,$tahun);
-                // $this->month_coverage($product_code,$tahun);
-                // $this->production0($product_code,$tahun);
+                // $this->xxend_stock($product_code,$tahun);
             }
         }
     }

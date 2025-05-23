@@ -51,19 +51,15 @@
 						table_open('table table-bordered table-app table-hover table-1');
 							thead();
 								tr();
-									th('Revisi ke : ','','width="60" colspan="5" class="text-left"');
-  									for ($i = 1; $i <= 12; $i++) { 
-										th('','','class="text-center" style="min-width:80px"');		
-									}
-									th(lang('total'),'','width="60" rowspan="2" class="text-center align-middle headcol"');
+									th('PT Otsuka Indonesia ','','width="60" colspan="13" class="text-left"');
+								tr();
+									th('Supply Chain Department ','','width="60" colspan="13" class="text-left"');
+								tr();
+									th('Inventory Analysis ','','width="60" colspan="13" class="text-left"');
 
                                     tr();
-									th(lang('description'),'','width="60" rowspan="2" class="text-center align-middle headcol"');
-									th(lang('code'),'','width="60" rowspan="2" class="text-center align-middle headcol"');
-									th(lang('dest'),'','width="60" rowspan="2" class="text-center align-middle headcol"');
-                                    th(lang('batch'),'','width="60" rowspan="2" class="text-center align-middle headcol"');
-                                    th(lang(''),'','width="60" rowspan="2" class="text-center align-middle headcol"');
-									for ($i = 1; $i <= 12; $i++) { 
+									th('Inventory unit analysis','','width="360" rowspan="2" class="text-center align-middle headcol"');
+  									for ($i = 1; $i <= 12; $i++) { 
 										th(month_lang($i),'','class="text-center" style="min-width:80px"');		
 									}
 							tbody();
@@ -100,7 +96,7 @@ $('#filter_cost_centre').change(function() {
 function getData() {
 	cLoader.open(lang.memuat_data + '...');
 	$('.overlay-wrap').removeClass('hidden');
-	var page = base_url + 'material_cost/production_planning/data';
+	var page = base_url + 'material_cost/material_planning/data';
 		page 	+= '/'+$('#filter_tahun').val();
 		page 	+= '/'+$('#filter_cost_centre').val();
 
@@ -111,9 +107,6 @@ function getData() {
 		dataType: 'json',
 		success	: function(response) {
 			$('.table-1 tbody').html(response.table);
-			$('.xproduksi').text('1');
-
-			calculate();
 			cLoader.close();
 			$('.overlay-wrap').addClass('hidden');	
 			// money_init();
@@ -133,7 +126,7 @@ $(document).on('click','.btn-proses',function(e){
 
 function lanjut() {
 	$.ajax({
-		url : base_url + 'material_cost/production_planning/proses',
+		url : base_url + 'material_cost/material_planning/proses',
 		data : {id:id_proses,tahun : tahun, factory : factory},
 		type : 'post',
 		dataType : 'json',
@@ -226,7 +219,7 @@ function save_perubahan() {
 	
 	var jsonString = JSON.stringify(data_edit);		
 	$.ajax({
-		url : base_url + 'material_cost/production_planning/save_perubahan',
+		url : base_url + 'material_cost/material_planning/save_perubahan',
 		data 	: {
 			'json' : jsonString,
 			verifikasi : i,
@@ -308,6 +301,7 @@ function save_perubahan() {
 			prod_11: 0,
 			prod_12: 0
 		};
+
 			if ($(this).find('.xproduksi').text() !== '') {
 				for (let i = 1; i <= 12; i++) {
 					let key = `B_${String(i).padStart(2, '0')}`; // Membuat key seperti B_01, B_02, dst.
@@ -362,7 +356,9 @@ function save_perubahan() {
 
 		});
 
+
 		// Menampilkan data per kolom
+		
 
 	}
 </script>
