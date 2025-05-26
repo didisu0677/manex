@@ -15,7 +15,7 @@
 			<label class=""><?php echo lang('users'); ?>  &nbsp</label>
 			<select class="select2 infinity custom-select" style="width: 180px;" id="filter_username">
 				<option value = 0>ALL</option>
-				<?php foreach ($user_id as $c) { ?>
+				<?php foreach ($user_filter as $c) { ?>
                 <option value="<?php echo $c['id']; ?>"><?php echo $c['nama']; ?></option>
                 <?php } ?>
 			</select>
@@ -124,8 +124,15 @@ modal_close();
 
 	$('.btn-act-import').click(function(){
 		$("#modal-import").modal()
+		 alert("<?php echo user('id'); ?>");  // Output: alert("123");
 		$('#form-import')[0].reset();
 		$('#tahun_import').val($('#filter_tahun').val())
-		$('#user_import').val($('#filter_username').val()).trigger('change');
+		$('#user_import').val(<?php echo user('id'); ?>).trigger('change');
+	});
+
+	$(document).on('click','.btn-act-export',function(e){
+		// alert('x');die;
+		e.preventDefault();
+		$.redirect(base_url + 'material_cost/material_price/export/', {tahun:$('#filter_tahun').val()} , 'get');
 	});
 </script>

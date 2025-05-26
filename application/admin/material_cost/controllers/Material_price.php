@@ -8,26 +8,38 @@ class Material_price extends BE_Controller {
 
 	function index() {
 		$data['tahun'] = get_data('tbl_fact_tahun_budget', 'is_active',1)->result();   
-		// if(user('id_group') == 1) {
+		if(user('id_group') == 1) {
 			$data['user_id'] = get_data('tbl_user',[
 				'where' => [
 					'is_active' => 1,
 					'id_group' => SCM
 				],
 			])->result_array();
-		// }//else{
-		// 	$data['user_id'] = get_data('tbl_user',[
-		// 		'where' => [
-		// 			'is_active' => 1,
-		// 			'id'	=> user('id'),
-		// 		],
-		// 	])->result_array();
-		// }
+		}else{
+			$data['user_id'] = get_data('tbl_user',[
+				'where' => [
+					'is_active' => 1,
+					'id'	=> user('id'),
+				],
+			])->result_array();
+		}
+
+		$data['user_filter'] = get_data('tbl_user',[
+				'where' => [
+					'is_active' => 1,
+					'id_group' => SCM
+				],
+			])->result_array();
 		render($data);
 	}
 
 	function data($tahun="",$user_id="") {
 		$config =[];
+		$config =[
+	        'access_edit'	=> false,
+	        'access_delete'	=> false,
+	    ];
+
 		if($tahun) {
 	    	$config['where']['year']	= $tahun;	
 	    }
@@ -41,6 +53,13 @@ class Material_price extends BE_Controller {
 		if($user_id && $user_id != 0) {
 	    	$config['where']['id_user']	= $user_id;	
 		}
+
+		if(menu()['access_edit']) {
+	        $config['button'][]	= button_serverside('btn-warning','btn-input',['fa-edit',lang('ubah'),true],'edit',['id_user'=>user('id')]);
+		}
+	    if(menu()['access_delete']) {
+	        $config['button'][]	= button_serverside('btn-danger','btn-delete',['fa-trash-alt',lang('hapus'),true],'delete',['id_user'=>user('id')]);
+	    }
 
 		$data = data_serverside($config);
 		render($data,'json');
@@ -120,7 +139,20 @@ class Material_price extends BE_Controller {
 	function export() {
 		ini_set('memory_limit', '-1');
 		$arr = ['year' => 'Year','material_code' => 'Material Code','kode_budget' => 'Kode Budget','nama' => 'Nama','vcode' => 'Vcode','loc' => 'Loc','bm' => 'Bm','curr' => 'Curr','price_us' => 'Price Us','bank_charges' => 'Bank Charges','handling_charges' => 'Handling Charges','id_user' => 'User Id','is_active' => 'Aktif'];
-		$data = get_data('tbl_material_price')->result_array();
+		
+		$arr1 = [
+			'select' => '*',
+			'where' => [
+				'year' => get('tahun'),
+			],
+		];
+
+		if(user('id_group') == SCM) {
+			$arr1['where']['id_user'] = user('id_group') ;
+		}
+
+
+		$data = get_data('tbl_material_price',$arr1)->result_array();
 		$config = [
 			'title' => 'data_material_price',
 			'data' => $data,
