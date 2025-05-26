@@ -82,7 +82,7 @@ class Material_price extends BE_Controller {
 
 	function template() {
 		ini_set('memory_limit', '-1');
-		$arr = ['year' => 'year','material_code' => 'material_code','kode_budget' => 'kode_budget','nama' => 'nama','vcode' => 'vcode','loc' => 'loc','bm' => 'bm','curr' => 'curr','price_us' => 'price_us','bank_charges' => 'bank_charges' ,'handling_charges' => 'handling_charges','id_user' => 'id_user','is_active' => 'is_active'];
+		$arr = ['year' => 'year','material_code' => 'material_code','kode_budget' => 'kode_budget','nama' => 'nama','vcode' => 'vcode','loc' => 'loc','bm' => 'bm','curr' => 'curr','price_us' => 'price_us','bank_charges' => 'bank_charges' ,'handling_charges' => 'handling_charges','is_active' => 'is_active'];
 		$config[] = [
 			'title' => 'template_import_material_price',
 			'header' => $arr,

@@ -124,7 +124,6 @@ modal_close();
 
 	$('.btn-act-import').click(function(){
 		$("#modal-import").modal()
-		 alert("<?php echo user('id'); ?>");  // Output: alert("123");
 		$('#form-import')[0].reset();
 		$('#tahun_import').val($('#filter_tahun').val())
 		$('#user_import').val(<?php echo user('id'); ?>).trigger('change');
