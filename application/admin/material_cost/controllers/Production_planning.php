@@ -49,8 +49,8 @@ class Production_planning extends BE_Controller {
             'where' => [
                 'a.is_active' => 1,
                 'a.id_cost_centre !=' => 0,
-                'a.cost_centre' => '2110'
-                // 'a.code' => 'CIPTLRHPDM'
+                'a.cost_centre' => '2110',
+                'a.code' => 'CIPTLRHPDM'
             ],
             'group_by' => 'a.id_cost_centre',
             'sort_by' => 'b.id', 
@@ -128,7 +128,7 @@ class Production_planning extends BE_Controller {
                     'a.tahun' => $tahun,
                     'd.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id,
-                    // 'a.budget_product_code' => 'CIPTLRHPDM'
+                    'a.budget_product_code' => 'CIPTLRHPDM'
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
@@ -209,6 +209,7 @@ class Production_planning extends BE_Controller {
         $table_sales = 'tbl_budget_qtysales_' . $tahun ;  
         $table_prod = 'tbl_production_planning_' . $tahun ;
  
+        // cari budget sales //
         $field = '';
         for ($i = 1; $i <= 12; $i++) { 
             if($field == '') {
@@ -272,10 +273,11 @@ class Production_planning extends BE_Controller {
             }else{
                 update_data($table_prod,$data_sls,['id'=>$cek->id]);
             }
-
         }
 
-        /// stock awal
+        // end cari budget sales //
+
+        // cari stock awal
         $arrs = [
             'select' => 'a.budget_product_code, a.budget_product_name, b.product_line,b.destination,  
                         b.cost_centre,c.id as id_cost_centre, a.total_stock',
@@ -322,9 +324,9 @@ class Production_planning extends BE_Controller {
                 }
             }
 
-            /// end stock awal //
+            /// end cari stock awal //
             
-            // stock end //
+            // isi stock end //
             foreach($stock as $s) {
                 $data_sls = [
                     'revision' => 0,
@@ -352,16 +354,12 @@ class Production_planning extends BE_Controller {
                     update_data($table_prod,$data_sls,['id'=>$cek->id]);
                 }
 
-                
+                                
+                // $this->end_stock($s->budget_product_code,$tahun);
+                // $this->month_coverage($s->budget_product_code,$tahun);
+                // $this->production0($s->budget_product_code,$tahun);
 
-                // proses end stock - 
-                
-                $this->end_stock($s->budget_product_code,$tahun);
-                $this->month_coverage($s->budget_product_code,$tahun);
-                $this->production0($s->budget_product_code,$tahun);
-
-                // $this->xxend_stock($s->budget_product_code,$tahun);
-                //
+                $this->produksi_awal($s->budget_product_code,$tahun);
             }
         }
 
@@ -1075,4 +1073,94 @@ class Production_planning extends BE_Controller {
     }
 
 
+    function produksi_awal($product_code, $tahun) {
+        ini_set('memory_limit', '-1');
+		ini_set('max_execution_time', 0);
+        
+        $table_prod = 'tbl_production_planning_' . $tahun ;
+
+        $c = get_data($table_prod . ' a',[
+            'select' => 'a.*,b.destination, d.batch_size',
+            'join'   => ['tbl_fact_product b on a.product_code = b.code type LEFT',
+                        'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
+                        'tbl_beginning_stock d on a.product_code = d.budget_product_code and d.tahun ="'.$tahun.'" type LEFT'
+                        ],
+            'where' => [
+                'posting_code' => 'STA',
+                'product_code' => $product_code
+            ],
+        ])->row();
+
+        if($c) {
+           $cek_prod = get_data($table_prod,[
+                'where' => [
+                    'product_code' => $product_code,
+                    'posting_code' => 'PRD',
+                ],
+                ])->row();
+
+                $data_prod = [
+                    'revision' => 0,
+                    'posting_code' => 'PRD',
+                    'product_code' => $product_code,
+                    'product_name' => $c->product_name,
+                    'cost_centre' => $c->cost_centre,
+                    'dest' => $c->destination,
+                    'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
+                    'product_line' => $c->product_line,
+                ];
+
+                $field = '';
+                for ($i = 1; $i <= 12; $i++) {
+                    $field = 'P_' . sprintf('%02d',$i);
+                    $data_prod[$field] = $c->batch_size ;
+                }
+                
+                if(!isset($cek_prod->id)){
+                    insert_data($table_prod,$data_prod);
+                }else{
+                    update_data($table_prod,$data_prod,['id'=>$cek_prod->id]);
+                }
+
+                $cek_xprod = get_data($table_prod,[
+                'where' => [
+                    'product_code' => $product_code,
+                    'posting_code' => 'XPR',
+                ],
+                ])->row();
+
+                $data_xprod = [
+                    'revision' => 0,
+                    'posting_code' => 'XPR',
+                    'product_code' => $product_code,
+                    'product_name' => $c->product_name,
+                    'cost_centre' => $c->cost_centre,
+                    'dest' => $c->destination,
+                    'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
+                    'product_line' => $c->product_line,
+                ];
+
+     
+                $field ="";
+                for ($i = 1; $i <= 12; $i++) {
+
+                    debug($c->batch_size);die;
+                    $field = 'P_' . sprintf('%02d',$i);
+                    if(($c->$batch_size > 0 )) {
+                        $data_xprod[$field] = 1 ;
+                    }else{
+                        $data_xprod[$field] = 0 ;
+                    }
+                }
+                    
+                if(!isset($cek_xprod->id)){
+                    insert_data($table_prod,$data_xprod);
+                }else{
+                    update_data($table_prod,$data_xprod,['id'=>$cek_xprod->id]);
+                }
+
+                // $this->xxend_stock($product_code,$tahun);
+            
+        }
+    }
 }

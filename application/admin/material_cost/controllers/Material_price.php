@@ -116,7 +116,7 @@ class Material_price extends BE_Controller {
 							'vcode' => $data['vcode'],
 							'loc' => $data['loc'],
 							'curr' => $data['curr'],
-							'id_user' => $data['id_user'],
+							// 'id_user' => $data['id_user'],
 						],
 					])->row();
 					if(empty($cek->id)) {
