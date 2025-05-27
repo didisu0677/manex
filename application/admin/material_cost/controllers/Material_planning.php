@@ -40,153 +40,16 @@ class Material_planning extends BE_Controller {
         $table = 'tbl_budget_production';
         $table_prod = 'tbl_production_planning_' . $tahun ;
 
-        $arr = [
-            'select' => 'a.cost_centre as kode, b.id, b.cost_centre, c.kapasitas,
-                        WD_01,WD_02,WD_03,WD_04,WD_05,WD_06,WD_07,WD_08,WD_09,WD_10,WD_11,WD_12',
-            'join' => ['tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
-                       'tbl_kapasitas_produksi c on a.cost_centre = c.cost_centre type LEFT'
-                      ],
+
+        $data['produk']= get_data('tbl_beginning_stock_material a',[
+            'select' => 'a.*',
             'where' => [
-                'a.is_active' => 1,
-                'a.id_cost_centre !=' => 0,
-                'a.cost_centre' => '2110'
-                // 'a.code' => 'CIPTLRHPDM'
+                'a.tahun' => $tahun,
+                // 'a.material_code' => 'TMRTGRASUR',
             ],
-            'group_by' => 'a.id_cost_centre',
-            'sort_by' => 'b.id', 
-             ];
+        ])->result();
 
-        if($cost_centre && $cost_centre !='ALL') $arr['where']['a.cost_centre'] = $cost_centre;
-
-
-	    $data['grup'][0]= get_data('tbl_fact_product a',$arr)->result();
-
-        $data['kprod'] = [];
-        $data['wday'] = [];
-        $data['sprod'] = [];
-        foreach($data['grup'][0] as $m0) {	
-            $data['kprod'][$m0->id] = $m0->kapasitas;
-     
-            $field1 = '';
-            $field2 = '';
-            for ($i = 1; $i <= 12; $i++) { 
-                $field1 = 'WD_' . sprintf('%02d', $i);
-                $data['wday'][$m0->id][$i] = $m0->$field1;
-                $data['sprod'][$m0->id][$i] = ($m0->kapasitas * $m0->$field1);
-
-                if($field2 == '') {
-                    $field2 = 'sum('. 'P_' . sprintf('%02d', $i).')' . ' as ' . 'P_' . sprintf('%02d', $i);
-                }else{
-                    $field2 = $field2 . ' , ' . 'sum('. 'P_' . sprintf('%02d', $i).')' . ' as ' . 'P_' . sprintf('%02d', $i);
-    
-                }
-            }
-            
-            $data['prod'][$m0->id] = get_data($table_prod,[
-                'select' => 'id_cost_centre,cost_centre, ' . $field2 ,
-                'where'  => [
-                    'posting_code' => 'PRD',
-                    'id_cost_centre' => $m0->id,
-                ],
-                'group_by' => 'id_cost_centre',
-            ])->row_array();
-
-            // debug($data['prod']);die;
-
-            $cproduk = get_data('tbl_fact_product a',[
-                'where' => [
-                    'a.is_active' => 1,
-                    'a.id_cost_centre' => $m0->id,
-                ],
-                'sort_by' => 'a.id_cost_centre'
-            ])->result();
-            
-            foreach($cproduk as $p) {   
-                $cek = get_data($table . ' a',[
-                    'select' => 'a.*',
-                    'where' => [
-                        'a.tahun' => $tahun,
-                        'a.budget_product_code' => $p->code,
-                        'a.product_line' => $p->product_line,
-                    ]
-                ])->row();
-                if(!isset($cek->id)){
-                    insert_data($table,
-                    ['tahun' => $tahun, 'id_cost_centre' => $p->id_cost_centre ,'divisi' => $p->divisi, 'product_line' => $p->product_line, 'id_budget_product'=>$p->id, 'budget_product_code'=>$p->code, 
-                    'budget_product_name' => $p->product_name, 'category' => $p->sub_product]
-                );
-                }
-            }
-
-            $data['produk']= get_data('tbl_beginning_stock_material a',[
-                'select' => 'a.*',
-                'where' => [
-                    'a.tahun' => $tahun,
-                    'a.material_code' => 'TMRTGRASUR',
-                ],
-            ])->result();
-
-            // debug($data['produk']) ;die;
-
-
-            // $data['sales'][$m0->id] = get_data($table_prod .' a',[
-            //     'select' => 'a.*',
-            //         'join' =>  ['tbl_fact_product b on a.product_code = b.code',
-            //                     'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
-            //                     ],
-            //     'where' => [
-            //         'c.id' => $m0->id,
-            //         'a.posting_code' => 'SLS',
-            //     ]
-            // ])->result();
-
-            // $data['sto_awal'][$m0->id] = get_data($table_prod .' a',[
-            //     'select' => 'a.*',
-            //         'join' =>  ['tbl_fact_product b on a.product_code = b.code',
-            //                     'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
-            //                     ],
-            //     'where' => [
-            //         'c.id' => $m0->id,
-            //         'a.posting_code' => 'STA',
-            //     ]
-            // ])->result();
-
-            // $data['sto_end'][$m0->id] = get_data($table_prod .' a',[
-            //     'select' => 'a.*',
-            //         'join' =>  ['tbl_fact_product b on a.product_code = b.code',
-            //                     'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
-            //                     ],
-            //     'where' => [
-            //         'c.id' => $m0->id,
-            //         'a.posting_code' => 'STE',
-            //     ]
-            // ])->result();
-
-            // $data['m_cov'][$m0->id] = get_data($table_prod .' a',[
-            //     'select' => 'a.*',
-            //         'join' =>  ['tbl_fact_product b on a.product_code = b.code',
-            //                     'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
-            //                     ],
-            //     'where' => [
-            //         'c.id' => $m0->id,
-            //         'a.posting_code' => 'COV',
-            //     ]
-            // ])->result();
-
-            // $data['xprod'][$m0->id] = get_data($table_prod .' a',[
-            //     'select' => 'a.*',
-            //         'join' =>  ['tbl_fact_product b on a.product_code = b.code',
-            //                     'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
-            //                     ],
-            //     'where' => [
-            //         'c.id' => $m0->id,
-            //         'a.posting_code' => 'XPR',
-            //     ]
-            // ])->result();
-   
-        }
-
-
+  
         $response	= array(
             'table'		=> $this->load->view('material_cost/material_planning/table',$data,true),
         );

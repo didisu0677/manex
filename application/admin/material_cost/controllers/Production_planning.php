@@ -779,7 +779,7 @@ class Production_planning extends BE_Controller {
 
                 $this->xxend_stock($product_code,$tahun);
                 $this->month_coverage($product_code,$tahun);
-            
+
         }
     }
 }

@@ -17,7 +17,7 @@
 			<td style="width: 150px;"><b><?php echo $m1->material_name; ?></b></td>
 		</tr>	
 		<tr>
-			<td style="width: 150px;">Number of units in inventory—beginning of period</td>
+			<td style="width: 150px;" class="sub-1">Number of units in inventory—beginning of period</td>
 			<?php
 
 		
@@ -60,7 +60,7 @@
 
 		</tr>
 		<tr>
-			<td>Arrival quantity</td>
+			<td class="sub-1">Arrival quantity</td>
 			<?php
 			$bgedit ="#CCCCFF";
 			$contentedit ="true" ;
@@ -93,7 +93,7 @@
 			?>
 		</tr>
 		<tr>
-			<td style="background-color:; color: #0101fd;">Units available for use</td>
+			<td style="background-color:; color: #0101fd;" class="sub-1">Units available for use</td>
 			<?php
 			$bgedit ="";
 			$contentedit ="false" ;
@@ -127,7 +127,7 @@
 			
 		</tr>
 		<tr>
-			<td>Units used in production</td>
+			<td class="sub-1">Units used in production</td>
 			<?php
 				$bgedit ="";
 				$contentedit ="false" ;
@@ -166,7 +166,7 @@
 			?>
 		</tr>
 		<tr>
-			<td>Number of units in inventory—end of period</td>
+			<td class="sub-1">Number of units in inventory—end of period</td>
 			<?php
 				$bgedit ="";
 				$contentedit ="false" ;
@@ -205,7 +205,7 @@
 			?>
 		</tr>
 		<tr>
-			<td>Month Coverage</td>
+			<td class="sub-1">Month Coverage</td>
 			<?php
 				$bgedit ="";
 				$contentedit ="false" ;
