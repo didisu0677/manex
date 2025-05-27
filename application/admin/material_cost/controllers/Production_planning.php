@@ -810,10 +810,21 @@ class Production_planning extends BE_Controller {
                             $pembagi++;
                         }
                     }
-                    $average_sales_per_4_month = $total_sales / $pembagi;
+                    $average_sales_per_4_month = 0;
+                    if($total_sales > 0 && $pembagi > 0){
+                        $average_sales_per_4_month = $total_sales / $pembagi;
+                    } else {
+                        break;
+                    }
+
                     $value_production = $value_xproduction * $c->batch_size;
                     $value_end_stock = $tmp_data['beginning_stock'] + $value_production - $tmp_data['sales'];
-                    $value_coverage = $value_end_stock / $average_sales_per_4_month;
+                    
+                    if($value_end_stock > 0 && $average_sales_per_4_month > 0){
+                        $value_coverage = $value_end_stock / $average_sales_per_4_month;
+                    } else {
+                        break;
+                    }
                 }
 
                 if(!($i+1>=13)){
