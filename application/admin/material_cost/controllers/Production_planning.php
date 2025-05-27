@@ -761,12 +761,11 @@ class Production_planning extends BE_Controller {
             ];
 
 
-<<<<<<< HEAD
             $field = "";
             
             $next_data = [
                 'sales' => 0,
-                'beginning_sales' => 0,
+                'beginning_stock' => 0,
                 'end_stock' => 0,
                 'coverage' => 0,
                 'production' => 0,
@@ -787,7 +786,7 @@ class Production_planning extends BE_Controller {
                 } else {
                     $tmp_data = [
                         'sales' => $next_data['sales'],
-                        'beginning_stock' => $next_data['beginning_sales'],
+                        'beginning_stock' => $next_data['beginning_stock'],
                         'end_stock' => $next_data['end_stock'],
                         'coverage' => $next_data['coverage'],
                         'production' => $next_data['production'],
@@ -806,8 +805,8 @@ class Production_planning extends BE_Controller {
                     $total_sales = 0;
                     $pembagi = 0;
                     for($j=0;$j<4;$j++){
-                        if($i+$j<=13){
-                            $total_sales += $data_sales['P_'.sprintf('02%', $i+$j)];
+                        if($i+$j<13){
+                            $total_sales += $data_sales['P_'.sprintf('%02d', $i+$j)];
                             $pembagi++;
                         }
                     }
@@ -817,7 +816,7 @@ class Production_planning extends BE_Controller {
                     $value_coverage = $value_end_stock / $average_sales_per_4_month;
                 }
 
-                if(!($i+1<=13)){
+                if(!($i+1>=13)){
                     $next_data = [
                         'sales' => $data_sales['P_'.sprintf('%02d', $i + 1)],
                         'beginning_stock' => $value_end_stock,
@@ -833,7 +832,7 @@ class Production_planning extends BE_Controller {
                     'P_'.sprintf('%02d', $i) => $tmp_data['beginning_stock'],
                 ], [
                     'product_code' => $product_code,
-                    'posting_code' => 'SLA'
+                    'posting_code' => 'STA'
                 ]);
 
                 # end stock
@@ -841,7 +840,7 @@ class Production_planning extends BE_Controller {
                     'P_'.sprintf('%02d', $i) => $value_end_stock,
                 ], [
                     'product_code' => $product_code,
-                    'posting_code' => 'SLE'
+                    'posting_code' => 'STE'
                 ]);
 
                 # corverage
@@ -879,11 +878,6 @@ class Production_planning extends BE_Controller {
 
             // $this->xxend_stock($product_code, $tahun);
             // $this->month_coverage($product_code, $tahun);
-=======
-                $this->xxend_stock($product_code,$tahun);
-                $this->month_coverage($product_code,$tahun);
-
->>>>>>> 62c3a4ebf13ae86e54d15b64c467b79e37fbe89e
         }
     }
 

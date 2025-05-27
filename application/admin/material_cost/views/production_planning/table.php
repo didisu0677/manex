@@ -169,7 +169,7 @@
 				}
 
 				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$m1->id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="id="'.$field0x.$m1->id.'"></td>';
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="'.$field0x.$m1->id.'">'.$xxx5.'</td>';
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="'.$field0x.$m1->id.'">'.number_format($xxx5, 0).'</td>';
 
 			}
 			?>
@@ -187,7 +187,8 @@
 				$xxx5 = 0;
 				foreach($m_cov[$m0->id] as $s2 => $s1) { 
 					if($s1->product_code == $m1->code) {
-						$xxx5 = (($s1->$field0 * -1)  < 1.98 && $s1->$field0 != 0 ? $m1->batch_size : 0) ;
+						// $xxx5 = (($s1->$field0 * -1)  < 1.8 && $s1->$field0 != 0 ? $m1->batch_size : 0) ;
+						$xxx5 = ($s1->$field0  < 1.8 && $s1->$field0 != 0 ? $m1->batch_size : 0) ;
 						foreach($xprod[$m0->id] as $sp => $sp1) { 
 							if($sp1->product_code == $m1->code) {
 								$id = $sp1->id ;

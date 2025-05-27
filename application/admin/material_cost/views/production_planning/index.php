@@ -80,7 +80,7 @@
 <script>
 	$(document).ready(function() {
 		getData();
-		calculate()
+		// calculate()
 		$(document).on('keyup', '.xproduksi', function(e) {
 			// calculate();
 			if (e.keyCode === 13 || e.key === 'Enter' || e.keyCode === 9 || e.key === 'Tab') {
@@ -111,7 +111,7 @@
 			dataType: 'json',
 			success: function(response) {
 				$('.table-1 tbody').html(response.table);
-				$('.xproduksi').text('1');
+				// $('.xproduksi').text('1');
 
 				calculate();
 				cLoader.close();
