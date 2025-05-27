@@ -713,73 +713,218 @@ class Production_planning extends BE_Controller {
 
         if($c) {
            $cek_prod = get_data($table_prod,[
-                'where' => [
-                    'product_code' => $product_code,
-                    'posting_code' => 'PRD',
-                ],
-                ])->row();
+            'where' => [
+                'product_code' => $product_code,
+                'posting_code' => 'PRD',
+            ],
+            ])->row();
 
-                $data_prod = [
-                    'revision' => 0,
-                    'posting_code' => 'PRD',
-                    'product_code' => $product_code,
-                    'product_name' => $c->product_name,
-                    'cost_centre' => $c->cost_centre,
-                    'dest' => $c->destination,
-                    'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
-                    'product_line' => $c->product_line,
-                ];
+            $data_prod = [
+                'revision' => 0,
+                'posting_code' => 'PRD',
+                'product_code' => $product_code,
+                'product_name' => $c->product_name,
+                'cost_centre' => $c->cost_centre,
+                'dest' => $c->destination,
+                'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
+                'product_line' => $c->product_line,
+            ];
 
-                $field = '';
-                for ($i = 1; $i <= 12; $i++) {
-                    $field = 'P_' . sprintf('%02d',$i);
-                    $data_prod[$field] = $c->batch_size ;
-                }
-                
-                if(!isset($cek_prod->id)){
-                    insert_data($table_prod,$data_prod);
-                }else{
-                    update_data($table_prod,$data_prod,['id'=>$cek_prod->id]);
-                }
+            $field = '';
+            for ($i = 1; $i <= 12; $i++) {
+                $field = 'P_' . sprintf('%02d', $i);
+                $data_prod[$field] = $c->batch_size;
+            }
 
-                $cek_xprod = get_data($table_prod,[
+            if (!isset($cek_prod->id)) {
+                insert_data($table_prod, $data_prod);
+            } else {
+                update_data($table_prod, $data_prod, ['id' => $cek_prod->id]);
+            }
+
+            $cek_xprod = get_data($table_prod, [
                 'where' => [
                     'product_code' => $product_code,
                     'posting_code' => 'XPR',
                 ],
-                ])->row();
+            ])->row();
 
-                $data_xprod = [
-                    'revision' => 0,
-                    'posting_code' => 'XPR',
-                    'product_code' => $product_code,
-                    'product_name' => $c->product_name,
-                    'cost_centre' => $c->cost_centre,
-                    'dest' => $c->destination,
-                    'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
-                    'product_line' => $c->product_line,
-                ];
+            $data_xprod = [
+                'revision' => 0,
+                'posting_code' => 'XPR',
+                'product_code' => $product_code,
+                'product_name' => $c->product_name,
+                'cost_centre' => $c->cost_centre,
+                'dest' => $c->destination,
+                'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
+                'product_line' => $c->product_line,
+            ];
 
-     
-                $field ="";
-                for ($i = 1; $i <= 12; $i++) {
-                    $field = 'P_' . sprintf('%02d',$i);
-                    if(($c->batch_size > 0 )) {
-                        $data_xprod[$field] = 1 ;
-                    }else{
-                        $data_xprod[$field] = 0 ;
-                    }
-                }
-                    
-                if(!isset($cek_xprod->id)){
-                    insert_data($table_prod,$data_xprod);
-                }else{
-                    update_data($table_prod,$data_xprod,['id'=>$cek_xprod->id]);
-                }
 
-                $this->xxend_stock($product_code,$tahun);
-                $this->month_coverage($product_code,$tahun);
+            $field = "";
             
+            $next_data = [
+                'sales' => 0,
+                'beginning_sales' => 0,
+                'end_stock' => 0,
+                'coverage' => 0,
+                'production' => 0,
+                'x_production' => 0,
+            ];
+
+            $data_sales = get_data('tbl_production_planning_'.$tahun, [
+                'where' => [
+                    'product_code' => $product_code,
+                    'posting_code' => 'SLS'
+                ]
+            ])->row_array();
+
+            for ($i = 1; $i <= 12; $i++) {
+                $sales = $data_sales['P_'.sprintf('%02d', $i)];
+                if($i == 1){
+                    $tmp_data = $this->init_data($product_code, sprintf('%02d', $i), $tahun);
+                } else {
+                    $tmp_data = [
+                        'sales' => $next_data['sales'],
+                        'beginning_stock' => $next_data['beginning_sales'],
+                        'end_stock' => $next_data['end_stock'],
+                        'coverage' => $next_data['coverage'],
+                        'production' => $next_data['production'],
+                        'x_production' => $next_data['x_production'],
+                    ];
+                }
+
+                $value_xproduction = -1;
+                $value_end_stock = 0;
+                $value_coverage = 0;
+                $value_production = 0;
+                while($value_coverage < 1.8){
+                    $value_xproduction++;
+                    $tmp_data['sales'] = $sales;
+                    $average_sales_per_4_month = 0;
+                    $total_sales = 0;
+                    $pembagi = 0;
+                    for($j=0;$j<4;$j++){
+                        if($i+$j<=13){
+                            $total_sales += $data_sales['P_'.sprintf('02%', $i+$j)];
+                            $pembagi++;
+                        }
+                    }
+                    $average_sales_per_4_month = $total_sales / $pembagi;
+                    $value_production = $value_xproduction * $c->batch_size;
+                    $value_end_stock = $tmp_data['beginning_stock'] + $value_production - $tmp_data['sales'];
+                    $value_coverage = $value_end_stock / $average_sales_per_4_month;
+                }
+
+                if(!($i+1<=13)){
+                    $next_data = [
+                        'sales' => $data_sales['P_'.sprintf('%02d', $i + 1)],
+                        'beginning_stock' => $value_end_stock,
+                        'end_stock' => 0,
+                        'coverage' => 0,
+                        'production' => 0,
+                        'x_production' => 0
+                    ];
+                }
+
+                # sales
+                update_data($table_prod, [
+                    'P_'.sprintf('%02d', $i) => $tmp_data['beginning_stock'],
+                ], [
+                    'product_code' => $product_code,
+                    'posting_code' => 'SLA'
+                ]);
+
+                # end stock
+                update_data($table_prod, [
+                    'P_'.sprintf('%02d', $i) => $value_end_stock,
+                ], [
+                    'product_code' => $product_code,
+                    'posting_code' => 'SLE'
+                ]);
+
+                # corverage
+                update_data($table_prod, [
+                    'P_'.sprintf('%02d', $i) => $value_coverage,
+                ], [
+                    'product_code' => $product_code,
+                    'posting_code' => 'COV'
+                ]);
+
+                # production
+                update_data($table_prod, [
+                    'P_'.sprintf('%02d', $i) => $value_production,
+                ], [
+                    'product_code' => $product_code,
+                    'posting_code' => 'PRD'
+                ]);
+
+                # x production
+                update_data($table_prod, [
+                    'P_'.sprintf('%02d', $i) => $value_xproduction,
+                    'update_at' => date('Y-m-d H:i:s')
+                ], [
+                    'product_code' => $product_code,
+                    'posting_code' => 'XPR',
+                ]);
+            }
+
+            # Save X Production
+            // if (!isset($cek_xprod->id)) {
+            //     insert_data($table_prod, $data_xprod);
+            // } else {
+            //     update_data($table_prod, $data_xprod, ['id' => $cek_xprod->id]);
+            // }
+
+            // $this->xxend_stock($product_code, $tahun);
+            // $this->month_coverage($product_code, $tahun);
         }
+    }
+
+    # init data production planning
+    private function init_data($product_code, $month, $year){
+        
+        $data_prod = get_data('tbl_production_planning_'.$year.' a', [
+            'select' => 'P_'.sprintf('%02d', $month).' as value, posting_code',
+            'where' => [
+                'a.product_code' => $product_code
+            ]
+        ])->result_array();
+
+        $data = [
+            'sales' => 0,
+            'beginning_stock' => 0,
+            'end_stock' => 0,
+            'coverage' => 0,
+            'production' => 0,
+            'x_production' => 0,
+        ];
+
+        if($data_prod){
+            foreach($data_prod as $v){
+                switch($v){
+                    case 'SLS':
+                        $data['sales'] = $v['value'];
+                    break;
+                    case 'STA':
+                        $data['beginning_stock'] = $v['value'];
+                    break;
+                    case 'STE':
+                        $data['end_stock'] = $v['value'];
+                    break;
+                    case 'COV':
+                        $data['coverage'] = $v['value'];
+                    break;
+                    case 'PRD':
+                        $data['production'] = $v['value'];
+                    break;
+                    case 'XPR':
+                        $data['x_production'] = $v['value'];
+                    break;
+                }
+            }
+        }
+
+        return $data;
     }
 }
