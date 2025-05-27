@@ -761,6 +761,7 @@ class Production_planning extends BE_Controller {
             ];
 
 
+<<<<<<< HEAD
             $field = "";
             
             $next_data = [
@@ -878,6 +879,11 @@ class Production_planning extends BE_Controller {
 
             // $this->xxend_stock($product_code, $tahun);
             // $this->month_coverage($product_code, $tahun);
+=======
+                $this->xxend_stock($product_code,$tahun);
+                $this->month_coverage($product_code,$tahun);
+
+>>>>>>> 62c3a4ebf13ae86e54d15b64c467b79e37fbe89e
         }
     }
 
