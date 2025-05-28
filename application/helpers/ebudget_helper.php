@@ -962,20 +962,19 @@ function recalculate_sales($tahun="",$product="",$sector="") {
 
 			}
 
-			debug($sales_amount);die;
-
-		// update_data($table7,
-		// 	['EST_01' => $sales_amount->CEST_01,'EST_02' => $sales_amount->CEST_02,'EST_03' => $sales_amount->CEST_03,'EST_04' => $sales_amount->CEST_04,
-		// 	'EST_05' => $sales_amount->CEST_05,'EST_06' => $sales_amount->CEST_06,'EST_07' => $sales_amount->CEST_07,'EST_08' => $sales_amount->CEST_08,
-		// 	'EST_09' => $sales_amount->CEST_09,'EST_10' => $sales_amount->CEST_10,'EST_11' => $sales_amount->CEST_11,'EST_12' => $sales_amount->CEST_12,
-		// 	'B_01' => $sales_amount->CB_01,'B_02' => $sales_amount->CB_02,'B_03' => $sales_amount->CB_03,'B_04' => $sales_amount->CB_04,
-		// 	'B_05' => $sales_amount->CB_05,'B_06' => $sales_amount->CB_06,'B_07' => $sales_amount->CB_07,'B_08' => $sales_amount->CB_08,
-		// 	'B_09' => $sales_amount->CB_09,'B_10' => $sales_amount->CB_10,'B_11' => $sales_amount->CB_11,'B_12' => $sales_amount->CB_12,
-		// 	'THN_01' => $sales_amount->CTHN_01,'THN_02' => $sales_amount->CTHN_02,'THN_03' => $sales_amount->CTHN_03,'THN_04' => $sales_amount->CTHN_04,
-		// 	'THN_05' => $sales_amount->CTHN_05,'THN_06' => $sales_amount->CTHN_06,'THN_07' => $sales_amount->CTHN_07,'THN_08' => $sales_amount->CTHN_08,
-		// 	'THN_09' => $sales_amount->CTHN_09,'THN_10' => $sales_amount->CTHN_10
-		// 	],
-		// 	['budget_product_code'=>$product,'tahun'=>$tahun,'budget_product_sector'=>$sector]);
+	
+		update_data($table7,
+			['EST_011' => $sales_amount->CEST_01,'EST_02' => $sales_amount->CEST_02,'EST_03' => $sales_amount->CEST_03,'EST_04' => $sales_amount->CEST_04,
+			'EST_05' => $sales_amount->CEST_05,'EST_06' => $sales_amount->CEST_06,'EST_07' => $sales_amount->CEST_07,'EST_08' => $sales_amount->CEST_08,
+			'EST_09' => $sales_amount->CEST_09,'EST_10' => $sales_amount->CEST_10,'EST_11' => $sales_amount->CEST_11,'EST_12' => $sales_amount->CEST_12,
+			'B_01' => $sales_amount->CB_01,'B_02' => $sales_amount->CB_02,'B_03' => $sales_amount->CB_03,'B_04' => $sales_amount->CB_04,
+			'B_05' => $sales_amount->CB_05,'B_06' => $sales_amount->CB_06,'B_07' => $sales_amount->CB_07,'B_08' => $sales_amount->CB_08,
+			'B_09' => $sales_amount->CB_09,'B_10' => $sales_amount->CB_10,'B_11' => $sales_amount->CB_11,'B_12' => $sales_amount->CB_12,
+			'THN_01' => $sales_amount->CTHN_01,'THN_02' => $sales_amount->CTHN_02,'THN_03' => $sales_amount->CTHN_03,'THN_04' => $sales_amount->CTHN_04,
+			'THN_05' => $sales_amount->CTHN_05,'THN_06' => $sales_amount->CTHN_06,'THN_07' => $sales_amount->CTHN_07,'THN_08' => $sales_amount->CTHN_08,
+			'THN_09' => $sales_amount->CTHN_09,'THN_10' => $sales_amount->CTHN_10
+			],
+			['budget_product_code'=>$product,'tahun'=>$tahun,'budget_product_sector'=>$sector]);
 
 		}
 
