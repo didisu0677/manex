@@ -957,7 +957,7 @@ function recalculate_sales($tahun="",$product="",$sector="") {
 				}
 
 
-				update_data($table7,[$fest_cogs=>$sales_amount->$fest_cogs1, $fbud_cogs => $sales_amount->$fbud_cogs1, $fthn_cogs => $sales_amount->$fthn_cogs1],
+				update_data($table7,[$fest_cogs=>$sales_amount->$fest_cogs, $fbud_cogs => $sales_amount->$fbud_cogs1, $fthn_cogs => $sales_amount->$fthn_cogs1],
 				['budget_product_code'=>$product,'tahun'=>$tahun,'budget_product_sector'=>$sector]); 
 
 			}
