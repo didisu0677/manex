@@ -895,6 +895,7 @@ function recalculate_sales($tahun="",$product="",$sector="") {
 
 	$sales_amount = get_data($table1 . ' a',$arrq)->row();
 
+	debug($sales_amount) ;die;
 
 	if(isset($sales_amount->budget_product_code)) {
 
