@@ -61,7 +61,7 @@ modal_open('modal-form','','','data-openCallback="formOpen"');
 		form_open(base_url('material_cost/material_price/save'),'post','form');
 			col_init(3,9);
 			input('hidden','id','id');
-			input('text',lang('year'),'year','','','readonly');
+			input('text',lang('year'),'year','required','','readonly');
 			input('text',lang('material_code'),'material_code');
 			input('text',lang('kode_budget'),'kode_budget');
 			input('text',lang('nama'),'nama');
