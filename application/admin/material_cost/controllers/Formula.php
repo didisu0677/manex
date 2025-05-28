@@ -47,7 +47,7 @@ class Formula extends BE_Controller {
 		// $data['quantity'] = (isset($data['quantity']) ? str_replace(['.',','],'', $data['quantity']) : 0);
  		// $data['scraft'] = (isset($data['scraft']) ? str_replace(['.',','],'', $data['scrap']) : 0);
 
-		$data['total'] = $data['quantity'] + $data['scrap'];
+		$data['total'] = $data['quantity'] / ((100 - $data['scrap'])/100);
  
 		$response = save_data('tbl_material_formula',$data,post(':validation')); 
 		render($response,'json');
