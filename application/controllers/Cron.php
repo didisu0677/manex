@@ -64,4 +64,8 @@ class Cron extends MY_Controller {
 
         if ($jum > 0) echo "Berhasil create $jum table";
     }
+
+    function recalculate_sales($tahun="",$product="",$sector="") {
+        recalculate_sales($tahun,$product,$sector);
+    }
 }
