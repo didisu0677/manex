@@ -16,14 +16,14 @@
 			<?php
 
 			if($access['access_input']==1)
-			echo '<button class="btn btn-success btn-save" href="javascript:;" ><i class="fa-save"></i> Save</button>';
+			// echo '<button class="btn btn-success btn-save" href="javascript:;" ><i class="fa-save"></i> Save</button>';
 			// echo '<button class="btn btn-warning btn-export" href="javascript:;" >Export</button>';
 			// echo '<button class="btn btn-primary btn-import" id="btn-import">Import</button>';
 			$arr = [];
 			$arr = [
 				// ['btn-save','Save Data','fa-save'],
 				['btn-export','Export Data','fa-upload'],
-				($access['access_input'] ? ['btn-act-import','Import Data','fa-download'] :''),
+				// ($access['access_input'] ? ['btn-act-import','Import Data','fa-download'] :''),
 				// ['btn-template','Template Import','fa-reg-file-alt']
 			];
 			echo access_button('',$arr); 
