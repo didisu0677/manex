@@ -24,6 +24,13 @@ class Material_price_report extends BE_Controller {
 
         $data['produk_items'] = get_data('tbl_material_price a', $arr)->result(); 
 
+        $data['user'] = get_data('tbl_user',[
+            'where' => [
+                'is_active' => 1,
+                'id_group' => SCM
+            ],
+        ])->result_array();
+
 
         $access         = get_access($this->controller);
         $data['access'] = $access ;
@@ -31,7 +38,7 @@ class Material_price_report extends BE_Controller {
         render($data);
 	}
 
-    function data($tahun="",$product="",$tipe = 'table'){
+    function data($tahun="",$user="",$tipe = 'table'){
 		ini_set('memory_limit', '-1');
 
         //// 
@@ -46,7 +53,7 @@ class Material_price_report extends BE_Controller {
                 'a.year' => $tahun
         ]];
 
-        if($product && $product !='ALL') $arr['where']['a.material_code'] = $product;
+        if($user && $user !='ALL') $arr['where']['a.id_user'] = $user;
         $data['produk'] = get_data('tbl_material_price a', $arr,)->result_array();
 
         // debug($data);die;

@@ -7,7 +7,7 @@
 	$fpo = 0;
 	foreach($produk as $m2 => $m1) { 					
 		$bgedit ="";
-		$contentedit ="true" ;
+		$contentedit ="false" ;
 		$bm_amt = $m1['total_price'] * ($m1['bm']);
 		$pph = ($bm_amt + $m1['total_price']) * ($m1['pph']/100);
 		$ppn = ($bm_amt + $m1['total_price']) * ($m1['ppn']/100);

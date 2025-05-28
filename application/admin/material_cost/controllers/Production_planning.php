@@ -49,10 +49,8 @@ class Production_planning extends BE_Controller {
             'where' => [
                 'a.is_active' => 1,
                 'a.id_cost_centre !=' => 0,
-                // 'a.cost_centre' => '2110',
-                // 'a.code' => 'CIPTLRHPDM'
-                // 'a.cost_centre' => '2110',
-                // 'a.code' => 'CIPTLRHPDM'
+                'a.cost_centre' => '2135',
+                'a.code' => 'CIU9N1PNDM'
             ],
             'group_by' => 'a.id_cost_centre',
             'sort_by' => 'b.id', 
@@ -130,7 +128,7 @@ class Production_planning extends BE_Controller {
                     'a.tahun' => $tahun,
                     'd.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id,
-                    // 'a.budget_product_code' => 'CIGDBF11DM'
+                    'a.budget_product_code' => 'CIU9N1PNDM'
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
@@ -229,7 +227,7 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.tahun' => $tahun,
-                // 'a.budget_product_code' => 'CIGDBF11DM',
+                'a.budget_product_code' => 'CIU9N1PNDM',
             ],
             'group_by' => 'a.budget_product_code'
         ];
@@ -288,7 +286,7 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.tahun' => $tahun,
-                // 'a.budget_product_code' => 'CIGDBF11DM'
+                'a.budget_product_code' => 'CIU9N1PNDM'
             ],
             'group_by' => 'a.budget_product_code'
         ];
@@ -702,7 +700,7 @@ class Production_planning extends BE_Controller {
         $table_prod = 'tbl_production_planning_' . $tahun ;
 
         $c = get_data($table_prod . ' a',[
-            'select' => 'a.*,b.destination, d.batch_size',
+            'select' => 'a.*,b.destination, d.batch_size, d.total_stock',
             'join'   => ['tbl_fact_product b on a.product_code = b.code type LEFT',
                         'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
                         'tbl_beginning_stock d on a.product_code = d.budget_product_code and d.tahun ="'.$tahun.'" type LEFT'
@@ -786,6 +784,7 @@ class Production_planning extends BE_Controller {
                     $sales = $data_sales['P_'.sprintf('%02d', $i)];
                     if($i == 1){
                         $tmp_data = $this->init_data($product_code, sprintf('%02d', $i), $tahun);
+                        $tmp_data['beginning_stock'] = $c->total_stock ;
                     } else {
                         $tmp_data = [
                             'sales' => $next_data['sales'],

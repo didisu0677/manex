@@ -13,11 +13,11 @@
 				<?php } ?>
 			</select>
 
-			<label class=""><?php echo lang('item_product'); ?> &nbsp</label>
-			<select class="select2 custom-select" style="width: 280px;" id="filter_produk">
+			<label class=""><?php echo lang('users'); ?> &nbsp</label>
+			<select class="select2 custom-select" style="width: 280px;" id="filter_user">
 				<option value="ALL">ALL</option>
-				<?php foreach ($produk_items as $p) { ?>
-					<option value="<?php echo $p->material_code; ?>"><?php echo $p->material_code. ' | ' . $p->nama; ?></option>
+				<?php foreach ($user as $p) { ?>
+					<option value="<?php echo $p['id']; ?>"><?php echo $p['nama']; ?></option>
 				<?php } ?>
 			</select>
 
@@ -115,7 +115,7 @@ modal_close();
 		getData()
 	});
 
-	$('#filter_produk').change(function() {
+	$('#filter_user').change(function() {
 		getData()
 	});
 
@@ -127,7 +127,7 @@ modal_close();
         $('.overlay-wrap').removeClass('hidden');
         var page = base_url + 'material_cost/material_price_report/data';
             page 	+= '/'+$('#filter_tahun').val();
-			page 	+= '/'+$('#filter_produk').val();
+			page 	+= '/'+$('#filter_user').val();
 
         $.ajax({
             url 	: page,
