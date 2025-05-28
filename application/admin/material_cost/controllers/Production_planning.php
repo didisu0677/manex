@@ -51,6 +51,8 @@ class Production_planning extends BE_Controller {
                 'a.id_cost_centre !=' => 0,
                 // 'a.cost_centre' => '2110',
                 // 'a.code' => 'CIPTLRHPDM'
+                // 'a.cost_centre' => '2110',
+                // 'a.code' => 'CIPTLRHPDM'
             ],
             'group_by' => 'a.id_cost_centre',
             'sort_by' => 'b.id', 
