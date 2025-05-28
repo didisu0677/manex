@@ -956,13 +956,13 @@ function recalculate_sales($tahun="",$product="",$sector="") {
 				}
 
 
-				update_data($table7,[$fest_cogs=>$sales_amount->$fest_cogs1, $fbud_cogs => $sales_amount->$fbud_cogs1, $fthn_cogs => $sales_amount->$fthn_cogs1],
+				update_data($table7,[$fest_cogs=>$sales_amount->$fest_cogs, $fbud_cogs => $sales_amount->$fbud_cogs1, $fthn_cogs => $sales_amount->$fthn_cogs1],
 				['budget_product_code'=>$product,'tahun'=>$tahun,'budget_product_sector'=>$sector]); 
 
 			}
 
 		update_data($table7,
-			['EST_01' => $sales_amount->CEST_01,'EST_02' => $sales_amount->CEST_02,'EST_03' => $sales_amount->CEST_03,'EST_04' => $sales_amount->CEST_04,
+			['EST_011' => $sales_amount->CEST_01,'EST_02' => $sales_amount->CEST_02,'EST_03' => $sales_amount->CEST_03,'EST_04' => $sales_amount->CEST_04,
 			'EST_05' => $sales_amount->CEST_05,'EST_06' => $sales_amount->CEST_06,'EST_07' => $sales_amount->CEST_07,'EST_08' => $sales_amount->CEST_08,
 			'EST_09' => $sales_amount->CEST_09,'EST_10' => $sales_amount->CEST_10,'EST_11' => $sales_amount->CEST_11,'EST_12' => $sales_amount->CEST_12,
 			'B_01' => $sales_amount->CB_01,'B_02' => $sales_amount->CB_02,'B_03' => $sales_amount->CB_03,'B_04' => $sales_amount->CB_04,
