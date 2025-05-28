@@ -67,5 +67,6 @@ class Cron extends MY_Controller {
 
     function recalculate_sales($tahun="",$product="",$sector="") {
         recalculate_sales($tahun,$product,$sector);
+        echo 'success recalculate' ;
     }
 }
