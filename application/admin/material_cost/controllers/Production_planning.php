@@ -49,8 +49,8 @@ class Production_planning extends BE_Controller {
             'where' => [
                 'a.is_active' => 1,
                 'a.id_cost_centre !=' => 0,
-                'a.cost_centre' => '2135',
-                'a.code' => 'CIU9N1PNDM'
+                // 'a.cost_centre' => '2135',
+                // 'a.code' => 'CIU9N1PNDM'
             ],
             'group_by' => 'a.id_cost_centre',
             'sort_by' => 'b.id', 
@@ -128,7 +128,7 @@ class Production_planning extends BE_Controller {
                     'a.tahun' => $tahun,
                     'd.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id,
-                    'a.budget_product_code' => 'CIU9N1PNDM'
+                    // 'a.budget_product_code' => 'CIU9N1PNDM'
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
@@ -227,7 +227,7 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.tahun' => $tahun,
-                'a.budget_product_code' => 'CIU9N1PNDM',
+                // 'a.budget_product_code' => 'CIU9N1PNDM',
             ],
             'group_by' => 'a.budget_product_code'
         ];
@@ -286,7 +286,7 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.tahun' => $tahun,
-                'a.budget_product_code' => 'CIU9N1PNDM'
+                // 'a.budget_product_code' => 'CIU9N1PNDM'
             ],
             'group_by' => 'a.budget_product_code'
         ];
