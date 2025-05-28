@@ -148,7 +148,7 @@ class Material_price extends BE_Controller {
 		];
 
 		if(user('id_group') == SCM) {
-			$arr1['where']['id_user'] = user('id_group') ;
+			$arr1['where']['id_user'] = user('id') ;
 		}
 
 
