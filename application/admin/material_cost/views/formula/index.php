@@ -51,11 +51,12 @@
 	?>
 </div>
 <?php 
-modal_open('modal-form');
+modal_open('modal-form','','','data-openCallback="formOpen"');
 	modal_body();
 		form_open(base_url('material_cost/formula/save'),'post','form');
 			col_init(3,9);
 			input('hidden','id','id');
+			input('text',lang('tahun'),'tahun','','','readonly');
 			input('text',lang('parent_item'),'parent_item');
 			input('text',lang('item_name'),'item_name');
 			input('text',lang('description'),'description');
@@ -93,6 +94,16 @@ $(document).ready(function() {
 	$('[data-serverside]').attr('data-serverside',url);
 	refreshData();
 });	
+
+function formOpen() {
+	is_edit = true;
+	var response = response_edit;
+	$('#tahun').val($('#filter_tahun').val())
+	if(typeof response.id != 'undefined') {
+	} 
+	is_edit = false;
+}
+
 
 $('#filter_produk').change(function(){
 	var url = base_url + 'material_cost/formula/data/' ;
