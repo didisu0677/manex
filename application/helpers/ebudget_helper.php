@@ -895,8 +895,6 @@ function recalculate_sales($tahun="",$product="",$sector="") {
 
 	$sales_amount = get_data($table1 . ' a',$arrq)->row();
 
-	debug($sales_amount) ;die;
-
 	if(isset($sales_amount->budget_product_code)) {
 
 		 update_data($table3,
@@ -974,7 +972,7 @@ function recalculate_sales($tahun="",$product="",$sector="") {
 			'THN_05' => $sales_amount->CTHN_05,'THN_06' => $sales_amount->CTHN_06,'THN_07' => $sales_amount->CTHN_07,'THN_08' => $sales_amount->CTHN_08,
 			'THN_09' => $sales_amount->CTHN_09,'THN_10' => $sales_amount->CTHN_10
 			],
-			['budget_product_code'=>$product,'tahun'=>$tahun,'budget_product_sector'=>$sector]);
+			['budget_product_code1'=>$product,'tahun'=>$tahun,'budget_product_sector'=>$sector]);
 
 		}
 
