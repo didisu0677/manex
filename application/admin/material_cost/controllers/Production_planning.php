@@ -49,8 +49,8 @@ class Production_planning extends BE_Controller {
             'where' => [
                 'a.is_active' => 1,
                 'a.id_cost_centre !=' => 0,
-                'a.cost_centre' => '2110',
-                'a.code' => 'CIPTLRHPDM'
+                // 'a.cost_centre' => '2110',
+                // 'a.code' => 'CIPTLRHPDM'
             ],
             'group_by' => 'a.id_cost_centre',
             'sort_by' => 'b.id', 
@@ -128,7 +128,7 @@ class Production_planning extends BE_Controller {
                     'a.tahun' => $tahun,
                     'd.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id,
-                    'a.budget_product_code' => 'CIPTLRHPDM'
+                    // 'a.budget_product_code' => 'CIGDBF11DM'
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
@@ -227,7 +227,7 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.tahun' => $tahun,
-                'a.budget_product_code' => 'CIPTLRHPDM',
+                // 'a.budget_product_code' => 'CIGDBF11DM',
             ],
             'group_by' => 'a.budget_product_code'
         ];
@@ -286,7 +286,7 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.tahun' => $tahun,
-                'a.budget_product_code' => 'CIPTLRHPDM'
+                // 'a.budget_product_code' => 'CIGDBF11DM'
             ],
             'group_by' => 'a.budget_product_code'
         ];
@@ -779,28 +779,27 @@ class Production_planning extends BE_Controller {
                 ]
             ])->row_array();
 
-            for ($i = 1; $i <= 12; $i++) {
-                $sales = $data_sales['P_'.sprintf('%02d', $i)];
-                if($i == 1){
-                    $tmp_data = $this->init_data($product_code, sprintf('%02d', $i), $tahun);
-                } else {
-                    $tmp_data = [
-                        'sales' => $next_data['sales'],
-                        'beginning_stock' => $next_data['beginning_stock'],
-                        'end_stock' => $next_data['end_stock'],
-                        'coverage' => $next_data['coverage'],
-                        'production' => $next_data['production'],
-                        'x_production' => $next_data['x_production'],
-                    ];
-                }
+            if($c->batch_size > 0){
+                for ($i = 1; $i <= 12; $i++) {
+                    $sales = $data_sales['P_'.sprintf('%02d', $i)];
+                    if($i == 1){
+                        $tmp_data = $this->init_data($product_code, sprintf('%02d', $i), $tahun);
+                    } else {
+                        $tmp_data = [
+                            'sales' => $next_data['sales'],
+                            'beginning_stock' => $next_data['beginning_stock'],
+                            'end_stock' => $next_data['end_stock'],
+                            'coverage' => $next_data['coverage'],
+                            'production' => $next_data['production'],
+                            'x_production' => $next_data['x_production'],
+                        ];
+                    }
 
-                $value_xproduction = -1;
-                $value_end_stock = 0;
-                $value_coverage = 0;
-                $value_production = 0;
-                while($value_coverage < 1.8){
-                    $value_xproduction++;
-                    $tmp_data['sales'] = $sales;
+                    $value_xproduction = -1;
+                    $value_end_stock = 0;
+                    $value_coverage = 0;
+                    $value_production = 0;
+
                     $average_sales_per_4_month = 0;
                     $total_sales = 0;
                     $pembagi = 0;
@@ -811,73 +810,77 @@ class Production_planning extends BE_Controller {
                         }
                     }
                     $average_sales_per_4_month = 0;
-                    if($total_sales > 0 && $pembagi > 0){
+
+                    if($total_sales != 0 && $pembagi != 0){
                         $average_sales_per_4_month = $total_sales / $pembagi;
+                        while($value_coverage < 1.8){
+                            $value_xproduction++;
+                            $tmp_data['sales'] = $sales;
+                            $value_production = $value_xproduction * $c->batch_size;
+                            $value_end_stock = $tmp_data['beginning_stock'] + $value_production - $tmp_data['sales'];
+                            
+                            if($value_end_stock != 0 && $average_sales_per_4_month != 0){
+                                $value_coverage = $value_end_stock / $average_sales_per_4_month;
+                            } else {
+                                break;
+                            }
+                        }
                     } else {
-                        break;
+                        $value_xproduction = 0;
                     }
 
-                    $value_production = $value_xproduction * $c->batch_size;
-                    $value_end_stock = $tmp_data['beginning_stock'] + $value_production - $tmp_data['sales'];
-                    
-                    if($value_end_stock > 0 && $average_sales_per_4_month > 0){
-                        $value_coverage = $value_end_stock / $average_sales_per_4_month;
-                    } else {
-                        break;
+                    if(!($i+1>=13)){
+                        $next_data = [
+                            'sales' => $data_sales['P_'.sprintf('%02d', $i + 1)],
+                            'beginning_stock' => $value_end_stock,
+                            'end_stock' => 0,
+                            'coverage' => 0,
+                            'production' => 0,
+                            'x_production' => 0
+                        ];
                     }
+
+                    # sales
+                    update_data($table_prod, [
+                        'P_'.sprintf('%02d', $i) => $tmp_data['beginning_stock'],
+                    ], [
+                        'product_code' => $product_code,
+                        'posting_code' => 'STA'
+                    ]);
+
+                    # end stock
+                    update_data($table_prod, [
+                        'P_'.sprintf('%02d', $i) => $value_end_stock,
+                    ], [
+                        'product_code' => $product_code,
+                        'posting_code' => 'STE'
+                    ]);
+
+                    # corverage
+                    update_data($table_prod, [
+                        'P_'.sprintf('%02d', $i) => $value_coverage,
+                    ], [
+                        'product_code' => $product_code,
+                        'posting_code' => 'COV'
+                    ]);
+
+                    # production
+                    update_data($table_prod, [
+                        'P_'.sprintf('%02d', $i) => $value_production,
+                    ], [
+                        'product_code' => $product_code,
+                        'posting_code' => 'PRD'
+                    ]);
+
+                    # x production
+                    update_data($table_prod, [
+                        'P_'.sprintf('%02d', $i) => $value_xproduction,
+                        'update_at' => date('Y-m-d H:i:s')
+                    ], [
+                        'product_code' => $product_code,
+                        'posting_code' => 'XPR',
+                    ]);
                 }
-
-                if(!($i+1>=13)){
-                    $next_data = [
-                        'sales' => $data_sales['P_'.sprintf('%02d', $i + 1)],
-                        'beginning_stock' => $value_end_stock,
-                        'end_stock' => 0,
-                        'coverage' => 0,
-                        'production' => 0,
-                        'x_production' => 0
-                    ];
-                }
-
-                # sales
-                update_data($table_prod, [
-                    'P_'.sprintf('%02d', $i) => $tmp_data['beginning_stock'],
-                ], [
-                    'product_code' => $product_code,
-                    'posting_code' => 'STA'
-                ]);
-
-                # end stock
-                update_data($table_prod, [
-                    'P_'.sprintf('%02d', $i) => $value_end_stock,
-                ], [
-                    'product_code' => $product_code,
-                    'posting_code' => 'STE'
-                ]);
-
-                # corverage
-                update_data($table_prod, [
-                    'P_'.sprintf('%02d', $i) => $value_coverage,
-                ], [
-                    'product_code' => $product_code,
-                    'posting_code' => 'COV'
-                ]);
-
-                # production
-                update_data($table_prod, [
-                    'P_'.sprintf('%02d', $i) => $value_production,
-                ], [
-                    'product_code' => $product_code,
-                    'posting_code' => 'PRD'
-                ]);
-
-                # x production
-                update_data($table_prod, [
-                    'P_'.sprintf('%02d', $i) => $value_xproduction,
-                    'update_at' => date('Y-m-d H:i:s')
-                ], [
-                    'product_code' => $product_code,
-                    'posting_code' => 'XPR',
-                ]);
             }
 
             # Save X Production
