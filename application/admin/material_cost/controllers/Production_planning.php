@@ -191,9 +191,20 @@ class Production_planning extends BE_Controller {
    
         }
 
+        //edit produksi//
+        $data['epr'] = get_data('tbl_budget_production a',[
+            'select' => 'a.id, b.P_01, b.P_02,b.P_03,b.P_04,b.P_05,b.P_06,b.P_07,b.P_08,b.P_09,b.P_10,b.P_11,b.P_12',
+            'join' => $table_prod . ' b on a.budget_product_code = b.product_code',
+            'where' => [
+                'a.tahun' => $tahun,
+                'b.posting_code' => 'EPR',
+                'a.budget_product_code' => 'CIU9N1PNDM',
+            ],
+        ])->result_array();
 
         $response	= array(
             'table'		=> $this->load->view('material_cost/production_planning/table',$data,true),
+            'epr' => $data['epr'],
         );
 	   
 	    render($response,'json');
@@ -839,12 +850,11 @@ class Production_planning extends BE_Controller {
 
                     // debug($cari_epr);die;
 
-                    
-                    if(isset($cari_epr['jml']) && $cari_epr['jml'] > 0) {
-                        $value_xproduction = $cari_epr['jml'];
-                    }else{
+                    // if(isset($cari_epr['jml']) && $cari_epr['jml'] > 0) {
+                    //     $value_xproduction = $cari_epr['jml'];
+                    // }else{
                         $value_xproduction = -1;
-                    }
+                    // }
                     $value_end_stock = 0;
                     $value_coverage = 0;
                     $value_production = 0;
@@ -863,9 +873,9 @@ class Production_planning extends BE_Controller {
                     if($total_sales != 0 && $pembagi != 0){
                         $average_sales_per_4_month = $total_sales / $pembagi;
 
-                        if(isset($cari_epr['jml']) && $cari_epr['jml'] > 0) {
-                            $value_xproduction = $cari_epr['jml'];
-                        }else{
+                        // if(isset($cari_epr['jml']) && $cari_epr['jml'] > 0) {
+                        //     $value_xproduction = $cari_epr['jml'];
+                        // }else{
                             while($value_coverage < 1.8){
                                 $value_xproduction++;
 
@@ -879,7 +889,7 @@ class Production_planning extends BE_Controller {
                                     break;
                                 }
                             }
-                        }
+                    //     }
                     } else {
                         $value_xproduction = 0;
                     }
@@ -990,6 +1000,9 @@ class Production_planning extends BE_Controller {
                     case 'XPR':
                         $data['x_production'] = $v['value'];
                     break;
+                    // case 'EPR':
+                    //     $data['x_production'] = $v['value'];
+                    // break;
                 }
             }
         }

@@ -112,6 +112,15 @@
 			success: function(response) {
 				$('.table-1 tbody').html(response.table);
 				// $('.xproduksi').text('1');
+				$.each(response.epr,function(k,v){
+					for (let i = 1; i <= 12; i++) {
+						let field0 = `xproduksi_${String(i).padStart(2, '0')}`
+						let field1 = `P_${String(i).padStart(2, '0')}`
+						if(v[field1] != 0) {
+							$('#' + field0 + v.id).text(numberFormat(v[field1],0));  
+						}
+					}
+				});
 
 				calculate();
 				cLoader.close();
