@@ -50,7 +50,7 @@ class Production_planning extends BE_Controller {
                 'a.is_active' => 1,
                 'a.id_cost_centre !=' => 0,
                 // 'a.cost_centre' => '2135',
-                // 'a.code' => 'CIU9N1PNDM'
+                'a.code' => 'CIU9N1PNDM'
             ],
             'group_by' => 'a.id_cost_centre',
             'sort_by' => 'b.id', 
@@ -128,7 +128,7 @@ class Production_planning extends BE_Controller {
                     'a.tahun' => $tahun,
                     'd.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id,
-                    // 'a.budget_product_code' => 'CIU9N1PNDM'
+                    'a.budget_product_code' => 'CIU9N1PNDM'
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
@@ -227,7 +227,7 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.tahun' => $tahun,
-                // 'a.budget_product_code' => 'CIU9N1PNDM',
+                'a.budget_product_code' => 'CIU9N1PNDM',
             ],
             'group_by' => 'a.budget_product_code'
         ];
@@ -286,7 +286,7 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.tahun' => $tahun,
-                // 'a.budget_product_code' => 'CIU9N1PNDM'
+                'a.budget_product_code' => 'CIU9N1PNDM'
             ],
             'group_by' => 'a.budget_product_code'
         ];
@@ -378,10 +378,14 @@ class Production_planning extends BE_Controller {
         $data   = json_decode(post('json'),true);
 
         foreach($data as $id => $record) {
-            $result = $record;
-             foreach ($result as $r => $v) {       
-                update_data($table, $result,'id',$id);
-            }      
+
+            $cek_produk = get_data($table,'id',$id)->row();
+            if(isset($cek_produk->product_code)) {
+                $result = $record;
+                foreach ($result as $r => $v) {       
+                    update_data($table, $result,['product_code'=> $cek_produk->product_code, 'posting_code'=>'EPR']);
+                }      
+            }
         }
     }
 
@@ -735,12 +739,40 @@ class Production_planning extends BE_Controller {
                 $field = 'P_' . sprintf('%02d', $i);
                 $data_prod[$field] = $c->batch_size;
             }
+            
 
             if (!isset($cek_prod->id)) {
                 insert_data($table_prod, $data_prod);
             } else {
                 update_data($table_prod, $data_prod, ['id' => $cek_prod->id]);
             }
+
+            // isi data untuk posting edit produksi //
+            $cek_prodE = get_data($table_prod,[
+            'where' => [
+                'product_code' => $product_code,
+                'posting_code' => 'EPR',
+            ],
+            ])->row();
+
+            $data_prodE = [
+                'revision' => 0,
+                'posting_code' => 'EPR',
+                'product_code' => $product_code,
+                'product_name' => $c->product_name,
+                'cost_centre' => $c->cost_centre,
+                'dest' => $c->destination,
+                'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
+                'product_line' => $c->product_line,
+            ];
+
+            if (!isset($cek_prodE->id)) {
+                insert_data($table_prod, $data_prodE);
+            } else {
+                update_data($table_prod, $data_prodE, ['id' => $cek_prodE->id]);
+            }
+
+            /// 
 
             $cek_xprod = get_data($table_prod, [
                 'where' => [
@@ -796,7 +828,23 @@ class Production_planning extends BE_Controller {
                         ];
                     }
 
-                    $value_xproduction = -1;
+                    // cari data yang di edit 
+                    $cari_epr = get_data('tbl_production_planning_'.$tahun, [
+                        'select' => 'P_' . sprintf('%02d', $i) . ' as jml',
+                        'where' => [
+                            'product_code' => $product_code,
+                            'posting_code' => 'EPR'
+                        ]
+                    ])->row_array(); 
+
+                    // debug($cari_epr);die;
+
+                    
+                    if(isset($cari_epr['jml']) && $cari_epr['jml'] > 0) {
+                        $value_xproduction = $cari_epr['jml'];
+                    }else{
+                        $value_xproduction = -1;
+                    }
                     $value_end_stock = 0;
                     $value_coverage = 0;
                     $value_production = 0;
@@ -814,16 +862,22 @@ class Production_planning extends BE_Controller {
 
                     if($total_sales != 0 && $pembagi != 0){
                         $average_sales_per_4_month = $total_sales / $pembagi;
-                        while($value_coverage < 1.8){
-                            $value_xproduction++;
-                            $tmp_data['sales'] = $sales;
-                            $value_production = $value_xproduction * $c->batch_size;
-                            $value_end_stock = $tmp_data['beginning_stock'] + $value_production - $tmp_data['sales'];
-                            
-                            if($value_end_stock != 0 && $average_sales_per_4_month != 0){
-                                $value_coverage = $value_end_stock / $average_sales_per_4_month;
-                            } else {
-                                break;
+
+                        if(isset($cari_epr['jml']) && $cari_epr['jml'] > 0) {
+                            $value_xproduction = $cari_epr['jml'];
+                        }else{
+                            while($value_coverage < 1.8){
+                                $value_xproduction++;
+
+                                $tmp_data['sales'] = $sales;
+                                $value_production = $value_xproduction * $c->batch_size;
+                                $value_end_stock = $tmp_data['beginning_stock'] + $value_production - $tmp_data['sales'];
+                                
+                                if($value_end_stock != 0 && $average_sales_per_4_month != 0){
+                                    $value_coverage = $value_end_stock / $average_sales_per_4_month;
+                                } else {
+                                    break;
+                                }
                             }
                         }
                     } else {
