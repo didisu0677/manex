@@ -13,7 +13,7 @@
 		$gt_sales = 'tsales' . sprintf('%02d', $i);
 		$$gt_sales = 0;
 
-		$gt_prod = 'tsales' . sprintf('%02d', $i);
+		$gt_prod = 'tprod' . sprintf('%02d', $i);
 		$$gt_prod = 0;
 
 		$gt_end = 'tend' . sprintf('%02d', $i);
@@ -24,57 +24,57 @@
 
 	foreach($grup[0] as $m0) { ?>
 		<tr>
-            <?php $colspan = 4; ?>
-			<th rowspan = "6" colspan="<?php echo $colspan ; ?>" style="background: #757575; text-align: center; vertical-align: middle;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"><?php echo $m0->cost_centre; ?></font></th>
 		</tr>
 		<tr>
-			<th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">Total Produksi</font></th>
+            <?php $colspan = 4; ?>
+			<th rowspan = "4" colspan="<?php echo $colspan ; ?>" style="background: #757575; text-align: center; vertical-align: middle;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"><?php echo $m0->cost_centre; ?></font></th>
+		
+		
+			<th style="background: #757575; text-align: left" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">Total Produksi</font></th>
 			<?php
 			$bgedit ="";
 			$contentedit ="true" ;
 			$tpord = "";
 			for ($i = 1; $i <= 12; $i++) {
 				$field0 = 'P_' . sprintf('%02d', $i);
-				echo '<th class = "text-right" style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($prod[$m0->id][$field0]).'</font></th>';
+				$field01 = 'EP_' . sprintf('%02d', $i);
+				echo '<th class = "text-right" style="background: #757575; text-align: right" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($prod[$m0->id][$field01] != 0 ? $prod[$m0->id][$field01] : $prod[$m0->id][$field0]).'</font></th>';
 			}
 			?>
-			<th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font>
+			<th style="background: #757575; text-align: left" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font>
 		</tr>
 		<tr>
-			<th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">Standar Produksi</font></th>
+			<th style="background: #757575; text-align: left" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">Standar Produksi</font></th>
 			<?php
 			$bgedit ="";
 			$contentedit ="true" ;
 			for ($i = 1; $i <= 12; $i++) {
-				echo '<th class = "text-right" style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($sprod[$m0->id][$i]).'</font></th>';
+				echo '<th class = "text-right" style="background: #757575; text-align: right" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($sprod[$m0->id][$i]).'</font></th>';
 			}
 			?>
 			<th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font>
 
 		</tr>
 		<tr>
-			<th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">Kapasitas Produksi</font></th>
+			<th style="background: #757575; text-align: left" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">Kapasitas Produksi</font></th>
 			<?php
 			$bgedit ="";
 			$contentedit ="true" ;
 			for ($i = 1; $i <= 12; $i++) {	
-				echo '<th class= "text-right" style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($kprod[$m0->id]).'</font></th>';
+				echo '<th class= "text-right" style="background: #757575; text-align: right" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($kprod[$m0->id]).'</font></th>';
 			}
 			?>
 			<th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font>
 
 		</tr>
 		<tr>
-
-		</tr>
-		<tr>
             <?php $colspan = 4 ; ?>
-			<th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">Working Days</font></th>
+			<th style="background: #757575; text-align: left" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">Working Days</font></th>
 			<?php
 			$bgedit ="";
 			$contentedit ="true" ;
 			for ($i = 1; $i <= 12; $i++) {
-				echo '<th class = "text-right" style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($wday[$m0->id][$i]).'</font></th>';
+				echo '<th class = "text-right" style="background: #757575; text-align: right" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($wday[$m0->id][$i]).'</font></th>';
 			}
 			?>
 			<th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font>
@@ -86,9 +86,7 @@
 		$$totalfield0 = 0;
 	}
 	$stotal_budget = 0;
-	foreach($produk[$m0->id] as $m2 => $m1) { 
-		$no++;
-						
+	foreach($produk[$m0->id] as $m2 => $m1) { 					
 		$bgedit ="";
 		$contentedit ="false" ;
 		?>

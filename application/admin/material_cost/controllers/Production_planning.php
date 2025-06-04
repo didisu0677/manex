@@ -75,23 +75,25 @@ class Production_planning extends BE_Controller {
                 $data['sprod'][$m0->id][$i] = ($m0->kapasitas * $m0->$field1);
 
                 if($field2 == '') {
-                    $field2 = 'sum('. 'P_' . sprintf('%02d', $i).')' . ' as ' . 'P_' . sprintf('%02d', $i);
+                    $field2 = 'sum('. 'a.P_' . sprintf('%02d', $i).')' . ' as ' . 'P_' . sprintf('%02d', $i);
+                    $field2 .= ', sum('. 'b.P_' . sprintf('%02d', $i).' * c.batch_size)' . ' as ' . 'EP_' . sprintf('%02d', $i);
                 }else{
-                    $field2 = $field2 . ' , ' . 'sum('. 'P_' . sprintf('%02d', $i).')' . ' as ' . 'P_' . sprintf('%02d', $i);
-    
+                    $field2 = $field2 . ' , ' . 'sum('. 'a.P_' . sprintf('%02d', $i).')' . ' as ' . 'P_' . sprintf('%02d', $i);
+                    $field2 .= ', sum('. 'b.P_' . sprintf('%02d', $i).' * c.batch_size)' . ' as ' . 'EP_' . sprintf('%02d', $i);
                 }
             }
             
-            $data['prod'][$m0->id] = get_data($table_prod,[
-                'select' => 'id_cost_centre,cost_centre, ' . $field2 ,
+            $data['prod'][$m0->id] = get_data($table_prod . ' a',[
+                'select' => 'a.id_cost_centre,a.cost_centre, ' . $field2 ,
+                'join'   =>  [$table_prod .' b on a.product_code = b.product_code and b.posting_code ="EPR" type LEFT',
+                              'tbl_beginning_stock c on a.product_code = c.budget_product_code and tahun ="'.$tahun.'" type LEFT',
+                             ],
                 'where'  => [
-                    'posting_code' => 'PRD',
-                    'id_cost_centre' => $m0->id,
+                    'a.posting_code' => 'PRD',
+                    'a.id_cost_centre' => $m0->id,
                 ],
                 'group_by' => 'id_cost_centre',
             ])->row_array();
-
-            // debug($data['prod']);die;
 
             $cproduk = get_data('tbl_fact_product a',[
                 'where' => [

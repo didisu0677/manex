@@ -44,7 +44,7 @@
 	<div class="main-container mt-2">
 		<div class="row">
 			<div class="col-sm-12">
-				<div class="card">
+				<div class="card" id="result">
 					<!-- <div class="card-body"> -->
 					<div class="table-responsive tab-pane fade active show height-window">
 						<?php
@@ -415,4 +415,59 @@
 		// Menampilkan data per kolom
 
 	}
+
+	let activeTable = '#result';
+	let judul = 'Actual and Estimate' 
+
+	$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+        var activeTab = $(e.target).attr('href'); // Get the current active tab href attribute
+        if(activeTab == '#overall'){
+			activeTable = '#result'
+			judul = 'Actual and Estimate'
+		}else if(activeTab == '#budget'){
+			activeTable = '#result2'
+			judul = "Budget by Month"
+		}else if(activeTab == '#detail'){
+			activeTable = '#result3'
+			judul = 'Yearly Budget'
+		}
+    });
+
+	$(document).on('click', '.btn-export', function() {
+		var currentdate = new Date();
+		var datetime = currentdate.getDate() + "/" +
+			(currentdate.getMonth() + 1) + "/" +
+			currentdate.getFullYear() + " @ " +
+			currentdate.getHours() + ":" +
+			currentdate.getMinutes() + ":" +
+			currentdate.getSeconds();
+
+		// Set background colors
+		// $('.bg-grey-2').attr('bgcolor','#f4f4f4');
+		// $('.bg-grey-2').attr('bgcolor','#dddddd');
+		// $('.bg-grey-2-1').attr('bgcolor','#b4b4b4');
+		// $('.bg-grey-2-2').attr('bgcolor','#aaaaaa');
+		// $('.bg-grey-2').attr('bgcolor','#888888');
+
+		var table = '';
+		table += '<table>'; // Add border style here
+
+		// Add table rows
+		table += '<tr><td colspan="1">PT Otsuka Indonesia</td></tr>';
+		table += '<tr><td colspan="1">Production Planning </td></tr>';
+		table += '<tr><td colspan="1"> Print date </td><td>: ' + datetime + '</td></tr>';
+		table += '</table><br><br>';
+
+		// Add content body
+		table += $(activeTable).html();
+
+		var target = table;
+		// window.open('data:application/vnd.ms-excel,' + encodeURIComponent(target));
+
+		htmlToExcel(target)
+		
+		// $('.bg-grey-1,.bg-grey-2.bg-grey-2-1,.bg-grey-2-2,.bg-grey-3').each(function(){
+		// 	$(this).removeAttr('bgcolor');
+		// });
+	});
 </script>
