@@ -1,0 +1,18 @@
+{
+    "field": {
+        "id": "primary_key",
+        "id_cost_centre": "int",
+        "cost_center": "varchar",
+        "prsn_allocation": "date",
+        "is_active": "boolean"
+    },
+    "label": {
+        "id": "Id",
+        "id_cost_centre": "Id Cost Centre",
+        "cost_center": "Cost Center",
+        "prsn_allocation": "Prsn Allocation",
+        "is_active": "Aktif"
+    },
+    "validation": [],
+    "alias": []
+}
