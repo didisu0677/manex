@@ -412,7 +412,7 @@
 
 		});
 
-		// Menampilkan data per kolom
+		calculate_grand_total_by_cost_center()
 
 	}
 
@@ -470,4 +470,27 @@
 		// 	$(this).removeAttr('bgcolor');
 		// });
 	});
+
+	function calculate_grand_total_by_cost_center(){
+		for(let i=0;i<12;i++){
+			let $list_cost_center_by_month = $(`[data-type="grand-total-cost-center"][data-month="${i}"]`)
+			let total_by_month = 0
+			$.each($list_cost_center_by_month, function(k , v){
+				let value_cost_center = $(v).data('cost-center')
+				let $list_production = $(`[data-type="production"][data-cost-center="${value_cost_center}"][data-month="${i}"]`)
+
+				let value_grand_total = 0
+				$.each($list_production, function(j, vp){
+					let value_number = $(vp).text().replace(/\,/g,'').trim()
+					value_number = !isNaN(parseInt(value_number)) ? parseInt(value_number) : 0
+					value_grand_total += value_number
+				})
+
+				total_by_month += value_grand_total
+				$(`[data-type="grand-total-cost-center"][data-month="${i}"][data-cost-center="${value_cost_center}"]`).text(numberFormat(value_grand_total, 0))
+				$(`[data-type="total-cost-center"][data-month="${i}"][data-cost-center="${value_cost_center}"]`).text(numberFormat(value_grand_total, 0))
+			})
+			$(`[data-type="grand-production"][data-month="${i}"]`).text(numberFormat(total_by_month, 0))	
+		}
+	}
 </script>
