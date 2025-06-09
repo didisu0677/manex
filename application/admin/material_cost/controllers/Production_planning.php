@@ -723,8 +723,8 @@ class Production_planning extends BE_Controller {
                         'tbl_beginning_stock d on a.product_code = d.budget_product_code and d.tahun ="'.$tahun.'" type LEFT'
                         ],
             'where' => [
-                'posting_code' => 'STA',
-                'product_code' => $product_code
+                'a.posting_code' => 'STA',
+                'a.product_code' => $product_code
             ],
         ])->row();
 
@@ -878,7 +878,7 @@ class Production_planning extends BE_Controller {
                         // if(isset($cari_epr['jml']) && $cari_epr['jml'] > 0) {
                         //     $value_xproduction = $cari_epr['jml'];
                         // }else{
-                            while($value_coverage < 1.8){
+                            while($value_coverage < setting('month_coverage')){
                                 $value_xproduction++;
 
                                 $tmp_data['sales'] = $sales;
