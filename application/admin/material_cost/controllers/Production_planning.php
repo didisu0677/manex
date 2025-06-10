@@ -983,7 +983,7 @@ class Production_planning extends BE_Controller {
 
         if($data_prod){
             foreach($data_prod as $v){
-                switch($v){
+                switch($v['posting_code']){
                     case 'SLS':
                         $data['sales'] = $v['value'];
                     break;
