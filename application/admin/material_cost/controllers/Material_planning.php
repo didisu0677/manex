@@ -124,17 +124,17 @@ class Material_planning extends BE_Controller {
  
         $arr = [
             'select' => 'a.component_item,a.material_name,a.um,e.supplier,e.moq,e.m_cov,e.order_multiple, 
-                        sum(a.total) * b.P_01 as P_01, sum(a.total) * b.P_02 as P_02, sum(a.total) * b.P_03 as P_03, 
-                        sum(a.total) * b.P_04 as P_04, sum(a.total) * b.P_05 as P_05, sum(a.total) * b.P_06 as P_06, 
-                        sum(a.total) * b.P_07 as P_07, sum(a.total) * b.P_08 as P_08, sum(a.total) * b.P_09 as P_09, 
-                        sum(a.total) * b.P_10 as P_10, sum(a.total) * b.P_11 as P_11, sum(a.total) * b.P_12 as P_12,
+                        sum(a.total * b.P_01) as P_01, sum(a.total * b.P_02) as P_02, sum(a.total * b.P_03) as P_03, 
+                        sum(a.total * b.P_04) as P_04, sum(a.total * b.P_05) as P_05, sum(a.total * b.P_06) as P_06, 
+                        sum(a.total * b.P_07) as P_07, sum(a.total * b.P_08) as P_08, sum(a.total * b.P_09) as P_09, 
+                        sum(a.total * b.P_10) as P_10, sum(a.total * b.P_11) as P_11, sum(a.total * b.P_12) as P_12,
                        
-                        sum(a.total) * (c.P_01 * d.batch_size) as EP_01, sum(a.total) * (c.P_02 * d.batch_size) as EP_02, sum(a.total) * (c.P_03 * d.batch_size) as EP_03, 
-                        sum(a.total) * (c.P_04 * d.batch_size) as EP_04, sum(a.total) * (c.P_05 * d.batch_size) as EP_05, sum(a.total) * (c.P_06 * d.batch_size) as EP_06, 
-                        sum(a.total) * (c.P_07 * d.batch_size) as EP_07, sum(a.total) * (c.P_08 * d.batch_size) as EP_08, sum(a.total) * (c.P_09 * d.batch_size) as EP_09, 
-                        sum(a.total) * (c.P_10 * d.batch_size) as EP_10, sum(a.total) * (c.P_11 * d.batch_size) as EP_11, sum(a.total) * (c.P_12 * d.batch_size) as EP_12',
-            'join'   => [$table_prod .' b on a.parent_item = b.product_code type LEFT',
-                         $table_prod .' c on a.parent_item = b.product_code and c.posting_code ="EPR" type LEFT',
+                        sum(a.total * (c.P_01 * d.batch_size)) as EP_01, sum(a.total * (c.P_02 * d.batch_size)) as EP_02, sum(a.total * (c.P_03 * d.batch_size)) as EP_03, 
+                        sum(a.total * (c.P_04 * d.batch_size)) as EP_04, sum(a.total * (c.P_05 * d.batch_size)) as EP_05, sum(a.total * (c.P_06 * d.batch_size)) as EP_06, 
+                        sum(a.total * (c.P_07 * d.batch_size)) as EP_07, sum(a.total * (c.P_08 * d.batch_size)) as EP_08, sum(a.total * (c.P_09 * d.batch_size)) as EP_09, 
+                        sum(a.total * (c.P_10 * d.batch_size)) as EP_10, sum(a.total * (c.P_11 * d.batch_size)) as EP_11, sum(a.total * (c.P_12 * d.batch_size)) as EP_12',
+            'join'   => [$table_prod .' b on a.parent_item = b.product_code type LEFT c.posting_code ="PRD"',
+                         $table_prod .' c on a.parent_item = c.product_code and c.posting_code ="EPR" type LEFT',
                          'tbl_beginning_stock d on a.parent_item = d.budget_product_code type LEFT',
                          'tbl_beginning_stock_material e on a.component_item = e.material_code type LEFT',
                         ],
@@ -144,12 +144,16 @@ class Material_planning extends BE_Controller {
                 'e.tahun' => $tahun,
                 'a.parent_item' => 'CIPTLRHPDM',
                 'b.posting_code' => 'PRD',
+                'c.posting_code' => 'EPR',
+                // 'a.component_item' => 'CILBSPOTH1'
             ],
             'group_by' => 'a.component_item,a.material_name',
             'sort_by' => 'a.component_item'
         ];
 
         $prod = get_data('tbl_material_formula  a',$arr)->result();
+
+        // debug($prod);die;
 
         foreach($prod as $s) {
             $data_prod = [
@@ -161,18 +165,18 @@ class Material_planning extends BE_Controller {
                 'supplier' => $s->supplier ?? '',
                 'moq' => $s->moq ?? 0,
                 'order_multiple' => $s->order_multiple ?? 0,
-                'P_01' => $s->EP_01 > 0 ? $s->EP_01 : $s->P_01 ,
-                'P_02' => $s->EP_02 > 0 ? $s->EP_02 : $s->P_02,
-                'P_03' => $s->EP_03 > 0 ? $s->EP_03 : $s->P_03,
-                'P_04' => $s->EP_04 > 0 ? $s->EP_04 : $s->P_04,
-                'P_05' => $s->EP_05 > 0 ? $s->EP_05 : $s->P_05,
-                'P_06' => $s->EP_06 > 0 ? $s->EP_06 : $s->P_06,
-                'P_07' => $s->EP_07 > 0 ? $s->EP_07 : $s->P_07,
-                'P_08' => $s->EP_08 > 0 ? $s->EP_08 : $s->P_08,
-                'P_09' => $s->EP_09 > 0 ? $s->EP_09 : $s->P_09,
-                'P_10' => $s->EP_10 > 0 ? $s->EP_10 : $s->P_10,
-                'P_11' => $s->EP_11 > 0 ? $s->EP_11 : $s->P_11,
-                'P_12' => $s->EP_12 > 0 ? $s->EP_12 : $s->P_12,
+                'P_01' => $s->P_01 ,
+                'P_02' => $s->P_02,
+                'P_03' => $s->P_03,
+                'P_04' => $s->P_04,
+                'P_05' => $s->P_05,
+                'P_06' => $s->P_06,
+                'P_07' => $s->P_07,
+                'P_08' => $s->P_08,
+                'P_09' => $s->P_09,
+                'P_10' => $s->P_10,
+                'P_11' => $s->P_11,
+                'P_12' => $s->P_12,
             ];
 
             $cek = get_data($table_mat,[

@@ -20,7 +20,7 @@
 			<td style="width: 150px;" colspan ="13"><b><?php echo 'Code : ' . $m1->material_code .', Min. Order: ' . $m1->moq . ', Order Multiple :' . $m1->order_multiple; ?></b></td>
 		</tr>
 		<tr>
-			<td style="width: 150px;" class="sub-1">Number of units in inventory—beginning of period</td>
+			<td style="width: 150px;" class="sub-1">Beginning Stock</td>
 			<?php
 
 		
@@ -87,8 +87,6 @@
 				// echo '<td class="money-custom" style="background-color: #ffded7; color: #fd0501;"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$xxx4.'">'.$xxx4.'</td>';
 
 			}
-
-
 			?>
 			
 		</tr>
@@ -107,7 +105,7 @@
 			?>
 		</tr>
 		<tr>
-			<td class="sub-1">Number of units in inventory—end of period</td>
+			<td class="sub-1">End Stock</td>
 			<?php
 				$bgedit ="";
 				$contentedit ="false" ;
