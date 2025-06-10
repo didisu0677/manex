@@ -47,6 +47,7 @@
 					tr();
 					th('Material_name', '', 'class="text-center align-middle headcol"');
 					th('Code', '', 'class="text-center align-middle headcol"');
+					th('Um', '', 'class="text-center align-middle headcol"');
 					// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 					for ($i = 1; $i <= 12; $i++) {
 						th(month_lang($i), '', 'class="text-center" style="min-width:60px"');

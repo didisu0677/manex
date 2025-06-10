@@ -38,22 +38,13 @@ class Rencana_pembelian extends BE_Controller {
     function data($tahun="",$cost_centre="",$tipe = 'table'){
 		ini_set('memory_limit', '-1');
 
-        $table = 'tbl_production_planning_' . $tahun ;
+        $table = 'tbl_material_planning_' . $tahun ;
 
         $data['material'] = get_data($table .' a',[
-            'select' => 'b.component_item,b.material_name, sum(P_01 * b.total) as P_01,
-                        sum(P_02 * b.total) as P_02, sum(P_03 * b.total) as P_03, sum(P_04 * b.total) as P_04,
-                        sum(P_05 * b.total) as P_05, sum(P_06 * b.total) as P_06, sum(P_07 * b.total) as P_07,
-                        sum(P_08 * b.total) as P_08, sum(P_09 * b.total) as P_10, sum(P_11 * b.total) as P_11,
-                        sum(P_12 * b.total) as P_12',
-            'join' =>  ['tbl_material_formula b on a.product_code= b.parent_item type LEFT',
-                        ],
+            'select' => '*',
             'where' => [
-                'b.tahun' => $tahun,
                 'a.posting_code' => 'PBL',
             ],
-            'group_by' => 'b.component_item,b.material_name',
-            'sort_by' => 'a.product_code'
         ])->result_array();
 
 
