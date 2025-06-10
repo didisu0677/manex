@@ -540,6 +540,8 @@ class Material_planning extends BE_Controller {
             ]
         ])->result_array();
 
+        debug($data_mat) ;die;
+
         $data = [
             'beginning_stock' => 0,
             'produksi' => 0,
