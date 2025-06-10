@@ -38,18 +38,71 @@ class Material_planning extends BE_Controller {
 		ini_set('max_execution_time', 0);
 
         $table = 'tbl_budget_production';
-        $table_prod = 'tbl_production_planning_' . $tahun ;
+        $table_mat = 'tbl_material_planning_' . $tahun ;
 
 
-        $data['produk']= get_data('tbl_beginning_stock_material a',[
+        $data['produk'] = get_data($table_mat . ' a',[
             'select' => 'a.*',
             'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
             'where' => [
-                'a.tahun' => $tahun,
+                'b.tahun' => $tahun,
+                'a.posting_code' => 'STA',
                 'b.parent_item' => 'CIPTLRHPDM'
                 // 'a.material_code' => 'TMRTGRASUR',
             ],
         ])->result();
+
+        foreach($data['produk'] as $d) {
+            $data['prod'][$d->material_code] = get_data($table_mat . ' a',[
+                'select' => 'a.*',
+                'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
+                'where'  => [
+                    'b.tahun' => $tahun,
+                    'a.posting_code' => 'PRD',
+                    'b.parent_item' => 'CIPTLRHPDM'
+                ],
+            ])->row_array();
+
+            $data['arival'][$d->material_code] = get_data($table_mat . ' a',[
+                'select' => 'a.*',
+                'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
+                'where'  => [
+                    'b.tahun' => $tahun,
+                    'a.posting_code' => 'PBL',
+                    'b.parent_item' => 'CIPTLRHPDM'
+                ],
+            ])->row_array();
+
+            $data['pakai'][$d->material_code] = get_data($table_mat . ' a',[
+                'select' => 'a.*',
+                'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
+                'where'  => [
+                    'b.tahun' => $tahun,
+                    'a.posting_code' => 'PMK',
+                    'b.parent_item' => 'CIPTLRHPDM'
+                ],
+            ])->row_array();
+
+            $data['iventory'][$d->material_code] = get_data($table_mat . ' a',[
+                'select' => 'a.*',
+                'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
+                'where'  => [
+                    'b.tahun' => $tahun,
+                    'a.posting_code' => 'STE',
+                    'b.parent_item' => 'CIPTLRHPDM'
+                ],
+            ])->row_array();
+
+            $data['cov'][$d->material_code] = get_data($table_mat . ' a',[
+                'select' => 'a.*',
+                'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
+                'where'  => [
+                    'b.tahun' => $tahun,
+                    'a.posting_code' => 'COV',
+                    'b.parent_item' => 'CIPTLRHPDM'
+                ],
+            ])->row_array();
+        }
 
   
         $response	= array(
@@ -70,7 +123,7 @@ class Material_planning extends BE_Controller {
         $table_mat = 'tbl_material_planning_' . $tahun ;
  
         $arr = [
-            'select' => 'a.component_item,a.material_name,a.um,e.supplier,e.moq,e.order_multiple, 
+            'select' => 'a.component_item,a.material_name,a.um,e.supplier,e.moq,e.m_cov,e.order_multiple, 
                         sum(a.total) * b.P_01 as P_01, sum(a.total) * b.P_02 as P_02, sum(a.total) * b.P_03 as P_03, 
                         sum(a.total) * b.P_04 as P_04, sum(a.total) * b.P_05 as P_05, sum(a.total) * b.P_06 as P_06, 
                         sum(a.total) * b.P_07 as P_07, sum(a.total) * b.P_08 as P_08, sum(a.total) * b.P_09 as P_09, 
@@ -136,15 +189,79 @@ class Material_planning extends BE_Controller {
                 update_data($table_mat,$data_prod,['id'=>$cek->id]);
             }
 
+            $data_cov = [
+                'revision' => 0,
+                'posting_code' => 'COV',
+                'material_code' => $s->component_item,
+                'material_name' => $s->material_name,
+                'um' => $s->um,
+                'supplier' => $s->supplier ?? '',
+                'moq' => $s->moq ?? 0,
+                'order_multiple' => $s->order_multiple ?? 0,
+            ];
+
+            $field = '';
+            for ($i = 1; $i <= 12; $i++) {
+                $field = 'P_' . sprintf('%02d', $i);
+                $data_cov[$field] = $s->m_cov;
+            }
+
+            $cek_cov = get_data($table_mat,[
+                'select' => 'id',
+                'where' => [
+                    'revision' => 0,
+                    'material_code' => $s->component_item,
+                    'posting_code' => 'COV',
+                ],
+            ])->row();
+
+            if(!isset($cek_cov->id)){
+                insert_data($table_mat,$data_cov);
+            }else{
+                update_data($table_mat,$data_cov,['id'=>$cek_cov->id]);
+            }
+
+
+            /// unit for use
+
+            $data_use = [
+                'revision' => 0,
+                'posting_code' => 'PMK',
+                'material_code' => $s->component_item,
+                'material_name' => $s->material_name,
+                'um' => $s->um,
+                'supplier' => $s->supplier ?? '',
+                'moq' => $s->moq ?? 0,
+                'order_multiple' => $s->order_multiple ?? 0,
+            ];
+
+            $cek_use = get_data($table_mat,[
+                'select' => 'id',
+                'where' => [
+                    'revision' => 0,
+                    'material_code' => $s->component_item,
+                    'posting_code' => 'PMK',
+                ],
+            ])->row();
+
+            if(!isset($cek_use->id)){
+                insert_data($table_mat,$data_use);
+            }else{
+                update_data($table_mat,$data_use,['id'=>$cek_use->id]);
+            }
+
+            ///
+
         }
 
         /// stock awal
         $arrs = [
-            'select' => 'a.material_code,a.material_name,a.um,a.supplier,a.moq,a.order_multiple,a.total_stock',
+            'select' => 'a.material_code,a.material_name,a.um,a.supplier,a.moq,a.m_cov,a.order_multiple,a.total_stock',
             'join' => ['tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'"'],
             'where' => [
                 'a.tahun' => $tahun,
                 'b.tahun' => $tahun,
+                'b.parent_item' => 'CIPTLRHPDM',
                 'a.material_code !=' => '',
             ],
             'group_by' => 'a.material_code'
@@ -198,6 +315,7 @@ class Material_planning extends BE_Controller {
                 ];
 
                 $cek = get_data($table_mat,[
+                    'select' => 'id',
                     'where' => [
                         'revision' => 0,
                         'material_code' => $s->material_code,
@@ -211,6 +329,7 @@ class Material_planning extends BE_Controller {
                     update_data($table_mat,$data_stoe,['id'=>$cek->id]);
                 }
 
+  
                 $this->pembelian_awal($s->material_code,$tahun);
             }
         }
@@ -229,11 +348,13 @@ class Material_planning extends BE_Controller {
 
         $c = get_data($table_mat . ' a',[
             'select' => 'a.*,b.m_cov, b.total_stock',
-            'join'   => ['tbl_beginning_stock_material b on a.material_code = b.material_code and b.tahun ="'.$tahun.'" type LEFT'
+            'join'   => ['tbl_beginning_stock_material b on a.material_code = b.material_code and b.tahun ="'.$tahun.'" type LEFT',
+                         'tbl_material_formula c on a.material_code = c.component_item and c.tahun ="'.$tahun.'"'
                         ],
             'where' => [
                 'a.posting_code' => 'STA',
-                'a.material_code' => $material_code
+                'a.material_code' => $material_code,
+                'c.parent_item' => 'CIPTLRHPDM',
             ],
         ])->row();
 
@@ -268,24 +389,7 @@ class Material_planning extends BE_Controller {
             } else {
                 update_data($table_mat, $data_pbl, ['id' => $cek_mat1->id]);
             }
-
-
-            $cek_mat2 = get_data($table_mat,[
-            'where' => [
-                'material_code' => $material_code,
-                'posting_code' => 'PMK',
-            ],
-            ])->row();
-
-            if (!isset($cek_mat2->id)) {
-                insert_data($table_mat, $data_pbl);
-            } else {
-                update_data($table_mat, $data_pbl, ['id' => $cek_mat2->id]);
-            }
-
-
- 
-             
+            
             $next_data = [
                 'beginning_stock' => 0,
                 'pembelian' => 0,
@@ -340,24 +444,22 @@ class Material_planning extends BE_Controller {
                     if($total_produksi != 0 && $pembagi != 0){
 
                         $average_produksi_per_4_month = $total_produksi / $pembagi;
-
-
                         while($value_coverage < $c->m_cov){
-                            // $value_xproduction++;
-  
-                            $tmp_data['produksi'] = $produksi;
-                            $value_pembelian = $produksi ; // $c->order_multiple * $produksi;
+                            $value_pembelian += $c->order_multiple ;
+                            // $tmp_data['produksi'] = $produksi;
                             $value_end_stock = $tmp_data['beginning_stock'] + $value_pembelian - $tmp_data['produksi'];
 
-                            $value_pemakaian = $value_pembelian + $tmp_data['beginning_stock'];
-
-                            if($value_end_stock != 0 && $average_produksi_per_4_month != 0){
-                                $value_coverage = $value_end_stock / $average_produksi_per_4_month;
-                            } else {
-                                break;
+                            $total_produksi2 = 0;
+                            for($j=0;$j<3;$j++){
+                                if($i+$j<13){
+                                    $total_produksi2 += $data_produksi['P_'.sprintf('%02d', $i+$j)] ?? 0;
+                                    if($value_end_stock > $total_produksi2){
+                                        $value_coverage = $value_end_stock / $average_produksi_per_4_month;
+                                    }
+                                }
                             }
 
-                            $value_pembelian++;
+                            $value_pemakaian = $value_pembelian + $tmp_data['beginning_stock'];
                         }
                     } else {
                         // $value_xproduction = 0;

@@ -50,7 +50,7 @@ class Rencana_pembelian extends BE_Controller {
                         ],
             'where' => [
                 'b.tahun' => $tahun,
-                'a.posting_code' => 'PRD',
+                'a.posting_code' => 'PBL',
             ],
             'group_by' => 'b.component_item,b.material_name',
             'sort_by' => 'a.product_code'

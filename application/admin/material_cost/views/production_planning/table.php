@@ -188,7 +188,7 @@
 				foreach($m_cov[$m0->id] as $s2 => $s1) { 
 					if($s1->product_code == $m1->code) {
 						// $xxx5 = (($s1->$field0 * -1)  < 1.8 && $s1->$field0 != 0 ? $m1->batch_size : 0) ;
-						$xxx5 = ($s1->$field0  < 1.8 && $s1->$field0 != 0 ? $m1->batch_size : 0) ;
+						$xxx5 = ($s1->$field0  < setting('month_coverage') && $s1->$field0 != 0 ? $m1->batch_size : 0) ;
 						foreach($xprod[$m0->id] as $sp => $sp1) { 
 							if($sp1->product_code == $m1->code) {
 								$id = $sp1->id ;
