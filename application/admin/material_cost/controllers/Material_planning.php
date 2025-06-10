@@ -540,8 +540,6 @@ class Material_planning extends BE_Controller {
             ]
         ])->result_array();
 
-        debug($data_mat) ;die;
-
         $data = [
             'beginning_stock' => 0,
             'produksi' => 0,
@@ -553,7 +551,7 @@ class Material_planning extends BE_Controller {
 
         if($data_mat){
             foreach($data_mat as $v){
-                switch($v){
+                switch($v['posting_code']){
                     case 'PRD':
                         $data['produksi'] = $v['value'];
                     break;
