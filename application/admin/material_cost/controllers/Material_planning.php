@@ -453,12 +453,12 @@ class Material_planning extends BE_Controller {
                             // $tmp_data['produksi'] = $produksi;
                             $value_end_stock = $tmp_data['beginning_stock'] + $value_pembelian - $tmp_data['produksi'];
                             $value_pemakaian = $value_pembelian + $tmp_data['beginning_stock'];
-                            $value_end_stock = $value_pemakaian - $tmp_data['produksi'];
 
                             $total_produksi2 = 0;
                             for($j=0;$j<3;$j++){
                                 if($i+$j<13){
                                     $total_produksi2 += $data_produksi['P_'.sprintf('%02d', $i+$j)] ?? 0;
+                                    $value_end_stock = $value_pemakaian - $tmp_data['produksi'];
                                     if($value_end_stock > $total_produksi2){
                                         $value_coverage = $value_end_stock / $average_produksi_per_4_month;
                                     }
