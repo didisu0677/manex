@@ -452,6 +452,8 @@ class Material_planning extends BE_Controller {
                             $value_pembelian += $c->order_multiple ;
                             // $tmp_data['produksi'] = $produksi;
                             $value_end_stock = $tmp_data['beginning_stock'] + $value_pembelian - $tmp_data['produksi'];
+                            $value_pemakaian = $value_pembelian + $tmp_data['beginning_stock'];
+                            $value_end_stock = $value_pemakaian - $tmp_data['produksi'];
 
                             $total_produksi2 = 0;
                             for($j=0;$j<3;$j++){
@@ -463,7 +465,8 @@ class Material_planning extends BE_Controller {
                                 }
                             }
 
-                            $value_pemakaian = $value_pembelian + $tmp_data['beginning_stock'];
+                          
+                            
                         }
                     } else {
                         // $value_xproduction = 0;
