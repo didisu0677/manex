@@ -347,7 +347,7 @@ class Material_planning extends BE_Controller {
         $table_mat = 'tbl_material_planning_' . $tahun ;
 
         $c = get_data($table_mat . ' a',[
-            'select' => 'a.*,b.m_cov, b.total_stock',
+            'select' => 'a.*,b.m_cov, b.total_stock, b.moq',
             'join'   => ['tbl_beginning_stock_material b on a.material_code = b.material_code and b.tahun ="'.$tahun.'" type LEFT',
                          'tbl_material_formula c on a.material_code = c.component_item and c.tahun ="'.$tahun.'"'
                         ],
@@ -425,7 +425,7 @@ class Material_planning extends BE_Controller {
 
                     $value_end_stock = 0;
                     $value_coverage = 0;
-                    $value_pembelian = 0;
+                    $value_pembelian = $c->moq ?? 0;
                     $value_pemakaian = 0;
                     $average_produksi_per_4_month = 0;
                     $total_produksi = 0;
