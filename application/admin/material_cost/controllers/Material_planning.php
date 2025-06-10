@@ -415,7 +415,6 @@ class Material_planning extends BE_Controller {
                     $produksi = $data_produksi['P_'.sprintf('%02d', $i)] ?? 0;
                     if($i == 1){
                         $tmp_data = $this->init_data($material_code, sprintf('%02d', $i), $tahun);
-                        debug($tmp_data);die;
                         $tmp_data['beginning_stock'] = $c->total_stock ;
                     } else {
                         $tmp_data = [
