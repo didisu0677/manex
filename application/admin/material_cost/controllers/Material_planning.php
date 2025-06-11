@@ -436,7 +436,7 @@ class Material_planning extends BE_Controller {
 
                     $value_end_stock = $tmp_data['beginning_stock'];
                     $value_coverage = 0;
-                    $value_pembelian = $c->moq - $c->order_multiple ?? 0;
+                    $value_pembelian = 0;
                     $value_pemakaian = 0;
                     $average_produksi_per_4_month = 0;
                     $total_produksi = 0;
@@ -456,7 +456,7 @@ class Material_planning extends BE_Controller {
 
                         $average_produksi_per_4_month = $total_produksi / $pembagi;
                         while($value_coverage < $c->m_cov){
-                            $value_pembelian += $c->order_multiple ;
+                            
                             // $tmp_data['produksi'] = $produksi;
                             $value_end_stock = ($tmp_data['beginning_stock'] + $value_pembelian) - $tmp_data['produksi'];
 
@@ -474,6 +474,11 @@ class Material_planning extends BE_Controller {
                                         break;
                                     }
                                 }
+                            }
+                            if($value_pembelian ==0 ) {
+                                $value_pembelian = $c->moq;
+                            }else{
+                                $value_pembelian += $c->order_multiple ;
                             }
                             
                         }
