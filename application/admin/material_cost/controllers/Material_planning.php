@@ -59,6 +59,7 @@ class Material_planning extends BE_Controller {
                 'where'  => [
                     'b.tahun' => $tahun,
                     'a.posting_code' => 'PRD',
+                    'a.material_code' => $d->material_code,
                     'b.parent_item' => 'CIPTLRHPDM'
                 ],
             ])->row_array();
@@ -69,6 +70,7 @@ class Material_planning extends BE_Controller {
                 'where'  => [
                     'b.tahun' => $tahun,
                     'a.posting_code' => 'PBL',
+                    'a.material_code' => $d->material_code,
                     'b.parent_item' => 'CIPTLRHPDM'
                 ],
             ])->row_array();
@@ -79,9 +81,12 @@ class Material_planning extends BE_Controller {
                 'where'  => [
                     'b.tahun' => $tahun,
                     'a.posting_code' => 'PMK',
+                    'a.material_code' => $d->material_code,
                     'b.parent_item' => 'CIPTLRHPDM'
                 ],
-            ])->row_array();
+            ])->result_array();
+
+            // debug($data['pakai']);die;
 
             $data['iventory'][$d->material_code] = get_data($table_mat . ' a',[
                 'select' => 'a.*',
@@ -89,6 +94,7 @@ class Material_planning extends BE_Controller {
                 'where'  => [
                     'b.tahun' => $tahun,
                     'a.posting_code' => 'STE',
+                    'a.material_code' => $d->material_code,
                     'b.parent_item' => 'CIPTLRHPDM'
                 ],
             ])->row_array();
@@ -99,6 +105,7 @@ class Material_planning extends BE_Controller {
                 'where'  => [
                     'b.tahun' => $tahun,
                     'a.posting_code' => 'COV',
+                    'a.material_code' => $d->material_code,
                     'b.parent_item' => 'CIPTLRHPDM'
                 ],
             ])->row_array();
