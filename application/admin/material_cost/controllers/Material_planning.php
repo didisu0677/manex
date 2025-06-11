@@ -433,7 +433,7 @@ class Material_planning extends BE_Controller {
                             'coverage' => $next_data['coverage'],
                         ];
 
-                        debug($tmp_data);die;
+                        // debug($tmp_data);die;
                     }
                     
                     $value_end_stock = $tmp_data['beginning_stock'];
