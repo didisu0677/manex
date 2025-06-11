@@ -178,7 +178,7 @@
 			<td style="background-color:; color: #0101fd;">Prod</td>
 			<?php
 			$bgedit ="";
-			$contentedit ="false" ;
+			$contentedit ="true" ;
 
 			// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 			for ($i = 1; $i <= 12; $i++) {
