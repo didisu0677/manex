@@ -479,13 +479,14 @@ class Material_planning extends BE_Controller {
                             ]);
 
                             
+                            $value_pemakaian = $value_pembelian + $tmp_data['beginning_stock'];
+                            
                             if($value_pembelian ==0 ) {
                                 $value_pembelian = $c->moq;
                             }else{
                                 $value_pembelian += $c->order_multiple ;
                             }
 
-                            $value_pemakaian = $value_pembelian + $tmp_data['beginning_stock'];
 
                         }
                     } else {
