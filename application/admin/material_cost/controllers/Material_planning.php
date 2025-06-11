@@ -436,7 +436,7 @@ class Material_planning extends BE_Controller {
 
                     $value_end_stock = $tmp_data['beginning_stock'];
                     $value_coverage = 0;
-                    $value_pembelian = $c->moq ?? 0;
+                    $value_pembelian = $c->moq - $c->order_multiple ?? 0;
                     $value_pemakaian = 0;
                     $average_produksi_per_4_month = 0;
                     $total_produksi = 0;
