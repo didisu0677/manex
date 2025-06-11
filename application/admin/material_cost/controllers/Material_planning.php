@@ -84,7 +84,7 @@ class Material_planning extends BE_Controller {
                     'a.material_code' => $d->material_code,
                     'b.parent_item' => 'CIPTLRHPDM'
                 ],
-            ])->result_array();
+            ])->row_array();
 
             // debug($data['pakai']);die;
 
