@@ -539,12 +539,12 @@ class Material_planning extends BE_Controller {
                     ]);
 
                     # pembelian
-                    // update_data($table_mat, [
-                    //     'P_'.sprintf('%02d', $i) => $value_pembelian,
-                    // ], [
-                    //     'material_code' => $material_code,
-                    //     'posting_code' => 'PBL'
-                    // ]);
+                    update_data($table_mat, [
+                        'P_'.sprintf('%02d', $i) => $value_pembelian,
+                    ], [
+                        'material_code' => $material_code,
+                        'posting_code' => 'PBL'
+                    ]);
 
                     # pemakaian
                     update_data($table_mat, [
