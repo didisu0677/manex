@@ -468,13 +468,13 @@ class Material_planning extends BE_Controller {
                             for($j=0;$j<3;$j++){
                                 if($i+$j<13){
                                     $total_produksi2 += $data_produksi['P_'.sprintf('%02d', $i+$j)] ?? 0;
-                                    if($value_end_stock > $total_produksi2){
+                                    if($value_end_stock != 0 && $average_produksi_per_4_month != 0){
                                         $value_coverage = $value_end_stock / $average_produksi_per_4_month;
+                                    }else{
+                                        break;
                                     }
                                 }
                             }
-
-                          
                             
                         }
                     } else {
