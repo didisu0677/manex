@@ -898,7 +898,7 @@ class Production_planning extends BE_Controller {
 
                     if(!($i+1>=13)){
                         $next_data = [
-                            'sales' => $data_sales['P_'.sprintf('%02d', $i + 1)],
+                            'sales' => $data_sales['P_'.sprintf('%02d', $i + 1) ?? 0],
                             'beginning_stock' => $value_end_stock,
                             'end_stock' => 0,
                             'coverage' => 0,
