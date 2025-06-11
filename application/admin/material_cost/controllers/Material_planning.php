@@ -427,7 +427,7 @@ class Material_planning extends BE_Controller {
                         $tmp_data = [
                             'beginning_stock' => $next_data['beginning_stock'],
                             'pembelian' => $next_data['pembelian'],
-                            'pemakaian' => $next_data['pemakaian'],
+                            'pemakaian' => $next_data['beginning_stock'] + $next_data['pembelian'],
                             'produksi' => $next_data['produksi'],
                             'end_stock' => $next_data['end_stock'],
                             'coverage' => $next_data['coverage'],
