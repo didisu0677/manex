@@ -460,10 +460,6 @@ class Material_planning extends BE_Controller {
                             // $tmp_data['produksi'] = $produksi;
                             $value_end_stock = ($tmp_data['beginning_stock'] + $value_pembelian) - $tmp_data['produksi'];
 
-
-
-                            $value_pemakaian = $value_pembelian + $tmp_data['beginning_stock'];
-
                             $total_produksi2 = 0;
                             for($j=0;$j<3;$j++){
                                 if($i+$j<13){
@@ -482,12 +478,24 @@ class Material_planning extends BE_Controller {
                                 'posting_code' => 'PBL'
                             ]);
 
+
+                            update_data($table_mat, [
+                                'P_'.sprintf('%02d', $i) => $value_pemakaian,
+                                'update_at' => date('Y-m-d H:i:s')
+                            ], [
+                                'material_code' => $material_code,
+                                'posting_code' => 'PMK',
+                            ]);
+
+                            
                             if($value_pembelian ==0 ) {
                                 $value_pembelian = $c->moq;
                             }else{
                                 $value_pembelian += $c->order_multiple ;
                             }
-                            
+
+                            $value_pemakaian = $value_pembelian + $tmp_data['beginning_stock'];
+
                         }
                     } else {
                         // $value_xproduction = 0;
@@ -538,13 +546,13 @@ class Material_planning extends BE_Controller {
                     // ]);
 
                     # pemakaian
-                    update_data($table_mat, [
-                        'P_'.sprintf('%02d', $i) => $value_pemakaian,
-                        'update_at' => date('Y-m-d H:i:s')
-                    ], [
-                        'material_code' => $material_code,
-                        'posting_code' => 'PMK',
-                    ]);
+                    // update_data($table_mat, [
+                    //     'P_'.sprintf('%02d', $i) => $value_pemakaian,
+                    //     'update_at' => date('Y-m-d H:i:s')
+                    // ], [
+                    //     'material_code' => $material_code,
+                    //     'posting_code' => 'PMK',
+                    // ]);
 
                 }
             // }

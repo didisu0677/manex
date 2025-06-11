@@ -31,7 +31,8 @@
 			$arr = [
 				// ['btn-save','Save Data','fa-save'],
 				['btn-export','Export Data','fa-upload'],
-				($access['access_input'] ? ['btn-act-import','Import Data','fa-download'] :''),
+				($access['access_input'] ? ['btn-act-import','Import Data Excel','fa-download'] :''),
+				($access['access_input'] ? ['btn-scm','Import Data SCM','fa-download'] : ''),
 				// ['btn-template','Template Import','fa-reg-file-alt']
 			];
 			echo access_button('',$arr); 

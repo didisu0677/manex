@@ -81,7 +81,7 @@
 	$(document).ready(function() {
 		getData();
 		// calculate()
-		$(document).on('keyup', '.xproduksi', function(e) {
+		$(document).on('keyup', '.xproduksi,.produksi', function(e) {
 			// calculate();
 			if (e.keyCode === 13 || e.key === 'Enter' || e.keyCode === 9 || e.key === 'Tab') {
 				calculate(); // Panggil fungsi calculate()
