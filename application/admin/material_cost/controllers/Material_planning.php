@@ -479,8 +479,17 @@ class Material_planning extends BE_Controller {
                             ]);
                 
 
-                            
                             $value_pemakaian = $value_pembelian + $tmp_data['beginning_stock'];
+
+                                                # pemakaian
+                    update_data($table_mat, [
+                        'P_'.sprintf('%02d', $i) => $value_pemakaian,
+                        'update_at' => date('Y-m-d H:i:s')
+                    ], [
+                        'material_code' => $material_code,
+                        'posting_code' => 'PMK',
+                    ]);
+                    
 
                             if($value_pembelian ==0 ) {
                                 $value_pembelian = $c->moq;
