@@ -826,7 +826,7 @@ class Production_planning extends BE_Controller {
 
             if($c->batch_size > 0){
                 for ($i = 1; $i <= 12; $i++) {
-                    $sales = $data_sales['P_'.sprintf('%02d', $i)] ?? 0;
+                    $sales = @$data_sales['P_'.sprintf('%02d', $i)] ?? 0;
                     if($i == 1){
                         $tmp_data = $this->init_data($product_code, sprintf('%02d', $i), $tahun);
                         $tmp_data['beginning_stock'] = $c->total_stock ;
@@ -866,7 +866,7 @@ class Production_planning extends BE_Controller {
                     $pembagi = 0;
                     for($j=0;$j<4;$j++){
                         if($i+$j<13){
-                            $total_sales += $data_sales['P_'.sprintf('%02d', $i+$j)] ?? 0;
+                            $total_sales += @$data_sales['P_'.sprintf('%02d', $i+$j)] ?? 0;
                             $pembagi++;
                         }
                     }
@@ -898,7 +898,7 @@ class Production_planning extends BE_Controller {
 
                     if(!($i+1>=13)){
                         $next_data = [
-                            'sales' => $data_sales['P_'.sprintf('%02d', $i + 1) ?? 0],
+                            'sales' => @$data_sales['P_'.sprintf('%02d', $i + 1)] ?? 0,
                             'beginning_stock' => $value_end_stock,
                             'end_stock' => 0,
                             'coverage' => 0,
