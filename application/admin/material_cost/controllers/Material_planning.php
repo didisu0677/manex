@@ -478,15 +478,6 @@ class Material_planning extends BE_Controller {
                                 'posting_code' => 'PBL'
                             ]);
 
-
-                            update_data($table_mat, [
-                                'P_'.sprintf('%02d', $i) => $value_pemakaian,
-                                'update_at' => date('Y-m-d H:i:s')
-                            ], [
-                                'material_code' => $material_code,
-                                'posting_code' => 'PMK',
-                            ]);
-
                             
                             if($value_pembelian ==0 ) {
                                 $value_pembelian = $c->moq;
@@ -546,13 +537,13 @@ class Material_planning extends BE_Controller {
                     // ]);
 
                     # pemakaian
-                    // update_data($table_mat, [
-                    //     'P_'.sprintf('%02d', $i) => $value_pemakaian,
-                    //     'update_at' => date('Y-m-d H:i:s')
-                    // ], [
-                    //     'material_code' => $material_code,
-                    //     'posting_code' => 'PMK',
-                    // ]);
+                    update_data($table_mat, [
+                        'P_'.sprintf('%02d', $i) => $value_pemakaian,
+                        'update_at' => date('Y-m-d H:i:s')
+                    ], [
+                        'material_code' => $material_code,
+                        'posting_code' => 'PMK',
+                    ]);
 
                 }
             // }
