@@ -433,7 +433,9 @@ class Material_planning extends BE_Controller {
                             'coverage' => $next_data['coverage'],
                         ];
 
-                        // debug($tmp_data);die;
+                        // if($i == 5 && $c->material_code == 'CILBSPOTH1'){
+                        //     debug($tmp_data); die;
+                        // }
                     }
                     
                     $value_end_stock = $tmp_data['beginning_stock'];
@@ -449,13 +451,8 @@ class Material_planning extends BE_Controller {
                             $pembagi++;
                         }
                     }
-                    
-
-
                     $average_produksi_per_4_month = 0;
-
                     if($total_produksi != 0 && $pembagi != 0){
-
                         $average_produksi_per_4_month = $total_produksi / $pembagi;
                         while($value_coverage < $c->m_cov){
                             
@@ -479,7 +476,7 @@ class Material_planning extends BE_Controller {
                                 'material_code' => $material_code,
                                 'posting_code' => 'PBL'
                             ]);
-                
+
                             # pemakaian
                             update_data($table_mat, [
                                 'P_'.sprintf('%02d', $i) => $tmp_data['beginning_stock'] + $value_pembelian,
@@ -491,9 +488,6 @@ class Material_planning extends BE_Controller {
 
 
                             $value_pemakaian = $value_pembelian + $tmp_data['beginning_stock'];
-
-                            
-
                             if($value_pembelian ==0 ) {
                                 $value_pembelian = $c->moq;
                             }else{
@@ -504,6 +498,22 @@ class Material_planning extends BE_Controller {
                     } else {
                         // $value_xproduction = 0;
                         $value_pembelian = 0;
+                        update_data($table_mat, [
+                            'P_'.sprintf('%02d', $i) => $value_pembelian,
+                        ], [
+                            'material_code' => $material_code,
+                            'posting_code' => 'PBL'
+                        ]);
+
+                        update_data($table_mat, [
+                            'P_'.sprintf('%02d', $i) => $tmp_data['beginning_stock'] + $value_pembelian,
+                            'update_at' => date('Y-m-d H:i:s')
+                        ], [
+                            'material_code' => $material_code,
+                            'posting_code' => 'PMK',
+                        ]);
+
+                        $value_end_stock = ($tmp_data['beginning_stock'] + $value_pembelian) - $tmp_data['produksi'];
                     }
 
                     if(!($i+1>=13)){
