@@ -826,7 +826,7 @@ class Production_planning extends BE_Controller {
 
             if($c->batch_size > 0){
                 for ($i = 1; $i <= 12; $i++) {
-                    $sales = $data_sales['P_'.sprintf('%02d', $i)];
+                    $sales = $data_sales['P_'.sprintf('%02d', $i)] ?? 0;
                     if($i == 1){
                         $tmp_data = $this->init_data($product_code, sprintf('%02d', $i), $tahun);
                         $tmp_data['beginning_stock'] = $c->total_stock ;
