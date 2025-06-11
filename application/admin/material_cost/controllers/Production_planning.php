@@ -866,7 +866,7 @@ class Production_planning extends BE_Controller {
                     $pembagi = 0;
                     for($j=0;$j<4;$j++){
                         if($i+$j<13){
-                            $total_sales += $data_sales['P_'.sprintf('%02d', $i+$j)];
+                            $total_sales += $data_sales['P_'.sprintf('%02d', $i+$j)] ?? 0;
                             $pembagi++;
                         }
                     }
