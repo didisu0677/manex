@@ -408,7 +408,7 @@
 			$t_sales = 'sales' . sprintf('%02d', $i);
 			
 			$t_end = 'end' . sprintf('%02d', $i);
-			$$t_end = ($$t_beginning + $$t_prod) - $$t_sales ;
+			$$t_end = ($$t_beginning + $$t_prod) ;
 
             $gt_end = 'tend' . sprintf('%02d', $i);
 			$$gt_end += $$t_end ; 
