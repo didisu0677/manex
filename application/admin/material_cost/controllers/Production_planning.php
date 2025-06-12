@@ -74,15 +74,14 @@ class Production_planning extends BE_Controller {
                 $data['wday'][$m0->id][$i] = $m0->$field1;
                 $data['sprod'][$m0->id][$i] = ($m0->kapasitas * $m0->$field1);
 
-                if($field2 == '') {
-                    $field2 = 'sum('. 'a.P_' . sprintf('%02d', $i).')' . ' as ' . 'P_' . sprintf('%02d', $i);
-                    $field2 .= ', sum('. 'b.P_' . sprintf('%02d', $i).' * c.batch_size)' . ' as ' . 'EP_' . sprintf('%02d', $i);
+                if($i == 1) {
+                    $field2 = 'sum(CASE WHEN '. ' a.P_' . sprintf('%02d', $i)  .' = 0' . ' THEN '. ' a.P_' . sprintf('%02d', $i) . ' ELSE ' . 'b.P_' . sprintf('%02d', $i).' * c.batch_size' .' END)' . ' as ' . 'P_' . sprintf('%02d', $i);
                 }else{
-                    $field2 = $field2 . ' , ' . 'sum('. 'a.P_' . sprintf('%02d', $i).')' . ' as ' . 'P_' . sprintf('%02d', $i);
-                    $field2 .= ', sum('. 'b.P_' . sprintf('%02d', $i).' * c.batch_size)' . ' as ' . 'EP_' . sprintf('%02d', $i);
+                    $field2 .=  ' , ' . ' sum(CASE WHEN '. ' a.P_' . sprintf('%02d', $i)  .' = 0' . ' THEN '. ' a.P_' . sprintf('%02d', $i) . ' ELSE ' . 'b.P_' . sprintf('%02d', $i).' * c.batch_size' .' END)' . ' as ' . 'P_' . sprintf('%02d', $i);
                 }
             }
-            
+
+           
             $data['prod'][$m0->id] = get_data($table_prod . ' a',[
                 'select' => 'a.id_cost_centre,a.cost_centre, ' . $field2 ,
                 'join'   =>  [$table_prod .' b on a.product_code = b.product_code and b.posting_code ="EPR" type LEFT',
