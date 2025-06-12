@@ -234,9 +234,10 @@ class Production_planning extends BE_Controller {
         }
         $arr = [
             'select' => 'a.budget_product_code, a.budget_product_name, b.product_line,b.destination,  
-                        b.cost_centre,c.id as id_cost_centre, ' . $field ,
+                        b.cost_centre,c.id as id_cost_centre, d.batch_size, ' . $field ,
             'join'   => ['tbl_fact_product b on a.budget_product_code = b.code type LEFT',
                          'tbl_fact_cost_centre c on b.cost_centre = c.kode type LEFT',
+                         'tbl_beginning_stock d on a.budget_product_code = d.budget_product_code type LEFT'
                         ],
             'where' => [
                 'a.tahun' => $tahun,
@@ -257,6 +258,7 @@ class Production_planning extends BE_Controller {
                 'product_name' => $s->budget_product_name,
                 'cost_centre' => $s->cost_centre,
                 'dest' => $s->destination,
+                'batch' => $s->batch_size,
                 'id_cost_centre' => ($s->id_cost_centre == null) ? 0 : $s->id_cost_centre,
                 'product_line' => $s->product_line,
                 'P_01' => $s->B_01,
@@ -293,7 +295,7 @@ class Production_planning extends BE_Controller {
         // cari stock awal
         $arrs = [
             'select' => 'a.budget_product_code, a.budget_product_name, b.product_line,b.destination,  
-                        b.cost_centre,c.id as id_cost_centre, a.total_stock',
+                        b.cost_centre,c.id as id_cost_centre, a.total_stock, a.batch_size',
             'join'   => ['tbl_fact_product b on a.budget_product_code = b.code type LEFT',
                          'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
                         ],
@@ -316,6 +318,7 @@ class Production_planning extends BE_Controller {
                     'product_code' => $s->budget_product_code,
                     'product_name' => $s->budget_product_name,
                     'cost_centre' => $s->cost_centre,
+                    'batch' => $s->batch_size,
                     'dest' => $s->destination,
                     'id_cost_centre' => ($s->id_cost_centre == null) ? 0 : $s->id_cost_centre,
                     'product_line' => $s->product_line,
@@ -347,6 +350,7 @@ class Production_planning extends BE_Controller {
                     'product_code' => $s->budget_product_code,
                     'product_name' => $s->budget_product_name,
                     'cost_centre' => $s->cost_centre,
+                    'batch' => $s->batch_size,
                     'dest' => $s->destination,
                     'id_cost_centre' => ($s->id_cost_centre == null) ? 0 : $s->id_cost_centre,
                     'product_line' => $s->product_line,
@@ -407,7 +411,7 @@ class Production_planning extends BE_Controller {
 		ini_set('max_execution_time', 0);
         $table_prod = 'tbl_production_planning_' . $tahun ;
         $p = get_data($table_prod . ' a',[
-            'select' => 'a.product_code,a.product_name,a.cost_centre,a.id_cost_centre,a.product_line,a.dest,
+            'select' => 'a.product_code,a.product_name,a.cost_centre,a.id_cost_centre,a.product_line,a.dest,d.batch_size,
                                 MAX(CASE WHEN a.posting_code = "SLS" THEN P_01 END) AS SLS_01,
                                 MAX(CASE WHEN a.posting_code = "COV" THEN P_01 END) AS COV_01,
                                 MAX(CASE WHEN a.posting_code = "STA" THEN P_01 END) AS STA_01,
@@ -482,6 +486,7 @@ class Production_planning extends BE_Controller {
                                 MAX(CASE WHEN a.posting_code = "XPR" THEN P_12 END) AS XPR_12,',                     
             'join'   => ['tbl_fact_product b on a.product_code = b.code type LEFT',
                         'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
+                        'tbl_beginning_stock d on a.product_code = d.budget_product_code type LEFT'
                         ],
             'where' => [
                 'a.product_code' => $product_code,
@@ -517,6 +522,7 @@ class Production_planning extends BE_Controller {
                     'product_name' => $p->product_name,
                     'cost_centre' => $p->cost_centre,
                     'dest' => $p->dest,
+                    'batch' => $p->batch_size,
                     'id_cost_centre' => ($p->id_cost_centre == null) ? 0 : $p->id_cost_centre,
                     'product_line' => $p->product_line,
                     'posting_code' => 'STE'
@@ -528,6 +534,7 @@ class Production_planning extends BE_Controller {
                     'product_name' => $p->product_name,
                     'cost_centre' => $p->cost_centre,
                     'dest' => $p->dest,
+                    'batch' => $p->batch_size,
                     'id_cost_centre' => ($p->id_cost_centre == null) ? 0 : $p->id_cost_centre,
                     'product_line' => $p->product_line,
                     'posting_code' => 'STA'
@@ -644,9 +651,10 @@ class Production_planning extends BE_Controller {
 
         $prod = get_data($table_prod . ' a',[
             'select' => 'a.id,a.product_code,a.product_name,a.cost_centre,a.id_cost_centre,a.product_line,
-                         b.destination, ' . $select ,
+                         b.destination, d.batch_size, ' . $select ,
             'join'   => ['tbl_fact_product b on a.product_code = b.code type LEFT',
                         'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
+                        'tbl_beginning_stock d on a.product_code = d.budget_product_code type LEFT'
                         ],
             'where' => [
                 'a.product_code' => $product_code,
@@ -660,6 +668,7 @@ class Production_planning extends BE_Controller {
             'product_name' => $prod->product_name,
             'cost_centre' => $prod->cost_centre,
             'dest' => $prod->destination,
+            'batch' => $prod->$batch_size,
             'id_cost_centre' => ($prod->id_cost_centre == null) ? 0 : $prod->id_cost_centre,
             'product_line' => $prod->product_line,
         ];
@@ -717,7 +726,7 @@ class Production_planning extends BE_Controller {
         $table_prod = 'tbl_production_planning_' . $tahun ;
 
         $c = get_data($table_prod . ' a',[
-            'select' => 'a.*,b.destination, d.batch_size, d.total_stock',
+            'select' => 'a.*,b.destination, d.batch_size, d.total_stock, d.batch_size',
             'join'   => ['tbl_fact_product b on a.product_code = b.code type LEFT',
                         'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
                         'tbl_beginning_stock d on a.product_code = d.budget_product_code and d.tahun ="'.$tahun.'" type LEFT'
@@ -743,6 +752,7 @@ class Production_planning extends BE_Controller {
                 'product_name' => $c->product_name,
                 'cost_centre' => $c->cost_centre,
                 'dest' => $c->destination,
+                'batch' => $c->batch_size,
                 'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
                 'product_line' => $c->product_line,
             ];
@@ -775,6 +785,7 @@ class Production_planning extends BE_Controller {
                 'product_name' => $c->product_name,
                 'cost_centre' => $c->cost_centre,
                 'dest' => $c->destination,
+                'batch' => $c->batch_size,
                 'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
                 'product_line' => $c->product_line,
             ];
@@ -801,6 +812,7 @@ class Production_planning extends BE_Controller {
                 'product_name' => $c->product_name,
                 'cost_centre' => $c->cost_centre,
                 'dest' => $c->destination,
+                'batch' => $c->batch_size,
                 'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
                 'product_line' => $c->product_line,
             ];
