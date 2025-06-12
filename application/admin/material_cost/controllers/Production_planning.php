@@ -75,9 +75,9 @@ class Production_planning extends BE_Controller {
                 $data['sprod'][$m0->id][$i] = ($m0->kapasitas * $m0->$field1);
 
                 if($i == 1) {
-                    $field2 = 'sum(CASE WHEN '. ' a.P_' . sprintf('%02d', $i)  .' = 0' . ' THEN '. ' a.P_' . sprintf('%02d', $i) . ' ELSE ' . 'b.P_' . sprintf('%02d', $i).' * c.batch_size' .' END)' . ' AS ' . 'P_' . sprintf('%02d', $i);
+                    $field2 = 'sum(CASE WHEN '. ' b.P_' . sprintf('%02d', $i)  .' = 0 OR NULL' . ' THEN '. ' a.P_' . sprintf('%02d', $i) . ' ELSE ' . 'b.P_' . sprintf('%02d', $i).' * c.batch_size' .' END)' . ' AS ' . 'P_' . sprintf('%02d', $i);
                 }else{
-                    $field2 .=  ' , ' . ' sum(CASE WHEN '. ' a.P_' . sprintf('%02d', $i)  .' = 0' . ' THEN '. ' a.P_' . sprintf('%02d', $i) . ' ELSE ' . 'b.P_' . sprintf('%02d', $i).' * c.batch_size' .' END)' . ' AS ' . 'P_' . sprintf('%02d', $i);
+                    $field2 .=  ' , ' . ' sum(CASE WHEN '. ' b.P_' . sprintf('%02d', $i)  .' = 0 or NULL' . ' THEN '. ' a.P_' . sprintf('%02d', $i) . ' ELSE ' . 'b.P_' . sprintf('%02d', $i).' * c.batch_size' .' END)' . ' AS ' . 'P_' . sprintf('%02d', $i);
                 }
             }
 
