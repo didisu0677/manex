@@ -367,6 +367,7 @@
 			$t_prod = 'prod_' . sprintf('%02d', $i);
 			$gt_prod = 'tprod_' . sprintf('%02d', $i);
 
+			$t_prod = $prod[$m0->id][$field0];
 			$$gt_prod += $prod[$m0->id][$field0];
 
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$prod[$m0->id][$field0].'"
