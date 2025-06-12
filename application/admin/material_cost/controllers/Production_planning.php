@@ -94,7 +94,7 @@ class Production_planning extends BE_Controller {
                 'group_by' => 'id_cost_centre',
             ])->row_array();
 
-            debug($data['prod']) ;die;
+            // debug($data['prod']) ;die;
 
             $cproduk = get_data('tbl_fact_product a',[
                 'where' => [
