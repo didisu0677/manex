@@ -401,13 +401,19 @@
 		$bgedit ="";
 		$contentedit ="false" ;
 		// for ($i = setting('actual_budget'); $i <= 12; $i++) {
-		for ($i = 1; $i <= 12; $i++) {				
+		for ($i = 1; $i <= 12; $i++) {		
+			$t_begining = 'begining' . sprintf('%02d', $i);
+			$t_prod = 'prod_' . sprintf('%02d', $i);
+			$t_sales = 'sales' . sprintf('%02d', $i);
+			
 			$t_end = 'end' . sprintf('%02d', $i);
+			$$t_end = ($$t_beginning + $$t_prod) - $$t_sales ;
+
             $gt_end = 'tend' . sprintf('%02d', $i);
 			$$gt_end += $$t_end ; 
 
 			$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"><b>'.number_format($$t_end).'</b></td>';
+			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"><b>'.number_format($$t_end).' xx</b></td>';
 		}
 		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
