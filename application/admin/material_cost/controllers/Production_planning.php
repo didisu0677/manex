@@ -90,9 +90,12 @@ class Production_planning extends BE_Controller {
                 'where'  => [
                     'a.posting_code' => 'PRD',
                     'a.id_cost_centre' => $m0->id,
+                    'a.cost_centre' = '2135'
                 ],
                 'group_by' => 'id_cost_centre',
             ])->row_array();
+
+            debug($data['prod']) ;die;
 
             $cproduk = get_data('tbl_fact_product a',[
                 'where' => [
