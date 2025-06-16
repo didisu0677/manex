@@ -730,7 +730,8 @@ function post($post="",$pass_type="password_hash"){
                                 if(strpos($data[$key],'.') !== false && ctype_digit(str_replace('-','',str_replace('.','',$data[$key])))) {
                                     $c_exp = explode('.', $data[$key]);
                                     if(strlen($c_exp[count($c_exp)-1]) <= 3) {
-                                        $data[$key] = str_replace('.','',$data[$key]);
+                                        // $data[$key] = str_replace('.','',$data[$key]);
+                                        $data[$key] = $data[$key];
                                     }
                                 }
                             }
@@ -785,7 +786,7 @@ function post($post="",$pass_type="password_hash"){
                             if(strpos($data[$k],'.') !== false && ctype_digit(str_replace('-','',str_replace('.','',$data[$k])))) {
                                 $c_exp = explode('.', $data[$k]);
                                 if(strlen($c_exp[count($c_exp)-1]) <= 3) {
-                                    $data[$k] = str_replace('.','',$data[$k]);
+                                    // $data[$k] = str_replace('.','',$data[$k]);
                                 }
                             } if(strpos($data[$k],',') !== false && ctype_digit(str_replace(',','',$data[$k]))) {
                                 $c_exp = explode(',', $data[$k]);

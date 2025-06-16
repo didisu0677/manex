@@ -289,7 +289,7 @@
 		return false;
 	});
 
-	function calculate() {
+	function calculate(change_production_value = false, val_cc = '', month = '', value_produksi = 0) {
 		// Objek untuk menyimpan data per kolom
 		$('.table-1 tbody tr').each(function() {
 			let columnData = {
@@ -333,15 +333,27 @@
 					let value_xproduction = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).text().replace(/\,/g, '')
 					let nilai = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('nilai');
 					let idx = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('id');
+					let cost_center = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('cost-center');
 					let total = budget * nilai;
 					if (value_xproduction != '') {
 						columnData[key] += budget * nilai;
 						columnData1[key1] += budget * nilai;
-						$('#' + key1 + idx).text(columnData1[key1]);
+							
 						let value_sales = $('#' + key_sales + idx).text().replace(/\,/g, '');
 						let value_end_stock = $('#' + key_end_stock + idx).text().replace(/\,/g, '');
 						let value_begining_stock = $('#' + key_begining_stock + idx).text().replace(/\,/g, '');
 						let value_production = columnData1[key1];
+
+						// merubah value produksi
+						if(change_production_value == true && val_cc == cost_center && month == i && value_produksi != 0){
+							value_production = value_produksi;
+						} else {
+							if($('#' + key1 + idx).attr('data-edit') === '0'){
+								$('#' + key1 + idx).text(columnData1[key1]);
+							} else {
+								value_production = $('#' + key1 + idx).text().replace(/\,/g,'')
+							}
+						}
 
 						let new_end_stock = parseInt(value_begining_stock) + parseInt(value_production) - parseInt(value_sales)
 						let txt_new_end_stock = new_end_stock < 0 ? '-' + (numberFormat(new_end_stock, 0).replace(/[()]/g, '')) : numberFormat(new_end_stock)
@@ -366,55 +378,22 @@
 							let value_end_stock = $(`#end_stock_${String(j).padStart(2, '0')}${idx}`).text();
 							$(`#begining_stock_${String(j+1).padStart(2, '0')}${idx}`).text(value_end_stock);
 						}
-
-						
-						// update coverage stock\
-						// for (let j = i + 1; j <= 12; j++) {
-						// 	let next_value_production = -1;
-						// 	let next_coverage = 0;
-						// 	let next_nilai = 0;
-						// 	while (Math.abs(next_coverage) < 1.8) {
-						// 		next_value_production++;
-
-						// 		let next_nilai = $(this).find(`.xproduksi_${String(j).padStart(2, '0')}`).data('nilai');
-						// 		let next_value_begining_stock = $(`#begining_stock_${String(j).padStart(2, '0')}${idx}`).text().replace(/\,/g, '')
-						// 		let next_value_production_stock = next_nilai * next_value_production
-						// 		let next_value_sales_stock = $(`#sales_${String(j).padStart(2, '0')}${idx}`).text().replace(/\,/g, '')
-
-						// 		let next_new_end_stock = parseInt(next_value_begining_stock) + parseInt(next_value_production) - parseInt(next_value_sales_stock)
-						// 		let next_value_total_sales = 0
-						// 		let next_divide_number = 0
-						// 		for (let k = 0; k < 4; k++) {
-						// 			if (k + j > 12) {
-						// 				continue;
-						// 			}
-						// 			let next_value_sales = parseInt($(`#sales_${String(j+k).padStart(2, '0')}${idx}`).text().replace(/\,/g, ''))
-						// 			next_value_total_sales += !isNaN(next_value_sales) ? next_value_sales : 0
-						// 			next_divide_number++;
-						// 		}
-						// 		next_coverage = next_new_end_stock / (next_value_total_sales / next_divide_number);
-						// 		if(i==5){
-						// 			console.log('Production ',next_value_production)
-						// 			console.log('Coverage ',next_coverage)
-						// 			console.log('Rumus ',next_new_end_stock, next_value_total_sales, next_divide_number)
-						// 		}
-						// 	}
-						// 	$(this).find(`.xproduksi_${String(j).padStart(2, '0')}`).text(next_value_production);
-						// 	$(`#m_cov_${String(j).padStart(2, '0')}${idx}`).text(numberFormat(next_coverage, 2));
-						// }
 					}
 				}
 			}
 
-			// for (let key1 in columnData1) {
-			// 	$(this).find('.'+key1+'').text(columnData1[key1]); // Perbaikan di sini
-			// }
-
 		});
 
 		calculate_grand_total_by_cost_center()
-
 	}
+
+	$(document).on('keyup','[data-type="production"]',function(){
+		let value_produksi = $(this).text().replace(/\,/g,'')
+		let cost_center = $(this).data('cost-center')
+		let month = $(this).data('month')
+		$(this).attr('data-edit', '1')
+		calculate(true, cost_center, month, value_produksi)
+	})
 
 	let activeTable = '#result';
 	let judul = 'Actual and Estimate' 
@@ -473,24 +452,68 @@
 
 	function calculate_grand_total_by_cost_center(){
 		for(let i=0;i<12;i++){
-			let $list_cost_center_by_month = $(`[data-type="grand-total-cost-center"][data-month="${i}"]`)
-			let total_by_month = 0
+			let $list_cost_center_by_month = $(`[data-type="grand-total-produksi"][data-month="${i}"]`)
+			let total_produksi_by_month = 0
+			let total_begining_stock_by_month = 0
+			let total_sales_by_month = 0
+			let total_end_stock_by_month = 0
 			$.each($list_cost_center_by_month, function(k , v){
 				let value_cost_center = $(v).data('cost-center')
 				let $list_production = $(`[data-type="production"][data-cost-center="${value_cost_center}"][data-month="${i}"]`)
+				let $list_begining_stock = $(`[data-type="begining-stock"][data-cost-center="${value_cost_center}"][data-month="${i}"]`)
+				let $list_sales = $(`[data-type="sales"][data-cost-center="${value_cost_center}"][data-month="${i}"]`)
+				let $list_end_stock = $(`[data-type="end-stock"][data-cost-center="${value_cost_center}"][data-month="${i}"]`)
 
-				let value_grand_total = 0
+				let value_grand_total_produksi = 0
+				let value_grand_total_begining_stock = 0
+				let value_grand_total_sales = 0
+				let value_grand_total_end_stock = 0
 				$.each($list_production, function(j, vp){
 					let value_number = $(vp).text().replace(/\,/g,'').trim()
 					value_number = !isNaN(parseInt(value_number)) ? parseInt(value_number) : 0
-					value_grand_total += value_number
+					value_grand_total_produksi += value_number
 				})
 
-				total_by_month += value_grand_total
-				$(`[data-type="grand-total-cost-center"][data-month="${i}"][data-cost-center="${value_cost_center}"]`).text(numberFormat(value_grand_total, 0))
-				$(`[data-type="total-cost-center"][data-month="${i}"][data-cost-center="${value_cost_center}"]`).text(numberFormat(value_grand_total, 0))
+				$.each($list_begining_stock, function(j, vp){
+					let value_number = $(vp).text().replace(/\,/g,'').trim()
+					value_number = !isNaN(parseInt(value_number)) ? parseInt(value_number) : 0
+					value_grand_total_begining_stock += value_number
+				})
+
+				$.each($list_sales, function(j, vp){
+					let value_number = $(vp).text().replace(/\,/g,'').trim()
+					value_number = !isNaN(parseInt(value_number)) ? parseInt(value_number) : 0
+					value_grand_total_sales += value_number
+				})
+
+				$.each($list_end_stock, function(j, vp){
+					let value_number = $(vp).text().replace(/\,/g,'').trim()
+					value_number = !isNaN(parseInt(value_number)) ? parseInt(value_number) : 0
+					value_grand_total_end_stock += value_number
+				})
+
+
+				total_produksi_by_month += value_grand_total_produksi
+				total_begining_stock_by_month += value_grand_total_begining_stock
+				total_sales_by_month += value_grand_total_sales
+				total_end_stock_by_month += value_grand_total_end_stock
+				$(`[data-type="grand-total-produksi"][data-month="${i}"][data-cost-center="${value_cost_center}"]`).text(numberFormat(value_grand_total_produksi, 0))
+				$(`[data-type="total-produksi"][data-month="${i}"][data-cost-center="${value_cost_center}"]`).text(numberFormat(value_grand_total_produksi, 0))
+
+				$(`[data-type="grand-total-begining-stock"][data-month="${i}"][data-cost-center="${value_cost_center}"]`).text(numberFormat(value_grand_total_begining_stock, 0))
+				$(`[data-type="total-begining-stock"][data-month="${i}"][data-cost-center="${value_cost_center}"]`).text(numberFormat(value_grand_total_begining_stock, 0))
+
+				$(`[data-type="grand-total-sales"][data-month="${i}"][data-cost-center="${value_cost_center}"]`).text(numberFormat(value_grand_total_sales, 0))
+				$(`[data-type="total-sales"][data-month="${i}"][data-cost-center="${value_cost_center}"]`).text(numberFormat(value_grand_total_sales, 0))
+
+				$(`[data-type="grand-total-end-stock"][data-month="${i}"][data-cost-center="${value_cost_center}"]`).text(numberFormat(value_grand_total_end_stock, 0))
+				$(`[data-type="total-end-stock"][data-month="${i}"][data-cost-center="${value_cost_center}"]`).text(numberFormat(value_grand_total_end_stock, 0))
 			})
-			$(`[data-type="grand-production"][data-month="${i}"]`).text(numberFormat(total_by_month, 0))	
+
+			$(`[data-type="grand-production"][data-month="${i}"]`).text(numberFormat(total_produksi_by_month, 0))	
+			$(`[data-type="grand-sales"][data-month="${i}"]`).text(numberFormat(total_sales_by_month, 0))	
+			$(`[data-type="grand-begining-stock"][data-month="${i}"]`).text(numberFormat(total_begining_stock_by_month, 0))	
+			$(`[data-type="grand-end-stock"][data-month="${i}"]`).text(numberFormat(total_end_stock_by_month, 0))	
 		}
 	}
 </script>
