@@ -106,6 +106,7 @@ class Material_price extends BE_Controller {
 					$data['create_at'] = date('Y-m-d H:i:s');
 					$data['create_by'] = user('nama');
 					$data['id_user'] = post('user_import');
+					$data['is_active'] = 1;
 
 					$cek = get_data('tbl_material_price',[
 						'select' => 'id',
