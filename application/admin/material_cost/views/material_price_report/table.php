@@ -8,7 +8,7 @@
 	foreach($produk as $m2 => $m1) { 					
 		$bgedit ="";
 		$contentedit ="false" ;
-		$bm_amt = $m1['price_us'] * ($m1['bm']/100);
+		$bm_amt = $m1['total_price'] * ($m1['bm']/100);
 		$pph = ($bm_amt + $m1['total_price']) * ($m1['pph']/100);
 		$ppn = ($bm_amt + $m1['total_price']) * ($m1['ppn']/100);
 		$price_budget = $m1['total_price'] + $bm_amt + $m1['bank_charges'] + $m1['handling_charges'] ;
