@@ -8,6 +8,8 @@ class Rencana_pemakaian extends BE_Controller {
 	}
 
 	function index() {
+        $table = 'tbl_production_planning_' . user('tahun_budget');
+
         $data['tahun'] = get_data('tbl_fact_tahun_budget', [
             'where' => [
                 'is_active' => 1,
@@ -15,19 +17,19 @@ class Rencana_pemakaian extends BE_Controller {
             ]
         ])->result();     
         
-        $arr = [
-            'select' => 'a.cost_centre as kode, b.id, b.cost_centre',
-            'join' => 'tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
+		$arr = [
+            'select' => 'distinct a.component_item,a.material_name',
+            'join' =>  $table . ' b on b.product_code= a.parent_item type LEFT',
             'where' => [
-                'a.is_active' => 1,
-                'a.id_cost_centre !=' => 0,
+                'a.tahun' => user('tahun_budget'),
+                'b.posting_code' => 'PRD',
+                'a.total !=' => 0,
+                '(b.P_01+b.P_02+b.P_03+b.P_04+b.P_05+b.P_06+b.P_07+b.P_08+b.P_09+b.P_10+b.P_11+b.P_12) !=' => 0
+                // 'b.product_code' => 'CIHODD5PDM',
             ],
-            'group_by' => 'a.id_cost_centre',
-            'sort_by' => 'b.id', 
-             ];
+        ];
 
-
-	    $data['cc']= get_data('tbl_fact_product a',$arr)->result();
+        $data['produk_items'] = get_data('tbl_material_formula a', $arr)->result();
 
         $access         = get_access($this->controller);
         $data['access'] = $access ;
@@ -35,30 +37,36 @@ class Rencana_pemakaian extends BE_Controller {
         render($data);
 	}
 
-    function data($tahun="",$cost_centre="",$tipe = 'table'){
+    function data($tahun="",$material_code="",$tipe = 'table'){
 		ini_set('memory_limit', '-1');
 
         $table = 'tbl_production_planning_' . $tahun ;
 
-        $data['material'] = get_data('tbl_material_formula' .' a',[
+        $arr = [
             'select' => 'a.component_item,a.material_name, 
-                        sum(a.total) * b.P_01 as P_01, sum(a.total) * b.P_02 as P_02, sum(a.total) * b.P_03 as P_03, 
-                        sum(a.total) * b.P_04 as P_04, sum(a.total) * b.P_05 as P_05, sum(a.total) * b.P_06 as P_06, 
-                        sum(a.total) * b.P_07 as P_07, sum(a.total) * b.P_08 as P_08, sum(a.total) * b.P_09 as P_09, 
-                        sum(a.total) * b.P_10 as P_10, sum(a.total) * b.P_11 as P_11, sum(a.total) * b.P_12 as P_12',
+                        sum(a.total * b.P_01) as P_01, sum(a.total * b.P_02) as P_02, sum(a.total * b.P_03) as P_03, 
+                        sum(a.total * b.P_04) as P_04, sum(a.total * b.P_05) as P_05, sum(a.total * b.P_06) as P_06, 
+                        sum(a.total * b.P_07) as P_07, sum(a.total * b.P_08) as P_08, sum(a.total * b.P_09) as P_09, 
+                        sum(a.total * b.P_10) as P_10, sum(a.total * b.P_11) as P_11, sum(a.total * b.P_12) as P_12',
             'join' =>  $table . ' b on b.product_code= a.parent_item type LEFT',
             'where' => [
                 'a.tahun' => $tahun,
                 'b.posting_code' => 'PRD',
+                'a.total !=' => 0,
+                '(b.P_01+b.P_02+b.P_03+b.P_04+b.P_05+b.P_06+b.P_07+b.P_08+b.P_09+b.P_10+b.P_11+b.P_12) !=' => 0
                 // 'b.product_code' => 'CIHODD5PDM',
             ],
             'group_by' => 'a.component_item,a.material_name',
             'sort_by' => 'a.component_item'
-        ])->result_array();
+        ];
+
+        if($material_code && $material_code != 'ALL') {
+	    	$arr['where']['a.component_item']	= $material_code;	
+	    }
+
+        $data['material'] = get_data('tbl_material_formula' .' a',$arr)->result_array();
 
         
-
-
         $response	= array(
             'table'		=> $this->load->view('material_cost/rencana_pemakaian/table',$data,true),
         );

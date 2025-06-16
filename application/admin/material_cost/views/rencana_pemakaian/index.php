@@ -13,6 +13,14 @@
 				<?php } ?>
 			</select>
 
+			<label class=""><?php echo lang('item_product'); ?> &nbsp</label>
+			<select class="select2 custom-select" style="width: 280px;" id="filter_produk">
+				<option value="ALL">ALL</option>
+				<?php foreach ($produk_items as $p) { ?>
+					<option value="<?php echo $p->component_item; ?>"><?php echo $p->component_item . ' | ' . $p->material_name; ?></option>
+				<?php } ?>
+			</select>
+
 			<?php
 
 			if($access['access_input']==1)
@@ -96,6 +104,10 @@ modal_close();
 		getData()
 	});
 
+	$('#filter_produk').change(function() {
+		getData()
+	});
+
 
     function getData() {
 
@@ -103,7 +115,7 @@ modal_close();
         $('.overlay-wrap').removeClass('hidden');
         var page = base_url + 'material_cost/rencana_pemakaian/data';
             page 	+= '/'+$('#filter_tahun').val();
-			page 	+= '/'+$('#filter_cost_centre').val();
+			page 	+= '/'+$('#filter_produk').val();
 
         $.ajax({
             url 	: page,

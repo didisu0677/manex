@@ -13,6 +13,14 @@
 				<?php } ?>
 			</select>
 
+			<label class=""><?php echo lang('item_product'); ?> &nbsp</label>
+			<select class="select2 custom-select" style="width: 280px;" id="filter_produk">
+				<option value="ALL">ALL</option>
+				<?php foreach ($produk_items as $p) { ?>
+					<option value="<?php echo $p->material_code; ?>"><?php echo $p->material_code . ' | ' . $p->material_name; ?></option>
+				<?php } ?>
+			</select>
+
 			<?php
 
 			if($access['access_input']==1)
@@ -48,6 +56,7 @@
 					th('Material_name', '', 'class="text-center align-middle headcol"');
 					th('Code', '', 'class="text-center align-middle headcol"');
 					th('Um', '', 'class="text-center align-middle headcol"');
+					th('Supplier', '', 'class="text-center align-middle headcol"');
 					// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 					for ($i = 1; $i <= 12; $i++) {
 						th(month_lang($i), '', 'class="text-center" style="min-width:60px"');
@@ -95,6 +104,9 @@ modal_close();
 		getData()
 	});
 
+	$('#filter_produk').change(function() {
+		getData()
+	});
 
 
     function getData() {
@@ -103,7 +115,7 @@ modal_close();
         $('.overlay-wrap').removeClass('hidden');
         var page = base_url + 'material_cost/rencana_pembelian/data';
             page 	+= '/'+$('#filter_tahun').val();
-			page 	+= '/'+$('#filter_cost_centre').val();
+			page 	+= '/'+$('#filter_produk').val();
 
         $.ajax({
             url 	: page,

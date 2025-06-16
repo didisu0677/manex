@@ -8,6 +8,8 @@ class Rencana_pembelian extends BE_Controller {
 	}
 
 	function index() {
+        $table = 'tbl_material_planning_' . user('tahun_budget');
+
         $data['tahun'] = get_data('tbl_fact_tahun_budget', [
             'where' => [
                 'is_active' => 1,
@@ -15,37 +17,38 @@ class Rencana_pembelian extends BE_Controller {
             ]
         ])->result();     
         
-        $arr = [
-            'select' => 'a.cost_centre as kode, b.id, b.cost_centre',
-            'join' => 'tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
+		$arr = [
+            'select' => 'distinct a.material_code,a.material_name',
             'where' => [
-                'a.is_active' => 1,
-                'a.id_cost_centre !=' => 0,
+                'a.is_active' => 0,
             ],
-            'group_by' => 'a.id_cost_centre',
-            'sort_by' => 'b.id', 
-             ];
+        ];
 
-
-	    $data['cc']= get_data('tbl_fact_product a',$arr)->result();
-
+        $data['produk_items'] = get_data($table. ' a', $arr)->result();
         $access         = get_access($this->controller);
         $data['access'] = $access ;
         $data['access_additional']  = $access['access_additional'];
         render($data);
 	}
 
-    function data($tahun="",$cost_centre="",$tipe = 'table'){
+    function data($tahun="",$material_code="",$tipe = 'table'){
 		ini_set('memory_limit', '-1');
 
         $table = 'tbl_material_planning_' . $tahun ;
 
-        $data['material'] = get_data($table .' a',[
+        $arr = [
             'select' => '*',
             'where' => [
                 'a.posting_code' => 'PBL',
             ],
-        ])->result_array();
+        ];
+
+        if($material_code && $material_code != 'ALL') {
+	    	$arr['where']['a.material_code']	= $material_code;	
+	    }
+        
+
+        $data['material'] = get_data($table .' a',$arr)->result_array();
 
 
         $response	= array(
