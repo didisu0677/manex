@@ -25,7 +25,6 @@ class Rencana_pemakaian extends BE_Controller {
                 'b.posting_code' => 'PRD',
                 'a.total !=' => 0,
                 '(b.P_01+b.P_02+b.P_03+b.P_04+b.P_05+b.P_06+b.P_07+b.P_08+b.P_09+b.P_10+b.P_11+b.P_12) !=' => 0
-                // 'b.product_code' => 'CIHODD5PDM',
             ],
         ];
 
