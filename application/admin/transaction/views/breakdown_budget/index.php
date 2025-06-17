@@ -36,7 +36,7 @@ modal_body();
     form_open(base_url('transaction/breakdown_budget/import'),'post','form-import');
         col_init(3,9);
         input('text',lang('tahun'),'tahun_budget','','','readonly');
-        input('text',lang('cost_centre'),'cost_centre','','','readonly');
+        input('text',lang('cost_centre'),'cost_centre','required','','readonly');
 		input('',lang('user_id'),'username','','','readonly');
 		input('text',lang('preparation_pic'),'fullname','','','readonly');
         fileupload('File Excel','fileimport','required','data-accept="xls|xlsx"');
