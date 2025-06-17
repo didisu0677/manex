@@ -292,7 +292,7 @@ class Breakdown_budget extends BE_Controller {
 			if($i==0) {
 				for($j = 10; $j <= $k; $j++) {
 					$data = $this->simpleexcel->parsing($i,$j);
-
+  
                     if($data['account_code'] != "") {
 
                         $data2['description'] = $data['description'];
@@ -348,30 +348,31 @@ class Breakdown_budget extends BE_Controller {
                         $data2['cost_centre'] = $data['cc_code'];
                         $data2['sub_account'] = $data['sub_acc_code'];
                         $data2['user_id'] = $user_id;
-                        $data2['B_01'] = str_replace(['.',','],'',$data['jan']);
-                        $data2['B_02'] = str_replace(['.',','],'',$data['feb']);
-                        $data2['B_03'] = str_replace(['.',','],'',$data['mar']);
-                        $data2['B_04'] = str_replace(['.',','],'',$data['apr']);
-                        $data2['B_05'] = str_replace(['.',','],'',$data['may']);
-                        $data2['B_06'] = str_replace(['.',','],'',$data['jun']);
-                        $data2['B_07'] = str_replace(['.',','],'',$data['jul']);
-                        $data2['B_08'] = str_replace(['.',','],'',$data['aug']);
-                        $data2['B_09'] = str_replace(['.',','],'',$data['sep']);
-                        $data2['B_10'] = str_replace(['.',','],'',$data['oct']);
-                        $data2['B_11'] = str_replace(['.',','],'',$data['nov']);
-                        $data2['B_12'] = str_replace(['.',','],'',$data['dec']);
-                        $data2['total'] = str_replace(['.',','],'',$data['jan'])+
-                        str_replace(['.',','],'',$data['feb'])+
-                        str_replace(['.',','],'',$data['mar'])+
-                        str_replace(['.',','],'',$data['apr'])+
-                        str_replace(['.',','],'',$data['may'])+
-                        str_replace(['.',','],'',$data['jun'])+
-                        str_replace(['.',','],'',$data['jul'])+
-                        str_replace(['.',','],'',$data['aug'])+
-                        str_replace(['.',','],'',$data['sep'])+
-                        str_replace(['.',','],'',$data['oct'])+
-                        str_replace(['.',','],'',$data['nov'])+
-                        str_replace(['.',','],'',$data['dec']);
+                        $data2['B_01'] = (@$data['jan'] ? str_replace(['.',','],'', $data['jan']) : 0);
+                        $data2['B_02'] = (@$data['feb'] ? str_replace(['.',','],'', $data['feb']) : 0);
+                        $data2['B_03'] = (@$data['mar'] ? str_replace(['.',','],'', $data['mar']) : 0);
+                        $data2['B_04'] = (@$data['apr'] ? str_replace(['.',','],'', $data['apr']) : 0);
+                        $data2['B_05'] = (@$data['may'] ? str_replace(['.',','],'', $data['may']) : 0);
+                        $data2['B_06'] = (@$data['jun'] ? str_replace(['.',','],'', $data['jun']) : 0);
+                        $data2['B_07'] = (@$data['jul'] ? str_replace(['.',','],'', $data['jul']) : 0);
+                        $data2['B_08'] = (@$data['aug'] ? str_replace(['.',','],'', $data['aug']) : 0);
+                        $data2['B_09'] = (@$data['sep'] ? str_replace(['.',','],'', $data['sep']) : 0);
+                        $data2['B_10'] = (@$data['oct'] ? str_replace(['.',','],'', $data['oct']) : 0);
+                        $data2['B_11'] = (@$data['nov'] ? str_replace(['.',','],'', $data['nov']) : 0);
+                        $data2['B_12'] = (@$data['dec'] ? str_replace(['.',','],'', $data['dec']) : 0);
+                        $data2['total'] = 
+                            (@$data['jan'] ? str_replace(['.',','],'', $data['jan']) : 0) +
+                            (@$data['feb'] ? str_replace(['.',','],'', $data['feb']) : 0) +
+                            (@$data['mar'] ? str_replace(['.',','],'', $data['mar']) : 0) +
+                            (@$data['apr'] ? str_replace(['.',','],'', $data['apr']) : 0) +
+                            (@$data['may'] ? str_replace(['.',','],'', $data['may']) : 0) +
+                            (@$data['jun'] ? str_replace(['.',','],'', $data['jun']) : 0) +
+                            (@$data['jul'] ? str_replace(['.',','],'', $data['jul']) : 0) +
+                            (@$data['aug'] ? str_replace(['.',','],'', $data['aug']) : 0) +
+                            (@$data['sep'] ? str_replace(['.',','],'', $data['sep']) : 0) +
+                            (@$data['oct'] ? str_replace(['.',','],'', $data['oct']) : 0) +
+                            (@$data['nov'] ? str_replace(['.',','],'', $data['nov']) : 0) +
+                            (@$data['dec'] ? str_replace(['.',','],'', $data['dec']) : 0);
                         $data2['create_at'] = date('Y-m-d H:i:s');
                         $data2['create_by'] = user('nama');
 
