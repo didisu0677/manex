@@ -12,7 +12,7 @@ class Material_price extends BE_Controller {
 			$data['user_id'] = get_data('tbl_user',[
 				'where' => [
 					'is_active' => 1,
-					'id_group' => SCM
+					'id_group' => [SCM,ADMIN]
 				],
 			])->result_array();
 		}else{
