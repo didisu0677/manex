@@ -42,7 +42,7 @@
 			$bgedit ="";
 			$contentedit ="true" ;
 			$actual = 0;
-			for($i = 1; $i <= setting('actual_budget'); $i++) {
+			for($i = 1; $i <= 12 ; $i++) { //setting('actual_budget'); $i++) {
 				$field_actual = 'EST_' . sprintf('%02d', $i);
 				$actual += $m1->$field_actual;
 			}
