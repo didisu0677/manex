@@ -83,6 +83,7 @@
 
 			for ($i = 1; $i <= 10; $i++) {
 				$totalfield0 = 'TotalTHN_' . sprintf('%02d', $i);
+				$sub_totalfield0 = 'sub_TotalTHN_' . sprintf('%02d', $i);
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sub_totalfield0.'"><b>'.number_format($$sub_totalfield0).'</b></td>';
 			}
 			?>
