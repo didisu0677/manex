@@ -56,5 +56,8 @@
     "scr": "Scr",
     "group": "Group",
     "group_formula": "Group Formula",
-    "kode": "Kode"
+    "kode": "Kode",
+    "product_code" : "Product Code",
+    "product_name" : "Product Nane",
+    "material_detail" : "Material Detail"
 }
