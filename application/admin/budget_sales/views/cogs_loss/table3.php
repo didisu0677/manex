@@ -67,7 +67,6 @@
 		<?php
 			$bgedit ="";
 			$contentedit ="false" ;
-			// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 			for ($i = 1; $i <= 12; $i++) {
 				if($i <= setting('actual_budget')) {
 					$bgedit = '#F7F7EB';
