@@ -109,6 +109,7 @@ class Formula_cost extends BE_Controller {
 
     function detail($id='') {
 		$code 	= get('code');
+        $tahun = get('tahun');
 
         $data	= get_data('tbl_fact_product a',[
             'select' => 'a.*',
@@ -121,7 +122,8 @@ class Formula_cost extends BE_Controller {
 			'select'	=> 'a.*,b.price_us',
             'join' => 'tbl_material_price b on a.component_item = b.material_code type LEFT',
 			'where'		=> [
-				'parent_item' => $code
+				'a.parent_item' => $code
+                'a.tahun' => user('tahun_budget')
 				],
 		])->result();
 
