@@ -122,7 +122,7 @@ class Formula_cost extends BE_Controller {
 			'select'	=> 'a.*,b.price_us',
             'join' => 'tbl_material_price b on a.component_item = b.material_code type LEFT',
 			'where'		=> [
-				'a.parent_item' => $code
+				'a.parent_item' => $code,
                 'a.tahun' => user('tahun_budget')
 				],
 		])->result();
