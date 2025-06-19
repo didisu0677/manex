@@ -124,7 +124,7 @@ class Formula_cost extends BE_Controller {
 			'where'		=> [
 				'a.parent_item' => $code,
                 'a.tahun' => user('tahun_budget'),
-                'b.tahun' => user('tahun_budget')
+                'b.year' => user('tahun_budget')
 				],
 		])->result();
 
