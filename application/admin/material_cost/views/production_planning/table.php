@@ -171,7 +171,7 @@
 
 				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$m1->id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="id="'.$field0x.$m1->id.'"></td>';
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0.'" data-id="'.$id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="'.$field0x.$m1->id.'"
-					data-cost-center="'.$m0->id.'"
+					data-cost-center="'.$m0->id.'" data-type="x-production" data-month="'.$i.'" data-product-id="'.$id.'"
 				>'.number_format($xxx5, 0).'</td>';
 
 			}
@@ -188,23 +188,30 @@
 				$fieldp = 'prod_' . sprintf('%02d', $i);
 				$field0 = 'P_' . sprintf('%02d', $i);
 				$xxx5 = 0;
-				foreach($m_cov[$m0->id] as $s2 => $s1) { 
+				$edit_produksi = 0;
+				foreach($prd[$m0->id] as $s2 => $s1) { 
 					if($s1->product_code == $m1->code) {
 						// $xxx5 = (($s1->$field0 * -1)  < 1.8 && $s1->$field0 != 0 ? $m1->batch_size : 0) ;
-						$xxx5 = ($s1->$field0  < setting('month_coverage') && $s1->$field0 != 0 ? $m1->batch_size : 0) ;
+						$xxx5 = $s1->$field0;
 						foreach($xprod[$m0->id] as $sp => $sp1) { 
 							if($sp1->product_code == $m1->code) {
 								$id = $sp1->id ;
 							}
 						}
-					}
 
+						foreach($epd[$m0->id] as $eprk => $eprv){
+							if($eprv->product_code == $s1->product_code){
+								if($eprv->$field0 > 0) $edit_produksi = 1;
+							}
+						}
+
+					}
 				}
 
 				$stotal_prsn = 0;
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right produksi '.$fieldp.'" data-name="'.$fieldp.'" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$id.'"
-					data-type="production" data-cost-center="'.$m0->id.'" data-month="'.$i.'" data-edit="0"
-				>'.$xxx5.'</div></td>';	
+					data-type="production" data-cost-center="'.$m0->id.'" data-month="'.$i.'" data-edit="'.$edit_produksi.'" data-product-code="'.$m1->code.'"
+				>'.number_format($xxx5, 0).'</div></td>';	
 
 				// echo '<td class="money-custom" style="background-color: #ffded7; color: #fd0501;"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$xxx4.'">'.$xxx4.'</td>';
 
@@ -250,7 +257,7 @@
 					}
 					
 					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'" id="'.$fieldp.$id.'"
-					data-type="sales" data-cost-center="'.$m0->id.'" data-month="'.$i.'">'.$xxx1.'</td>';
+					data-type="sales" data-cost-center="'.$m0->id.'" data-month="'.$i.'" data-product-code="'.$m1->code.'">'.$xxx1.'</td>';
 				}
 
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$id.'"><b>'.number_format(0).'</b></td>';
@@ -290,7 +297,7 @@
 						}
 					}
 					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'" id="'.$fieldp.$id.'"
-					data-type="end-stock" data-cost-center="'.$m0->id.'" data-month="'.$i.'">'.$xxx3.'</td>';
+					data-type="end-stock" data-cost-center="'.$m0->id.'" data-month="'.$i.'" data-product-code="'.$m1->code.'">'.$xxx3.'</td>';
 				}
 	
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$id.'"><b>'.number_format(0).'</b></td>';
@@ -321,7 +328,7 @@
 					}
 					$stotal_prsn = 0;
 					echo '<td class="money-custom" style="background-color: #ffded7; color: #fd0501;"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$xxx4.'" id="'.$fieldp.$id.'"
-					data-type="m_cov" data-cost-center="'.$m0->id.'" data-month="'.$i.'">'.$xxx4.'</td>';
+					data-type="m_cov" data-cost-center="'.$m0->id.'" data-month="'.$i.'" data-product-code="'.$m1->code.'">'.$xxx4.'</td>';
 				}
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$id.'"><b>'.number_format(0).'</b></td>';
 

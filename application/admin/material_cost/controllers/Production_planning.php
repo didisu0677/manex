@@ -191,7 +191,30 @@ class Production_planning extends BE_Controller {
                     'a.posting_code' => 'XPR',
                 ]
             ])->result();
-   
+
+            // Produksi
+            $data['prd'][$m0->id] = get_data($table_prod .' a',[
+                'select' => 'a.*',
+                    'join' =>  ['tbl_fact_product b on a.product_code = b.code',
+                                'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
+                                ],
+                'where' => [
+                    'c.id' => $m0->id,
+                    'a.posting_code' => 'PRD',
+                ]
+            ])->result();
+
+            // Edited produksi
+            $data['epd'][$m0->id] = get_data($table_prod .' a',[
+                'select' => 'a.*',
+                    'join' =>  ['tbl_fact_product b on a.product_code = b.code',
+                                'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
+                                ],
+                'where' => [
+                    'c.id' => $m0->id,
+                    'a.posting_code' => 'EPD',
+                ]
+            ])->result();
         }
 
         //edit produksi//
@@ -397,13 +420,15 @@ class Production_planning extends BE_Controller {
 
         foreach($data as $id => $record) {
 
-            $cek_produk = get_data($table,'id',$id)->row();
-            if(isset($cek_produk->product_code)) {
-                $result = $record;
-                foreach ($result as $r => $v) {       
-                    update_data($table, $result,['product_code'=> $cek_produk->product_code, 'posting_code'=>'EPR']);
-                }      
-            }
+            // $cek_produk = get_data($table,'id',$id)->row();
+            // if(isset($cek_produk->product_code)) {
+            //     $result = $record;
+            //     foreach ($result as $r => $v) {       
+            //         update_data($table, $result,['product_code'=> $cek_produk->product_code, 'posting_code'=>'EPR']);
+            //     }      
+            // }
+
+            $this->save_production_planning();
         }
     }
 
@@ -1023,5 +1048,138 @@ class Production_planning extends BE_Controller {
         }
 
         return $data;
+    }
+
+    public function submit_production(){
+        $this->save_production_planning(true);
+    }
+
+    private function save_production_planning($save_budget = false){
+
+        $tahun = post('tahun');
+        $table = 'tbl_production_planning_' . $tahun ;
+
+        $value = $this->input->post('production_value') ?? [];
+        $product = $this->input->post('production_product') ?? [];
+        $month = $this->input->post('production_month') ?? [];
+        $edit = $this->input->post('production_edit') ?? [];
+
+        foreach($value as $k => $v){
+            if(!empty($value) && isset($product[$k]) && isset($month[$k]) && isset($edit[$k])){
+                $cache_key = 'product_detail_'.$product[$k].'_tahun_'.$tahun;
+                $detail_product = $this->cache->file->get($cache_key);
+
+                if(!$detail_product){
+                    $detail_product = get_data('tbl_fact_product fp',[
+                        'select' => 'fp.*',
+                        'where' => [
+                            'fp.code' => $product[$k]
+                        ],
+                        'join' => [
+                            'tbl_beginning_stock bs ON bs.budget_product_code = fp.code and bs.tahun = '.$tahun.' type left'
+                        ]
+                    ])->row_array();
+
+                    $this->cache->file->save($cache_key, $detail_product, 600);
+                }
+                
+                if($detail_product){
+
+                    // untuk menyimpan data kedalam budget production
+                    if($save_budget){
+                        $table_budget = 'tbl_budget_production_dev';
+                        $cek_prd = get_data($table_budget, [
+                            'where' => [
+                                'tahun' => $tahun,
+                                'budget_product_code' => $detail_product['code']
+                            ]
+                        ])->row_array();
+
+                        if($cek_prd){
+                            $data_update = [
+                                'B_'.sprintf('%02d', $month[$k]) => $value[$k],
+                            ];
+                            update_data($table_budget, $data_update, 'id', $cek_prd['id']);
+                        } else {
+                            $data_insert = [
+                                'tahun' => $tahun,
+                                'id_cost_centre' => $detail_product['id_cost_centre'],
+                                'product_line' => $detail_product['product_line'],
+                                'divisi' => $detail_product['divisi'],
+                                'category' => $detail_product['sub_product'],
+                                'id_budget_product' => $detail_product['id'],
+                                'budget_product_code' => $detail_product['code'],
+                                'budget_product_name' => $detail_product['product_name'],
+                                'id_user' => 0, // default 0
+                                'nip' => '', // default kosong
+                                'B_'.sprintf('%02d', $month[$k]) => $value[$k],
+                            ];
+                            insert_data($table_budget, $data_insert);
+                        }
+                    }
+
+                    // untuk menyimpan data production kedalam production planning
+                    $cek_prd = get_data($table, [
+                        'where' => [
+                            'posting_code' => 'PRD',
+                            'product_code' => $detail_product['code'],
+                        ]
+                    ])->row_array();
+                    
+                    if($cek_prd){
+                        $data_update = [
+                            'P_'.sprintf('%02d', $month[$k]) => $value[$k],
+                        ];
+                        update_data($table, $data_update, 'id', $cek_prd['id']);
+                    } else {
+                        $data_insert = [
+                            'revision' => 0,
+                            'product_code' => $detail_product['code'],
+                            'product_name' => $detail_product['product_name'],
+                            'cost_centre' => $detail_product['cost_centre'],
+                            'id_cost_centre' => $detail_product['id_cost_centre'],
+                            'product_line' => $detail_product['product_line'],
+                            'dest' => $detail_product['destination'],
+                            'batch' => 0,
+                            'posting_code' => 'PRD',
+                            'P_'.sprintf('%02d', $month[$k]) => $value[$k]
+                        ];
+
+                        insert_data($table, $data_insert);
+                    }
+
+                    if($edit[$k] == '1'){
+                        $cek_epd = get_data($table, [
+                            'where' => [
+                                'posting_code' => 'EPD',
+                                'product_code' => $detail_product['code'],
+                            ]
+                        ])->row_array();
+                        
+                        if($cek_epd){
+                            $data_update = [
+                                'P_'.sprintf('%02d', $month[$k]) => $value[$k],
+                            ];
+                            update_data($table, $data_update, 'id', $cek_epd['id']);
+                        } else {
+                            $data_insert = [
+                                'revision' => 0,
+                                'product_code' => $detail_product['code'],
+                                'product_name' => $detail_product['product_name'],
+                                'cost_centre' => $detail_product['cost_centre'],
+                                'id_cost_centre' => $detail_product['id_cost_centre'],
+                                'product_line' => $detail_product['product_line'],
+                                'dest' => $detail_product['destination'],
+                                'batch' => 0,
+                                'posting_code' => 'EPD',
+                                'P_'.sprintf('%02d', $month[$k]) => $value[$k]
+                            ];
+
+                            insert_data($table, $data_insert);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
