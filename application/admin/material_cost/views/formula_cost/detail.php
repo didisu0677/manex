@@ -59,10 +59,9 @@
                 <td><?php echo $p->material_name; ?> </td>
                 <td><?php echo $group_formula; ?> </td>
                 <td><?php echo $p->um; ?> </td>
-                <td><?php echo $p->quantity; ?> </td>
-                <td><?php echo number_format($price_budget); ?> </td>
-                <td><?php echo $p->curr; ?> </td>
-                <td><?php echo number_format($p->quantity * $price_budget); ?> </td>
+                <td class="text-right"><?php echo $p->quantity; ?> </td>
+                <td class="text-right"><?php echo number_format($price_budget); ?> </td>
+                <td class="text-right"><?php echo number_format($p->quantity * $price_budget); ?> </td>
             </tr>
             <?php } ?>
         </tbody>
