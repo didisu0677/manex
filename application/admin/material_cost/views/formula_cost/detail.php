@@ -37,17 +37,17 @@
             <?php foreach($detail as $p) { ?>
             <tr>
                 <?php 
-                    $group_forumula = '';
+                    $group_formula = '';
                     if($p->group_formula == 'A') {
-                        $group_forumula = 'Bottle';
+                        $group_formula = 'Bottle';
                     }elseif($p->group_formula=='B') {
-                        $group_forumula = 'Content';
+                        $group_formula = 'Content';
                     }elseif($p->group_formula=='C'){
-                        $group_forumula = 'Packing';
+                        $group_formula = 'Packing';
                     }elseif($p->group_formula == 'D'){
-                        $group_forumula = 'Set';
+                        $group_formula = 'Set';
                     }else{
-                         $group_forumula = '';
+                         $group_formula = '';
                     }
                 ?>
                 <td><?php echo $p->component_item; ?></td>
