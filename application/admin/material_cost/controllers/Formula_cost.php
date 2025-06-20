@@ -95,7 +95,7 @@ class Formula_cost extends BE_Controller {
                             'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
                             'tbl_material_formula d on a.budget_product_code = d.parent_item and d.tahun ="'.user('tahun_budget').'" type LEFT',
                             'tbl_material_price e on a.budget_product_code = e.material_code and e.year ="'.user('tahun_budget').'" type LEFT',
-                            'tbl_currency_rates f on e.curr = f.curr and and e.year ="'.user('tahun_budget').'" type LEFT'
+                            'tbl_currency_rates f on e.curr = f.curr and e.year ="'.user('tahun_budget').'" type LEFT'
                            ],
                 'where' => [
                     'a.tahun' => $tahun,
