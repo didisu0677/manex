@@ -127,7 +127,7 @@ class Formula_cost extends BE_Controller {
 		])->row_array();
 
 		$data['detail']	= get_data('tbl_material_formula a',[
-			'select'	=> 'a.*,b.price_us,b.curr, c.rates',
+			'select'	=> 'a.*, b.bm, b.bank_charges, b.handling_charges, b.price_us ,b.curr, c.rates, (b.price_us * c.rates) as total_price',
             'join' => ['tbl_material_price b on a.component_item = b.material_code type LEFT and b.year="'.user('tahun_budget').'"',
                     'tbl_currency_rates c on b.curr = c.curr type LEFT'
                       ],
