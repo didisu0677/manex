@@ -29,6 +29,7 @@
                 <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('group_formula'); ?></th>
                 <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('price'); ?></th>
                 <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('curr'); ?></th>
+                <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('rates'); ?></th>
             </tr>
         </thead>
 
