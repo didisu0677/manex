@@ -36,11 +36,25 @@
         <tbody>
             <?php foreach($detail as $p) { ?>
             <tr>
+                <?php 
+                    $group_forumula = '';
+                    if($p->group_formula == 'A') {
+                        $group_forumula = 'Bottle';
+                    }elseif($p->group_formula=='B') {
+                        $group_forumula = 'Content';
+                    }elseif($p->group_formula=='C'){
+                        $group_forumula = 'Packing';
+                    }elseif($p->group_formula == 'D'){
+                        $group_forumula = 'Set';
+                    }else{
+                         $group_forumula = '';
+                    }
+                ?>
                 <td><?php echo $p->component_item; ?></td>
                 <td><?php echo $p->material_name; ?> </td>
                 <td><?php echo $p->um; ?> </td>
                 <td><?php echo $p->quantity; ?> </td>
-                <td><?php echo $p->group_formula; ?> </td>
+                <td><?php echo $group_formula; ?> </td>
                 <td><?php echo number_format($p->price_us,5); ?> </td>
                 <td><?php echo $p->curr; ?> </td>
                 <td><?php echo number_format($p->rates,2); ?> </td>
