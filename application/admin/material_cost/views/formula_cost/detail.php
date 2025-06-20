@@ -24,12 +24,11 @@
             <tr>
                 <th style="background-color: #CC0000; color: white;" width =""><font color="#fff"><?php echo lang('material_code'); ?></th>
                 <th style="background-color: #CC0000; color: white;" width ="" class="text-center"><font color="#fff"><?php echo lang('material_name'); ?></th>
+                <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('group_formula'); ?></th>
                 <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('um'); ?></th>
                 <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('quantity'); ?></th>
-                <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('group_formula'); ?></th>
                 <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('price'); ?></th>
-                <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('curr'); ?></th>
-                <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('rates'); ?></th>
+                <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('total'); ?></th>
             </tr>
         </thead>
 
@@ -54,16 +53,16 @@
                 $pph = ($bm_amt + $p->total_price) * ($p->pph/100);
                 $ppn = ($bm_amt + $p->total_price) * ($p->ppn/100);
                 $price_budget = $p->total_price + $bm_amt + $p->bank_charges + $p->handling_charges ;
-
+                
                 ?>
                 <td><?php echo $p->component_item; ?></td>
                 <td><?php echo $p->material_name; ?> </td>
+                <td><?php echo $group_formula; ?> </td>
                 <td><?php echo $p->um; ?> </td>
                 <td><?php echo $p->quantity; ?> </td>
-                <td><?php echo $group_formula; ?> </td>
-                <td><?php echo number_format($p->price_us,5); ?> </td>
+                <td><?php echo number_format($p->price_budget); ?> </td>
                 <td><?php echo $p->curr; ?> </td>
-                <td><?php echo number_format($p->rates,2); ?> </td>
+                <td><?php echo number_format($p->quantity * $price_budget); ?> </td>
             </tr>
             <?php } ?>
         </tbody>
