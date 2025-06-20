@@ -28,7 +28,7 @@
                 <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('quantity'); ?></th>
                 <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('group_formula'); ?></th>
                 <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('price'); ?></th>
-                                <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('curr'); ?></th>
+                <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('curr'); ?></th>
             </tr>
         </thead>
 
@@ -41,6 +41,8 @@
                 <td><?php echo $p->quantity; ?> </td>
                 <td><?php echo $p->group_formula; ?> </td>
                 <td><?php echo number_format($p->price_us,5); ?> </td>
+                <td><?php echo $p->curr; ?> </td>
+                <td><?php echo number_format($p->rates,2); ?> </td>
             </tr>
             <?php } ?>
         </tbody>
