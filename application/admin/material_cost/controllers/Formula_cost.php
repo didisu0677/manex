@@ -94,12 +94,13 @@ class Formula_cost extends BE_Controller {
                 'join' =>  ['tbl_fact_product b on a.budget_product_code = b.code',
                             'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
                             'tbl_material_formula d on a.budget_product_code = d.parent_item and d.tahun ="'.user('tahun_budget').'" type LEFT',
-                            'tbl_material_price e on a.budget_product_code = e.material_code and e.year ="'.user('tahun_budget').'" type LEFT',
+                            'tbl_material_price e on d.component_item = e.material_code and e.year ="'.user('tahun_budget').'" type LEFT',
                             'tbl_currency_rates f on e.curr = f.curr and e.year ="'.user('tahun_budget').'" type LEFT'
                            ],
                 'where' => [
                     'a.tahun' => $tahun,
-                    'a.id_cost_centre' =>$m0->id
+                    'a.id_cost_centre' =>$m0->id,
+                    // 'a.budget_product_code1' => 'CIKRTRUNDM'
                 ],
                 'group_by' => 'a.budget_product_code',
             ])->result();
