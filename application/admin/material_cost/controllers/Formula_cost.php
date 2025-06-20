@@ -86,15 +86,22 @@ class Formula_cost extends BE_Controller {
 
 
             $data['produk'][$m0->id]= get_data('tbl_budget_production_dev a',[
-                'select' => 'a.*,b.code,b.product_name,b.destination, c.abbreviation as initial, c.cost_centre',
+                'select' => 'a.*,b.code,b.product_name,b.destination, c.abbreviation as initial, c.cost_centre,
+                            SUM(CASE WHEN d.group_formula = "A" THEN (d.quantity * (e.price_us * f.rates)) ELSE 0 END) AS Bottle,
+                            SUM(CASE WHEN d.group_formula = "B" THEN (d.quantity * (e.price_us * f.rates)) ELSE 0 END) AS Content,
+                            SUM(CASE WHEN d.group_formula = "C" THEN (d.quantity * (e.price_us * f.rates)) ELSE 0 END) AS Packing,
+                            SUM(CASE WHEN d.group_formula = "D" THEN (d.quantity * (e.price_us * f.rates)) ELSE 0 END) AS Sets',
                 'join' =>  ['tbl_fact_product b on a.budget_product_code = b.code',
                             'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
+                            'tbl_material_formula d on a.budget_product_code = d.parent_item and d.tahun ="'.user('tahun_budget').'" type LEFT',
+                            'tbl_material_price e on a.budget_product_code = e.material_code and e.year ="'.user('tahun_budget').'" type LEFT',
+                            'tbl_currency_rates f on e.curr = f.curr and and e.year ="'.user('tahun_budget').'" type LEFT'
                            ],
                 'where' => [
                     'a.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id
                 ],
-                'sort_by' => 'a.id_cost_centre'
+                'group_by' => 'a.budget_product_code',
             ])->result();
 
         }
