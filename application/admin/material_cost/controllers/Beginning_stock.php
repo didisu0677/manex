@@ -132,7 +132,7 @@ class Beginning_stock extends BE_Controller {
 		$file = post('fileimport');
         $filter = post();
 
-        update_data($table,['is_active'=>0]);
+        update_data($table,['is_active'=>0],['tahun'=>$tahun]);
 
 
         $col = ['PRODUCT', 'CODE', 'BATCH_SIZE', 'YIELD' , 'TOTAL_STOCK'];
