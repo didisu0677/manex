@@ -78,7 +78,7 @@ class Beginning_stock extends BE_Controller {
                 if(!isset($cek->id)){
                     insert_data($table,
                     ['tahun' => $tahun, 'id_cost_centre' => $p->id_cost_centre ,'divisi' => $p->divisi, 'product_line' => $p->product_line, 'id_budget_product'=>$p->id, 'budget_product_code'=>$p->code, 
-                    'budget_product_name' => $p->product_name, 'category' => $p->sub_product]
+                    'budget_product_name' => $p->product_name, 'category' => $p->sub_product, 'is_active' => 1]
                 );
                 }
             }
@@ -92,7 +92,7 @@ class Beginning_stock extends BE_Controller {
                 'where' => [
                     'a.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id,
-                    'a.is_active' => 1,
+                    'a.is_active' => 0,
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
