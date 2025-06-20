@@ -92,7 +92,7 @@ class Beginning_stock extends BE_Controller {
                 'where' => [
                     'a.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id,
-                    'a.is_active' => 0,
+                    'a.is_active' => 1,
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
