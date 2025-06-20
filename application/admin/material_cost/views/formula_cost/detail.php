@@ -50,10 +50,10 @@
                          $group_formula = '';
                     }
 
-                $bm_amt = $p['total_price'] * ($p['bm']/100);
-                $pph = ($bm_amt + $p['total_price']) * ($p['pph']/100);
-                $ppn = ($bm_amt + $p['total_price']) * ($p['ppn']/100);
-                $price_budget = $m1['total_price'] + $bm_amt + $p['bank_charges'] + $p['handling_charges'] ;
+                $bm_amt = $p->total_price * ($p->bm/100);
+                $pph = ($bm_amt + $p->total_price) * ($p->pph/100);
+                $ppn = ($bm_amt + $p->total_price) * ($p->ppn/100);
+                $price_budget = $m1->total_price + $bm_amt + $p->bank_charges + $p->handling_charges ;
 
                 ?>
                 <td><?php echo $p->component_item; ?></td>
