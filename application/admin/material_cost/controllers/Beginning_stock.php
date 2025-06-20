@@ -91,7 +91,8 @@ class Beginning_stock extends BE_Controller {
                            ],
                 'where' => [
                     'a.tahun' => $tahun,
-                    'a.id_cost_centre' =>$m0->id
+                    'a.id_cost_centre' =>$m0->id,
+                    'a.is_active' => 1,
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
@@ -130,6 +131,8 @@ class Beginning_stock extends BE_Controller {
         $table = 'tbl_beginning_stock';
 		$file = post('fileimport');
         $filter = post();
+
+        update_data($table,['is_active'=>0]);
 
 
         $col = ['PRODUCT', 'CODE', 'BATCH_SIZE', 'YIELD' , 'TOTAL_STOCK'];
@@ -173,7 +176,7 @@ class Beginning_stock extends BE_Controller {
                 $data['batch_size'] = (isset($loop_data['BATCH_SIZE']) ? str_replace(['.',','],'', $loop_data['BATCH_SIZE']) : 0);
                 $data['yield'] = $loop_data['YIELD'];
                 $data['TOTAL_STOCK'] = (isset($loop_data['TOTAL_STOCK']) ? str_replace(['.',','],'', $loop_data['TOTAL_STOCK']) : 0);
-               
+                $data['is_active'] = 1;
 
                 $data['update_at'] = date('Y-m-d H:i:s');
                 $data['update_by'] = user('nama');
