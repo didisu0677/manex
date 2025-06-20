@@ -28,6 +28,7 @@
                 <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('quantity'); ?></th>
                 <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('group_formula'); ?></th>
                 <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('price'); ?></th>
+                                <th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('curr'); ?></th>
             </tr>
         </thead>
 
