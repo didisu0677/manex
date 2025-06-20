@@ -59,5 +59,6 @@
     "kode": "Kode",
     "product_code" : "Product Code",
     "product_name" : "Product Nane",
-    "material_detail" : "Material Detail"
+    "material_detail" : "Material Detail",
+    "price" : "Price"
 }
