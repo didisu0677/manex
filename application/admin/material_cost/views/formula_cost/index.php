@@ -46,15 +46,16 @@
 					<?php
 					table_open('table table-bordered table-app table-hover table-1');
 					thead();
-					tr();
-					th('Product', '','class="text-center align-middle headcol"');
-					th('Code', '', 'width="120" class="text-center align-middle headcol"');
-					th('Dest', '', 'width="60" class="text-center align-middle headcol"');
-					th('Bottle', '', 'width="120" class="text-center align-middle headcol"');
-					th('Content', '', 'width="120" class="text-center align-middle headcol"');
-					th('Packing', '', 'width="120" class="text-center align-middle headcol"');
-					th('Set', '', 'width="120"class="text-center align-middle headcol"');
-					th('Total', '', 'width="120" class="text-center align-middle headcol"');
+					tr(); ?>
+	             	<th style="background-color: #CC0000; color: white;" width =""><font color="#fff"><?php echo lang('product_code'); ?></th>
+              		<th style="background-color: #CC0000; color: white;" width =""><font color="#fff"><?php echo lang('material_code'); ?></th>
+					<th style="background-color: #CC0000; color: white;" width ="" class="text-center"><font color="#fff"><?php echo lang('material_name'); ?></th>
+					<th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('group_formula'); ?></th>
+					<th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('um'); ?></th>
+					<th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('quantity'); ?></th>
+					<th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('price'); ?></th>
+					<th style="background-color: #CC0000; color: white;"><font color="#fff"><?php echo lang('total'); ?></th>
+					<?php
 					tbody();
 					table_close();
 					?>

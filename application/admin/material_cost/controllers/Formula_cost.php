@@ -40,72 +40,18 @@ class Formula_cost extends BE_Controller {
 
         $table = 'tbl_budget_production_dev';
 
-        $arr = [
-            'select' => 'a.cost_centre as kode, b.id, b.cost_centre',
-            'join' => 'tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
-            'where' => [
-                'a.is_active' => 1,
-                'a.id_cost_centre !=' => 0,
-            ],
-            'group_by' => 'a.id_cost_centre',
-            'sort_by' => 'b.id', 
-             ];
-
-        if($cost_centre && $cost_centre !='ALL') $arr['where']['a.cost_centre'] = $cost_centre;
-
-
-	    $data['grup'][0]= get_data('tbl_fact_product a',$arr)->result();
-
-
-        foreach($data['grup'][0] as $m0) {	
-
-            $cproduk = get_data('tbl_fact_product a',[
-                'where' => [
-                    'a.is_active' => 1,
-                    'a.id_cost_centre' => $m0->id,
+        $data['detail']	= get_data('tbl_material_formula a',[
+            'select'	=> 'a.parent_item, a.component_item, a.material_name, 
+                            a.quantity, a.um, a.group_formula, b.bm, b.bank_charges, b.handling_charges, b.price_us ,b.curr, c.rates, c.ppn, c.pph, (b.price_us * c.rates) as total_price',
+            'join' => ['tbl_material_price b on a.component_item = b.material_code type LEFT and b.year="'.user('tahun_budget').'"',
+                    'tbl_currency_rates c on b.curr = c.curr type LEFT'
+                    ],
+            'where'		=> [
+                '__m' => 'a.parent_item in (select budget_product_code from tbl_beginning_stock where is_active = 1 and tahun="'.$tahun.'")',
+                'a.tahun' => $tahun,
                 ],
-                'sort_by' => 'a.id_cost_centre'
-            ])->result();
-            
-            foreach($cproduk as $p) {   
-                $cek = get_data($table . ' a',[
-                    'select' => 'a.*',
-                    'where' => [
-                        'a.tahun' => $tahun,
-                        'a.budget_product_code' => $p->code,
-                        'a.product_line' => $p->product_line,
-                    ]
-                ])->row();
-                if(!isset($cek->id)){
-                    insert_data($table,
-                    ['tahun' => $tahun, 'id_cost_centre' => $p->id_cost_centre ,'divisi' => $p->divisi, 'product_line' => $p->product_line, 'id_budget_product'=>$p->id, 'budget_product_code'=>$p->code, 
-                    'budget_product_name' => $p->product_name, 'category' => $p->sub_product]
-                );
-                }
-            }
-
-
-            $data['produk'][$m0->id]= get_data('tbl_budget_production_dev a',[
-                'select' => 'a.*,b.code,b.product_name,b.destination, c.abbreviation as initial, c.cost_centre,
-                            SUM(CASE WHEN d.group_formula = "A" THEN (d.quantity * (e.price_us * f.rates)) ELSE 0 END) AS Bottle,
-                            SUM(CASE WHEN d.group_formula = "B" THEN (d.quantity * (e.price_us * f.rates)) ELSE 0 END) AS Content,
-                            SUM(CASE WHEN d.group_formula = "C" THEN (d.quantity * (e.price_us * f.rates)) ELSE 0 END) AS Packing,
-                            SUM(CASE WHEN d.group_formula = "D" THEN (d.quantity * (e.price_us * f.rates)) ELSE 0 END) AS Sets',
-                'join' =>  ['tbl_fact_product b on a.budget_product_code = b.code',
-                            'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
-                            'tbl_material_formula d on a.budget_product_code = d.parent_item and d.tahun ="'.user('tahun_budget').'" type LEFT',
-                            'tbl_material_price e on d.component_item = e.material_code and e.year ="'.user('tahun_budget').'" type LEFT',
-                            'tbl_currency_rates f on e.curr = f.curr and e.year ="'.user('tahun_budget').'" type LEFT'
-                           ],
-                'where' => [
-                    'a.tahun' => $tahun,
-                    'a.id_cost_centre' =>$m0->id,
-                    // 'a.budget_product_code1' => 'CIKRTRUNDM'
-                ],
-                'group_by' => 'a.budget_product_code',
-            ])->result();
-
-        }
+            'sort_by' => 'a.parent_item'
+        ])->result();
 
 
         $response	= array(

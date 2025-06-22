@@ -1,68 +1,43 @@
 <?php 
-//debug($dtx_core2018);die;
-	$hno = 0;
-	// for ($i = setting('actual_budget'); $i <= 12; $i++) {
-
-	for ($i = 1; $i <= 12; $i++) {
-		$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
-		$$sumtotalfield0 = 0;
-	}
-	$sumstotal_budget = 0;
-
-	foreach($grup[0] as $m0) { ?>
-		<tr>
-            <?php $colspan = 3 + (12 ); ?>
-			<th colspan="<?php echo $colspan ; ?>" style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"><?php echo $m0->cost_centre; ?></font></th>
-		</tr>		
-  	<?php
-
-
-
-	foreach($produk[$m0->id] as $m2 => $m1) { 
-		// debug($m1->product_name);die;
-		// debug(isset($m1['product_name']) ? $m1['product_name'] : '');die;
-			$no++;
-						
+	foreach($detail as $m1) { 
 		$bgedit ="";
 		$contentedit ="false" ;
+		$group_formula = '';
+		if($m1->group_formula == 'A') {
+			$group_formula = 'Bottle';
+		}elseif($m1->group_formula=='B') {
+			$group_formula = 'Content';
+		}elseif($m1->group_formula=='C'){
+			$group_formula = 'Packing';
+		}elseif($m1->group_formula == 'D'){
+			$group_formula = 'Set';
+		}else{
+			$group_formula = '';
+		}
+
+		$bm_amt = $m1->total_price * ($m1->bm/100);
+		$pph = ($bm_amt + $m1->total_price) * ($m1->pph/100);
+		$ppn = ($bm_amt + $m1->total_price) * ($m1->ppn/100);
+		$price_budget = $m1->total_price + $bm_amt + $m1->bank_charges + $m1->handling_charges ;
+
+
 		?>
 		<tr>
 
-			<td><?php echo isset($m1->product_name) ? $m1->product_name : ''; ?></td>
-			<td><a href="<?php echo base_url('material_cost/formula_cost/detail/?code='. $m1->code.''); ?>" class="cInfo"><?php echo $m1->code; ?></a></td>
-			<td><?php echo isset($m1->destination) ? $m1->destination : ''; ?></td>
+			<td><?php echo isset($m1->parent_item) ? $m1->parent_item : ''; ?></td>
+			<td><?php echo $m1->component_item; ?></td>
+			<td><?php echo isset($m1->material_name) ? $m1->material_name : ''; ?></td>
+			<td><?php echo $group_formula; ?></td>
+			<td><?php echo $m1->um; ?></td>
 			<?php
 
 
-			$bgedit ="";
-			$contentedit ="true" ;
-			// for ($i = setting('actual_budget'); $i <= 12; $i++) {
+  			echo '<td class="text-right">'.number_format($m1->quantity,5).'</td>';
+			echo '<td class="text-right">'.number_format($price_budget,5).'</td>';
+            echo '<td class="text-right">'.number_format($m1->quantity * $price_budget,5).'</td>';
 
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="">'.number_format($m1->Bottle).'</td>';
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="">'.number_format($m1->Content).'</td>';
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="">'.number_format($m1->Packing).'</td>';
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="">'.number_format($m1->Sets).'</td>';
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value=""><b>'. number_format(($m1->Bottle + $m1->Content + $m1->Packing + $m1->Sets)).'</b></td>';
 			?>
 
 		</tr>
 	<?php 
 	} ?>
-	<tr>
-		<td class="sub-1" colspan="2"><b>TOTAL <?php echo $m0->cost_centre  ?></b></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-	</tr>
-	
-<?php } ;?>
-	<tr>
-		<td class="sub-1" colspan="2"><b>GRAND TOTAL</b></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
-</tr>
