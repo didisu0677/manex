@@ -171,7 +171,7 @@
 
 				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$m1->id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="id="'.$field0x.$m1->id.'"></td>';
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0.'" data-id="'.$id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="'.$field0x.$m1->id.'"
-					data-cost-center="'.$m0->id.'" data-type="x-production" data-month="'.$i.'" data-product-id="'.$id.'"
+					data-cost-center="'.$m0->id.'" data-type="x-production" data-month="'.$i.'" data-product-id="'.$id.'" data-product-code="'.$m1->code.'"
 				>'.number_format($xxx5, 0).'</td>';
 
 			}

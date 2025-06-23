@@ -402,7 +402,7 @@
 							value_production = value_produksi;
 						} else {
 							if($('#' + key1 + idx).attr('data-edit') === '0'){
-								$('#' + key1 + idx).text(numberFormat(columnData1[key1],0));
+								$('#' + key1 + idx).text(numberFormat(total,0));
 							} else {
 								value_production = $('#' + key1 + idx).text().replace(/\,/g,'')
 							}
@@ -467,6 +467,7 @@
 			let key_m_cov = `m_cov_${String(i).padStart(2, '0')}`;
 			let budget = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).data('nilai');
 			let value_xproduction = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).text().replace(/\,/g,'')
+			console.log(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`)
 			let nilai = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).text().replace(/\,/g,'')
 			let idx = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).data('id')
 			let cost_center = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).data('cost-center')
@@ -480,7 +481,7 @@
 				if(val_cc == cost_center && month == i && value_produksi != 0){
 					value_production = value_produksi;
 				} else {
-					if($(`[data-type="production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).data('edit') == 0){
+					if($(`[data-type="production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).data('edit') == '0'){
 						$(`[data-type="production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).text(numberFormat(value_production, 0));
 					} else {
 						value_production = $('#' + key1 + idx).text().replace(/\,/g,'')
