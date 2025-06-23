@@ -40,18 +40,44 @@ class Formula_cost extends BE_Controller {
 
         $table = 'tbl_budget_production_dev';
 
-        $data['detail']	= get_data('tbl_material_formula a',[
+        //$bm_amt = $m1->total_price * ($m1->bm/100);
+        //$pph = ($bm_amt + $m1->total_price) * ($m1->pph/100);
+		//$ppn = ($bm_amt + $m1->total_price) * ($m1->ppn/100);
+        //$price_budget = $m1->total_price + $bm_amt + $m1->bank_charges + $m1->handling_charges ;
+
+        $data['produk']	= get_data('tbl_material_formula a',[
             'select'	=> 'a.parent_item, a.component_item, a.material_name, 
-                            a.quantity, a.um, a.group_formula, b.bm, b.bank_charges, b.handling_charges, b.price_us ,b.curr, c.rates, c.ppn, c.pph, (b.price_us * c.rates) as total_price',
+                            a.quantity, a.um, a.group_formula', 
             'join' => ['tbl_material_price b on a.component_item = b.material_code type LEFT and b.year="'.user('tahun_budget').'"',
                     'tbl_currency_rates c on b.curr = c.curr type LEFT'
                     ],
             'where'		=> [
                 '__m' => 'a.parent_item in (select budget_product_code from tbl_beginning_stock where is_active = 1 and tahun="'.$tahun.'")',
                 'a.tahun' => $tahun,
+                'a.component_item' => 'CIRMDBBF1J'
+                ],
+            'group_by' => 'a.parent_item,a.component_item',
+            'sort_by' => 'a.parent_item'
+        ])->result();
+
+
+
+        $data['detail']	= get_data('tbl_material_formula a',[
+            'select'	=> 'a.parent_item, a.component_item, a.material_name, 
+                            a.quantity, a.um, a.group_formula, b.bm, 
+                            b.bank_charges, b.handling_charges, b.price_us ,b.curr, c.rates, c.ppn, c.pph, (b.price_us * c.rates) as total_price',
+            'join' => ['tbl_material_price b on a.component_item = b.material_code type LEFT and b.year="'.user('tahun_budget').'"',
+                    'tbl_currency_rates c on b.curr = c.curr type LEFT'
+                    ],
+            'where'		=> [
+                '__m' => 'a.parent_item in (select budget_product_code from tbl_beginning_stock where is_active = 1 and tahun="'.$tahun.'")',
+                'a.tahun' => $tahun,
+                'a.component_item' => 'CIRMDBBF1J',
                 ],
             'sort_by' => 'a.parent_item'
         ])->result();
+
+        debug($data['detail']);die;
 
 
         $response	= array(
