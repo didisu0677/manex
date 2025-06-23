@@ -48,7 +48,7 @@ class Formula_cost extends BE_Controller {
         $data['produk']	= get_data('tbl_material_formula a',[
             'select'	=> 'a.parent_item, a.component_item, a.material_name, 
                             a.quantity, a.um, a.group_formula', 
-            'join' => ['tbl_material_price b on a.component_item = b.material_code type LEFT and b.year="'.user('tahun_budget').'"',
+            'join' => ['tbl_material_price b on a.component_item = b.material_code type LEFT and b.year="'.$tahun.'"',
                     'tbl_currency_rates c on b.curr = c.curr type LEFT'
                     ],
             'where'		=> [
@@ -66,7 +66,7 @@ class Formula_cost extends BE_Controller {
             'select'	=> 'a.parent_item, a.component_item, a.material_name, 
                             a.quantity, a.um, a.group_formula, b.bm, 
                             b.bank_charges, b.handling_charges, b.price_us ,b.curr, c.rates, c.ppn, c.pph, (b.price_us * c.rates) as total_price',
-            'join' => ['tbl_material_price b on a.component_item = b.material_code type LEFT and b.year="'.user('tahun_budget').'"',
+            'join' => ['tbl_material_price b on a.component_item = b.material_code type LEFT and b.year="'.$tahun.'"',
                     'tbl_currency_rates c on b.curr = c.curr type LEFT'
                     ],
             'where'		=> [
@@ -76,9 +76,6 @@ class Formula_cost extends BE_Controller {
                 ],
             'sort_by' => 'a.parent_item'
         ])->result();
-
-        debug($data['detail']);die;
-
 
         $response	= array(
             'table'		=> $this->load->view('transaction/formula_cost/table',$data,true),
