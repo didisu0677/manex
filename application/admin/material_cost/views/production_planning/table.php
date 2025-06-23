@@ -88,16 +88,16 @@
 		$$totalfield0 = 0;
 	}
 	$stotal_budget = 0;
-	foreach($produk[$m0->id] as $m2 => $m1) { 					
+	foreach($produk[$m0->id] as $m2 => $m1) { 		
 		$bgedit ="";
 		$contentedit ="false" ;
 		?>
 		<tr>
 
-			<td rowspan ="6" style="vertical-align: middle; "><?php echo isset($m1->product_name) ? $m1->product_name : ''; ?></td>
-			<td rowspan ="6" style="vertical-align: middle; "><?php echo isset($m1->code) ? $m1->code : ''; ?></td>
-			<td rowspan ="6" style="vertical-align: middle; "><?php echo isset($m1->destination) ? $m1->destination : ''; ?></td>
-			<td class="batch" rowspan ="6" style="vertical-align: middle; "><?php echo isset($m1->batch_size) ? number_format($m1->batch_size) : ''; ?></td>
+			<td rowspan ="6" style="vertical-align: middle; "><?php echo $m1->product_name ; ?></td>
+			<td rowspan ="6" style="vertical-align: middle; "><?php echo $m1->code ; ?></td>
+			<td rowspan ="6" style="vertical-align: middle; "><?php echo $m1->destination ; ?></td>
+			<td class="batch" rowspan ="6" style="vertical-align: middle; "><?php echo number_format($m1->batch_size) ; ?></td>
 			<td>Begining Stock</td>
 			<?php
 
