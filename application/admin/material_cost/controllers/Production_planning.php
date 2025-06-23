@@ -96,41 +96,43 @@ class Production_planning extends BE_Controller {
 
             // debug($data['prod']) ;die;
 
-            $cproduk = get_data('tbl_fact_product a',[
-                'where' => [
-                    'a.is_active' => 1,
-                    'a.id_cost_centre' => $m0->id,
-                ],
-                'sort_by' => 'a.id_cost_centre'
-            ])->result();
+            // $cproduk = get_data('tbl_fact_product a',[
+            //     'where' => [
+            //         'a.is_active' => 1,
+            //         'a.id_cost_centre' => $m0->id,
+            //     ],
+            //     'sort_by' => 'a.id_cost_centre'
+            // ])->result();
             
-            foreach($cproduk as $p) {   
-                $cek = get_data($table . ' a',[
-                    'select' => 'a.*',
-                    'where' => [
-                        'a.tahun' => $tahun,
-                        'a.budget_product_code' => $p->code,
-                        'a.product_line' => $p->product_line,
-                    ]
-                ])->row();
-                if(!isset($cek->id)){
-                    insert_data($table,
-                    ['tahun' => $tahun, 'id_cost_centre' => $p->id_cost_centre ,'divisi' => $p->divisi, 'product_line' => $p->product_line, 'id_budget_product'=>$p->id, 'budget_product_code'=>$p->code, 
-                    'budget_product_name' => $p->product_name, 'category' => $p->sub_product]
-                );
-                }
-            }
+            // foreach($cproduk as $p) {   
+            //     $cek = get_data($table . ' a',[
+            //         'select' => 'a.*',
+            //         'where' => [
+            //             'a.tahun' => $tahun,
+            //             'a.budget_product_code' => $p->code,
+            //             'a.product_line' => $p->product_line,
+            //         ]
+            //     ])->row();
+            //     if(!isset($cek->id)){
+            //         insert_data($table,
+            //         ['tahun' => $tahun, 'id_cost_centre' => $p->id_cost_centre ,'divisi' => $p->divisi, 'product_line' => $p->product_line, 'id_budget_product'=>$p->id, 'budget_product_code'=>$p->code, 
+            //         'budget_product_name' => $p->product_name, 'category' => $p->sub_product]
+            //     );
+            //     }
+            // }
 
-            $data['produk'][$m0->id]= get_data('tbl_budget_production a',[
+            $data['produk'][$m0->id]= get_data($table_prod.' a',[
                 'select' => 'a.*,b.code,b.product_name,b.destination, c.abbreviation as initial, c.cost_centre, d.batch_size',
-                'join' =>  ['tbl_fact_product b on a.budget_product_code = b.code',
+                'join' =>  ['tbl_fact_product b on a.product_code = b.code',
                             'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
-                            'tbl_beginning_stock d on a.budget_product_code = d.budget_product_code'
+                            'tbl_beginning_stock d on a.product_code = d.budget_product_code and d.tahun="'.$tahun.'"'
                            ],
                 'where' => [
-                    'a.tahun' => $tahun,
+                    // 'a.tahun' => $tahun,
                     'd.tahun' => $tahun,
+                    'd.is_active' => 1,
                     'a.id_cost_centre' =>$m0->id,
+                    'a.posting_code' => 'STA'
                     // 'a.budget_product_code' => 'CIU9N1PNDM'
                 ],
                 'sort_by' => 'a.id_cost_centre'
@@ -265,6 +267,7 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.tahun' => $tahun,
+                'd.is_active' => 1,
                 // 'a.budget_product_code' => 'CIU9N1PNDM',
             ],
             'group_by' => 'a.budget_product_code'
@@ -325,6 +328,7 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.tahun' => $tahun,
+                'a.is_active' => 1,
                 // 'a.budget_product_code' => 'CIU9N1PNDM'
             ],
             'group_by' => 'a.budget_product_code'
@@ -759,7 +763,8 @@ class Production_planning extends BE_Controller {
                         ],
             'where' => [
                 'a.posting_code' => 'STA',
-                'a.product_code' => $product_code
+                'a.product_code' => $product_code,
+                'd.is_active' => 1
             ],
         ])->row();
 
