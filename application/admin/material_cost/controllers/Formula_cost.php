@@ -54,7 +54,7 @@ class Formula_cost extends BE_Controller {
             'where'		=> [
                 '__m' => 'a.parent_item in (select budget_product_code from tbl_beginning_stock where is_active = 1 and tahun="'.$tahun.'")',
                 'a.tahun' => $tahun,
-                'a.component_item' => 'CIRMDBBF1J'
+                // 'a.component_item' => 'CIRMDBBF1J'
                 ],
             'group_by' => 'a.parent_item,a.component_item',
             'sort_by' => 'a.parent_item,a.component_item'
@@ -72,7 +72,7 @@ class Formula_cost extends BE_Controller {
             'where'		=> [
                 '__m' => 'a.parent_item in (select budget_product_code from tbl_beginning_stock where is_active = 1 and tahun="'.$tahun.'")',
                 'a.tahun' => $tahun,
-                'a.component_item' => 'CIRMDBBF1J',
+                // 'a.component_item' => 'CIRMDBBF1J',
                 ],
             'sort_by' => 'a.parent_item'
         ])->result();
