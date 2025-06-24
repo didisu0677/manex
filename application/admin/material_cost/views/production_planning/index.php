@@ -146,7 +146,7 @@
 	});
 
 	function lanjut() {
-		$.ajax({
+		let result = $.ajax({
 			url: base_url + 'material_cost/production_planning/proses',
 			data: {
 				id: id_proses,
@@ -342,7 +342,7 @@
 		return false;
 	});
 
-	function calculate(change_production_value = false, val_cc = '', month = '', value_produksi = 0) {
+	function calculate() {
 		// Objek untuk menyimpan data per kolom
 		$('.table-1 tbody tr').each(function() {
 			let columnData = {
@@ -374,7 +374,7 @@
 				prod_11: 0,
 				prod_12: 0
 			};
-			if ($(this).find('.xproduksi').text() !== '') {
+			// if ($(this).find('.xproduksi').text() !== '') {
 				for (let i = 1; i <= 12; i++) {
 					let key = `B_${String(i).padStart(2, '0')}`; // Membuat key seperti B_01, B_02, dst.
 					let key1 = `prod_${String(i).padStart(2, '0')}`;
@@ -386,57 +386,57 @@
 					let value_xproduction = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).text().replace(/\,/g, '')
 					let nilai = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('nilai');
 					let idx = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('id');
-					let cost_center = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('cost-center');
-					let total = budget * nilai;
-					if (value_xproduction != '') {
-						columnData[key] += budget * nilai;
-						columnData1[key1] += budget * nilai;
-							
-						let value_sales = $('#' + key_sales + idx).text().replace(/\,/g, '');
-						let value_end_stock = $('#' + key_end_stock + idx).text().replace(/\,/g, '');
-						let value_begining_stock = $('#' + key_begining_stock + idx).text().replace(/\,/g, '');
-						let value_production = columnData1[key1];
+					if(!isNaN(idx)){
+						let cost_center = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('cost-center');
+						let total = budget * nilai;
+						if (value_xproduction != '') {
+							columnData[key] += budget * nilai;
+							columnData1[key1] += budget * nilai;
+								
+							let value_sales = $('#' + key_sales + idx).text().replace(/\,/g, '');
+							let value_end_stock = $('#' + key_end_stock + idx).text().replace(/\,/g, '');
+							let value_begining_stock = $('#' + key_begining_stock + idx).text().replace(/\,/g, '');
+							let value_production = columnData1[key1];
 
-						// merubah value produksi
-						if(change_production_value == true && val_cc == cost_center && month == i && value_produksi != 0){
-							value_production = value_produksi;
-						} else {
+							// merubah value produksi
 							if($('#' + key1 + idx).attr('data-edit') === '0'){
 								$('#' + key1 + idx).text(numberFormat(total,0));
 							} else {
 								value_production = $('#' + key1 + idx).text().replace(/\,/g,'')
 							}
-						}
 
-						let new_end_stock = parseInt(value_begining_stock) + parseInt(value_production) - parseInt(value_sales)
-						let txt_new_end_stock = new_end_stock < 0 ? '-' + (numberFormat(new_end_stock, 0).replace(/[()]/g, '')) : numberFormat(new_end_stock)
-						$('#' + key_end_stock + idx).text(txt_new_end_stock);
-						let value_total_sales = 0
-						let divide_number = 0
-						for (let j = 0; j < 4; j++) {
-							if (j + i > 12) {
-								continue;
+							let new_end_stock = parseInt(value_begining_stock) + parseInt(value_production) - parseInt(value_sales)
+							let txt_new_end_stock = new_end_stock < 0 ? '-' + (numberFormat(new_end_stock, 0).replace(/[()]/g, '')) : numberFormat(new_end_stock, 0)
+							$('#' + key_end_stock + idx).text(txt_new_end_stock);
+							let value_total_sales = 0
+							let divide_number = 0
+							for (let j = 0; j < 4; j++) {
+								if (j + i > 12) {
+									continue;
+								}
+								let value_sales = parseInt($(`#sales_${String(j+i).padStart(2, '0')}${idx}`).text().replace(/\,/g, ''))
+								value_total_sales += !isNaN(value_sales) ? value_sales : 0
+								divide_number++;
 							}
-							let value_sales = parseInt($(`#sales_${String(j+i).padStart(2, '0')}${idx}`).text().replace(/\,/g, ''))
-							value_total_sales += !isNaN(value_sales) ? value_sales : 0
-							divide_number++;
-						}
 
-						let coverage = new_end_stock / (value_total_sales / divide_number);
-						$('#' + key_m_cov + idx).text(numberFormat(coverage, 2));
+							let coverage = new_end_stock / (value_total_sales / divide_number);
+							if (!Number.isFinite(coverage) || isNaN(coverage)) {
+								$('#' + key_m_cov + idx).text(numberFormat(0, 2));
+							} else {
+								$('#' + key_m_cov + idx).text(numberFormat(coverage, 2));
+							}
 
 
-						// update begining stock
-						for (let j = i; j <= 12; j++) {
-							let value_end_stock = $(`#end_stock_${String(j).padStart(2, '0')}${idx}`).text();
-							$(`#begining_stock_${String(j+1).padStart(2, '0')}${idx}`).text(value_end_stock);
+							// update begining stock
+							for (let j = i; j <= 12; j++) {
+								let value_end_stock = $(`#end_stock_${String(j).padStart(2, '0')}${idx}`).text();
+								$(`#begining_stock_${String(j+1).padStart(2, '0')}${idx}`).text(value_end_stock);
+							}
 						}
 					}
 				}
-			}
-
+			// }
 		});
-
 		calculate_grand_total_by_cost_center()
 	}
 
@@ -467,15 +467,14 @@
 			let key_m_cov = `m_cov_${String(i).padStart(2, '0')}`;
 			let budget = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).data('nilai');
 			let value_xproduction = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).text().replace(/\,/g,'')
-			console.log(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`)
 			let nilai = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).text().replace(/\,/g,'')
 			let idx = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).data('id')
 			let cost_center = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).data('cost-center')
 			let total = budget * nilai;
 			if (value_xproduction != '') {
-				let value_sales = $('#' + key_sales + idx).text().replace(/\,/g, '');
-				let value_end_stock = $('#' + key_end_stock + idx).text().replace(/\,/g, '');
-				let value_begining_stock = $('#' + key_begining_stock + idx).text().replace(/\,/g, '');
+				let value_sales = $(`[data-type="sales"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).text().replace(/\,/g, '');
+				let value_end_stock = $(`[data-type="end-stock"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).text().replace(/\,/g, '');
+				let value_begining_stock = $(`[data-type="begining-stock"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).text().replace(/\,/g, '');
 				let value_production = total;
 				// merubah value produksi
 				if(val_cc == cost_center && month == i && value_produksi != 0){
@@ -488,8 +487,9 @@
 					}
 				}
 				let new_end_stock = parseInt(value_begining_stock) + parseInt(value_production) - parseInt(value_sales)
-				let txt_new_end_stock = new_end_stock < 0 ? '-' + (numberFormat(new_end_stock, 0).replace(/[()]/g, '')) : numberFormat(new_end_stock)
-				$('#' + key_end_stock + idx).text(txt_new_end_stock);
+				
+				let txt_new_end_stock = new_end_stock < 0 ? '-' + (numberFormat(new_end_stock, 0).replace(/[()]/g, '')) : numberFormat(new_end_stock, 0)
+				$(`[data-type="end-stock"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).text(txt_new_end_stock);
 				let value_total_sales = 0
 				let divide_number = 0
 				for (let j = 0; j < 4; j++) {
@@ -501,7 +501,11 @@
 					divide_number++;
 				}
 				let coverage = new_end_stock / (value_total_sales / divide_number);
-				$('#' + key_m_cov + idx).text(numberFormat(coverage, 2));
+				if (!Number.isFinite(coverage) || isNaN(coverage)) {
+					$(`[data-type="m_cov"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).text(numberFormat(0, 2));
+				} else {
+					$(`[data-type="m_cov"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).text(numberFormat(coverage, 2));
+				}
 
 				// update begining stock
 				for (let j = i; j <= 12; j++) {
@@ -510,7 +514,7 @@
 				}
 			}
 		}
-		calculate_grand_total_by_cost_center()
+		calculate_grand_total_by_cost_center(val_cc)
 	}
 
 	let activeTable = '#result';
@@ -572,64 +576,125 @@
 		return parseInt(str.replace(/\,/g,'').trim()) || 0;
 	}
 
-	function calculate_grand_total_by_cost_center(){
+	function calculate_grand_total_by_cost_center(selectedCostCenter = "") {
+		const parse = parseNumber;
+		const format = numberFormat;
 
-		return false;
-		
-		let allProduction = $('[data-type="production"]');
-		let allBeginingStock = $('[data-type="begining-stock"]');
-		let allSales = $('[data-type="sales"]');
-		let allEndStock = $('[data-type="end-stock"]');
-		
-		for(let i = 0; i < 12; i++){
-			let total_produksi_by_month = 0;
-			let total_begining_stock_by_month = 0;
-			let total_sales_by_month = 0;
-			let total_end_stock_by_month = 0;
+		const typeMap = {
+			"production": "production",
+			"begining-stock": "begining",
+			"sales": "sales",
+			"end-stock": "end"
+		};
 
-			let $cost_centers = $(`[data-type="grand-total-produksi"][data-month="${i}"]`);
+		const allItems = {
+			production: {},
+			begining: {},
+			sales: {},
+			end: {}
+		};
 
-			$cost_centers.each(function(){
-				let costCenter = $(this).data('cost-center');
+		const outputElements = {};
 
-				// Filter dari cache (lebih cepat)
-				let prodItems = allProduction.filter(`[data-cost-center="${costCenter}"][data-month="${i}"]`);
-				let beginItems = allBeginingStock.filter(`[data-cost-center="${costCenter}"][data-month="${i}"]`);
-				let salesItems = allSales.filter(`[data-cost-center="${costCenter}"][data-month="${i}"]`);
-				let endItems = allEndStock.filter(`[data-cost-center="${costCenter}"][data-month="${i}"]`);
+		// 🔁 Cache semua elemen masuk dan keluar sekali aja
+		$('[data-type]').each(function () {
+			const el = this; // native element, lebih cepat dari $(this)
+			const $el = $(el);
+			const type = $el.data('type');
+			const month = $el.data('month');
+			const costCenter = $el.data('cost-center');
 
-				let totalProd = 0, totalBegin = 0, totalSales = 0, totalEnd = 0;
+			// Index input data
+			const key = typeMap[type];
+			if (key && month !== undefined && costCenter !== undefined) {
+				if (!selectedCostCenter || selectedCostCenter === costCenter) {
+					if (!allItems[key][month]) allItems[key][month] = {};
+					if (!allItems[key][month][costCenter]) allItems[key][month][costCenter] = [];
+					allItems[key][month][costCenter].push(el);
+				}
+			}
 
-				prodItems.each((_, el) => totalProd += parseNumber($(el).text()));
-				beginItems.each((_, el) => totalBegin += parseNumber($(el).text()));
-				salesItems.each((_, el) => totalSales += parseNumber($(el).text()));
-				endItems.each((_, el) => totalEnd += parseNumber($(el).text()));
+			// Index output target
+			if (
+				type &&
+				["grand-total-produksi", "total-produksi", "grand-total-begining-stock", "total-begining-stock",
+				"grand-total-sales", "total-sales", "grand-total-end-stock", "total-end-stock",
+				"grand-production", "grand-begining-stock", "grand-sales", "grand-end-stock"].includes(type)
+			) {
+				const key = `${type}-${month}-${costCenter ?? "global"}`;
+				outputElements[key] = el;
+			}
+		});
 
-				// Tambahkan ke total bulan
-				total_produksi_by_month += totalProd;
-				total_begining_stock_by_month += totalBegin;
-				total_sales_by_month += totalSales;
-				total_end_stock_by_month += totalEnd;
+		// 🔁 Loop tiap bulan
+		for (let i = 0; i < 12; i++) {
+			let totalMonth = {
+				production: 0,
+				begining: 0,
+				sales: 0,
+				end: 0
+			};
 
-				// Tulis hasil ke DOM
-				$(`[data-type="grand-total-produksi"][data-month="${i}"][data-cost-center="${costCenter}"]`).text(numberFormat(totalProd, 0));
-				$(`[data-type="total-produksi"][data-month="${i}"][data-cost-center="${costCenter}"]`).text(numberFormat(totalProd, 0));
+			// 🧠 Ambil semua cost center untuk bulan ini
+			const monthCostCenters = allItems.production?.[i]
+				? Object.keys(allItems.production[i])
+				: [];
 
-				$(`[data-type="grand-total-begining-stock"][data-month="${i}"][data-cost-center="${costCenter}"]`).text(numberFormat(totalBegin, 0));
-				$(`[data-type="total-begining-stock"][data-month="${i}"][data-cost-center="${costCenter}"]`).text(numberFormat(totalBegin, 0));
+			const costCenters = selectedCostCenter ? [selectedCostCenter] : monthCostCenters;
 
-				$(`[data-type="grand-total-sales"][data-month="${i}"][data-cost-center="${costCenter}"]`).text(numberFormat(totalSales, 0));
-				$(`[data-type="total-sales"][data-month="${i}"][data-cost-center="${costCenter}"]`).text(numberFormat(totalSales, 0));
+			costCenters.forEach(costCenter => {
+				const items = {
+					production: allItems.production?.[i]?.[costCenter] || [],
+					begining: allItems.begining?.[i]?.[costCenter] || [],
+					sales: allItems.sales?.[i]?.[costCenter] || [],
+					end: allItems.end?.[i]?.[costCenter] || []
+				};
 
-				$(`[data-type="grand-total-end-stock"][data-month="${i}"][data-cost-center="${costCenter}"]`).text(numberFormat(totalEnd, 0));
-				$(`[data-type="total-end-stock"][data-month="${i}"][data-cost-center="${costCenter}"]`).text(numberFormat(totalEnd, 0));
+				let sum = {
+					production: 0,
+					begining: 0,
+					sales: 0,
+					end: 0
+				};
+
+				items.production.forEach(el => sum.production += parse(el.textContent));
+				items.begining.forEach(el => sum.begining += parse(el.textContent));
+				items.sales.forEach(el => sum.sales += parse(el.textContent));
+				items.end.forEach(el => sum.end += parse(el.textContent));
+
+				totalMonth.production += sum.production;
+				totalMonth.begining += sum.begining;
+				totalMonth.sales += sum.sales;
+				totalMonth.end += sum.end;
+
+				// Simpan update ke DOM output cache
+				const update = (type, value) => {
+					const key = `${type}-${i}-${costCenter}`;
+					if (outputElements[key]) outputElements[key].textContent = format(value, 0);
+				};
+
+				update("grand-total-produksi", sum.production);
+				update("total-produksi", sum.production);
+				update("grand-total-begining-stock", sum.begining);
+				update("total-begining-stock", sum.begining);
+				update("grand-total-sales", sum.sales);
+				update("total-sales", sum.sales);
+				update("grand-total-end-stock", sum.end);
+				update("total-end-stock", sum.end);
 			});
 
-			// Tulis grand total bulan
-			$(`[data-type="grand-production"][data-month="${i}"]`).text(numberFormat(total_produksi_by_month, 0));
-			$(`[data-type="grand-sales"][data-month="${i}"]`).text(numberFormat(total_sales_by_month, 0));
-			$(`[data-type="grand-begining-stock"][data-month="${i}"]`).text(numberFormat(total_begining_stock_by_month, 0));
-			$(`[data-type="grand-end-stock"][data-month="${i}"]`).text(numberFormat(total_end_stock_by_month, 0));
+			// Update grand total per bulan
+			const updateGlobal = (type, value) => {
+				const key = `${type}-${i}-global`;
+				if (outputElements[key]) outputElements[key].textContent = format(value, 0);
+			};
+
+			updateGlobal("grand-production", totalMonth.production);
+			updateGlobal("grand-begining-stock", totalMonth.begining);
+			updateGlobal("grand-sales", totalMonth.sales);
+			updateGlobal("grand-end-stock", totalMonth.end);
 		}
 	}
+
+
 </script>

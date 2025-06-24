@@ -263,7 +263,7 @@ class Production_planning extends BE_Controller {
                         b.cost_centre,c.id as id_cost_centre, d.batch_size, ' . $field ,
             'join'   => ['tbl_fact_product b on a.budget_product_code = b.code type LEFT',
                          'tbl_fact_cost_centre c on b.cost_centre = c.kode type LEFT',
-                         'tbl_beginning_stock d on a.budget_product_code = d.budget_product_code type LEFT'
+                         'tbl_beginning_stock d on a.budget_product_code = d.budget_product_code and d.tahun ="'.$tahun.'" type LEFT'
                         ],
             'where' => [
                 'a.tahun' => $tahun,
@@ -516,10 +516,11 @@ class Production_planning extends BE_Controller {
                                 MAX(CASE WHEN a.posting_code = "XPR" THEN P_12 END) AS XPR_12,',                     
             'join'   => ['tbl_fact_product b on a.product_code = b.code type LEFT',
                         'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
-                        'tbl_beginning_stock d on a.product_code = d.budget_product_code type LEFT'
+                        'tbl_beginning_stock d on a.product_code = d.budget_product_code and d.tahun ="'.$tahun.'" type LEFT'
                         ],
             'where' => [
                 'a.product_code' => $product_code,
+                'd.is_active' => 1
             ],
         ])->row();
 
@@ -684,7 +685,7 @@ class Production_planning extends BE_Controller {
                          b.destination, d.batch_size, ' . $select ,
             'join'   => ['tbl_fact_product b on a.product_code = b.code type LEFT',
                         'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
-                        'tbl_beginning_stock d on a.product_code = d.budget_product_code type LEFT'
+                        'tbl_beginning_stock d on a.product_code = d.budget_product_code and d.tahun ="'.$tahun.'" type LEFT'
                         ],
             'where' => [
                 'a.product_code' => $product_code,
@@ -750,8 +751,6 @@ class Production_planning extends BE_Controller {
 
 
     function produksi_awal($product_code, $tahun) {
-        ini_set('memory_limit', '-1');
-		ini_set('max_execution_time', 0);
         
         $table_prod = 'tbl_production_planning_' . $tahun ;
 
@@ -769,88 +768,38 @@ class Production_planning extends BE_Controller {
         ])->row();
 
         if($c) {
-           $cek_prod = get_data($table_prod,[
-            'where' => [
-                'product_code' => $product_code,
-                'posting_code' => 'PRD',
-            ],
-            ])->row();
-
-            $data_prod = [
-                'revision' => 0,
-                'posting_code' => 'PRD',
-                'product_code' => $product_code,
-                'product_name' => $c->product_name,
-                'cost_centre' => $c->cost_centre,
-                'dest' => $c->destination,
-                'batch' => $c->batch_size,
-                'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
-                'product_line' => $c->product_line,
-            ];
-
-            $field = '';
-            for ($i = 1; $i <= 12; $i++) {
-                $field = 'P_' . sprintf('%02d', $i);
-                $data_prod[$field] = $c->batch_size;
-            }
-            
-
-            if (!isset($cek_prod->id)) {
-                insert_data($table_prod, $data_prod);
-            } else {
-                update_data($table_prod, $data_prod, ['id' => $cek_prod->id]);
-            }
-
-            // isi data untuk posting edit produksi //
-            $cek_prodE = get_data($table_prod,[
-            'where' => [
-                'product_code' => $product_code,
-                'posting_code' => 'EPR',
-            ],
-            ])->row();
-
-            $data_prodE = [
-                'revision' => 0,
-                'posting_code' => 'EPR',
-                'product_code' => $product_code,
-                'product_name' => $c->product_name,
-                'cost_centre' => $c->cost_centre,
-                'dest' => $c->destination,
-                'batch' => $c->batch_size,
-                'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
-                'product_line' => $c->product_line,
-            ];
-
-            if (!isset($cek_prodE->id)) {
-                insert_data($table_prod, $data_prodE);
-            } else {
-                update_data($table_prod, $data_prodE, ['id' => $cek_prodE->id]);
-            }
-
-            /// 
-
-            $cek_xprod = get_data($table_prod, [
-                'where' => [
+            $list_posting_code = ['COV','XPR','EPR','EPD','PRD'];
+            foreach($list_posting_code as $pc){
+                $cek_prod = get_data($table_prod,[
+                    'where' => [
+                        'product_code' => $product_code,
+                        'posting_code' => $pc,
+                    ],
+                ])->row();
+                $data_prod = [
+                    'revision' => 0,
+                    'posting_code' => $pc,
                     'product_code' => $product_code,
-                    'posting_code' => 'XPR',
-                ],
-            ])->row();
+                    'product_name' => $c->product_name,
+                    'cost_centre' => $c->cost_centre,
+                    'dest' => $c->destination,
+                    'batch' => $c->batch_size,
+                    'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
+                    'product_line' => $c->product_line,
+                ];
 
-            $data_xprod = [
-                'revision' => 0,
-                'posting_code' => 'XPR',
-                'product_code' => $product_code,
-                'product_name' => $c->product_name,
-                'cost_centre' => $c->cost_centre,
-                'dest' => $c->destination,
-                'batch' => $c->batch_size,
-                'id_cost_centre' => ($c->id_cost_centre == null) ? 0 : $c->id_cost_centre,
-                'product_line' => $c->product_line,
-            ];
+                $field = '';
+                for ($i = 1; $i <= 12; $i++) {
+                    $field = 'P_' . sprintf('%02d', $i);
+                    $data_prod[$field] = 0;
+                }
 
+                if (!isset($cek_prod->id)) {
+                    insert_data($table_prod, $data_prod);
+                }
+            }
 
             $field = "";
-            
             $next_data = [
                 'sales' => 0,
                 'beginning_stock' => 0,
@@ -866,7 +815,6 @@ class Production_planning extends BE_Controller {
                     'posting_code' => 'SLS'
                 ]
             ])->row_array();
-
             if($c->batch_size > 0){
                 for ($i = 1; $i <= 12; $i++) {
                     $sales = @$data_sales['P_'.sprintf('%02d', $i)] ?? 0;
