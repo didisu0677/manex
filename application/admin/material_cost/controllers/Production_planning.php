@@ -340,7 +340,7 @@ class Production_planning extends BE_Controller {
 
         if($stock) {
             foreach($stock as $s) {
-                $data_sls = [
+                $data_sta = [
                     'revision' => 0,
                     'posting_code' => 'STA',
                     'product_code' => $s->budget_product_code,
@@ -353,7 +353,7 @@ class Production_planning extends BE_Controller {
                     'P_01' => $s->total_stock,
                 ];
 
-                $cek = get_data($table_prod,[
+                $cek1 = get_data($table_prod,[
                     'where' => [
                         'revision' => 0,
                         'product_code' => $s->budget_product_code,
@@ -361,18 +361,13 @@ class Production_planning extends BE_Controller {
                     ],
                 ])->row();
 
-                if(!isset($cek->id)){
-                    insert_data($table_prod,$data_sls);
+                if(!isset($cek1->id)){
+                    insert_data($table_prod,$data_sta);
                 }else{
-                    update_data($table_prod,$data_sls,['id'=>$cek->id]);
+                    update_data($table_prod,$data_sta,['id'=>$cek1->id]);
                 }
-            }
 
-            /// end cari stock awal //
-            
-            // isi stock end //
-            foreach($stock as $s) {
-                $data_sls = [
+                $data_ste = [
                     'revision' => 0,
                     'posting_code' => 'STE',
                     'product_code' => $s->budget_product_code,
@@ -385,7 +380,7 @@ class Production_planning extends BE_Controller {
                     'P_01' => 0,
                 ];
 
-                $cek = get_data($table_prod,[
+                $cek2 = get_data($table_prod,[
                     'where' => [
                         'revision' => 0,
                         'product_code' => $s->budget_product_code,
@@ -393,10 +388,10 @@ class Production_planning extends BE_Controller {
                     ],
                 ])->row();
 
-                if(!isset($cek->id)){
-                    insert_data($table_prod,$data_sls);
+                if(!isset($cek2->id)){
+                    insert_data($table_prod,$data_ste);
                 }else{
-                    update_data($table_prod,$data_sls,['id'=>$cek->id]);
+                    update_data($table_prod,$data_ste,['id'=>$cek2->id]);
                 }
 
                                 
@@ -406,6 +401,13 @@ class Production_planning extends BE_Controller {
 
                 $this->produksi_awal($s->budget_product_code,$tahun);
             }
+
+            /// end cari stock awal //
+            
+            // isi stock end //
+            // foreach($stock as $s) {
+ 
+            // }
         }
 
 		render([
@@ -767,6 +769,7 @@ class Production_planning extends BE_Controller {
             ],
         ])->row();
 
+
         if($c) {
             $list_posting_code = ['COV','XPR','EPR','EPD','PRD'];
             foreach($list_posting_code as $pc){
@@ -798,6 +801,7 @@ class Production_planning extends BE_Controller {
                     insert_data($table_prod, $data_prod);
                 }
             }
+
 
             $field = "";
             $next_data = [
