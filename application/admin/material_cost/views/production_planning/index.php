@@ -627,7 +627,7 @@
 		});
 
 		// 🔁 Loop tiap bulan
-		for (let i = 0; i < 12; i++) {
+		for (let i = 1; i <= 12; i++) {
 			let totalMonth = {
 				production: 0,
 				begining: 0,
