@@ -22,7 +22,6 @@
 			</select>
 
 			<?php
-
 			if($access['access_input']==1)
 			$arr = [];
 			$arr = [

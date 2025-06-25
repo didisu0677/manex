@@ -68,17 +68,102 @@ class Material_price_report extends BE_Controller {
 
     
     function save_perubahan() {       
- 
         $table = 'tbl_material_price';
-
         $data   = json_decode(post('json'),true);
-
         foreach($data as $id => $record) {
             $result = $record;
              foreach ($result as $r => $v) {       
                 update_data($table, $result,'id',$id);
             }      
         }
+    }
+
+    function submit_report() {
+        $tahun = post('tahun');
+
+        $cost = get_data('tbl_material_formula a',[
+            'select'	=> 'd.id as id_product, a.parent_item, a.item_name, a.component_item, a.material_name, 
+                            a.quantity, a.um, a.group_formula, b.bm, 
+                            b.bank_charges, b.handling_charges, b.price_us ,b.curr, c.rates, c.ppn, c.pph, (b.price_us * c.rates) as total_price,
+                            e.total_budget as qty_production',
+            'join' => ['tbl_material_price b on a.component_item = b.material_code and b.year="'.$tahun.'" type LEFT ',
+                    'tbl_currency_rates c on b.curr = c.curr type LEFT',
+                    'tbl_fact_product d on a.parent_item = d.code type LEFT',
+                    'tbl_budget_production e on a.parent_item = e.budget_product_code and e.tahun ="'.$tahun.'" type LEFT'
+                    ],
+            'where'		=> [
+                '__m' => 'a.parent_item in (select budget_product_code from tbl_beginning_stock where is_active = 1 and tahun="'.$tahun.'")',
+                'a.tahun' => $tahun,
+                // 'a.component_item' => 'CIRMDBBF1J',
+                ],
+            'sort_by' => 'a.parent_item'
+        ])->result();
+
+
+        foreach ($cost as $c) {
+            $cek = get_data('tbl_unit_material_cost',[
+                'where' => [
+                    'tahun' => $tahun,
+                    'product_code' => $c->parent_item
+                ]
+            ])->row();
+
+            $bm_amt = $c->total_price * ($c->bm/100);
+            $pph = ($bm_amt + $c->total_price) * ($c->pph/100);
+            $ppn = ($bm_amt + $c->total_price) * ($c->ppn/100);
+            $price_budget = $c->total_price + $bm_amt + $c->bank_charges + $c->handling_charges ;
+            
+  
+
+            $data = [
+                'tahun' => $tahun,
+                'id_product' => $c->id_product,
+                'product_code' => $c->parent_item,
+                'description' => $c->item_name,
+                'qty_production' => $c->qty_production,
+                'bottle' => 0,
+                'content' => 0,
+                'packing' => 0,
+                'set' => 0,
+                'is_active' => 1
+            ];
+
+            
+            if(!isset($cek->product_code)) {
+                insert_data('tbl_unit_material_cost',$data);
+            }else{
+                $data['bottle'] = $cek->bottle ;
+                $data['content'] = $cek->content;
+                $data['packing'] = $cek->packing;
+                $data['set'] = $cek->set;
+                if($c->group_formula == 'A'){
+                    $data['bottle'] = $cek->bottle + $price_budget;
+                }elseif($c->group_formula == 'B'){
+                    $data['content'] = $cek->content + $price_budget;
+                }elseif($c->group_formula == 'C') {
+                    $data['packing'] = $cek->packing + $price_budget;
+                }elseif($c->group_formula == 'C') {
+                    $data['set'] = $cek->set + $price_budget;
+                }
+
+                update_data('tbl_unit_material_cost',$data,['id'=>$cek->id]);
+            }
+        }
+
+        delete_data('tbl_scm_submit', 'code_submit','COST');
+
+        insert_data('tbl_scm_submit',[
+            'tahun' => $tahun,
+            'code_submit' => 'COST',
+            'is_submit' => 1,
+            'is_active' => 1
+        ]);
+
+        render([
+			'status'	=> 'success',
+			'message'	=> 'Data Price Submit has been succesfuly'
+		],'json');	
+
     }
    
 

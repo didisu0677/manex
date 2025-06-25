@@ -25,7 +25,15 @@
 				// ['btn-export','Export Data','fa-download'],
 				// ['btn-template','Template Import','fa-file-excel']
 			];
-			echo access_button('delete,active,inactive,export,import',$arr)
+
+			$delete = '';
+			$import = '';
+			if($submit == 0) {
+				$delete = 'delete';
+				$import = 'import';
+			}
+
+			echo access_button($delete. ',active,inactive,export,' .$import ,$arr)
 			?>
 			
 		</div>

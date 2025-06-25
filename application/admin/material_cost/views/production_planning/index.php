@@ -30,8 +30,8 @@
 			$arr = [
 				// ['btn-save','Save Data','fa-save'],
 				['btn-export', 'Export Data', 'fa-upload'],
-				['btn-import', 'Import Data Begining Stock', 'fa-download'],
-				['btn-template', 'Template Import', 'fa-reg-file-alt']
+				// ['btn-import', 'Import Data Begining Stock', 'fa-download'],
+				// ['btn-template', 'Template Import', 'fa-reg-file-alt']
 			];
 			echo access_button('', $arr);
 			?>

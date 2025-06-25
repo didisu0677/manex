@@ -30,6 +30,18 @@ class Material_price extends BE_Controller {
 					'id_group' => [SCM,ADMIN]
 				],
 			])->result_array();
+
+		$data['submit'] = FALSE ;
+
+		$s = get_data('tbl_scm_submit',[
+			'code_submit' => 'COST',
+			'is_submit' => 1
+		])->row();
+		if(isset($s->id)) {
+			$data['submit'] = TRUE ;
+		}
+
+
 		render($data);
 	}
 
@@ -54,8 +66,20 @@ class Material_price extends BE_Controller {
 	    	$config['where']['id_user']	= $user_id;	
 		}
 
+		$submit = FALSE ;
+
+		$s = get_data('tbl_scm_submit',[
+			'code_submit' => 'COST',
+			'is_submit' => 1
+		])->row();
+		if(isset($s->id)) {
+			$submit = TRUE ;
+		}
+
+
+
 		if(menu()['access_edit']) {
-	        $config['button'][]	= button_serverside('btn-warning','btn-input',['fa-edit',lang('ubah'),true],'edit',['id_user'=>user('id')]);
+	        $config['button'][]	= button_serverside('btn-warning','btn-input',['fa-edit',lang('ubah'),true],'edit',['id_user'=>user('id'), $submit => 0]);
 		}
 	    if(menu()['access_delete']) {
 	        $config['button'][]	= button_serverside('btn-danger','btn-delete',['fa-trash-alt',lang('hapus'),true],'delete',['id_user'=>user('id')]);
