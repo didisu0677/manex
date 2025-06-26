@@ -107,8 +107,8 @@ class Material_price_report extends BE_Controller {
             'where'		=> [
                 '__m' => 'a.parent_item in (select budget_product_code from tbl_beginning_stock where is_active = 1 and tahun="'.$tahun.'")',
                 'a.tahun' => $tahun,
-                'a.parent_item' => 'CIGSKD22MN',
-                'a.group_formula' => 'B',
+                // 'a.parent_item' => 'CIGSKD22MN',
+                // 'a.group_formula' => 'B',
                 ],
             'group_by' => 'a.parent_item,a.component_item',
             'sort_by' => 'a.parent_item'
