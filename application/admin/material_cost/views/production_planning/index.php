@@ -265,14 +265,25 @@
 		var data_edit = {};
 		var i = 0;
 
-		$('.edited').each(function() {
-			var content = $(this).children('div');
-			if (typeof data_edit[$(this).attr('data-id')] == 'undefined') {
-				data_edit[$(this).attr('data-id')] = {};
-			}
-			data_edit[$(this).attr('data-id')][$(this).attr('data-name')] = $(this).text().replace(/[^0-9\-]/g, '');
-			i++;
-		});
+		// $('.edited').each(function() {
+		// 	var content = $(this).children('div');
+		// 	if (typeof data_edit[$(this).attr('data-id')] == 'undefined') {
+		// 		data_edit[$(this).attr('data-id')] = {};
+		// 	}
+		// 	data_edit[$(this).attr('data-id')][$(this).attr('data-name')] = $(this).text().replace(/[^0-9\-]/g, '');
+		// 	i++;
+		// });
+
+		// prepare data x production sebelum submit
+		let $xproduction = $('[data-type="x-production"]')
+		let list_xproduction_value = []
+		let list_xproduction_product_code = []
+		let list_xproduction_month = []
+		$.each($xproduction, function(i, v){
+			list_xproduction_value.push($(v).text().replace(/\,/g,''))
+			list_xproduction_product_code.push($(v).data('product-code'))
+			list_xproduction_month.push($(v).data('month'))
+		})
 
 		// prepare data production sebelum dipost
 		let $production = $('[data-type="production"]');
@@ -297,7 +308,10 @@
 				production_value: list_production_value,
 				production_product: list_production_product_code,
 				production_month: list_production_month,
-				production_edit: list_production_edit
+				production_edit: list_production_edit,
+				xproduction_value: list_xproduction_value,
+				xproduction_product: list_xproduction_product_code,
+				xproduction_month: list_xproduction_month,
 			},
 			type: 'post',
 			success: function(response) {

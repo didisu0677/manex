@@ -231,18 +231,29 @@ class Production_planning extends BE_Controller {
                     'a.posting_code' => 'EPD',
                 ]
             ])->result();
+
+             $data['epr'][$m0->id] = get_data($table_prod .' a',[
+                'select' => 'a.*',
+                    'join' =>  ['tbl_fact_product b on a.product_code = b.code',
+                                'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
+                                ],
+                'where' => [
+                    'c.id' => $m0->id,
+                    'a.posting_code' => 'EPR',
+                ]
+            ])->result();
         }
 
         //edit produksi//
-        $data['epr'] = get_data('tbl_budget_production a',[
-            'select' => 'a.id, b.P_01, b.P_02,b.P_03,b.P_04,b.P_05,b.P_06,b.P_07,b.P_08,b.P_09,b.P_10,b.P_11,b.P_12',
-            'join' => $table_prod . ' b on a.budget_product_code = b.product_code',
-            'where' => [
-                'a.tahun' => $tahun,
-                'b.posting_code' => 'EPR',
-                // 'a.budget_product_code' => 'CIU9N1PNDM',
-            ],
-        ])->result_array();
+        // $data['epr'] = get_data('tbl_budget_production a',[
+        //     'select' => 'a.id, b.P_01, b.P_02,b.P_03,b.P_04,b.P_05,b.P_06,b.P_07,b.P_08,b.P_09,b.P_10,b.P_11,b.P_12',
+        //     'join' => $table_prod . ' b on a.budget_product_code = b.product_code',
+        //     'where' => [
+        //         'a.tahun' => $tahun,
+        //         'b.posting_code' => 'EPR',
+        //         // 'a.budget_product_code' => 'CIU9N1PNDM',
+        //     ],
+        // ])->result_array();
 
         $response	= array(
             'table'		=> $this->load->view('material_cost/production_planning/table',$data,true),
@@ -438,18 +449,20 @@ class Production_planning extends BE_Controller {
 
         $data   = json_decode(post('json'),true);
 
-        foreach($data as $id => $record) {
+        // foreach($data as $id => $record) {
 
-            // $cek_produk = get_data($table,'id',$id)->row();
-            // if(isset($cek_produk->product_code)) {
-            //     $result = $record;
-            //     foreach ($result as $r => $v) {       
-            //         update_data($table, $result,['product_code'=> $cek_produk->product_code, 'posting_code'=>'EPR']);
-            //     }      
-            // }
+        //     $cek_produk = get_data($table,'id',$id)->row();
+        //     if(isset($cek_produk->product_code)) {
+        //         $result = $record;
+        //         foreach ($result as $r => $v) {       
+        //             update_data($table, $result,['product_code'=> $cek_produk->product_code, 'posting_code'=>'EPR']);
+        //         }      
+        //     }
 
-            $this->save_production_planning();
-        }
+            // $this->save_production_planning();
+        // }
+
+        $this->save_xproduction_planning();
     }
 
     function xxend_stock($product_code ="",$tahun="") {
@@ -1161,5 +1174,109 @@ class Production_planning extends BE_Controller {
             'is_submit' => 1,
             'is_active' => 1
         ]);
+    }
+
+    private function save_xproduction_planning($save_budget = false){
+
+        $tahun = post('tahun');
+        $table = 'tbl_production_planning_' . $tahun ;
+
+        $value = $this->input->post('xproduction_value') ?? [];
+        $product = $this->input->post('xproduction_product') ?? [];
+        $month = $this->input->post('xproduction_month') ?? [];
+
+        foreach($value as $k => $v){
+            if(!empty($value) && isset($product[$k]) && isset($month[$k])){
+                $cache_key = 'product_detail_'.$product[$k].'_tahun_'.$tahun;
+                $detail_product = $this->cache->file->get($cache_key);
+
+                if(!$detail_product){
+                    $detail_product = get_data('tbl_fact_product fp',[
+                        'select' => 'fp.*',
+                        'where' => [
+                            'fp.code' => $product[$k]
+                        ],
+                        'join' => [
+                            'tbl_beginning_stock bs ON bs.budget_product_code = fp.code and bs.tahun = '.$tahun.' type left'
+                        ]
+                    ])->row_array();
+
+                    $this->cache->file->save($cache_key, $detail_product, 600);
+                }
+                if($detail_product){
+
+                    // untuk menyimpan data kedalam budget production
+                    // if($save_budget){
+                    //     $table_budget = 'tbl_budget_production';
+                    //     $cek_prd = get_data($table_budget, [
+                    //         'where' => [
+                    //             'tahun' => $tahun,
+                    //             'budget_product_code' => $detail_product['code']
+                    //         ]
+                    //     ])->row_array();
+
+                    //     if($cek_prd){
+                    //         $data_update = [
+                    //             'B_'.sprintf('%02d', $month[$k]) => $value[$k],
+                    //         ];
+                    //         update_data($table_budget, $data_update, 'id', $cek_prd['id']);
+                    //     } else {
+                    //         $data_insert = [
+                    //             'tahun' => $tahun,
+                    //             'id_cost_centre' => $detail_product['id_cost_centre'],
+                    //             'product_line' => $detail_product['product_line'],
+                    //             'divisi' => $detail_product['divisi'],
+                    //             'category' => $detail_product['sub_product'],
+                    //             'id_budget_product' => $detail_product['id'],
+                    //             'budget_product_code' => $detail_product['code'],
+                    //             'budget_product_name' => $detail_product['product_name'],
+                    //             'id_user' => 0, // default 0
+                    //             'nip' => '', // default kosong
+                    //             'B_'.sprintf('%02d', $month[$k]) => $value[$k],
+                    //         ];
+                    //         insert_data($table_budget, $data_insert);
+                    //     }
+                    // }
+                    // untuk menyimpan data production kedalam production planning
+                    $cek_prd = get_data($table, [
+                        'where' => [
+                            'posting_code' => 'EPR',
+                            'product_code' => $detail_product['code'],
+                        ]
+                    ])->row_array();
+                    
+                    if($cek_prd){
+                        $data_update = [
+                            'P_'.sprintf('%02d', $month[$k]) => $value[$k],
+                        ];
+                        update_data($table, $data_update, 'id', $cek_prd['id']);
+                    } else {
+                        $data_insert = [
+                            'revision' => 0,
+                            'product_code' => $detail_product['code'],
+                            'product_name' => $detail_product['product_name'],
+                            'cost_centre' => $detail_product['cost_centre'],
+                            'id_cost_centre' => $detail_product['id_cost_centre'],
+                            'product_line' => $detail_product['product_line'],
+                            'dest' => $detail_product['destination'],
+                            'batch' => 0,
+                            'posting_code' => 'EPR',
+                            'P_'.sprintf('%02d', $month[$k]) => $value[$k]
+                        ];
+
+                        insert_data($table, $data_insert);
+                    }
+                }
+            }
+        }
+
+        // delete_data('tbl_scm_submit', ['code_submit'=>'PROD','tahun'=>$tahun]);
+
+        // insert_data('tbl_scm_submit',[
+        //     'tahun' => $tahun,
+        //     'code_submit' => 'PROD',
+        //     'is_submit' => 1,
+        //     'is_active' => 1
+        // ]);
     }
 }

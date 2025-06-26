@@ -167,6 +167,12 @@
 						$id = $sp1->id ;
 						$xxx5 = $sp1->$field0 ;
 					}
+
+					foreach($epr[$m0->id] as $ek => $ev){
+						if($ev->product_code == $m1->code){
+							$xxx5 = $ev->$field0;
+						}
+					}
 				}
 
 				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$m1->id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="id="'.$field0x.$m1->id.'"></td>';
