@@ -43,7 +43,7 @@
 				</th>';
 			}
 			?>
-			<th style="background: #757575; text-align: left" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font>
+			<!-- <th style="background: #757575; text-align: left" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font> -->
 		</tr>
 		<tr>
 			<th style="background: #757575; text-align: left" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">Standar Produksi</font></th>
@@ -54,7 +54,7 @@
 				echo '<th class = "text-right" style="background: #757575; text-align: right" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($sprod[$m0->id][$i]).'</font></th>';
 			}
 			?>
-			<th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font>
+			<!-- <th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font> -->
 
 		</tr>
 		<tr>
@@ -66,7 +66,7 @@
 				echo '<th class= "text-right" style="background: #757575; text-align: right" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($kprod[$m0->id]).'</font></th>';
 			}
 			?>
-			<th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font>
+			<!-- <th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font> -->
 
 		</tr>
 		<tr>
@@ -79,7 +79,7 @@
 				echo '<th class = "text-right" style="background: #757575; text-align: right" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($wday[$m0->id][$i]).'</font></th>';
 			}
 			?>
-			<th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font>
+			<!-- <th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font> -->
 		</tr>	
   	<?php
 
@@ -137,7 +137,7 @@
 				data-type="begining-stock" data-cost-center="'.$m0->id.'" data-month="'.$i.'" data-product-code="'.$m1->code.'">'.$xxx2.'</td>';
 			}
 
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$id.'"><b>'.number_format(0).'</b></td>';
+			// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$id.'"><b>'.number_format(0).'</b></td>';
 
 			?>
 
@@ -217,7 +217,7 @@
 
 			}
 
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"><b>'.number_format(0).'</b></td>';
+			// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"><b>'.number_format(0).'</b></td>';
 
 			?>
 			
@@ -260,7 +260,7 @@
 					data-type="sales" data-cost-center="'.$m0->id.'" data-month="'.$i.'" data-product-code="'.$m1->code.'">'.$xxx1.'</td>';
 				}
 
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"><b>'.number_format(0).'</b></td>';
+				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"><b>'.number_format(0).'</b></td>';
 			?>
 		</tr>
 		<tr>
@@ -300,7 +300,7 @@
 					data-type="end-stock" data-cost-center="'.$m0->id.'" data-month="'.$i.'" data-product-code="'.$m1->code.'">'.$xxx3.'</td>';
 				}
 	
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"><b>'.number_format(0).'</b></td>';
+				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"><b>'.number_format(0).'</b></td>';
 	
 			?>
 		</tr>
@@ -330,7 +330,7 @@
 					echo '<td class="money-custom" style="background-color: #ffded7; color: #fd0501;"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$xxx4.'" id="'.$fieldp.$m1->id.'"
 					data-type="m_cov" data-cost-center="'.$m0->id.'" data-month="'.$i.'" data-product-code="'.$m1->code.'">'.$xxx4.'</td>';
 				}
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"><b>'.number_format(0).'</b></td>';
+				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"><b>'.number_format(0).'</b></td>';
 
 			?>
 		</tr>
@@ -354,7 +354,7 @@
 				data-type="total-begining-stock" data-cost-center="'.$m0->id.'" data-month="'.$i.'"
 			><b>'.number_format($$t_begining).'</b></td>';
 		}
-		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
+		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
 	</tr>
 	<tr>
@@ -367,7 +367,7 @@
 			$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"><b>'.number_format($$sumtotalfield0).'</b></td>';
 		}
-		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
+		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
 	</tr>
 	<tr>
@@ -391,7 +391,7 @@
 				<b>'.number_format($prod[$m0->id][$field0]).'</b>
 			</td>';
 		}
-		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
+		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
 	</tr>
 	<tr>
@@ -410,7 +410,7 @@
 				data-type="total-sales" data-cost-center="'.$m0->id.'" data-month="'.$i.'"
 			><b>'.number_format($$t_sales).'</b></td>';
 		}
-		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
+		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
 	</tr>
 	<tr>
@@ -434,7 +434,7 @@
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"
 			data-type="total-end-stock" data-cost-center="'.$m0->id.'" data-month="'.$i.'"><b>'.number_format($$t_end).'</b></td>';
 		}
-		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
+		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
 	</tr>
 	<tr>
@@ -448,7 +448,7 @@
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"
 			data-type="total-m-cov" data-cost-center="'.$m0->id.'" data-month="'.$i.'"><b>'.number_format($$sumtotalfield0).'</b></td>';
 		}
-		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
+		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
 	</tr>
 <?php } ;?>
@@ -468,7 +468,7 @@
 				data-type="grand-begining-stock" data-month="'.$i.'"
 			><b>'.number_format($$gt_begining).'</b></td>';
 		}
-		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
+		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
 </tr>
 <tr>
@@ -481,7 +481,7 @@
 		$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
 		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"><b>'.number_format($$sumtotalfield0).'</b></td>';
 	}
-	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
+	// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 	?>
 </tr>
 <tr>
@@ -497,7 +497,7 @@
 			data-type="grand-production" data-month="'.$i.'"
 		><b>'.number_format($$gt_prod).'</b></td>';
 	}
-	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
+	// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 	?>
 </tr>
 <tr>
@@ -513,7 +513,7 @@
 		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"
 		data-type="grand-sales" data-month="'.$i.'"><b>'.number_format($$gt_sales).'</b></td>';
 	}
-	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
+	// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 	?>
 </tr>
 <tr>
@@ -534,7 +534,7 @@
 		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"
 		data-type="grand-end-stock" data-month="'.$i.'"><b>'.number_format($$gt_end).'</b></td>';
 	}
-	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
+	// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 	?>
 </tr>
 <tr>
@@ -548,6 +548,6 @@
 		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"
 		data-type="grand-m-cov" data-month="'.$i.'"><b>'.number_format($$sumtotalfield0).'</b></td>';
 	}
-	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
+	// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 	?>
 </tr>

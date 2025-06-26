@@ -57,7 +57,7 @@
 						for ($i = 1; $i <= 12; $i++) {
 							th('', '', 'class="text-center" style="min-width:80px"');
 						}
-						th(lang('total'), '', 'width="60" rowspan="2" class="text-center align-middle headcol"');
+						// th(lang('total'), '', 'width="60" rowspan="2" class="text-center align-middle headcol"');
 
 						tr();
 						th(lang('description'), '', 'width="60" rowspan="2" class="text-center align-middle headcol"');
