@@ -133,7 +133,7 @@ class Material_price_report extends BE_Controller {
                 'id_product' => $c->id_product,
                 'product_code' => $c->parent_item,
                 'description' => $c->item_name,
-                'qty_production' => $c->qty_production,
+                'qty_production' => (isset($c->qty_production) ? $c->qty_production : 0),
                 'bottle' => 0,
                 'content' => 0,
                 'packing' => 0,
