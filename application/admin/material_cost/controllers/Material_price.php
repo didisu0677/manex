@@ -35,8 +35,10 @@ class Material_price extends BE_Controller {
 
 		$s = get_data('tbl_scm_submit',[
 			'code_submit' => 'COST',
-			'is_submit' => 1
+			'is_submit' => 1,
+			'tahun' => user('tahun_budget')
 		])->row();
+
 		if(isset($s->id)) {
 			$data['submit'] = TRUE ;
 		}
@@ -70,7 +72,8 @@ class Material_price extends BE_Controller {
 
 		$s = get_data('tbl_scm_submit',[
 			'code_submit' => 'COST',
-			'is_submit' => 1
+			'is_submit' => 1,
+			'tahun' => $tahun
 		])->row();
 		if(isset($s->id)) {
 			$submit = TRUE ;

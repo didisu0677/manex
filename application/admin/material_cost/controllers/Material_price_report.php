@@ -31,6 +31,17 @@ class Material_price_report extends BE_Controller {
             ],
         ])->result_array();
 
+        $data['submit'] = FALSE ;
+
+		$s = get_data('tbl_scm_submit',[
+			'code_submit' => 'COST',
+			'is_submit' => 1,
+			'tahun' => user('tahun_budget')
+		])->row();
+		
+		if(isset($s->id)) {
+			$data['submit'] = TRUE ;
+		}
 
         $access         = get_access($this->controller);
         $data['access'] = $access ;
@@ -150,7 +161,7 @@ class Material_price_report extends BE_Controller {
             }
         }
 
-        delete_data('tbl_scm_submit', 'code_submit','COST');
+        delete_data('tbl_scm_submit', ['code_submit'=>'COST','tahun'=>$tahun]);
 
         insert_data('tbl_scm_submit',[
             'tahun' => $tahun,

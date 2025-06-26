@@ -25,13 +25,12 @@
 
 			if($access['access_input']==1)
 			echo '<button class="btn btn-success btn-save" href="javascript:;" ><i class="fa-save"></i> Save</button>';
-			// echo '<button class="btn btn-warning btn-export" href="javascript:;" >Export</button>';
-			// echo '<button class="btn btn-primary btn-import" id="btn-import">Import</button>';
+
 			$arr = [];
 			$arr = [
 				// ['btn-save','Save Data','fa-save'],
 				['btn-export','Export Data','fa-upload'],
-				['btn-submit','Submit Budget','fa-submit'],
+				($submit == 0 ? ['btn-submit','Submit Budget','fa-submit'] :''),
 				($access['access_input'] ? ['btn-act-import','Import Data','fa-download'] :''),
 				// ['btn-template','Template Import','fa-reg-file-alt']
 			];
