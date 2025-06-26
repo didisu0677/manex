@@ -34,9 +34,11 @@ class Material_price_report extends BE_Controller {
         $data['submit'] = FALSE ;
 
 		$s = get_data('tbl_scm_submit',[
-			'code_submit' => 'COST',
-			'is_submit' => 1,
-			'tahun' => user('tahun_budget')
+            'where' => [
+                'code_submit' => 'COST',
+                'is_submit' => 1,
+                'tahun' => user('tahun_budget')
+            ],
 		])->row();
 		
 		if(isset($s->id)) {

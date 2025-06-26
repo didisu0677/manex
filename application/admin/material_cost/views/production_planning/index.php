@@ -21,10 +21,11 @@
 			</select>
 
 			<?php
-
-			echo '<button class="btn btn-info btn-proses" href="javascript:;" ><i class="fa-process"></i> Running MRP</button>';
-			echo '<button class="btn btn-success btn-save" href="javascript:;" > Save <span class="fa-save"></span></button>';
-			echo '<button class="btn btn-secondary btn-submit-production" href="javascript:;" > Submit Production <span class="fa-save"></span></button>';
+			if($submit==0) {
+				echo '<button class="btn btn-info btn-proses" href="javascript:;" ><i class="fa-process"></i> Running MRP</button>';
+				echo '<button class="btn btn-success btn-save" href="javascript:;" > Save <span class="fa-save"></span></button>';
+				echo '<button class="btn btn-secondary btn-submit-production" href="javascript:;" > Submit Production <span class="fa-save"></span></button>';
+			}
 
 			$arr = [];
 			$arr = [

@@ -28,6 +28,20 @@ class Production_planning extends BE_Controller {
 
 	    $data['cc']= get_data('tbl_fact_product a',$arr)->result();
 
+        $data['submit'] = FALSE ;
+
+		$s = get_data('tbl_scm_submit',[
+            'where' => [
+                'code_submit' => 'PROD',
+                'is_submit' => 1,
+                'tahun' => user('tahun_budget')
+            ],
+		])->row();
+
+		if(isset($s->id)) {
+			$data['submit'] = TRUE ;
+		}
+
         // debug($data);die;
 
 		render($data);
@@ -1138,5 +1152,14 @@ class Production_planning extends BE_Controller {
                 }
             }
         }
+
+        delete_data('tbl_scm_submit', ['code_submit'=>'PROD','tahun'=>$tahun]);
+
+        insert_data('tbl_scm_submit',[
+            'tahun' => $tahun,
+            'code_submit' => 'PROD',
+            'is_submit' => 1,
+            'is_active' => 1
+        ]);
     }
 }
