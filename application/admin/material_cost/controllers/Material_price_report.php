@@ -107,12 +107,16 @@ class Material_price_report extends BE_Controller {
             'where'		=> [
                 '__m' => 'a.parent_item in (select budget_product_code from tbl_beginning_stock where is_active = 1 and tahun="'.$tahun.'")',
                 'a.tahun' => $tahun,
-                // 'a.component_item' => 'CIRMDBBF1J',
+                'a.parent_item' => 'CIGSKD22MN',
+                'a.group_formula' => 'B',
                 ],
+            'group_by' => 'a.parent_item,a.component_item',
             'sort_by' => 'a.parent_item'
         ])->result();
 
+        // debug($cost);die;
 
+        delete_data('tbl_unit_material_cost',['tahun' => $tahun]) ;
         foreach ($cost as $c) {
             $cek = get_data('tbl_unit_material_cost',[
                 'where' => [
