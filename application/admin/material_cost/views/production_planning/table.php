@@ -167,11 +167,11 @@
 						$id = $sp1->id ;
 						$xxx5 = $sp1->$field0 ;
 					}
-				}
 
-				foreach($epr[$m0->id] as $ek => $ev){
-					if($ev->product_code == $m1->code){
-						$xxx5 = $ev->$field0;
+					foreach($epr[$m0->id] as $ek => $ev){
+						if($ev->product_code == $m1->code){
+							$xxx5 = $ev->$field0;
+						}
 					}
 				}
 
