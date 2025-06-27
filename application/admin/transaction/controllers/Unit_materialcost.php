@@ -121,7 +121,8 @@ class Unit_materialcost extends BE_Controller {
 	function export() {
 		ini_set('memory_limit', '-1');
 		$arr = ['tahun' => 'Tahun','id_product' => 'Id Product','product_code' => 'Product Code','description'=>'description','qty_production' => 'Qty Production','bottle' => 'Bottle','content' => 'Content','packing' => 'Packing','set' => 'Set','subrm_total' => 'Subrm Toal','is_active' => 'Aktif'];
-		$data = get_data('tbl_unit_material_cost')->result_array();
+		
+		$data = get_data('tbl_unit_material_cost','tahun',get('tahun'))->result_array();
 		$config = [
 			'title' => 'data_unit_materialcost',
 			'data' => $data,
