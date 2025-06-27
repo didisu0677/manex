@@ -156,7 +156,7 @@ class Material_price_report extends BE_Controller {
                 $data['set'] = $price_budget * $c->quantity;
             }
 
-            $data['subrm_total'] = @$data['bottle'] + @$data['content'] + @$data['packing'] + @$data['set'];
+            // $data['subrm_total'] = @$data['bottle'] + @$data['content'] + @$data['packing'] + @$data['set'];
 
             
             if(!isset($cek->product_code)) {
@@ -176,11 +176,17 @@ class Material_price_report extends BE_Controller {
                     $data['set'] = $cek->set + ($price_budget * $c->quantity);
                 }
 
-                $data['subrm_total'] = $cek->subrm_total + (@$data['bottle'] + @$data['content'] + @$data['packing'] + @$data['set']);
-
+                // $data['subrm_total'] = $cek->subrm_total + (@$data['bottle'] + @$data['content'] + @$data['packing'] + @$data['set']);
                 update_data('tbl_unit_material_cost',$data,['id'=>$cek->id]);
             }
+
+            $this->db->set('subrm_total', '(`bottle` + `content` + `packing` + `set`)', FALSE);
+            $this->db->where('product_code', $c->parent_item);  // Replace $x with your actual product code value
+            $this->db->where('tahun', $tahun);         // Replace $y with your actual year value
+            $this->db->update('tbl_unit_material_cost');
+
         }
+
 
         delete_data('tbl_scm_submit', ['code_submit'=>'COST','tahun'=>$tahun]);
 
