@@ -107,16 +107,19 @@ class Material_price_report extends BE_Controller {
             'where'		=> [
                 '__m' => 'a.parent_item in (select budget_product_code from tbl_beginning_stock where is_active = 1 and tahun="'.$tahun.'")',
                 'a.tahun' => $tahun,
-                // 'a.parent_item' => 'CIGSKD22MN',
+                // 'a.parent_item' => 'CIKRTRUNDM',
                 // 'a.group_formula' => 'B',
                 ],
             'group_by' => 'a.parent_item,a.component_item',
             'sort_by' => 'a.parent_item'
         ])->result();
 
-        // debug($cost);die;
 
         delete_data('tbl_unit_material_cost',['tahun' => $tahun]) ;
+        $price_budget = 0;
+        $bm_amt = 0;
+        $pph = 0;
+        $ppn = 0;
         foreach ($cost as $c) {
             $cek = get_data('tbl_unit_material_cost',[
                 'where' => [
@@ -128,40 +131,52 @@ class Material_price_report extends BE_Controller {
             $bm_amt = $c->total_price * ($c->bm/100);
             $pph = ($bm_amt + $c->total_price) * ($c->pph/100);
             $ppn = ($bm_amt + $c->total_price) * ($c->ppn/100);
-            $price_budget = $c->total_price + $bm_amt + $c->bank_charges + $c->handling_charges ;
+            $price_budget = $c->total_price + $bm_amt + $c->bank_charges + $c->handling_charges  ;
             
-  
-
             $data = [
                 'tahun' => $tahun,
                 'id_product' => $c->id_product,
                 'product_code' => $c->parent_item,
                 'description' => $c->item_name,
                 'qty_production' => (isset($c->qty_production) ? $c->qty_production : 0),
-                'bottle' => 0,
-                'content' => 0,
-                'packing' => 0,
-                'set' => 0,
+                // 'bottle' => 0,
+                // 'content' => 0,
+                // 'packing' => 0,
+                // 'set' => 0,
                 'is_active' => 1
             ];
+
+            if($c->group_formula == 'A'){
+                $data['bottle'] = $price_budget * $c->quantity;
+            }elseif($c->group_formula == 'B'){
+                $data['content'] = $price_budget * $c->quantity;
+            }elseif($c->group_formula == 'C') {
+                $data['packing'] = $price_budget * $c->quantity;
+            }elseif($c->group_formula == 'C') {
+                $data['set'] = $price_budget * $c->quantity;
+            }
+
+            $data['subrm_total'] = @$data['bottle'] + @$data['content'] + @$data['packing'] + @$data['set'];
 
             
             if(!isset($cek->product_code)) {
                 insert_data('tbl_unit_material_cost',$data);
             }else{
-                $data['bottle'] = $cek->bottle ;
-                $data['content'] = $cek->content;
-                $data['packing'] = $cek->packing;
-                $data['set'] = $cek->set;
+                // $data['bottle'] = $cek->bottle ;
+                // $data['content'] = $cek->content;
+                // $data['packing'] = $cek->packing;
+                // $data['set'] = $cek->set;
                 if($c->group_formula == 'A'){
-                    $data['bottle'] = $cek->bottle + $price_budget;
+                    $data['bottle'] = $cek->bottle + ($price_budget * $c->quantity);
                 }elseif($c->group_formula == 'B'){
-                    $data['content'] = $cek->content + $price_budget;
+                    $data['content'] = $cek->content + ($price_budget * $c->quantity);
                 }elseif($c->group_formula == 'C') {
-                    $data['packing'] = $cek->packing + $price_budget;
-                }elseif($c->group_formula == 'C') {
-                    $data['set'] = $cek->set + $price_budget;
+                    $data['packing'] = $cek->packing + ($price_budget * $c->quantity);
+                }elseif($c->group_formula == 'D') {
+                    $data['set'] = $cek->set + ($price_budget * $c->quantity);
                 }
+
+                $data['subrm_total'] = $cek->subrm_total + (@$data['bottle'] + @$data['content'] + @$data['packing'] + @$data['set']);
 
                 update_data('tbl_unit_material_cost',$data,['id'=>$cek->id]);
             }

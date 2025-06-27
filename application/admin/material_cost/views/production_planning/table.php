@@ -170,7 +170,6 @@
 
 					foreach($epr[$m0->id] as $ek => $ev){
 						if($ev->product_code == $m1->code){
-							$id = $ev->id;
 							$xxx5 = $ev->$field0;
 						}
 					}
