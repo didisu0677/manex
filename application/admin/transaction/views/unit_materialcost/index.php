@@ -106,4 +106,10 @@ var id_proses = '';
 			}
 		});
 	}
+
+	$(document).on('click','.btn-act-export',function(e){
+		// alert('x');die;
+		e.preventDefault();
+		$.redirect(base_url + 'transaction/unit_materialcost/export/', {tahun:$('#filter_tahun').val()} , 'get');
+	});
 </script>
