@@ -34,7 +34,7 @@
 
   			echo '<td class="text-right">'.number_format($m1->quantity,5).'</td>';
 			echo '<td class="text-right">'.number_format($price_budget,5).'</td>';
-            echo '<td class="text-right">'.number_format($m1->quantity * $price_budget,5).'</td>';
+            echo '<td class="text-right">'.number_format(round($m1->quantity, 5) * $price_budget,5).'</td>';
 
 			?>
 
