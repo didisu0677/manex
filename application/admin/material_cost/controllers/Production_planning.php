@@ -460,10 +460,11 @@ class Production_planning extends BE_Controller {
         //         }      
         //     }
 
-            // $this->save_production_planning();
+            
         // }
 
         $this->save_xproduction_planning();
+        $this->save_production_planning(true);
     }
 
     function xxend_stock($product_code ="",$tahun="") {
@@ -1036,10 +1037,10 @@ class Production_planning extends BE_Controller {
     }
 
     public function submit_production(){
-        $this->save_production_planning(true);
+        $this->save_production_planning(true, true);
     }
 
-    private function save_production_planning($save_budget = false){
+    private function save_production_planning($save_budget = false, $is_production = false){
 
         $tahun = post('tahun');
         $table = 'tbl_production_planning_' . $tahun ;
@@ -1049,24 +1050,19 @@ class Production_planning extends BE_Controller {
         $month = $this->input->post('production_month') ?? [];
         $edit = $this->input->post('production_edit') ?? [];
 
+        // debug(post());
         foreach($value as $k => $v){
-            if(!empty($value) && isset($product[$k]) && isset($month[$k]) && isset($edit[$k])){
-                $cache_key = 'product_detail_'.$product[$k].'_tahun_'.$tahun;
-                $detail_product = $this->cache->file->get($cache_key);
-
-                if(!$detail_product){
-                    $detail_product = get_data('tbl_fact_product fp',[
-                        'select' => 'fp.*',
-                        'where' => [
-                            'fp.code' => $product[$k]
-                        ],
-                        'join' => [
+            if(!empty($v) && isset($product[$k]) && isset($month[$k])){
+                $detail_product = get_data('tbl_fact_product fp',[
+                    'select' => 'fp.*',
+                    'where' => [
+                        'fp.code' => $product[$k]
+                    ],
+                    'join' => [
                             'tbl_beginning_stock bs ON bs.budget_product_code = fp.code and bs.tahun = '.$tahun.' type left'
-                        ]
-                    ])->row_array();
-
-                    $this->cache->file->save($cache_key, $detail_product, 600);
-                }
+                    ]
+                ])->row_array();
+                // debug($detail_product);
                 
                 if($detail_product){
 
@@ -1133,7 +1129,7 @@ class Production_planning extends BE_Controller {
                         insert_data($table, $data_insert);
                     }
 
-                    if($edit[$k] == '1'){
+                    if(@$edit[$k] == '1'){
                         $cek_epd = get_data($table, [
                             'where' => [
                                 'posting_code' => 'EPD',
@@ -1167,14 +1163,16 @@ class Production_planning extends BE_Controller {
             }
         }
 
-        delete_data('tbl_scm_submit', ['code_submit'=>'PROD','tahun'=>$tahun]);
+        if($is_production){
+            delete_data('tbl_scm_submit', ['code_submit'=>'PROD','tahun'=>$tahun]);
 
-        insert_data('tbl_scm_submit',[
-            'tahun' => $tahun,
-            'code_submit' => 'PROD',
-            'is_submit' => 1,
-            'is_active' => 1
-        ]);
+            insert_data('tbl_scm_submit',[
+                'tahun' => $tahun,
+                'code_submit' => 'PROD',
+                'is_submit' => 1,
+                'is_active' => 1
+            ]);
+        }
     }
 
     private function save_xproduction_planning($save_budget = false){

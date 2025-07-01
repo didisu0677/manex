@@ -43,7 +43,9 @@
 				</th>';
 			}
 			?>
-			<!-- <th style="background: #757575; text-align: left" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font> -->
+			<th style="background: #757575; text-align: left; color:#fff" class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+				0
+			</th>
 		</tr>
 		<tr>
 			<th style="background: #757575; text-align: left" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">Standar Produksi</font></th>
@@ -54,8 +56,9 @@
 				echo '<th class = "text-right" style="background: #757575; text-align: right" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($sprod[$m0->id][$i]).'</font></th>';
 			}
 			?>
-			<!-- <th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font> -->
-
+			<th style="background: #757575; text-align: left; color:#fff" class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+				0
+			</th>
 		</tr>
 		<tr>
 			<th style="background: #757575; text-align: left" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">Kapasitas Produksi</font></th>
@@ -66,7 +69,9 @@
 				echo '<th class= "text-right" style="background: #757575; text-align: right" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($kprod[$m0->id]).'</font></th>';
 			}
 			?>
-			<!-- <th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font> -->
+			<th style="background: #757575; text-align: left; color:#fff" class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+				0
+			</th>
 
 		</tr>
 		<tr>
@@ -79,7 +84,9 @@
 				echo '<th class = "text-right" style="background: #757575; text-align: right" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff">'.number_format($wday[$m0->id][$i]).'</font></th>';
 			}
 			?>
-			<!-- <th style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"></font> -->
+			<th style="background: #757575; text-align: left; color:#fff" class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+				0
+			</th>
 		</tr>	
   	<?php
 
@@ -137,9 +144,10 @@
 				data-type="begining-stock" data-cost-center="'.$m0->id.'" data-month="'.$i.'" data-product-code="'.$m1->code.'">'.$xxx2.'</td>';
 			}
 
-			// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$id.'"><b>'.number_format(0).'</b></td>';
-
 			?>
+			<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+				0
+			</th>
 
 		</tr>
 		<tr>
@@ -169,7 +177,7 @@
 					}
 
 					foreach($epr[$m0->id] as $ek => $ev){
-						if($ev->product_code == $m1->code){
+						if($ev->product_code == $m1->code && intval($ev->$field0) > 0){
 							$xxx5 = $ev->$field0;
 						}
 					}
@@ -182,6 +190,9 @@
 
 			}
 			?>
+			<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+				0
+			</th>
 		</tr>
 		<tr>
 			<td style="background-color:; color: #0101fd;">Prod</td>
@@ -205,12 +216,15 @@
 							}
 						}
 
-						foreach($epd[$m0->id] as $eprk => $eprv){
-							if($eprv->product_code == $s1->product_code){
-								if($eprv->$field0 > 0) $edit_produksi = 1;
-							}
-						}
+					}
+				}
 
+				foreach($epd[$m0->id] as $eprk => $eprv){
+					if($eprv->product_code == $m1->code){
+						if(intval($eprv->$field0) > 0){
+							$edit_produksi = 1;
+							$xxx5 = $eprv->$field0;
+						}
 					}
 				}
 
@@ -223,9 +237,12 @@
 
 			}
 
-			// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"><b>'.number_format(0).'</b></td>';
+			
 
 			?>
+			<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+				0
+			</th>
 			
 		</tr>
 		<tr>
@@ -268,6 +285,9 @@
 
 				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"><b>'.number_format(0).'</b></td>';
 			?>
+			<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+				0
+			</th>
 		</tr>
 		<tr>
 			<td>End Stock</td>
@@ -309,6 +329,9 @@
 				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"><b>'.number_format(0).'</b></td>';
 	
 			?>
+			<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+				0
+			</th>
 		</tr>
 		<tr>
 			<td>M. Cov</td>
@@ -339,6 +362,9 @@
 				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"><b>'.number_format(0).'</b></td>';
 
 			?>
+			<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+				0
+			</th>
 		</tr>
 
 	<?php 
@@ -362,6 +388,9 @@
 		}
 		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
+		<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+			0
+		</th>
 	</tr>
 	<tr>
 		<td>X Produksi</td>
@@ -375,6 +404,9 @@
 		}
 		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
+		<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+			0
+		</th>
 	</tr>
 	<tr>
 		<td>Prod</td>
@@ -399,6 +431,9 @@
 		}
 		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
+		<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+			0
+		</th>
 	</tr>
 	<tr>
 		<td>Sales</td>
@@ -418,6 +453,9 @@
 		}
 		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
+		<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+			0
+		</th>
 	</tr>
 	<tr>
 		<td>End Stock</td>
@@ -442,6 +480,9 @@
 		}
 		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
+		<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+			0
+		</th>
 	</tr>
 	<tr>
 		<td>M Coverage</td>
@@ -456,6 +497,9 @@
 		}
 		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
+		<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+			0
+		</th>
 	</tr>
 <?php } ;?>
 
@@ -476,6 +520,9 @@
 		}
 		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
+		<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+			0
+		</th>
 </tr>
 <tr>
 	<td>X Produksi</td>
@@ -489,6 +536,9 @@
 	}
 	// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 	?>
+	<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+		0
+	</th>
 </tr>
 <tr>
 	<td>Prod</td>
@@ -505,6 +555,9 @@
 	}
 	// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 	?>
+	<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+		0
+	</th>
 </tr>
 <tr>
 	<td>Sales</td>
@@ -521,6 +574,9 @@
 	}
 	// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 	?>
+	<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+		0
+	s</th>
 </tr>
 <tr>
 	<td>End Stock</td>
@@ -542,6 +598,9 @@
 	}
 	// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 	?>
+	<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+		0
+	</th>
 </tr>
 <tr>
 	<td>M Coverage</td>
@@ -556,4 +615,7 @@
 	}
 	// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 	?>
+	<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
+		0
+	</th>
 </tr>

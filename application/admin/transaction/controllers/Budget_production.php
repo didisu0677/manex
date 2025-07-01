@@ -38,7 +38,7 @@ class Budget_production extends BE_Controller {
     function data($tahun="",$cost_centre="",$tipe = 'table'){
 		ini_set('memory_limit', '-1');
 
-        $table = 'tbl_budget_production_dev';
+        $table = 'tbl_budget_production';
 
         $arr = [
             'select' => 'a.cost_centre as kode, b.id, b.cost_centre',
@@ -85,7 +85,7 @@ class Budget_production extends BE_Controller {
             }
 
 
-            $data['produk'][$m0->id]= get_data('tbl_budget_production_dev a',[
+            $data['produk'][$m0->id]= get_data('tbl_budget_production a',[
                 'select' => 'a.*,b.code,b.product_name,b.destination, c.abbreviation as initial, c.cost_centre',
                 'join' =>  ['tbl_fact_product b on a.budget_product_code = b.code',
                             'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',

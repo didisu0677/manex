@@ -57,7 +57,7 @@
 						for ($i = 1; $i <= 12; $i++) {
 							th('', '', 'class="text-center" style="min-width:80px"');
 						}
-						// th(lang('total'), '', 'width="60" rowspan="2" class="text-center align-middle headcol"');
+						th(lang('total'), '', 'width="60" rowspan="2" class="text-center align-middle headcol"');
 
 						tr();
 						th(lang('description'), '', 'width="60" rowspan="2" class="text-center align-middle headcol"');
@@ -641,7 +641,6 @@
 			}
 		});
 
-		// 🔁 Loop tiap bulan
 		for (let i = 1; i <= 12; i++) {
 			let totalMonth = {
 				production: 0,
@@ -650,7 +649,6 @@
 				end: 0
 			};
 
-			// 🧠 Ambil semua cost center untuk bulan ini
 			const monthCostCenters = allItems.production?.[i]
 				? Object.keys(allItems.production[i])
 				: [];
@@ -709,6 +707,21 @@
 			updateGlobal("grand-sales", totalMonth.sales);
 			updateGlobal("grand-end-stock", totalMonth.end);
 		}
+		calculate_left_total()
+	}
+
+	function calculate_left_total(){
+		$('[data-type="left-total"]').each(function () {
+			let total = 0;
+			let $cellsBefore = $(this).prevAll('td, th').slice(0, 12).get().reverse();
+
+			$cellsBefore.forEach(function (cell) {
+				let val = parseFloat($(cell).text().replace(/[^0-9.-]+/g, "")) || 0;
+				total += val;
+			});
+
+			$(this).text(numberFormat(total, 0));
+		});
 	}
 
 
