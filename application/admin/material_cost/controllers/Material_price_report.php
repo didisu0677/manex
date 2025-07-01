@@ -147,13 +147,13 @@ class Material_price_report extends BE_Controller {
             ];
 
             if($c->group_formula == 'A'){
-                $data['bottle'] = $price_budget * $c->quantity;
+                $data['bottle'] = $price_budget * round($c->quantity,5);
             }elseif($c->group_formula == 'B'){
-                $data['content'] = $price_budget * $c->quantity;
+                $data['content'] = $price_budget * round($c->quantity,5);
             }elseif($c->group_formula == 'C') {
-                $data['packing'] = $price_budget * $c->quantity;
+                $data['packing'] = $price_budget * round($c->quantity,5);
             }elseif($c->group_formula == 'C') {
-                $data['set'] = $price_budget * $c->quantity;
+                $data['set'] = $price_budget * round($c->quantity,5);
             }
 
             // $data['subrm_total'] = @$data['bottle'] + @$data['content'] + @$data['packing'] + @$data['set'];
