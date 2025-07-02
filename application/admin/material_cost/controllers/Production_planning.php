@@ -64,10 +64,12 @@ class Production_planning extends BE_Controller {
             'where' => [
                 'a.is_active' => 1,
                 'a.id_cost_centre !=' => 0,
+                'b.cost_centre !=' => ''
                 // 'a.cost_centre' => '2135',
                 // 'a.code' => 'CIU9N1PNDM'
             ],
-            'group_by' => 'a.id_cost_centre',
+            // 'group_by' => 'a.id_cost_centre',
+            'group_by' => 'b.cost_centre',
             'sort_by' => 'b.id', 
              ];
 
