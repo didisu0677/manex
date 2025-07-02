@@ -96,7 +96,7 @@ class Material_price_report extends BE_Controller {
 
         $cost = get_data('tbl_material_formula a',[
             'select'	=> 'd.id as id_product, a.parent_item, a.item_name, a.component_item, a.material_name, 
-                            a.quantity, a.um, a.group_formula, b.bm, 
+                            a.total as quantity, a.um, a.group_formula, b.bm, 
                             b.bank_charges, b.handling_charges, b.price_us ,b.curr, c.rates, c.ppn, c.pph, (b.price_us * c.rates) as total_price,
                             e.total_budget as qty_production',
             'join' => ['tbl_material_price b on a.component_item = b.material_code and b.year="'.$tahun.'" type LEFT ',
