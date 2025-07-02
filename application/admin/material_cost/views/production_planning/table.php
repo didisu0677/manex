@@ -170,14 +170,25 @@
 				$gt_xprod = 'txprod' . sprintf('%02d', $i);
 				$field0x = 'xproduksi_' . sprintf('%02d', $i);
 
-				foreach($xprod[$m0->id] as $sp => $sp1) { 
-					if($sp1->product_code == $m1->code) {
-						$id = $sp1->id ;
-						$xxx5 = $sp1->$field0 ;
+				$isedit = false ;
+				
+				foreach($epr[$m0->id] as $ek => $ev){
+					if($ev->product_code == $m1->code && intval($ev->$field0) > 0){
+						// $xxx5 = $ev->$field0;
+						$isedit = TRUE;
 					}
+				}
 
+				if(!$isedit) {
+					foreach($xprod[$m0->id] as $sp => $sp1) { 
+						if($sp1->product_code == $m1->code) {
+							$id = $sp1->id ;
+							$xxx5 = $sp1->$field0 ;
+						}
+					}
+				}else{
 					foreach($epr[$m0->id] as $ek => $ev){
-						if($ev->product_code == $m1->code){ //&& intval($ev->$field0) > 0){
+						if($ev->product_code == $m1->code){
 							$xxx5 = $ev->$field0;
 						}
 					}
