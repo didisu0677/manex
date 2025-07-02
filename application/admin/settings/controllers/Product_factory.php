@@ -51,6 +51,12 @@ class Product_factory extends BE_Controller {
 		}
 		
 		switch_database();
+
+		$cc = get_data('tbl_fact_cost_centre','id',$data['id_cost_centre'])->row();
+		if(isset($cc->kode)) {
+			 $data['cost_centre'] = $cc->kode;
+		}
+
 		$response = save_data('tbl_fact_product',$data,post(':validation'));
 		render($response,'json');
 	}

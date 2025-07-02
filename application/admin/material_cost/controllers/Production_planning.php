@@ -1280,4 +1280,53 @@ class Production_planning extends BE_Controller {
         //     'is_active' => 1
         // ]);
     }
+
+    function update_cost_center($tahun="") {
+        $table = 'tbl_budget_production';
+        $table_prod = 'tbl_production_planning_' . $tahun ;
+
+        $cek = get_data($table_prod . ' a',[
+            'select' => 'a.product_code, b.cost_centre, c.id as id_cost_centre',
+            'join' => ['tbl_fact_product b on a.product_code = b.code type LEFT',
+                       'tbl_fact_cost_centre c on b.cost_centre = c.kode type LEFT',
+        ],
+            'where' => [
+                'b.is_active' => 1,
+                // 'a.product_code' => 'CINFEKMNDM'
+            ],
+        ])->result();
+
+        foreach($cek as $c) {
+            update_data($table_prod, [
+                'cost_Centre' => $c->cost_centre, 
+                'id_cost_centre'=>$c->id_cost_centre
+                ],
+                ['product_code' => $c->product_code]
+            );
+        }
+
+        $cek2 = get_data('tbl_beginning_stock' . ' a',[
+            'select' => 'a.budget_product_code, b.cost_centre, c.id as id_cost_centre',
+            'join' => ['tbl_fact_product b on a.budget_product_code = b.code type LEFT',
+                       'tbl_fact_cost_centre c on b.cost_centre = c.kode type LEFT',
+        ],
+            'where' => [
+                'b.is_active' => 1,
+                // 'a.product_code' => 'CINFEKMNDM'
+            ],
+        ])->result();
+
+        foreach($cek2 as $c2) {
+            update_data('tbl_beginning_stock', [
+                'id_cost_centre'=>$c2->id_cost_centre
+                ],
+                ['budget_product_code' => $c2->budget_product_code,
+                 'tahun' => $tahun
+                ]
+            );
+        }
+
+        echo 'success' ;die; 
+
+    }
 }
