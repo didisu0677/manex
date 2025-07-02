@@ -173,7 +173,7 @@
 				$isedit = false ;
 				
 				foreach($epr[$m0->id] as $ek => $ev){
-					if($ev->product_code == $m1->code && (intval($ev->P_01) > 0 || intval($ev->P_02) > 0 || intval($ev->P_03) > 0 || intval($ev->P_04) > 0 || intval($ev->P_05) > 0 || intval($ev->P_06) > 0 || intval($ev->P_07) > 0 || intval($ev->P_08) > 0 || intval($ev->P_09) > 0 || intval($ev->P_10) > 0 || intval($ev->P_11) > 0 || intval($ev->P_12) > 0)){
+					if($ev->product_code == $m1->code && (intval($ev->P_01) >= 0 || intval($ev->P_02) >= 0 || intval($ev->P_03) >= 0 || intval($ev->P_04) >= 0 || intval($ev->P_05) >= 0 || intval($ev->P_06) >= 0 || intval($ev->P_07) >= 0 || intval($ev->P_08) >= 0 || intval($ev->P_09) >= 0 || intval($ev->P_10) >= 0 || intval($ev->P_11) >= 0 || intval($ev->P_12) >= 0)){
 						// $xxx5 = $ev->$field0;
 						$isedit = TRUE;
 					}
