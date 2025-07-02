@@ -177,7 +177,7 @@
 					}
 
 					foreach($epr[$m0->id] as $ek => $ev){
-						if($ev->product_code == $m1->code) //&& intval($ev->$field0) > 0){
+						if($ev->product_code == $m1->code){ //&& intval($ev->$field0) > 0){
 							$xxx5 = $ev->$field0;
 						}
 					}
