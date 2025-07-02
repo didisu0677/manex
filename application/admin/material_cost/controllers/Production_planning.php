@@ -236,7 +236,7 @@ class Production_planning extends BE_Controller {
             ])->result();
 
              $data['epr'][$m0->id] = get_data($table_prod .' a',[
-                'select' => 'a.*',
+                'select' => 'a.*,a.P_01+a.P_02+a.P_03+a.P_04+a.P_05+a.P_06+a.P_07+a.P_08+a.P_09+a.P_10+a.P_11+a.P_12 as total_p',
                     'join' =>  ['tbl_fact_product b on a.product_code = b.code',
                                 'tbl_fact_cost_centre c on a.cost_centre = c.kode type LEFT',
                                 ],
