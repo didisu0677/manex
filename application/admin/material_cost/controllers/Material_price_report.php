@@ -147,13 +147,13 @@ class Material_price_report extends BE_Controller {
             ];
 
             if($c->group_formula == 'A'){
-                $data['bottle'] = $price_budget * round($c->quantity,5);
+                $data['bottle'] = round($price_budget,5) * round($c->quantity,5);
             }elseif($c->group_formula == 'B'){
-                $data['content'] = $price_budget * round($c->quantity,5);
+                $data['content'] = round($price_budget,5) * round($c->quantity,5);
             }elseif($c->group_formula == 'C') {
-                $data['packing'] = $price_budget * round($c->quantity,5);
+                $data['packing'] = round($price_budget,5) * round($c->quantity,5);
             }elseif($c->group_formula == 'C') {
-                $data['set'] = $price_budget * round($c->quantity,5);
+                $data['set'] = round($price_budget,5) * round($c->quantity,5);
             }
 
             // $data['subrm_total'] = @$data['bottle'] + @$data['content'] + @$data['packing'] + @$data['set'];
@@ -167,13 +167,13 @@ class Material_price_report extends BE_Controller {
                 // $data['packing'] = $cek->packing;
                 // $data['set'] = $cek->set;
                 if($c->group_formula == 'A'){
-                    $data['bottle'] = $cek->bottle + ($price_budget * round($c->quantity,5));
+                    $data['bottle'] = $cek->bottle + (round($price_budget,5) * round($c->quantity,5));
                 }elseif($c->group_formula == 'B'){
-                    $data['content'] = $cek->content + ($price_budget * round($c->quantity,5));
+                    $data['content'] = $cek->content + (round($price_budget,5) * round($c->quantity,5));
                 }elseif($c->group_formula == 'C') {
-                    $data['packing'] = $cek->packing + ($price_budget * round($c->quantity,5));
+                    $data['packing'] = $cek->packing + (round($price_budget,5) * round($c->quantity,5));
                 }elseif($c->group_formula == 'D') {
-                    $data['set'] = $cek->set + ($price_budget * round($c->quantity,5));
+                    $data['set'] = $cek->set + (round($price_budget,5) * round($c->quantity,5));
                 }
 
                 // $data['subrm_total'] = $cek->subrm_total + (@$data['bottle'] + @$data['content'] + @$data['packing'] + @$data['set']);
