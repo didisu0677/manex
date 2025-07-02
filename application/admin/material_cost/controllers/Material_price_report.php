@@ -146,13 +146,13 @@ class Material_price_report extends BE_Controller {
                 'is_active' => 1
             ];
 
-            if($c->group_formula == 'A'){
+            if(strtoupper($c->group_formula) == 'A'){
                 $data['bottle'] = round($price_budget,5) * round($c->quantity,5);
-            }elseif($c->group_formula == 'B'){
+            }elseif(strtoupper($c->group_formula) == 'B'){
                 $data['content'] = round($price_budget,5) * round($c->quantity,5);
-            }elseif($c->group_formula == 'C') {
+            }elseif(strtoupper($c->group_formula) == 'C') {
                 $data['packing'] = round($price_budget,5) * round($c->quantity,5);
-            }elseif($c->group_formula == 'C') {
+            }elseif(strtoupper($c->group_formula) == 'C') {
                 $data['set'] = round($price_budget,5) * round($c->quantity,5);
             }
 
@@ -166,13 +166,13 @@ class Material_price_report extends BE_Controller {
                 // $data['content'] = $cek->content;
                 // $data['packing'] = $cek->packing;
                 // $data['set'] = $cek->set;
-                if($c->group_formula == 'A'){
+                if(strtoupper($c->group_formula) == 'A'){
                     $data['bottle'] = $cek->bottle + (round($price_budget,5) * round($c->quantity,5));
-                }elseif($c->group_formula == 'B'){
+                }elseif(strtoupper($c->group_formula) == 'B'){
                     $data['content'] = $cek->content + (round($price_budget,5) * round($c->quantity,5));
-                }elseif($c->group_formula == 'C') {
+                }elseif(strtoupper($c->group_formula) == 'C') {
                     $data['packing'] = $cek->packing + (round($price_budget,5) * round($c->quantity,5));
-                }elseif($c->group_formula == 'D') {
+                }elseif(strtoupper($c->group_formula) == 'D') {
                     $data['set'] = $cek->set + (round($price_budget,5) * round($c->quantity,5));
                 }
 

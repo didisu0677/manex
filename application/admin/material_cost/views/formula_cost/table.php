@@ -3,13 +3,13 @@
 		$bgedit ="";
 		$contentedit ="false" ;
 		$group_formula = '';
-		if($m1->group_formula == 'A') {
+		if(strtoupper($m1->group_formula) == 'A') {
 			$group_formula = 'Bottle';
-		}elseif($m1->group_formula=='B') {
+		}elseif(strtoupper($m1->group_formula)=='B') {
 			$group_formula = 'Content';
-		}elseif($m1->group_formula=='C'){
+		}elseif(strtoupper($m1->group_formula)=='C'){
 			$group_formula = 'Packing';
-		}elseif($m1->group_formula == 'D'){
+		}elseif(strtoupper($m1->group_formula) == 'D'){
 			$group_formula = 'Set';
 		}else{
 			$group_formula = '';
