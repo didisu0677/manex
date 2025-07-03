@@ -173,7 +173,7 @@
 				$isedit = false ;
 				
 				foreach($epr[$m0->id] as $ek => $ev){
-					if($ev->product_code == $m1->code && intval($ev->total_p) > 0){
+					if(($ev->product_code == $m1->code && intval($ev->total_p) > 0) || $ev->is_active == 1){
 						// $xxx5 = $ev->$field0;
 						$isedit = TRUE;
 					}

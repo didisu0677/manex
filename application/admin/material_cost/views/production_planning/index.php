@@ -265,14 +265,14 @@
 		var data_edit = {};
 		var i = 0;
 
-		// $('.edited').each(function() {
-		// 	var content = $(this).children('div');
-		// 	if (typeof data_edit[$(this).attr('data-id')] == 'undefined') {
-		// 		data_edit[$(this).attr('data-id')] = {};
-		// 	}
-		// 	data_edit[$(this).attr('data-id')][$(this).attr('data-name')] = $(this).text().replace(/[^0-9\-]/g, '');
-		// 	i++;
-		// });
+		$('.edited').each(function() {
+			var content = $(this).children('div');
+			if (typeof data_edit[$(this).attr('data-id')] == 'undefined') {
+				data_edit[$(this).attr('data-id')] = {};
+			}
+			data_edit[$(this).attr('data-id')][$(this).attr('data-name')] = $(this).text().replace(/[^0-9\-]/g, '');
+			i++;
+		});
 
 		// prepare data x production sebelum submit
 		let $xproduction = $('[data-type="x-production"]')

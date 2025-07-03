@@ -452,21 +452,21 @@ class Production_planning extends BE_Controller {
 
         $data   = json_decode(post('json'),true);
 
-        // foreach($data as $id => $record) {
-
-        //     $cek_produk = get_data($table,'id',$id)->row();
-        //     if(isset($cek_produk->product_code)) {
-        //         $result = $record;
-        //         foreach ($result as $r => $v) {       
-        //             update_data($table, $result,['product_code'=> $cek_produk->product_code, 'posting_code'=>'EPR']);
-        //         }      
-        //     }
-
-            
-        // }
-
         $this->save_xproduction_planning();
         $this->save_production_planning(true);
+
+        // set field edited
+        foreach($data as $id => $record) {
+            $cek_produk = get_data($table,'id',$id)->row();
+            if(isset($cek_produk->product_code)) {
+                $result = $record;
+                foreach ($result as $r => $v) {       
+                    update_data($table, [
+                        'is_active' => 1
+                    ],['product_code'=> $cek_produk->product_code, 'posting_code'=>'EPR']);
+                }      
+            }
+        }
     }
 
     function xxend_stock($product_code ="",$tahun="") {
