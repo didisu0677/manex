@@ -14,6 +14,8 @@
 			<?php 
 			if($access['access_input']==1){ 
 				echo '<button class="btn btn-info btn-proses" href="javascript:;" ><i class="fa-process"></i> Posting to Budget</button>';			
+				if($status_cost) echo '<button class="btn btn-warning btn-unlock" href="javascript:;" ><i class="fa-unlock"></i> Unlock Costing</button>';			
+
 				echo access_button('delete,active,inactive,export,import'); 
 			}
 			?>
@@ -86,7 +88,7 @@ $('#filter_tahun').change(function(){
 	refreshData();
 });
 
-var id_proses = '';
+	var id_proses = '';
 	var tahun = 0;
 	$(document).on('click','.btn-proses',function(e){
 		e.preventDefault();
@@ -103,6 +105,26 @@ var id_proses = '';
 			dataType : 'json',
 			success : function(res) {
 				cAlert.open(res.message,res.status,'refreshData');
+			}
+		});
+	}
+
+	$(document).on('click','.btn-unlock',function(e){
+		e.preventDefault();
+		id_proses = 'proses';
+		tahun = $('#filter_tahun').val();
+		cConfirm.open(lang.apakah_anda_yakin + '?','lanjut2');
+	});
+
+	function lanjut2() {
+		$.ajax({
+			url : base_url + 'transaction/unit_materialcost/unlock_cost',
+			data : {id:id_proses,tahun : tahun},
+			type : 'post',
+			dataType : 'json',
+			success : function(res) {
+				cAlert.open(res.message,res.status,'refreshData');
+				location.reload();
 			}
 		});
 	}

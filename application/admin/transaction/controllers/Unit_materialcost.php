@@ -14,6 +14,15 @@ class Unit_materialcost extends BE_Controller {
             ]
         ])->result();     
 
+		$data['status_cost'] = get_data('tbl_scm_submit',[
+			'where' => [
+				'is_submit' => 1,
+				'is_active' => 1,
+				'tahun' => user('tahun_budget')
+			],
+		])->row_array();
+
+
 		$access         = get_access($this->controller);
         $data['access'] = $access;
         $data['access_additional']  = $access['access_additional'];
@@ -213,6 +222,26 @@ class Unit_materialcost extends BE_Controller {
 			'status'	=> 'success',
 			'message'	=> 'Posting Actual Sales data has benn succesfuly'
 		],'json');	
+	}
+
+	function unlock_cost(){
+		ini_set('memory_limit', '-1');
+		ini_set('max_execution_time', 0);
+
+		$tahun = post('tahun');
+
+		update_data('tbl_scm_submit',[
+			'is_active' => 0,
+			'is_submit' => 0,
+		],
+		[	'tahun' => $tahun,
+		]);
+
+		render([
+			'status'	=> 'success',
+			'message'	=> 'Costing Data has been unlock'
+		],'json');	
+
 	}
 
 }
