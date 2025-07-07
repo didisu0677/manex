@@ -133,7 +133,7 @@ class Allocation_qc extends BE_Controller {
         $save = 0;
 		foreach($jml as $i => $k) {
 			if($i==0) {
-				for($j = 10; $j <= $k; $j++) {
+				for($j = 9; $j <= $k; $j++) {
 					$data = $this->simpleexcel->parsing($i,$j);
 
                     $cek = get_data($table,[
