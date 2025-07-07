@@ -266,12 +266,18 @@
 		var i = 0;
 
 		$('.edited').each(function() {
-			var content = $(this).children('div');
-			if (typeof data_edit[$(this).attr('data-id')] == 'undefined') {
-				data_edit[$(this).attr('data-id')] = {};
+			if($(this).attr('data-type') == 'x-production'){
+				var content = $(this).children('div');
+				if (typeof data_edit[$(this).attr('data-id')] == 'undefined') {
+					data_edit[$(this).attr('data-id')] = {};
+				}
+				data_edit[$(this).attr('data-id')][$(this).attr('data-name')] = $(this).text().replace(/[^0-9\-]/g, '');
+				i++;
 			}
-			data_edit[$(this).attr('data-id')][$(this).attr('data-name')] = $(this).text().replace(/[^0-9\-]/g, '');
-			i++;
+			// if (typeof data_type[$(this).attr('data-id')] == 'undefined') {
+			// 	data_type[$(this).attr('data-id')] = {};
+			// }
+			// data_type[$(this).attr('data-id')][$(this).attr('data-name')] = $(this).attr('data-type');
 		});
 
 		// prepare data x production sebelum submit
@@ -480,11 +486,12 @@
 			let key_sales = `sales_${String(i).padStart(2, '0')}`;
 			let key_end_stock = `end_stock_${String(i).padStart(2, '0')}`;
 			let key_m_cov = `m_cov_${String(i).padStart(2, '0')}`;
-			let budget = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).data('nilai');
-			let value_xproduction = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).text().replace(/\,/g,'')
-			let nilai = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).text().replace(/\,/g,'')
-			let idx = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).data('id')
-			let cost_center = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).data('cost-center')
+			let budget = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).data('nilai');
+			let value_xproduction = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).text().replace(/\,/g,'')
+			let nilai = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).text().replace(/\,/g,'')
+			let idx = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).data('id')
+			let cost_center = $(`[data-type="x-production"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).data('cost-center')
+
 			let total = budget * nilai;
 			if (value_xproduction != '') {
 				let value_sales = $(`[data-type="sales"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).text().replace(/\,/g, '');
@@ -495,12 +502,15 @@
 				if(val_cc == cost_center && month == i && value_produksi != 0){
 					value_production = value_produksi;
 				} else {
-					if($(`[data-type="production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).data('edit') == '0'){
-						$(`[data-type="production"][data-cost-center="${val_cc}"][data-month="${month}"][data-product-code="${product_code}"]`).text(numberFormat(value_production, 0));
+					if($(`[data-type="production"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).attr('data-edit') == 0){
+						$(`[data-type="production"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).text(numberFormat(total, 0));
 					} else {
 						value_production = $('#' + key1 + idx).text().replace(/\,/g,'')
 					}
 				}
+
+				value_production = $(`[data-type="production"][data-cost-center="${val_cc}"][data-month="${i}"][data-product-code="${product_code}"]`).text().replace(/\,/g,'')
+				console.log(value_production)
 				let new_end_stock = parseInt(value_begining_stock) + parseInt(value_production) - parseInt(value_sales)
 				
 				let txt_new_end_stock = new_end_stock < 0 ? '-' + (numberFormat(new_end_stock, 0).replace(/[()]/g, '')) : numberFormat(new_end_stock, 0)
@@ -524,8 +534,11 @@
 
 				// update begining stock
 				for (let j = i; j <= 12; j++) {
-					let value_end_stock = $(`#end_stock_${String(j).padStart(2, '0')}${idx}`).text();
+					let value_end_stock = $(`#end_stock_${String(j).padStart(2, '0')}${idx}`).text().replace(/\,/g,'');
+					let value_prod = $(`#prod_${String(j+1).padStart(2, '0')}${idx}`).text().replace(/\,/g,'')
+					let value_sales = $(`#sales_${String(j+1).padStart(2, '0')}${idx}`).text().replace(/\,/g,'')
 					$(`#begining_stock_${String(j+1).padStart(2, '0')}${idx}`).text(value_end_stock);
+					$(`#end_stock_${String(j+1).padStart(2, '0')}${idx}`).text(value_end_stock + value_prod - value_sales);
 				}
 			}
 		}

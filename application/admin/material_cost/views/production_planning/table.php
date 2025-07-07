@@ -153,6 +153,9 @@
 		<tr>
 			<td>X Produksi</td>
 			<?php
+
+			$list_final_xpr = [];
+
 			$bgedit ="#CCCCFF";
 			$contentedit ="true" ;
 
@@ -194,6 +197,8 @@
 					}
 				}
 
+				$last_final_xpr[] = $xxx5;
+
 				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$m1->id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="id="'.$field0x.$m1->id.'"></td>';
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="'.$field0x.$m1->id.'"
 					data-cost-center="'.$m0->id.'" data-type="x-production" data-month="'.$i.'" data-product-id="'.$id.'" data-product-code="'.$m1->code.'"
@@ -215,29 +220,27 @@
 			for ($i = 1; $i <= 12; $i++) {
 				$fieldp = 'prod_' . sprintf('%02d', $i);
 				$field0 = 'P_' . sprintf('%02d', $i);
-				$xxx5 = 0;
+				$xxx5 = $last_final_xpr[$i] * $m1->batch_size;
 				$edit_produksi = 0;
 				foreach($prd[$m0->id] as $s2 => $s1) { 
 					if($s1->product_code == $m1->code) {
-						// $xxx5 = (($s1->$field0 * -1)  < 1.8 && $s1->$field0 != 0 ? $m1->batch_size : 0) ;
-						$xxx5 = $s1->$field0;
 						foreach($xprod[$m0->id] as $sp => $sp1) { 
 							if($sp1->product_code == $m1->code) {
 								$id = $sp1->id ;
 							}
 						}
 
-					}
-				}
-
-				foreach($epd[$m0->id] as $eprk => $eprv){
-					if($eprv->product_code == $m1->code){
-						if(intval($eprv->$field0) > 0){
-							$edit_produksi = 1;
-							$xxx5 = $eprv->$field0;
+						foreach($epd[$m0->id] as $eprk => $eprv){
+							if($eprv->product_code == $m1->code){
+								if(intval($eprv->$field0) > 0){
+									$edit_produksi = 1;
+									$xxx5 = $s1->$field0;
+								}
+							}
 						}
 					}
 				}
+
 
 				$stotal_prsn = 0;
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right produksi '.$fieldp.'" data-name="'.$fieldp.'" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"
