@@ -145,7 +145,7 @@ class Allocation_qc extends BE_Controller {
                     if(isset($cek->id)) {
                         $data2['product_qty'] = str_replace([','],'',$data['quantity']) ;
                         $data2['point_perunit'] = str_replace([','],'',$data['pointunit']) ;
-                        $data2['total_point'] = (str_replace([','],'',@$data['quantity']??0) * str_replace([','],'',@$data['pointunit']??0)) ;
+                        $data2['total_point'] = (str_replace([','],'',@$data['quantity'])??0 * str_replace([','],'',@$data['pointunit'])??0) ;
                         $data2['update_at'] = date('Y-m-d H:i:s');
                         $data2['update_by'] = user('nama');
                     
