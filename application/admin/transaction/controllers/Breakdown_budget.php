@@ -692,8 +692,24 @@ class Breakdown_budget extends BE_Controller {
 
 	function export() {
 		ini_set('memory_limit', '-1');
-		$arr = ['description' => 'Description','ref' => 'Ref','account_code' => 'Account Code','account_name' => 'Account Name','cost_centre' => 'Cost Centre','sub_account' => 'Sub Account','account_cost' => 'Account Cost','initial1' => 'Initial1','inniial2' => 'Inniial2','user_id' => 'User Id','B_01' => 'B 01','B_02' => 'B 02','B_03' => 'B 03','B_04' => 'B 04','B_05' => 'B 05','B_06' => 'B 06','B_07' => 'B 07','B_08' => 'B 08','B_09' => 'B 09','B_10' => 'B 10','B_11' => 'B 11','B_12' => 'B 12','total' => 'Total','is_active' => 'Aktif'];
-		$data = get_data('tbl_fact_breakdown_budget')->result_array();
+        $table = 'tbl_fact_breakdown_budget_' . get('tahun');
+
+		$arr = ['description' => 'Description','ref' => 'Ref','account_code' => 'Account Code','cost_centre' => 'Cost Centre','sub_account' => 'Sub Account','user_id'=> 'User Id',
+                'B_01' => 'B 01','B_02' => 'B 02','B_03' => 'B 03','B_04' => 'B 04','B_05' => 'B 05','B_06' => 'B 06','B_07' => 'B 07','B_08' => 'B 08','B_09' => 'B 09','B_10' => 'B 10','B_11' => 'B 11','B_12' => 'B 12','total' => 'Total','create_at' => 'Create at', 'create_by' => 'Create By'];
+		
+        $arr1 = [
+            'select' => '*',
+            'where'  => [
+                'id !=' => 0, 
+            ],
+        ];
+
+        
+        if(get('cost_centre')) $arr1['where']['cost_centre'] = get('cost_centre') ;
+        if(get('user')) $arr1['where']['user_id'] = get('user');
+
+         
+        $data = get_data($table,$arr1)->result_array();
 		$config = [
 			'title' => 'data_breakdown_budget',
 			'data' => $data,

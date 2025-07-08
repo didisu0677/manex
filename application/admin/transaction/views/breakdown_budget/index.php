@@ -13,10 +13,15 @@
 			echo '<button class="btn btn-danger btn-proses" href="javascript:;" ><i class="fa-process"></i> Recalculate Report</button>';
 		}
 
+		$btnexport = 'btn-act-export';
+		if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
+			$btnexport = 'btn-export';
+		}
+
         $arr = [];
 			$arr = [
 				// ['btn-save','Save Data','fa-save'],
-				['btn-export','Export Data','fa-upload'],
+				[$btnexport,'Export Data','fa-upload'],
 				($access['access_input'] ? ['btn-act-import','Import Data','fa-download']:''),
 				// ['btn-act-template','Template Import','fa-reg-file-alt'],
                 ($access['access_input'] ? ['btn-act-clear','Clear Data','fa-reg-file-alt'] :'')
@@ -171,7 +176,8 @@ $(document).on('click','.btn-act-export',function(e){
 		e.preventDefault();
 		$.redirect(base_url + 'transaction/breakdown_budget/export/', 
             {tahun:$('#tahun').val(),
-            status:$('#filter_cost_centre').val(),
+            cost_centre:$('#filter_cost_centre').val(),
+			user: $('#filter_username').val()
             } , 'get');
 	});
 
