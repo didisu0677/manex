@@ -236,8 +236,8 @@ class Budget_production extends BE_Controller {
                     'id_product' =>   $data['id_budget_product'],
                     'product_code' =>  $data['budget_product_code'],
                     'id_cost_centre' =>(isset($product->id_cost_centre) ? $product->id_cost_centre : 0),
-                    'product_qty' => $data['B_01']+$data['B_02']+$data['B_03']+$data['B_04']+$data['B_05']+$data['B_06']+$data['B_07']+$data['B_08']+$data['B_09']+$data['B_10']+$data['B_11']+$data['B_12'],
-                    'qty_production' => $data['B_01']+$data['B_02']+$data['B_03']+$data['B_04']+$data['B_05']+$data['B_06']+$data['B_07']+$data['B_08']+$data['B_09']+$data['B_10']+$data['B_11']+$data['B_12'],
+                    'product_qty' => @$data['B_01']+@$data['B_02']+@$data['B_03']+@$data['B_04']+@$data['B_05']+@$data['B_06']+@$data['B_07']+@$data['B_08']+@$data['B_09']+@$data['B_10']+@$data['B_11']+@$data['B_12'],
+                    'qty_production' => @$data['B_01']+@$data['B_02']+@$data['B_03']+@$data['B_04']+@$data['B_05']+@$data['B_06']+@$data['B_07']+@$data['B_08']+@$data['B_09']+@$data['B_10']+@$data['B_11']+@$data['B_12'],
                  ] ;
 
 
