@@ -145,8 +145,8 @@
 			}
 
 			?>
-			<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
-				0
+			<th class="text-right" data-type="left-total-d" data-cost-center="<?=$m0->id?>">
+				-
 			</th>
 
 		</tr>
@@ -207,7 +207,7 @@
 			}
 			?>
 			<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
-				0
+				-
 			</th>
 		</tr>
 		<tr>
@@ -343,8 +343,8 @@
 				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"><b>'.number_format(0).'</b></td>';
 	
 			?>
-			<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
-				0
+			<th class="text-right" data-type="left-total-d" data-cost-center="<?=$m0->id?>">
+				-
 			</th>
 		</tr>
 		<tr>
@@ -376,8 +376,8 @@
 				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_est" data-name="" data-id="'.$m1->id.'" data-value="" id="'.$fieldp.$m1->id.'"><b>'.number_format(0).'</b></td>';
 
 			?>
-			<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
-				0
+			<th class="text-right" data-type="left-total-d" data-cost-center="<?=$m0->id?>">
+				-
 			</th>
 		</tr>
 
@@ -402,8 +402,8 @@
 		}
 		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
-		<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
-			0
+		<th class="text-right" data-type="left-total-d" data-cost-center="<?=$m0->id?>">
+			-
 		</th>
 	</tr>
 	<tr>
@@ -494,8 +494,8 @@
 		}
 		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
-		<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
-			0
+		<th class="text-right" data-type="left-total-d" data-cost-center="<?=$m0->id?>">
+			-
 		</th>
 	</tr>
 	<tr>
@@ -511,8 +511,8 @@
 		}
 		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
-		<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
-			0
+		<th class="text-right" data-type="left-total-d" data-cost-center="<?=$m0->id?>">
+			-
 		</th>
 	</tr>
 <?php } ;?>
@@ -534,8 +534,8 @@
 		}
 		// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 		?>
-		<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
-			0
+		<th class="text-right" data-type="left-total-d" data-cost-center="<?=$m0->id?>">
+			-
 		</th>
 </tr>
 <tr>
@@ -612,8 +612,8 @@
 	}
 	// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 	?>
-	<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
-		0
+	<th class="text-right" data-type="left-tot-d" data-cost-center="<?=$m0->id?>">
+		-
 	</th>
 </tr>
 <tr>
@@ -629,7 +629,7 @@
 	}
 	// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
 	?>
-	<th class="text-right" data-type="left-total" data-cost-center="<?=$m0->id?>">
-		0
+	<th class="text-right" data-type="left-total-d" data-cost-center="<?=$m0->id?>">
+		-
 	</th>
 </tr>
