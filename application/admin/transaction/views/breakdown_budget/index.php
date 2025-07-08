@@ -14,7 +14,7 @@
 		}
 
 		$btnexport = 'btn-act-export';
-		if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
+		if(!in_array(user('id_group'), [DEVELOPER,ADMIN_UTAMA,ADMIN])) {
 			$btnexport = 'btn-export';
 		}
 
