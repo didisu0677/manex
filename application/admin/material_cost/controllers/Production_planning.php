@@ -369,7 +369,7 @@ class Production_planning extends BE_Controller
                         b.cost_centre,c.id as id_cost_centre, a.total_stock, a.batch_size',
             'join'   => [
                 'tbl_fact_product b on a.budget_product_code = b.code type LEFT',
-                'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
+                'tbl_fact_cost_centre c on b.id_cost_centre = c.id type LEFT',
             ],
             'where' => [
                 'a.tahun' => $tahun,
