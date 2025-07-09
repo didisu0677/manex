@@ -132,13 +132,15 @@ class Material_price_report extends BE_Controller {
             $pph = ($bm_amt + $c->total_price) * ($c->pph/100);
             $ppn = ($bm_amt + $c->total_price) * ($c->ppn/100);
             $price_budget = $c->total_price + $bm_amt + $c->bank_charges + $c->handling_charges  ;
-            
+                
             $data = [
                 'tahun' => $tahun,
                 'id_product' => $c->id_product,
                 'product_code' => $c->parent_item,
                 'description' => $c->item_name,
                 'qty_production' => (isset($c->qty_production) ? $c->qty_production : 0),
+                'update_at' => date('Y-m-d H:i:s'),
+                'update_by' => user('nama'),
                 // 'bottle' => 0,
                 // 'content' => 0,
                 // 'packing' => 0,
