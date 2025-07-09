@@ -155,7 +155,13 @@ class Product_factory extends BE_Controller {
 	}
 
 	function update_divisi(){
-		$product = get_data('tbl_fact_product','is_active',1)->result();
+		$product = get_data('tbl_fact_product a',[
+			'select' => 'a.*, b.kode as cost_centre',
+			'join' => 'tbl_fact_cost_centre b on a.id_cost_centre = b.id type LEFT',
+			'where' => [
+				'a.is_active'=>1
+			],
+		])->result();
 		foreach($product as $p) {
 
 			switch_database('budget_ho');
@@ -166,7 +172,7 @@ class Product_factory extends BE_Controller {
 			}
 
 			switch_database();
-			update_data('tbl_fact_product',['divisi'=>$bisnis_unit],['product_line'=>$p->product_line]);
+			update_data('tbl_fact_product',['divisi'=>$bisnis_unit, 'cost_centre' => $p->cost_centre],['id'=>$p->id]);
 			
 		}
 
