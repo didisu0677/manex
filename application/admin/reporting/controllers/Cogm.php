@@ -92,7 +92,7 @@ class Cogm extends BE_Controller {
                     'a.tahun' => $tahun,
                     'd.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id,
-                    // 'a.qty_production !=' => 0
+                    'a.qty_production !=' => 0
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
