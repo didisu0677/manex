@@ -196,7 +196,9 @@ class Material_price_report extends BE_Controller {
             'tahun' => $tahun,
             'code_submit' => 'COST',
             'is_submit' => 1,
-            'is_active' => 1
+            'is_active' => 1,
+            'update_at' => date('Y-m-d H:i:s'),
+            'update_by' => user('nama'),
         ]);
 
         render([
