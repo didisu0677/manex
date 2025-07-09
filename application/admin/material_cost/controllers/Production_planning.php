@@ -1269,7 +1269,7 @@ class Production_planning extends BE_Controller
             ],
         ])->result();
 
-        debug($cek);die;
+        // debug($cek);die;
 
         foreach ($cek as $c) {
             update_data(
