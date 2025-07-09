@@ -171,7 +171,11 @@ class Allocation_qc extends BE_Controller {
         ])->result();
 
         foreach($upd as $u) {
-            update_data($table,['prsn_aloc' => ($u->total_point / $sum->total_point) * 100],['id'=>$u->id]);
+            $prsn_aloc = 0 ;
+            if($u->total_point != 0 && $sum->total_point != 0) {
+                $prsn_aloc = ($u->total_point / $sum->total_point) * 100 ;
+            }
+            update_data($table,['prsn_aloc' => $prsn_aloc],['id'=>$u->id]);
         }
 		
 		$response = [
