@@ -194,18 +194,18 @@ class Budget_production extends BE_Controller {
 
    
 
-                $data['B_01'] = (isset($loop_data['B_01']) ? str_replace(['.',','],'', $loop_data['B_01']) : 0);
-                $data['B_02'] = (isset($loop_data['B_02']) ? str_replace(['.',','],'', $loop_data['B_02']) : 0);
-                $data['B_03'] = (isset($loop_data['B_03']) ? str_replace(['.',','],'', $loop_data['B_03']) : 0);
-                $data['B_04'] = (isset($loop_data['B_04']) ? str_replace(['.',','],'', $loop_data['B_04']) : 0);
-                $data['B_05'] = (isset($loop_data['B_05']) ? str_replace(['.',','],'', $loop_data['B_05']) : 0);
-                $data['B_06'] = (isset($loop_data['B_06']) ? str_replace(['.',','],'', $loop_data['B_06']) : 0);
-                $data['B_07'] = (isset($loop_data['B_07']) ? str_replace(['.',','],'', $loop_data['B_07']) : 0);
-                $data['B_08'] = (isset($loop_data['B_08']) ? str_replace(['.',','],'', $loop_data['B_08']) : 0);
-                $data['B_09'] = (isset($loop_data['B_09']) ? str_replace(['.',','],'', $loop_data['B_09']) : 0);
-                $data['B_10'] = (isset($loop_data['B_10']) ? str_replace(['.',','],'', $loop_data['B_10']) : 0);
-                $data['B_11'] = (isset($loop_data['B_11']) ? str_replace(['.',','],'', $loop_data['B_11']) : 0);
-                $data['B_12'] = (isset($loop_data['B_12']) ? str_replace(['.',','],'', $loop_data['B_12']) : 0);
+                $data['B_01'] = (isset($loop_data['B_01']) ? str_replace([','],'', $loop_data['B_01']) : 0);
+                $data['B_02'] = (isset($loop_data['B_02']) ? str_replace([','],'', $loop_data['B_02']) : 0);
+                $data['B_03'] = (isset($loop_data['B_03']) ? str_replace([','],'', $loop_data['B_03']) : 0);
+                $data['B_04'] = (isset($loop_data['B_04']) ? str_replace([','],'', $loop_data['B_04']) : 0);
+                $data['B_05'] = (isset($loop_data['B_05']) ? str_replace([','],'', $loop_data['B_05']) : 0);
+                $data['B_06'] = (isset($loop_data['B_06']) ? str_replace([','],'', $loop_data['B_06']) : 0);
+                $data['B_07'] = (isset($loop_data['B_07']) ? str_replace([','],'', $loop_data['B_07']) : 0);
+                $data['B_08'] = (isset($loop_data['B_08']) ? str_replace([','],'', $loop_data['B_08']) : 0);
+                $data['B_09'] = (isset($loop_data['B_09']) ? str_replace([','],'', $loop_data['B_09']) : 0);
+                $data['B_10'] = (isset($loop_data['B_10']) ? str_replace([','],'', $loop_data['B_10']) : 0);
+                $data['B_11'] = (isset($loop_data['B_11']) ? str_replace([','],'', $loop_data['B_11']) : 0);
+                $data['B_12'] = (isset($loop_data['B_12']) ? str_replace([','],'', $loop_data['B_12']) : 0);
                
 
                 $data['update_at'] = date('Y-m-d H:i:s');
