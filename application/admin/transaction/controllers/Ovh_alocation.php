@@ -280,5 +280,22 @@ class Ovh_alocation extends BE_Controller {
 
     }
 
+    function update_cost_centre($tahun="") {
+        $prod = get_data('tbl_fact_product_ovh a',[
+            'select' => 'a.*, c.kode as cost_centre, b.id_cost_centre',
+            'join' => ['tbl_fact_product b on a.product_code = b.code type LEFT',
+                       'tbl_fact_cost_centre c on b.id_cost_centre = c.id type LEFT',
+                      ],
+            'where' => [
+                'tahun' => $tahun,
+            ],
+        ])->result();
+
+        foreach($prod as $p) {
+            update_data('tbl_fact_product_ovh',['id_cost_centre' => $p->id_cost_centre],['product_code'=>$p->product_code,'tahun'=>$tahun]);
+        }
+        echo 'success' ;
+    }
+
 }
 
