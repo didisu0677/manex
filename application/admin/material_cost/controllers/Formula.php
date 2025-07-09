@@ -18,11 +18,31 @@ class Formula extends BE_Controller {
 
         $data['produk_items'] = get_data('tbl_material_formula a', $arr)->result(); 
 		
+		$data['submit'] = FALSE ;
+
+		$s = get_data('tbl_scm_submit',[
+            'where' => [
+                'code_submit' => 'COST',
+                'is_submit' => 1,
+                'tahun' => user('tahun_budget')
+            ],
+		])->row();
+		
+		if(isset($s->id)) {
+			$data['submit'] = TRUE ;
+		}
+
+		
 		render($data);
 	}
 
 	function data($tahun="",$produk="") {
-		$config =[];
+		$config =[
+			'access_edit'	=> false,
+	        'access_delete'	=> false,
+		];
+
+		
 
 		if($tahun) {
 	    	$config['where']['tahun']	= $tahun;	
@@ -30,6 +50,26 @@ class Formula extends BE_Controller {
 		
 		if($produk && $produk != 'ALL') {
 	    	$config['where']['parent_item']	= $produk;	
+	    }
+
+		$submit = 0 ;
+
+		$s = get_data('tbl_scm_submit',[
+			'where' => [
+				'code_submit' => 'COST',
+				'is_submit' => 1,
+				'tahun' => $tahun
+			],
+		])->row();
+		if(isset($s->id)) {
+			$submit = 1 ;
+		}
+
+		if(menu()['access_edit']) {
+	        $config['button'][]	= button_serverside('btn-warning','btn-input',['fa-edit',lang('ubah'),true],'edit',[$submit => 0]);
+		}
+	    if(menu()['access_delete']) {
+	        $config['button'][]	= button_serverside('btn-danger','btn-delete',['fa-trash-alt',lang('hapus'),true],'delete',[$submit => 0]);
 	    }
 
 		$data = data_serverside($config);

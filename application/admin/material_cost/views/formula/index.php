@@ -19,8 +19,16 @@
 					<option value="<?php echo $p->parent_item; ?>"><?php echo $p->parent_item . ' | ' . $p->item_name; ?></option>
 				<?php } ?>
 			</select>
+			<?php
+			$delete = "delete";
+			$import = ",import";
+			if($submit==1) {
+				$delete ="";
+				$import = "";
+			}
+			?>
 
-			<?php echo access_button('delete,active,inactive,export,import'); ?>
+			<?php echo access_button($delete . ' active,inactive,export' . $import); ?>
 		</div>
 		<div class="clearfix"></div>
 	</div>

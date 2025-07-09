@@ -31,7 +31,7 @@ class Material_price extends BE_Controller {
 				],
 			])->result_array();
 
-		$data['submit'] = FALSE ;
+		$data['submit'] = 0 ;
 
 		$s = get_data('tbl_scm_submit',[
 			'where' => [
@@ -42,7 +42,7 @@ class Material_price extends BE_Controller {
 		])->row();
 
 		if(isset($s->id)) {
-			$data['submit'] = TRUE ;
+			$data['submit'] = 1;
 		}
 
 
@@ -70,7 +70,7 @@ class Material_price extends BE_Controller {
 	    	$config['where']['id_user']	= $user_id;	
 		}
 
-		$submit = FALSE ;
+		$submit = 0 ;
 
 		$s = get_data('tbl_scm_submit',[
 			'where' => [
@@ -80,7 +80,7 @@ class Material_price extends BE_Controller {
 			],
 		])->row();
 		if(isset($s->id)) {
-			$submit = TRUE ;
+			$submit = 1 ;
 		}
 
 
@@ -89,7 +89,7 @@ class Material_price extends BE_Controller {
 	        $config['button'][]	= button_serverside('btn-warning','btn-input',['fa-edit',lang('ubah'),true],'edit',['id_user'=>user('id'), $submit => 0]);
 		}
 	    if(menu()['access_delete']) {
-	        $config['button'][]	= button_serverside('btn-danger','btn-delete',['fa-trash-alt',lang('hapus'),true],'delete',['id_user'=>user('id')]);
+	        $config['button'][]	= button_serverside('btn-danger','btn-delete',['fa-trash-alt',lang('hapus'),true],'delete',['id_user'=>user('id'), $submit => 0]);
 	    }
 
 		$data = data_serverside($config);
