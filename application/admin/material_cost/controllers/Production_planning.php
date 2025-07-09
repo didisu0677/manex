@@ -1258,16 +1258,18 @@ class Production_planning extends BE_Controller
         $table_prod = 'tbl_production_planning_' . $tahun;
 
         $cek = get_data($table_prod . ' a', [
-            'select' => 'a.product_code, b.cost_centre, c.id as id_cost_centre',
+            'select' => 'a.product_code, c.kode as cost_centre, c.id as id_cost_centre',
             'join' => [
                 'tbl_fact_product b on a.product_code = b.code type LEFT',
-                'tbl_fact_cost_centre c on b.cost_centre = c.kode type LEFT',
+                'tbl_fact_cost_centre c on b.id_cost_centre = c.id type LEFT',
             ],
             'where' => [
                 'b.is_active' => 1,
-                // 'a.product_code' => 'CINFEKMNDM'
+                // 'a.product_code' => 'CIGSOL21DM'
             ],
         ])->result();
+
+        debug($cek);die;
 
         foreach ($cek as $c) {
             update_data(
