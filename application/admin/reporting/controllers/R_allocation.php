@@ -180,8 +180,6 @@ class R_allocation extends BE_Controller {
                     // if($status == 1) $arr['where']['a.cost_centre not'] = $list_ccallocation;
                     
                     $sum = get_data($table . ' a',$arr)->result();
-            
-                
                     foreach($sum as $s) {
                         if($s->cost_centre == $p->kode) {
                             $data['total_budget'][$m->account_code][$p->kode] = $s->total_budget;
@@ -193,6 +191,7 @@ class R_allocation extends BE_Controller {
             }
         }
 
+        // debug($data);die;
         delete_data('tbl_fact_manex_allocation', ['tahun'=>$tahun,'cost_centre !=' => '3100']);
         //simpan report ke database
         foreach($data['total_budget'] as $d => $v) {
