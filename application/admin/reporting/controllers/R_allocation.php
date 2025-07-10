@@ -218,7 +218,7 @@ class R_allocation extends BE_Controller {
 
         foreach($lst as $l) {
             $total_idle = 0;
-            $after_idle = $l->$total;
+            $after_idle = $l->total;
             if(in_array($l->manex_account,['7211','731','733'])) {
                 $total_idle = ($l->total * ($l->prsn_allocation /100));
                 $after_idle = $l->total - ($l->total * ($l->prsn_allocation /100));
