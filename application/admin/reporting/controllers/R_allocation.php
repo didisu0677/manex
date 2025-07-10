@@ -167,7 +167,8 @@ class R_allocation extends BE_Controller {
                     }, $realAccountNumber));
 
                     $arr = [
-                        'select' => 'a.cost_centre, sum(total_budget) as total_budget, sum(total_budget_idle) as total_budget_idle, sum(budget_after_idle) as budget_after_idle',
+                        'select' => 'a.cost_centre, sum(total_budget) as total_budget',
+                        //  sum(total_budget_idle) as total_budget_idle, sum(budget_after_idle) as budget_after_idle',
                         'where' => [
                             '__m' => '(account_code IN ('.$realAccountNumber.') '.(!empty($customWhere)  ? ' OR ' .$customWhere : '').')',
 
@@ -183,8 +184,8 @@ class R_allocation extends BE_Controller {
                     foreach($sum as $s) {
                         if($s->cost_centre == $p->kode) {
                             $data['total_budget'][$m->account_code][$p->kode] = $s->total_budget;
-                            $data['total_budget_idle'][$m->account_code][$p->kode] = $s->total_budget_idle;
-                            $data['budget_after_idle'][$m->account_code][$p->kode] = $s->budget_after_idle;
+                            // $data['total_budget_idle'][$m->account_code][$p->kode] = 0;
+                            // $data['budget_after_idle'][$m->account_code][$p->kode] = 0;
                         }
                     }
                 }
@@ -207,26 +208,49 @@ class R_allocation extends BE_Controller {
             }
         }
 
-        foreach($data['total_budget_idle'] as $d1 => $v1) {
-            foreach($v1 as $vc1 => $t11) {
+
+        $lst = get_data('tbl_fact_manex_allocation a',[
+			'select' => 'a.*,b.kode as cost_centre,c.prsn_allocation',
+			'join' => ['tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
+                       'tbl_idle_allocation c on b.id = c.id_cost_centre and b.is_active = 1 type left',
+                      ],
+            'where' => [
+                'a.manex_account' => ['7211','731','733']
+			],
+		])->result();
+
+        foreach($lst as $l) {
+			update_data('tbl_fact_manex_allocation',
+				['total_idle' => ($l->total * ($l->prsn_allocation /100)), 'after_idle' => $l->total - ($l->total * ($l->prsn_allocation /100))],
+				['tahun' => $l->tahun,'manex_account'=>$l->manex_account,'cost_centre' => $l->cost_centre],
+			);
+
+            $data['total_budget_idle'][$l->manex_account][$l->cost_centre] = ($l->total * ($l->prsn_allocation /100));
+            $data['budget_after_idle'][$l->manex_account][$l->cost_centre] = $l->total - ($l->total * ($l->prsn_allocation /100));
+
+		}
 
 
-                $data_insert1 = [
-                    'total_idle' => $t11
-                ];
-                update_data('tbl_fact_manex_allocation',$data_insert1,['tahun'=>$tahun,'manex_account'=>$d1,'cost_centre'=>$vc1]);
-            }
-        }
+        // foreach($data['total_budget_idle'] as $d1 => $v1) {
+        //     foreach($v1 as $vc1 => $t11) {
 
-        foreach($data['budget_after_idle'] as $d2 => $v2) {
-            foreach($v2 as $vc2 => $t12) {
 
-                $data_insert2 = [
-                    'after_idle' => $t12
-                ];
-                update_data('tbl_fact_manex_allocation',$data_insert2,['tahun'=>$tahun,'manex_account'=>$d2,'cost_centre'=>$vc2]);
-            }
-        }
+        //         $data_insert1 = [
+        //             'total_idle' => $t11
+        //         ];
+        //         update_data('tbl_fact_manex_allocation',$data_insert1,['tahun'=>$tahun,'manex_account'=>$d1,'cost_centre'=>$vc1]);
+        //     }
+        // }
+
+        // foreach($data['budget_after_idle'] as $d2 => $v2) {
+        //     foreach($v2 as $vc2 => $t12) {
+
+        //         $data_insert2 = [
+        //             'after_idle' => $t12
+        //         ];
+        //         update_data('tbl_fact_manex_allocation',$data_insert2,['tahun'=>$tahun,'manex_account'=>$d2,'cost_centre'=>$vc2]);
+        //     }
+        // }
 
         $data['total_type'] = $total_type;
         $response	= array(
