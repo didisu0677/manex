@@ -44,9 +44,8 @@ foreach($mst_account[0] as $m0) {
 						$$total += $vt;
 						$$totalovh += $vt;
 						$xtotal0 += $vt;
-						$totalz1 += $x1;
 					}
-					// $totalz += $vt;
+					$totalz += $vt;
 				}
 	
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" contenteditable="true" class="edit-value text-right budget " data-name="" data-id="" data-value="'.$x1.'">'.$x1.'</td>';
@@ -79,12 +78,13 @@ foreach($mst_account[0] as $m0) {
 <tr>
         <td><b><?php echo 'TOTAL OVERHEAD' ;?></b></td>
         <?php
+		$grand_total = 0;
 			foreach($production as $p) { 
-
+				$grand_total += $$totalovh;
 				$totalovh = 'totalovh_' . $p->kode;
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" contenteditable="true" class="edit-value text-right budget " data-name="" data-id="" data-value="'.$$totalovh.'"><b>'.number_format($$totalovh).'</td>';
 			}
-                echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" contenteditable="true" class="edit-value text-right total_budget" data-name="" data-id="" data-value="'.$totalz1.'"><b>'.number_format($totalz1).'</b>xx</td>';
+                echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" contenteditable="true" class="edit-value text-right total_budget" data-name="" data-id="" data-value="'.$grand_total.'"><b>'.number_format($grand_total).'</b></td>';
     
         ?>
     </tr>
