@@ -93,7 +93,8 @@ class Rprod_allocation extends BE_Controller {
      
 
             foreach($biaya as $b) {
-                $data['total_biaya'][$m0->kode][$b->manex_account] = $b->total; 
+                // $data['total_biaya'][$m0->kode][$b->manex_account] = $b->total; 
+                $data['total_biaya'][$m0->kode][$b->manex_account] = $b->after_idle;  //diganti after idle allocation
             }
 
             // debug($data['total_biaya'][$m0->kode]);die;
@@ -189,9 +190,11 @@ class Rprod_allocation extends BE_Controller {
             foreach($biaya as $b) {
                 if($b->cost_centre == $p->kode) {
                     if(in_array($b->account_code,['7211','7212'])) {
-                        $x = (int) $b->total * ($p->manwh_prsn);
+                        // $x = (int) $b->total * ($p->manwh_prsn);
+                        $x = (int) $b->after_idle * ($p->manwh_prsn);
                     }else{
-                        $x = (int) $b->total * ($p->macwh_prsn);
+                        // $x = (int) $b->total * ($p->macwh_prsn);
+                        $x = (int) $b->after_idle * ($p->macwh_prsn);
                     }
 
                     switch ($b->account_code) {

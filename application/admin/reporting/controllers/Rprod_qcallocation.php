@@ -94,7 +94,8 @@ class Rprod_qcallocation extends BE_Controller {
 
 
         foreach($biaya as $b) {
-            $data['total_biaya']['3100'][$b->manex_account] = $b->total; 
+            // $data['total_biaya']['3100'][$b->manex_account] = $b->total; 
+            $data['total_biaya']['3100'][$b->manex_account] = $b->after_idle; 
         }
 
         $data['variable'] = get_data('tbl_fact_manex_account',[
@@ -161,7 +162,8 @@ class Rprod_qcallocation extends BE_Controller {
             foreach($biaya as $b) {
                 if($b->cost_centre == '3100') {
 
-                    $x = (int) $b->total * ($p->prsn_aloc / 100);
+                    // $x = (int) $b->total * ($p->prsn_aloc / 100);
+                      $x = (int) $b->after_idle * ($p->prsn_aloc / 100);
 
                     switch ($b->account_code) {
                         case '7211':
