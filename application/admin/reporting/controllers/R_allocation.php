@@ -73,7 +73,10 @@ class R_allocation extends BE_Controller {
             'sort_by'=>'urutan',
             ])->result();
 
+            
+        $data_total=[];
         foreach($data['mst_account'][0] as $m0) {
+            $data_total[$m0->account_code] = [];
             $data['mst_account'][$m0->grup] = get_data('tbl_fact_manex_account a',[
                 'select' => 'a.*',
                 'where'=>[
@@ -92,7 +95,7 @@ class R_allocation extends BE_Controller {
                 
                 ])->result();
 
-
+        
 
         if(table_exists($table)) {
             $data['total_budget'] = [];
@@ -113,6 +116,11 @@ class R_allocation extends BE_Controller {
             $data['production'] = get_data('tbl_fact_cost_centre', $arr)->result(); 
            
             foreach($data['production'] as $p) {
+                $data_total[$m0->account_code][$p->kode] = [
+                    'total_budget' => 0,
+                    'total_budget_idle' => 0,
+                    'budget_after_idle' => 0
+                ];
                 foreach($manex as $m) {
 
                     $dataFilter = get_data(' tbl_fact_filter_account',[
@@ -181,34 +189,42 @@ class R_allocation extends BE_Controller {
                     
                     $sum = get_data($table . ' a',$arr)->result();
 
-            
+               
                     foreach($sum as $s) {
                         if($s->cost_centre == $p->kode) {
-                            $data['total_budget'][$m->account_code][$p->kode] = $s->total_budget;
-                            $data['total_budget_idle'][$m->account_code][$p->kode] = $s->total_budget_idle;
-                            $data['budget_after_idle'][$m->account_code][$p->kode] = $s->budget_after_idle;
+                            $data_total[$m0->account_code][$p->kode] = [
+                                'total_budget' => $s->total_budget,
+                                'total_budget_idle' => $s->total_budget_idle,
+                                'budget_after_idle' => $s->budget_after_idle
+                            ];
+                            // $data['total_budget'][$m->account_code][$p->kode] = $s->total_budget;
+                            // $data['total_budget_idle'][$m->account_code][$p->kode] = $s->total_budget_idle;
+                            // $data['budget_after_idle'][$m->account_code][$p->kode] = $s->budget_after_idle;
                         }
                     }
                 }
             }
         }
 
+        debug($data['total_budget']);die;
 
         delete_data('tbl_fact_manex_allocation', ['tahun'=>$tahun,'cost_centre !=' => '3100']);
         //simpan report ke database
-        foreach($data['total_budget'] as $d => $v) {
-            foreach($v as $vc => $t1) {
-   
+        foreach($data_total as $key_account => $val_account) {
+            foreach($val_account as $key_cc => $val_cc){
+                $total_budget = $val_cc['total_budget'];
+                $total_budget_idle = $val_cc['total_budget_idle'];
+                $budget_after_idle = $val_cc['budget_after_idle'];
+
                 $data_insert = [
                     'tahun' => $tahun,
-                    'manex_account' => $d,
-                    'cost_centre' => $vc,
-                    'total' => $t1,
-                    'total_idle' => $data['total_budget_idle'][$d][$vc],
-                    'after_idle' => $data['budget_after_idle'][$d][$vc],
+                    'manex_account' => $key_account,
+                    'cost_centre' => $key_cc,
+                    'total' => $total_budget,
+                    'total_idle' => $total_budget_idle,
+                    'after_idle' => $budget_after_idle,
                 ];
                 insert_data('tbl_fact_manex_allocation',$data_insert);
-                    
             }
         }
  
