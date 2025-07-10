@@ -191,7 +191,7 @@ class R_allocation extends BE_Controller {
             }
         }
 
-        debug($data['total_budget_idle']);die;
+        // debug($data['total_budget_idle']);die;
         delete_data('tbl_fact_manex_allocation', ['tahun'=>$tahun,'cost_centre !=' => '3100']);
         //simpan report ke database
         foreach($data['total_budget'] as $d => $v) {
