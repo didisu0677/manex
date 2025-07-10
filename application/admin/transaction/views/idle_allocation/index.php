@@ -16,7 +16,7 @@
 			$import = '';
 			$delete = '';
 			if($access['access_input']==1) {
-				echo '<button class="btn btn-info btn-proses" href="javascript:;" ><i class="fa-process"></i> Idle Allocation</button>';
+				// echo '<button class="btn btn-info btn-proses" href="javascript:;" ><i class="fa-process"></i> Idle Allocation</button>';
 				$import = 'import';
 				$delete = 'delete';
 			}
