@@ -167,7 +167,7 @@ class R_allocation extends BE_Controller {
                     }, $realAccountNumber));
 
                     $arr = [
-                        'select' => 'a.cost_centre, sum(total_budget) as total_budget',
+                        'select' => 'a.cost_centre, sum(total_budget) as total_budget, sum(total_budget_idle) as total_budget_idle, sum(budget_after_idle) as budget_after_idle',
                         'where' => [
                             '__m' => '(account_code IN ('.$realAccountNumber.') '.(!empty($customWhere)  ? ' OR ' .$customWhere : '').')',
 
@@ -180,16 +180,19 @@ class R_allocation extends BE_Controller {
                     // if($status == 1) $arr['where']['a.cost_centre not'] = $list_ccallocation;
                     
                     $sum = get_data($table . ' a',$arr)->result();
+
             
-                
                     foreach($sum as $s) {
                         if($s->cost_centre == $p->kode) {
                             $data['total_budget'][$m->account_code][$p->kode] = $s->total_budget;
+                            $data['total_budget_idle'][$m->account_code][$p->kode] = $s->total_budget_idle;
+                            $data['budget_after_idle'][$m->account_code][$p->kode] = $s->budget_after_idle;
                         }
                     }
                 }
             }
         }
+
 
         delete_data('tbl_fact_manex_allocation', ['tahun'=>$tahun,'cost_centre !=' => '3100']);
         //simpan report ke database
@@ -200,7 +203,9 @@ class R_allocation extends BE_Controller {
                     'tahun' => $tahun,
                     'manex_account' => $d,
                     'cost_centre' => $vc,
-                    'total' => $t1
+                    'total' => $t1,
+                    'total_idle' => $data['total_budget_idle'][$d][$vc],
+                    'after_idle' => $data['budget_after_idle'][$d][$vc],
                 ];
                 insert_data('tbl_fact_manex_allocation',$data_insert);
                     

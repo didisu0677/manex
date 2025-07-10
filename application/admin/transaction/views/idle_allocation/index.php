@@ -12,7 +12,16 @@
                 <?php } ?>
 			</select>
 
-			<?php echo access_button('delete,active,inactive,export,import'); ?>
+			<?php 
+			$import = '';
+			$delete = '';
+			if($access['access_input']==1) {
+				echo '<button class="btn btn-info btn-proses" href="javascript:;" ><i class="fa-process"></i> Idle Allocation</button>';
+				$import = 'import';
+				$delete = 'delete';
+			}
+			
+			echo access_button('delete,active,inactive,export,import'); ?>
 		</div>
 		<div class="clearfix"></div>
 	</div>
@@ -86,4 +95,25 @@ $('#filter_tahun').change(function(){
 	$('[data-serverside]').attr('data-serverside',url);
 	refreshData();
 });
+
+var id_proses = '';
+var tahun = 0;
+$(document).on('click','.btn-proses',function(e){
+	e.preventDefault();
+	id_proses = 'proses';
+	tahun = $('#filter_tahun').val();
+	cConfirm.open(lang.apakah_anda_yakin + '?','lanjut');
+});
+
+function lanjut() {
+	$.ajax({
+		url : base_url + 'transaction/idle_allocation/proses',
+		data : {id:id_proses,tahun : tahun},
+		type : 'post',
+		dataType : 'json',
+		success : function(res) {
+			cAlert.open(res.message,res.status,'refreshData');
+		}
+	});
+}
 </script>

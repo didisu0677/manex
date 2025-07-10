@@ -1,7 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Idle_allocation extends BE_Controller {
-
+	var $controller = 'Idle_allocation';
 	function __construct() {
 		parent::__construct();
 	}
@@ -14,6 +14,10 @@ class Idle_allocation extends BE_Controller {
 				'id_fact_department' => 2
 			],
 			])->result_array();
+
+		
+		$access         = get_access($this->controller);
+        $data['access'] = $access ;
 
 		render($data);
 	}
@@ -42,6 +46,35 @@ class Idle_allocation extends BE_Controller {
 	function delete() {
 		$response = destroy_data('tbl_idle_allocation','id',post('id'));
 		render($response,'json');
+	}
+
+	function proses(){
+		ini_set('memory_limit', '-1');
+		ini_set('max_execution_time', 0);
+
+        $tahun = post('tahun');
+		$table = 'tbl_fact_lstbudget_' . $tahun ; 
+
+		$lst = get_data($table . ' a',[
+			'select' => 'a.id,b.tahun,a.id_cost_centre, a.cost_centre, a.total_budget,b.prsn_allocation',
+			'join' => 'tbl_idle_allocation b on a.id_cost_centre = b.id_cost_centre',
+			'where' => [
+				'b.is_active' => 1,
+				'a.total_budget !=' => 0,
+			],
+		])->result();
+
+		foreach($lst as $l) {
+			update_data($table,
+				['total_budget_idle' => ($l->total_budget * ($l->prsn_allocation /100)), 'budget_after_idle' => $l->total_budget - ($l->total_budget * ($l->prsn_allocation /100))],
+				['id' => $l->id],
+			);
+		}
+
+		render([
+			'status'	=> 'success',
+			'message'	=> 'Posting Actual Sales data has benn succesfuly'
+		],'json');	
 	}
 
 	function template() {
