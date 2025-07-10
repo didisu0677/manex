@@ -214,19 +214,23 @@ class R_allocation extends BE_Controller {
 			'join' => ['tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
                        'tbl_idle_allocation c on b.id = c.id_cost_centre and b.is_active = 1 type left',
                       ],
-            'where' => [
-                'a.manex_account' => ['7211','731','733']
-			],
-		])->result();
+  		])->result();
 
         foreach($lst as $l) {
-			update_data('tbl_fact_manex_allocation',
-				['total_idle' => ($l->total * ($l->prsn_allocation /100)), 'after_idle' => $l->total - ($l->total * ($l->prsn_allocation /100))],
-				['tahun' => $l->tahun,'manex_account'=>$l->manex_account,'cost_centre' => $l->cost_centre],
-			);
+            $total_idle = 0;
+            $after_idle = 0;
+            if(in_array($l->manex_account,['7211','731','733'])) {
+                $total_idle = ($l->total * ($l->prsn_allocation /100));
+                $after_idle = $l->total - ($l->total * ($l->prsn_allocation /100));
+            }
 
-            $data['total_budget_idle'][$l->manex_account][$l->cost_centre] = ($l->total * ($l->prsn_allocation /100));
-            $data['budget_after_idle'][$l->manex_account][$l->cost_centre] = $l->total - ($l->total * ($l->prsn_allocation /100));
+                update_data('tbl_fact_manex_allocation',
+                    ['total_idle' => $total_idle, 'after_idle' => $after_idle ],
+                    ['tahun' => $l->tahun,'manex_account'=>$l->manex_account,'cost_centre' => $l->cost_centre],
+                );
+
+            $data['total_budget_idle'][$l->manex_account][$l->cost_centre] = $total_idle;
+            $data['budget_after_idle'][$l->manex_account][$l->cost_centre] = $after_idle;
 
 		}
 
