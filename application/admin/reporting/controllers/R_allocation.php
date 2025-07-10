@@ -45,7 +45,7 @@ class R_allocation extends BE_Controller {
 
     function data($tahun="", $tipe = 'table') {
 
-
+        $total_type = get('type');
         $table = 'tbl_fact_lstbudget_' . $tahun ;
         $list_ccallocation = [];
         // if($status=="1"){
@@ -218,7 +218,7 @@ class R_allocation extends BE_Controller {
             }
         }
 
-        foreach($data['total_budget_idle'] as $d2 => $v2) {
+        foreach($data['budget_after_idle'] as $d2 => $v2) {
             foreach($v2 as $vc2 => $t12) {
 
                 $data_insert2 = [
@@ -228,7 +228,7 @@ class R_allocation extends BE_Controller {
             }
         }
 
- 
+        $data['total_type'] = $total_type;
         $response	= array(
             'table'		=> $this->load->view('reporting/r_allocation/table',$data,true),
             // 'table2'		=> $this->load->view('reporting/r_allocation/table2',$data,true),

@@ -57,9 +57,8 @@ class Idle_allocation extends BE_Controller {
 
 		$lst = get_data($table . ' a',[
 			'select' => 'a.id,b.tahun,a.id_cost_centre, a.cost_centre, a.total_budget,b.prsn_allocation',
-			'join' => 'tbl_idle_allocation b on a.id_cost_centre = b.id_cost_centre',
+			'join' => 'tbl_idle_allocation b on a.id_cost_centre = b.id_cost_centre and b.is_active = 1 type left',
 			'where' => [
-				'b.is_active' => 1,
 				'a.total_budget !=' => 0,
 			],
 		])->result();

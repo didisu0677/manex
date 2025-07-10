@@ -12,7 +12,11 @@
                 <option value="<?php echo $tahun->tahun; ?>"<?php if($tahun->tahun == user('tahun_budget')) echo ' selected'; ?>><?php echo $tahun->tahun; ?></option>
                 <?php } ?>
 			</select>
-
+			<select class="select2 infinity custom-select" style="width: 150px;" id="filter_type">
+				<option value="total_budget">Total Budget</option>
+				<option value="total_budget_idle">Total Budget Idle</option>
+				<option value="budget_after_idle">Budget After Idle</option>
+			</select>
     		
     		<?php 
 
@@ -118,7 +122,7 @@ $(document).ready(function () {
 
 	
 // });
-$('#filter_tahun').change(function(){
+$('#filter_tahun, #filter_type').change(function(){
 	getData();
 });
 
@@ -135,7 +139,7 @@ function getData() {
 		cLoader.open(lang.memuat_data + '...');
 		// $('.overlay-wrap').removeClass('hidden');
 		var page = base_url + 'reporting/r_allocation/data';
-			page 	+= '/'+$('#filter_tahun').val();
+			page 	+= '/'+$('#filter_tahun').val() + '?type='+$('#filter_type').val();
 
 
 		$.ajax({

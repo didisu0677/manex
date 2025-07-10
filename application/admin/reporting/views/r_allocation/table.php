@@ -17,7 +17,14 @@ foreach($mst_account[0] as $m0) {
 	}
 	$xtotal0 = 0;
 	foreach($mst_account[$m0->grup] as $m1) { 
-		foreach($total_budget as $v => $t){
+		$list_data_value = $total_budget;
+		if($total_type == 'total_budget_idle'){
+			$list_data_value = $total_budget_idle;
+		} else if($total_type == 'budget_after_idle'){
+			$list_data_value = $budget_after_idle;
+		}
+
+		foreach($list_data_value as $v => $t){
 			if($m1->account_code == $v) {
 		?>
 		<tr>
