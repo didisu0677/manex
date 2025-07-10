@@ -184,8 +184,8 @@ class R_allocation extends BE_Controller {
                     foreach($sum as $s) {
                         if($s->cost_centre == $p->kode) {
                             $data['total_budget'][$m->account_code][$p->kode] = $s->total_budget;
-                            // $data['total_budget_idle'][$m->account_code][$p->kode] = 0;
-                            // $data['budget_after_idle'][$m->account_code][$p->kode] = 0;
+                            $data['total_budget_idle'][$m->account_code][$p->kode] = 0;
+                            $data['budget_after_idle'][$m->account_code][$p->kode] = 0;
                         }
                     }
                 }
