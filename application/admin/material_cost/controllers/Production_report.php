@@ -72,8 +72,8 @@ class Production_report extends BE_Controller {
                 $cek = get_data($table_prod . ' a',[
                     'select' => 'a.*',
                     'where' => [
-                        'a.tahun' => $tahun,
-                        'a.budget_product_code' => $p->code,
+                        // 'a.tahun' => $tahun,
+                        'a.product_code' => $p->code,
                         'a.product_line' => $p->product_line,
                         'a.posting_code' => 'PRD',
                     ]
@@ -88,7 +88,7 @@ class Production_report extends BE_Controller {
 
 
             $data['produk'][$m0->id]= get_data('tbl_budget_production_dev a',[
-                'select' => 'a.tahun,a.id_cost_centre,a.product_line,a.divisi,a.categori,a.id_budget_product,a.budget_product_code,a.budget_product_name,
+                'select' => 'a.tahun,a.id_cost_centre,a.product_line,a.divisi,a.category,a.id_budget_product,a.budget_product_code,a.budget_product_name,
                              d.P_01 as B_01, d.P_02 as B_02, d.P_03 as B_03, d.P_04 as B_04, d.P_05 as B_05, d.P_06 as B_06, d.P_07 as B_07, d.P_08 as B_08, d.P_09 as B_09, d.P_10 as B_10, d.P_11 as B_11, d.P_12 as B_12,
                             ,b.code,b.product_name,b.destination, c.abbreviation as initial, c.cost_centre',
                 'join' =>  ['tbl_fact_product b on a.budget_product_code = b.code',

@@ -74,7 +74,7 @@
 <?php
 modal_open('modal-import',lang('impor'));
 modal_body();
-	form_open(base_url('transaction/budget_production/import'),'post','form-import');
+	form_open(base_url('material_cost/production_report/import'),'post','form-import');
 		col_init(3,9);
 		input('text',lang('tahun'),'tahun','','','readonly');
 		input('hidden',lang('tab'),'tab','','','readonly');
@@ -115,7 +115,7 @@ modal_close();
 
         cLoader.open(lang.memuat_data + '...');
         $('.overlay-wrap').removeClass('hidden');
-        var page = base_url + 'transaction/budget_production/data';
+        var page = base_url + 'material_cost/production_report/data';
             page 	+= '/'+$('#filter_tahun').val();
 			page 	+= '/'+$('#filter_cost_centre').val();
 
@@ -287,7 +287,7 @@ modal_close();
 
 		console.log(jsonString);
 		$.ajax({
-			url: base_url + 'transaction/budget_production/save_perubahan',
+			url: base_url + 'material_cost/production_report/save_perubahan',
 			data: {
 				'json': jsonString,
 				'tahun': $('#filter_tahun').val(),
@@ -357,7 +357,7 @@ modal_close();
 
 	function download_template(){
 		let tahun = $('#tahun').val();
-		window.open(base_url + 'transaction/budget_production/template?tahun='+tahun)
+		window.open(base_url + 'material_cost/production_report/template?tahun='+tahun)
 	}
 
 	$('.btn-act-import').click(function(){
@@ -371,7 +371,7 @@ modal_close();
 
 	// function do_import(){
 	// 	$.ajax({
-	// 		url: base_url + 'transaction/budget_production/import',
+	// 		url: base_url + 'material_cost/production_report/import',
 	// 		data: {
 	// 			tahun: $('#tahun').val(),
 	// 			fileimport: $('#fileimport').val(),
@@ -392,7 +392,7 @@ modal_close();
 	function refresh_page() {
         $(document).on('click', '.swal-button--confirm', function(){
             setTimeout(function () {
-                window.location.href = '<?php echo site_url('transaction/budget_production') ?>';
+                window.location.href = '<?php echo site_url('material_cost/production_report') ?>';
             }, 1000);
         })
     }
