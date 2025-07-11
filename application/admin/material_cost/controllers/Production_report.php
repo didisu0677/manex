@@ -93,7 +93,7 @@ class Production_report extends BE_Controller {
                 'where' => [
                     'a.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id,
-                    '__m' => 'a.budget_product_code in (select budget_product_code from tbl_beginning_stock where tahun ="'.$tahun.'" and is_active ="1"'
+                    '__m' => 'a.budget_product_code in (select budget_product_code from tbl_beginning_stock where tahun ="'.$tahun.'" and is_active ="1")'
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
