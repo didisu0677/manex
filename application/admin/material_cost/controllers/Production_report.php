@@ -2,7 +2,7 @@
 
 class Production_report extends BE_Controller {
 
-    var $controller = 'budget_production';
+    var $controller = 'production_report';
 	function __construct() {
 		parent::__construct();
 	}
