@@ -1091,7 +1091,7 @@ class Production_planning extends BE_Controller
 
                 // untuk menyimpan data kedalam budget production
                 if ($save_budget) {
-                    $table_budget = 'tbl_budget_production';
+                    $table_budget = 'tbl_budget_production_dev';
                     $cek_prd = get_data($table_budget, [
                         'where' => [
                             'tahun' => $tahun,
