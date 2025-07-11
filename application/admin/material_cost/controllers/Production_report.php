@@ -38,7 +38,7 @@ class Production_report extends BE_Controller {
     function data($tahun="",$cost_centre="",$tipe = 'table'){
 		ini_set('memory_limit', '-1');
 
-        $table = 'tbl_budget_production';
+        $table = 'tbl_budget_production_dev';
 
         $arr = [
             'select' => 'a.cost_centre as kode, b.id, b.cost_centre',
@@ -85,7 +85,7 @@ class Production_report extends BE_Controller {
             }
 
 
-            $data['produk'][$m0->id]= get_data('tbl_budget_production a',[
+            $data['produk'][$m0->id]= get_data('tbl_budget_production_dev a',[
                 'select' => 'a.*,b.code,b.product_name,b.destination, c.abbreviation as initial, c.cost_centre',
                 'join' =>  ['tbl_fact_product b on a.budget_product_code = b.code',
                             'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
@@ -110,7 +110,7 @@ class Production_report extends BE_Controller {
     
     function save_perubahan() {       
  
-        $table = 'tbl_budget_production';
+        $table = 'tbl_budget_production_dev';
 
         $table2 = 'tbl_fact_allocation_qc';
         $table3 = 'tbl_fact_product_ovh';
@@ -145,7 +145,7 @@ class Production_report extends BE_Controller {
         ini_set('max_execution_time', -1);
 
         $tahun = post('tahun');
-        $table = 'tbl_budget_production';
+        $table = 'tbl_budget_production_dev';
         $table2 = 'tbl_fact_allocation_qc';
         $table3 = 'tbl_fact_product_ovh';
 		$file = post('fileimport');
@@ -300,7 +300,7 @@ class Production_report extends BE_Controller {
         ini_set('memory_limit', '-1');
         ini_set('max_execution_time', -1);
 
-        $table = 'tbl_budget_production';
+        $table = 'tbl_budget_production_dev';
 
         $table2 = 'tbl_fact_allocation_qc';
         $table3 = 'tbl_fact_product_ovh';
@@ -323,7 +323,7 @@ class Production_report extends BE_Controller {
     }
 
     function update_cost_centre($tahun="") {
-        $prod = get_data('tbl_budget_production a',[
+        $prod = get_data('tbl_budget_production_dev a',[
             'select' => 'a.*, c.kode as cost_centre, b.id_cost_centre',
             'join' => ['tbl_fact_product b on a.budget_product_code = b.code type LEFT',
                        'tbl_fact_cost_centre c on b.id_cost_centre = c.id type LEFT',
@@ -334,7 +334,7 @@ class Production_report extends BE_Controller {
         ])->result();
 
         foreach($prod as $p) {
-            update_data('tbl_budget_production',['id_cost_centre' => $p->id_cost_centre],['budget_product_code'=>$p->budget_product_code,'tahun'=>$tahun]);
+            update_data('tbl_budget_production_dev',['id_cost_centre' => $p->id_cost_centre],['budget_product_code'=>$p->budget_product_code,'tahun'=>$tahun]);
         }
         echo 'success' ;
     }
