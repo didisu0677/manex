@@ -69,13 +69,12 @@ class Production_report extends BE_Controller {
             ])->result();
             
             foreach($cproduk as $p) {   
-                $cek = get_data($table_prod . ' a',[
+                $cek = get_data($table . ' a',[
                     'select' => 'a.*',
                     'where' => [
-                        // 'a.tahun' => $tahun,
-                        'a.product_code' => $p->code,
+                        'a.tahun' => $tahun,
+                        'a.budget_product_code' => $p->code,
                         'a.product_line' => $p->product_line,
-                        'a.posting_code' => 'PRD',
                     ]
                 ])->row();
                 if(!isset($cek->id)){
