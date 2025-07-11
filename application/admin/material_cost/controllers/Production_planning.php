@@ -471,7 +471,7 @@ class Production_planning extends BE_Controller
         $data   = json_decode(post('json'), true);
 
         $this->save_xproduction_planning();
-        $this->save_production_planning(true);
+        $this->save_production_planning(false);
 
         // set field edited
         foreach ($data as $id => $record) {
@@ -1059,16 +1059,7 @@ class Production_planning extends BE_Controller
 
     public function submit_production()
     {
-        $tahun = post('tahun');
-        // $this->save_production_planning(true, true);
-        delete_data('tbl_scm_submit', ['code_submit' => 'PROD', 'tahun' => $tahun]);
-
-        insert_data('tbl_scm_submit', [
-            'tahun' => $tahun,
-            'code_submit' => 'PROD',
-            'is_submit' => 1,
-            'is_active' => 1
-        ]);
+        $this->save_production_planning(true, true);
     }
 
     private function save_production_planning($save_budget = false, $is_production = false)
@@ -1129,52 +1120,20 @@ class Production_planning extends BE_Controller
                         ];
                         insert_data($table_budget, $data_insert);
                     }
-                }
-
-                // untuk menyimpan data production kedalam production planning
-                $cek_prd = get_data($table, [
-                    'where' => [
-                        'posting_code' => 'PRD',
-                        'product_code' => $detail_product['code'],
-                    ]
-                ])->row_array();
-
-                if ($cek_prd) {
-                    $data_update = [
-                        'P_' . sprintf('%02d', $month[$k]) => $value[$k],
-                    ];
-                    update_data($table, $data_update, 'id', $cek_prd['id']);
                 } else {
-                    $data_insert = [
-                        'revision' => 0,
-                        'product_code' => $detail_product['code'],
-                        'product_name' => $detail_product['product_name'],
-                        'cost_centre' => $detail_product['cost_centre'],
-                        'id_cost_centre' => $detail_product['id_cost_centre'],
-                        'product_line' => $detail_product['product_line'],
-                        'dest' => $detail_product['destination'],
-                        'batch' => 0,
-                        'posting_code' => 'PRD',
-                        'P_' . sprintf('%02d', $month[$k]) => $value[$k]
-                    ];
-
-                    insert_data($table, $data_insert);
-                }
-
-                if (@$edit[$k] == '1') {
-                    $cek_epd = get_data($table, [
+                    // untuk menyimpan data production kedalam production planning
+                    $cek_prd = get_data($table, [
                         'where' => [
-                            'posting_code' => 'EPD',
+                            'posting_code' => 'PRD',
                             'product_code' => $detail_product['code'],
                         ]
                     ])->row_array();
 
-                    if ($cek_epd) {
+                    if ($cek_prd) {
                         $data_update = [
-                            // 'P_'.sprintf('%02d', $month[$k]) => $value[$k]
-                            'P_' . sprintf('%02d', $month[$k]) => 1
+                            'P_' . sprintf('%02d', $month[$k]) => $value[$k],
                         ];
-                        update_data($table, $data_update, 'id', $cek_epd['id']);
+                        update_data($table, $data_update, 'id', $cek_prd['id']);
                     } else {
                         $data_insert = [
                             'revision' => 0,
@@ -1185,14 +1144,47 @@ class Production_planning extends BE_Controller
                             'product_line' => $detail_product['product_line'],
                             'dest' => $detail_product['destination'],
                             'batch' => 0,
-                            'posting_code' => 'EPD',
-                            // 'P_'.sprintf('%02d', $month[$k]) => $value[$k],
-                            'P_' . sprintf('%02d', $month[$k]) => 1,
+                            'posting_code' => 'PRD',
+                            'P_' . sprintf('%02d', $month[$k]) => $value[$k]
                         ];
 
                         insert_data($table, $data_insert);
                     }
+                    
+                    if (@$edit[$k] == '1') {
+                        $cek_epd = get_data($table, [
+                            'where' => [
+                                'posting_code' => 'EPD',
+                                'product_code' => $detail_product['code'],
+                            ]
+                        ])->row_array();
+    
+                        if ($cek_epd) {
+                            $data_update = [
+                                // 'P_'.sprintf('%02d', $month[$k]) => $value[$k]
+                                'P_' . sprintf('%02d', $month[$k]) => 1
+                            ];
+                            update_data($table, $data_update, 'id', $cek_epd['id']);
+                        } else {
+                            $data_insert = [
+                                'revision' => 0,
+                                'product_code' => $detail_product['code'],
+                                'product_name' => $detail_product['product_name'],
+                                'cost_centre' => $detail_product['cost_centre'],
+                                'id_cost_centre' => $detail_product['id_cost_centre'],
+                                'product_line' => $detail_product['product_line'],
+                                'dest' => $detail_product['destination'],
+                                'batch' => 0,
+                                'posting_code' => 'EPD',
+                                // 'P_'.sprintf('%02d', $month[$k]) => $value[$k],
+                                'P_' . sprintf('%02d', $month[$k]) => 1,
+                            ];
+    
+                            insert_data($table, $data_insert);
+                        }
+                    }
                 }
+
             }
             // }
         }
