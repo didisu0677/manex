@@ -38,7 +38,8 @@ class Production_report extends BE_Controller {
     function data($tahun="",$cost_centre="",$tipe = 'table'){
 		ini_set('memory_limit', '-1');
 
-        $table = 'tbl_budget_production';
+        $table = 'tbl_budget_production_dev';
+        $table_prod = 'tbl_production_planning_' . $tahun ;
 
         $arr = [
             'select' => 'a.cost_centre as kode, b.id, b.cost_centre',
@@ -68,12 +69,13 @@ class Production_report extends BE_Controller {
             ])->result();
             
             foreach($cproduk as $p) {   
-                $cek = get_data($table . ' a',[
+                $cek = get_data($table_prod . ' a',[
                     'select' => 'a.*',
                     'where' => [
                         'a.tahun' => $tahun,
                         'a.budget_product_code' => $p->code,
                         'a.product_line' => $p->product_line,
+                        'a.posting_code' => 'PRD',
                     ]
                 ])->row();
                 if(!isset($cek->id)){
@@ -85,10 +87,13 @@ class Production_report extends BE_Controller {
             }
 
 
-            $data['produk'][$m0->id]= get_data('tbl_budget_production a',[
-                'select' => 'a.*,b.code,b.product_name,b.destination, c.abbreviation as initial, c.cost_centre',
+            $data['produk'][$m0->id]= get_data('tbl_budget_production_dev a',[
+                'select' => 'a.tahun,a.id_cost_centre,a.product_line,a.divisi,a.categori,a.id_budget_product,a.budget_product_code,a.budget_product_name,
+                             d.P_01 as B_01, d.P_02 as B_02, d.P_03 as B_03, d.P_04 as B_04, d.P_05 as B_05, d.P_06 as B_06, d.P_07 as B_07, d.P_08 as B_08, d.P_09 as B_09, d.P_10 as B_10, d.P_11 as B_11, d.P_12 as B_12,
+                            ,b.code,b.product_name,b.destination, c.abbreviation as initial, c.cost_centre',
                 'join' =>  ['tbl_fact_product b on a.budget_product_code = b.code',
                             'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
+                            $table_prod . ' d on a.budget_product_code = d.product_code and d.posting_code ="PRD"'
                            ],
                 'where' => [
                     'a.tahun' => $tahun,
@@ -110,7 +115,7 @@ class Production_report extends BE_Controller {
     
     function save_perubahan() {       
  
-        $table = 'tbl_budget_production';
+        $table = 'tbl_budget_production_dev';
 
         $table2 = 'tbl_fact_allocation_qc';
         $table3 = 'tbl_fact_product_ovh';
@@ -145,7 +150,7 @@ class Production_report extends BE_Controller {
         ini_set('max_execution_time', -1);
 
         $tahun = post('tahun');
-        $table = 'tbl_budget_production';
+        $table = 'tbl_budget_production_dev';
         $table2 = 'tbl_fact_allocation_qc';
         $table3 = 'tbl_fact_product_ovh';
 		$file = post('fileimport');
@@ -300,7 +305,7 @@ class Production_report extends BE_Controller {
         ini_set('memory_limit', '-1');
         ini_set('max_execution_time', -1);
 
-        $table = 'tbl_budget_production';
+        $table = 'tbl_budget_production_dev';
 
         $table2 = 'tbl_fact_allocation_qc';
         $table3 = 'tbl_fact_product_ovh';
@@ -323,7 +328,7 @@ class Production_report extends BE_Controller {
     }
 
     function update_cost_centre($tahun="") {
-        $prod = get_data('tbl_budget_production a',[
+        $prod = get_data('tbl_budget_production_dev a',[
             'select' => 'a.*, c.kode as cost_centre, b.id_cost_centre',
             'join' => ['tbl_fact_product b on a.budget_product_code = b.code type LEFT',
                        'tbl_fact_cost_centre c on b.id_cost_centre = c.id type LEFT',
@@ -334,7 +339,7 @@ class Production_report extends BE_Controller {
         ])->result();
 
         foreach($prod as $p) {
-            update_data('tbl_budget_production',['id_cost_centre' => $p->id_cost_centre],['budget_product_code'=>$p->budget_product_code,'tahun'=>$tahun]);
+            update_data('tbl_budget_production_dev',['id_cost_centre' => $p->id_cost_centre],['budget_product_code'=>$p->budget_product_code,'tahun'=>$tahun]);
         }
         echo 'success' ;
     }
