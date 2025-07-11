@@ -136,7 +136,7 @@ class Rprod_qcallocation extends BE_Controller {
         ])->result();
 
         $biaya = get_data('tbl_fact_manex_allocation a',[
-            'select' => 'a.cost_centre,a.manex_account as account_code, sum(a.total) as total',
+            'select' => 'a.cost_centre,a.manex_account as account_code, sum(a.total) as total, sum(a.total_idle) as total_idle, sum(a.after_idle) as after_idle',
             'where' => [
                 'a.tahun' => $tahun,
                 'a.cost_centre' => '3100',
