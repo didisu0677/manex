@@ -1071,7 +1071,7 @@ class Production_planning extends BE_Controller
         $this->save_production_planning(true, true);
     }
 
-    private function save_production_planning($save_budget = false, $is_production = false)
+    private function save_production_planning($save_budget = true, $is_production = true)
     {
 
         $tahun = post('tahun');
@@ -1198,16 +1198,16 @@ class Production_planning extends BE_Controller
             // }
         }
 
-        if ($is_production) {
-            delete_data('tbl_scm_submit', ['code_submit' => 'PROD', 'tahun' => $tahun]);
+        // if ($is_production) {
+        //     delete_data('tbl_scm_submit', ['code_submit' => 'PROD', 'tahun' => $tahun]);
 
-            insert_data('tbl_scm_submit', [
-                'tahun' => $tahun,
-                'code_submit' => 'PROD',
-                'is_submit' => 1,
-                'is_active' => 1
-            ]);
-        }
+        //     insert_data('tbl_scm_submit', [
+        //         'tahun' => $tahun,
+        //         'code_submit' => 'PROD',
+        //         'is_submit' => 1,
+        //         'is_active' => 1
+        //     ]);
+        // }
     }
 
     private function save_xproduction_planning(){
