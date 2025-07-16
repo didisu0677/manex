@@ -18,6 +18,7 @@ var lang = {
     "berhasil": "Berhasil",
     "ok": "OK",
     "apakah_anda_yakin": "Apakah anda yakin",
+    "apakah_anda_yakin_untuk_submit_data_produksi": "Apakah anda yakin untuk submit data produksi",
     "konfirmasi": "Konfirmasi",
     "peringatan": "Peringatan",
     "batalkan": "Batalkan",
