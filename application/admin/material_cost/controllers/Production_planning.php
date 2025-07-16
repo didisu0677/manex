@@ -975,13 +975,22 @@ class Production_planning extends BE_Controller
                         'posting_code' => 'COV'
                     ]);
 
-                    # production
-                    update_data($table_prod, [
-                        'P_' . sprintf('%02d', $i) => $value_production,
-                    ], [
-                        'product_code' => $product_code,
-                        'posting_code' => 'PRD'
-                    ]);
+                    $data_epd = get_data($table_prod, [
+                        'where' => [
+                            'product_code' => $product_code,
+                            'posting_code' => 'EPD'
+                        ]
+                    ])->row_array();
+
+                    if(empty($data_epd) || @$data_epd['P_' . sprintf('%02d', $i)] <= 0){
+                        # production
+                        update_data($table_prod, [
+                            'P_' . sprintf('%02d', $i) => $value_production,
+                        ], [
+                            'product_code' => $product_code,
+                            'posting_code' => 'PRD'
+                        ]);
+                    }
 
                     # x production
                     update_data($table_prod, [
