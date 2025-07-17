@@ -61,6 +61,9 @@
 									th('Variable Overhead / Unit','','colspan ="4" class="text-center align-middle headcol" ');
 									th('Fixed Overhead / Unit','','colspan ="6" class="text-center align-middle headcol" ');
 									th('Overhead / Unit','','rowspan="2" class="text-center align-middle headcol" ');
+									th('Volume Produksi','','rowspan="2" class="text-center align-middle headcol" ');
+									th('Total FOH','','rowspan="2" class="text-center align-middle headcol"');
+								
 								tr();
 									th(lang('description'),'','rowspan="" width="300"class="text-center align-middle headcol" ');
 									th(lang('code'),'','rowspan="" class="text-center align-middle headcol" ');
