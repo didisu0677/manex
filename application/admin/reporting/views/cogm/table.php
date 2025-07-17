@@ -6,7 +6,7 @@
 	$sum_totalovh = 0;
 	foreach($grup[0] as $m0) { ?>
 		<tr>
-			<th colspan="19" style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"><?php echo $m0->cost_centre; ?></font></th>
+			<th colspan="21" style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"><?php echo $m0->cost_centre; ?></font></th>
 		</tr>		
   	<?php
 
