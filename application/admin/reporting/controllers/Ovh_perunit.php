@@ -84,8 +84,8 @@ class Ovh_perunit extends BE_Controller {
                     'a.tahun' => $tahun,
                     'd.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id,
-                    '__m' => 'a.product_code in (select budget_product_code from tbl_beginning_stock where is_active ="1" and tahun="'.$tahun.'")'
-                    // 'a.qty_production !=' => 0
+                    '__m' => 'a.product_code in (select budget_product_code from tbl_beginning_stock where is_active ="1" and tahun="'.$tahun.'")',
+                    'a.qty_production !=' => 0
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();

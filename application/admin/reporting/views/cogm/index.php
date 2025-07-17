@@ -61,6 +61,9 @@
 									th('Fixed Overhead / Unit','','colspan ="6" class="text-center align-middle headcol" ');
 									th('Overhead / Unit','','rowspan="2" class="text-center align-middle headcol" ');
 									th('Total Cost','','rowspan="2" class="text-center align-middle headcol" ');
+									th('Volume Produksi','','rowspan="2" class="text-center align-middle headcol" ');
+									th('Total COGM','','rowspan="2" class="text-center align-middle headcol"');
+
 								tr();
 									th(lang('description'),'','rowspan="" class="text-center align-middle headcol" style="min-width:200px"');
 									th(lang('code'),'','rowspan="" class="text-center align-middle headcol" ');
