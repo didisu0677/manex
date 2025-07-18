@@ -1068,12 +1068,12 @@ class Production_planning extends BE_Controller
 
     public function submit_production()
     {
-        render([
-            'status'    => 'success',
-            'message'    => 'Submit Production has benn succesfuly'
-        ], 'json');
+        // render([
+        //     'status'    => 'success',
+        //     'message'    => 'Submit Production has benn succesfuly'
+        // ], 'json');
 
-        // $this->save_production_planning(true, true);
+        $this->save_production_planning(true, true);
     }
 
     private function save_production_planning($save_budget = true, $is_production = true)
