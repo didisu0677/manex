@@ -162,31 +162,31 @@
 		});
 	}
 
-	var id_submit = '';
-	var tahun_submit = 0;
-	$(document).on('click', '.btn-submit-production', function(e) {
-		e.preventDefault();
-		id_submit = 'proses_submit';
-		tahun_submit = $('#filter_tahun').val();
-		factory_submit = $('#filter_cost_centre').val();
-		cConfirm.open(lang.apakah_anda_yakin_untuk_submit_data_produksi + '?', 'lanjut_submit');
-	});
+	// var id_submit = '';
+	// var tahun_submit = 0;
+	// $(document).on('click', '.btn-submit-production', function(e) {
+	// 	e.preventDefault();
+	// 	id_submit = 'proses_submit';
+	// 	tahun_submit = $('#filter_tahun').val();
+	// 	factory_submit = $('#filter_cost_centre').val();
+	// 	cConfirm.open(lang.apakah_anda_yakin_untuk_submit_data_produksi + '?', 'lanjut_submit');
+	// });
 
-	function lanjut_submit() {
-		let result = $.ajax({
-			url: base_url + 'material_cost/production_planning/submit_production',
-			data: {
-				id_submit: id_submit,
-				tahun_submit: tahun_submit,
-				factory_submit: factory_submit,
-			},
-			type: 'post',
-			dataType: 'json',
-			success: function(res) {
-				cAlert.open(res.message, res.status, 'refreshData');
-			}
-		});
-	}
+	// function lanjut_submit() {
+	// 	let result = $.ajax({
+	// 		url: base_url + 'material_cost/production_planning/submit_production',
+	// 		data: {
+	// 			id_submit: id_submit,
+	// 			tahun_submit: tahun_submit,
+	// 			factory_submit: factory_submit,
+	// 		},
+	// 		type: 'post',
+	// 		dataType: 'json',
+	// 		success: function(res) {
+	// 			cAlert.open(res.message, res.status, 'refreshData');
+	// 		}
+	// 	});
+	// }
 
 
 
@@ -258,36 +258,36 @@
 
 	});
 
-	// $(document).on('click','.btn-submit-production',function(){
-	// 	// prepare data production sebelum dipost
-	// 	let $production = $('[data-type="production"]');
-	// 	let list_production_value = []
-	// 	let list_production_product_code = []
-	// 	let list_production_month = []
-	// 	let list_production_edit = []
-	// 	$.each($production, function(i, v){
-	// 		list_production_value.push($(v).text().replace(/\,/g,''))
-	// 		list_production_product_code.push($(v).data('product-code'))
-	// 		list_production_month.push($(v).data('month'))
-	// 		list_production_edit.push($(v).data('edit'))
-	// 	})
+	$(document).on('click','.btn-submit-production',function(){
+		// prepare data production sebelum dipost
+		let $production = $('[data-type="production"]');
+		let list_production_value = []
+		let list_production_product_code = []
+		let list_production_month = []
+		let list_production_edit = []
+		$.each($production, function(i, v){
+			list_production_value.push($(v).text().replace(/\,/g,''))
+			list_production_product_code.push($(v).data('product-code'))
+			list_production_month.push($(v).data('month'))
+			list_production_edit.push($(v).data('edit'))
+		})
 
-	// 	// submit data untuk disimpan
-	// 	$.ajax({
-	// 		url: base_url + 'material_cost/production_planning/submit_production',
-	// 		data: {
-	// 			tahun: $('#filter_tahun').val(),
-	// 			production_value: list_production_value,
-	// 			production_product: list_production_product_code,
-	// 			production_month: list_production_month,
-	// 			production_edit: list_production_edit
-	// 		},
-	// 		type: 'post',
-	// 		success: function(response) {
-	// 			cAlert.open(response, 'success', 'refreshData');
-	// 		}
-	// 	})
-	// })
+		// submit data untuk disimpan
+		$.ajax({
+			url: base_url + 'material_cost/production_planning/submit_production',
+			data: {
+				tahun: $('#filter_tahun').val(),
+				production_value: list_production_value,
+				production_product: list_production_product_code,
+				production_month: list_production_month,
+				production_edit: list_production_edit
+			},
+			type: 'post',
+			success: function(response) {
+				cAlert.open(response, 'success', 'refreshData');
+			}
+		})
+	})
 
 	function save_perubahan() {
 		var data_edit = {};
