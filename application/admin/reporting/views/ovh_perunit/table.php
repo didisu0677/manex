@@ -1,14 +1,22 @@
 <?php 
 //debug($dtx_core2018);die;
 	$hno = 0;
-	$sum_totalfixed = 0;
-	$sum_totalvariable = 0;
-	$sum_totalovh = 0;
+	$grand_totalfixed = 0;
+	$grand_totalvariable = 0;
+	$grand_totalovh = 0;
+	$grand_totalqty = 0;
+	$grand_totalfoh = 0;
 	foreach($grup[0] as $m0) { ?>
 		<tr>
 			<th colspan="15" style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"><?php echo $m0->cost_centre; ?></font></th>
 		</tr>		
   	<?php
+
+	$sum_totalfixed = 0;
+	$sum_totalvariable = 0;
+	$sum_totalovh = 0;
+	$sum_totalqty = 0;
+	$sum_totalfoh = 0;
 
 	$total_fixed = 0;
 	$total_variable = 0 ;
@@ -48,10 +56,22 @@
 
 			$sum_totalfixed += $total_fixed ;
 			$sum_totalvariable += $total_variable;
-			$sum_totalovh += ($total_fixed + $total_variable);
+			$sum_totalovh += $total_ovh;
+			$sum_totalqty += $m1->qty_production;
+
+			$grand_totalfixed += $total_fixed ;
+			$grand_totalvariable += $total_variable;
+			$grand_totalovh += $total_ovh;
+			$grand_totalqty += $m1->qty_production;
+
+
+			// $sum_totalovh += ($total_fixed + $total_variable);
 			
 			
 			$total_foh =  @(intval($total_ovh) ?? 0) * intval($m1->qty_production) ;
+			$sum_totalfoh += $total_foh ;
+			$grand_totalfoh += $total_foh ;
+
 
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom-6 alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="">'.number_format($m1->direct_labour / $m1->qty_production,4).'</td>';
 
@@ -78,27 +98,42 @@
 
 		</tr>
 	<?php 
-	} ?>
+	} 
+		echo '<td colspan ="2"><b>TOTAL '.$m0->cost_centre.'</b></td>';
+		foreach($variable as $v) {
+			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom-6 alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="'.$m1->product_qty.'"></td>';
+		}
+		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom-6" data-name="" data-id="" data-value=""><b>'.number_format($sum_totalvariable).'</b></td>';
+
+		
+		foreach($fixed as $f) {
+			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money alokasi product_qty" data-name="product_qty" data-value=""></td>';
+		}
+		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom-6"><b>'.number_format($sum_totalfixed,4).'</b></td>';
+		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom-6"><b>'.number_format($sum_totalovh,4).'</b></td>';
+		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right"><b>'.number_format($sum_totalqty).'</b></td>';
+		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right"><b>'.number_format($sum_totalfoh).'</b></td>';
+	?>
 
 <?php } ?>
 <tr>
 	<?php
-	echo '<td colspan ="2"><div style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="text-centre"><b>TOTAL</b></div></td>';
+		echo '<td colspan ="2"><b>GRAND TOTAL</b></td>';
 	$bgedit ="";
 	$contentedit ="false" ;
 	foreach($variable as $v) {
 		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="'.$m1->product_qty.'"></td>';
 	}
-	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value=""><b>'.number_format($sum_totalvariable,4).'</b></td>';
+	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom-6 alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value=""><b>'.number_format($grand_totalvariable,4).'</b></td>';
 
 	foreach($fixed as $f) {
 
 		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value=""></td>';
 	}
-	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value=""><b>'.number_format($sum_totalfixed,4).'</b></td>';
-	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value=""><b>'.number_format($sum_totalovh,4).'</b></td>';
-	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value=""><b></b></td>';
-	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value=""><b></b></td>';
+	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom-6 alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value=""><b>'.number_format($grand_totalfixed,4).'</b></td>';
+	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom-6 alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value=""><b>'.number_format($grand_totalovh,4).'</b></td>';
+	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right" data-name="product_qty" data-id="'.$m1->id.'" data-value=""><b>'.number_format($grand_totalqty).'</b></td>';
+	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right" data-name="product_qty" data-id="'.$m1->id.'" data-value=""><b>'.number_format($grand_totalfoh).'</b></b></td>';
 
 	?>
 

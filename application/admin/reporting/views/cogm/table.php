@@ -4,11 +4,24 @@
 	$sum_totalfixed = 0;
 	$sum_totalvariable = 0;
 	$sum_totalovh = 0;
+	$sum_unitcost = 0;
+	$sum_qty = 0;
+	$sum_cogm = 0;
+	$sum_rm = 0;
 	foreach($grup[0] as $m0) { ?>
 		<tr>
 			<th colspan="21" style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"><?php echo $m0->cost_centre; ?></font></th>
 		</tr>		
   	<?php
+
+	$stotal_ovh = 0 ;
+	$stotal_unitcost = 0 ;
+	$stotal_qty = 0;
+	$stotal_cogm = 0;
+	$stotal_rm = 0;
+
+	$stotal_fixed = 0;
+	$stotal_variable = 0;
 
 	$total_fixed = 0;
 	$total_variable = 0 ;
@@ -47,6 +60,9 @@
 				}
 			}
 
+			$stotal_rm += $m1->subrm_total;
+			$sum_rm += $m1->subrm_total ;
+
 			$total_variable = ($m1->direct_labour / $m1->qty_production) + ($m1->utilities / $m1->qty_production) + ($m1->supplies / $m1->qty_production) ;
 			$total_fixed = ($m1->indirect_labour / $m1->qty_production) + ($m1->repair / $m1->qty_production)  + ($depreciation) + ($m1->rent/ $m1->qty_production) + ($m1->others/ $m1->qty_production);
 			$total_ovh = $total_variable+$total_fixed;
@@ -54,9 +70,23 @@
 
 			$total_cogm = @(intval($unit_cost) ?? 0) * intval($m1->qty_production) ;
 
+			$stotal_fixed += $total_fixed;
+			$stotal_variable += $total_variable;
 			$sum_totalfixed += $total_fixed ;
 			$sum_totalvariable += $total_variable;
-			$sum_totalovh += ($total_fixed + $total_variable);
+
+			$stotal_ovh += $total_ovh;
+			$sum_totalovh += $total_ovh;
+
+			$stotal_unitcost += $unit_cost ;
+			$sum_unitcost += $unit_cost ;
+
+			$stotal_qty += $m1->qty_production;
+			$sum_qty += $m1->qty_production;
+
+			$stotal_cogm += $total_cogm;
+			$sum_cogm += $total_cogm;
+
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="">'.number_format($m1->direct_labour / $m1->qty_production,2).'</td>';
 
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="">'.number_format($m1->utilities / $m1->qty_production,2).'</td>';
@@ -85,7 +115,54 @@
 		</tr>
 	<?php 
 	} ?>
-
+	<tr>
+		<?php
+			echo '<td colspan ="2"><b>TOTAL '.$m0->cost_centre.'</b></td>';
+			echo '<td></td>';
+			echo '<td></td>';
+			echo '<td></td>';
+			echo '<td></td>';
+			echo '<td class="text-right"><b>'.number_format($stotal_rm).'</b></td>';
+			echo '<td></td>';
+			echo '<td></td>';
+			echo '<td></td>';
+			echo '<td class="text-right"><b>'.number_format($stotal_variable).'</b></td>';
+			echo '<td></td>';
+			echo '<td></td>';
+			echo '<td></td>';
+			echo '<td></td>';
+			echo '<td></td>';
+			echo '<td class="text-right"><b>'.number_format($stotal_fixed).'</b></td>';
+			echo '<td class="text-right"><b>'.number_format($stotal_ovh).'</b></td>';
+			echo '<td class="text-right"><b>'.number_format($stotal_unitcost).'</b></td>';
+			echo '<td class="text-right"><b>'.number_format($stotal_qty).'</b></td>';
+			echo '<td class="text-right"><b>'.number_format($stotal_cogm).'</b></td>';
+		?>
+	</tr>
 <?php } ?>
+<tr>
+	<?php
+		echo '<td colspan ="2"><b>GRAND TOTAL</b></td>';
+		echo '<td></td>';
+		echo '<td></td>';
+		echo '<td></td>';
+		echo '<td></td>';
+		echo '<td class="text-right"><b>'.number_format($sum_rm).'</b></td>';
+		echo '<td></td>';
+		echo '<td></td>';
+		echo '<td></td>';
+		echo '<td class="text-right"><b>'.number_format($sum_totalvariable).'</b></td>';
+		echo '<td></td>';
+		echo '<td></td>';
+		echo '<td></td>';
+		echo '<td></td>';
+		echo '<td></td>';
+		echo '<td class="text-right"><b>'.number_format($sum_totalfixed).'</b></td>';
+		echo '<td class="text-right"><b>'.number_format($sum_totalovh).'</b></td>';
+		echo '<td class="text-right"><b>'.number_format($sum_unitcost).'</b></td>';
+		echo '<td class="text-right"><b>'.number_format($sum_qty).'</b></td>';
+		echo '<td class="text-right"><b>'.number_format($sum_cogm).'</b></td>';
+	?>
+</tr>
 
 			
