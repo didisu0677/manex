@@ -78,6 +78,8 @@ modal_open('modal-form','','','data-openCallback="formOpen"');
 			input('text',lang('bm'),'bm');
 			input('text',lang('curr'),'curr');
 			input('text',lang('price_us'),'price_us');
+			input('text',lang('bank_charges'),'bank_charges');
+			input('text',lang('handling_charges'),'handling_charges');
 			select2(lang('user_id'),'id_user','required',$user_id,'id','nama');
 			toggle(lang('aktif').'?','is_active');
 			form_button(lang('simpan'),lang('batal'));
