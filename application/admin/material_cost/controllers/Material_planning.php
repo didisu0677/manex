@@ -144,7 +144,7 @@ class Material_planning extends BE_Controller {
         'where' => [
             'b.tahun' => $tahun,
             'a.posting_code' => 'STA',
-            'c.cost_centre' => '2110'
+            // 'c.cost_centre' => '2110'
 
         ],
     ];
