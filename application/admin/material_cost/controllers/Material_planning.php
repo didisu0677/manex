@@ -33,102 +33,159 @@ class Material_planning extends BE_Controller {
 		render($data);
 	}
 
-    function data($tahun="",$cost_centre="",$tipe = 'table'){
-		ini_set('memory_limit', '-1');
-		ini_set('max_execution_time', 0);
+    // function data($tahun="",$cost_centre="",$tipe = 'table'){
+	// 	ini_set('memory_limit', '-1');
+	// 	ini_set('max_execution_time', 0);
 
-        $table = 'tbl_budget_production';
-        $table_mat = 'tbl_material_planning_' . $tahun ;
+    //     $table = 'tbl_budget_production';
+    //     $table_mat = 'tbl_material_planning_' . $tahun ;
 
 
-        $data['produk'] = get_data($table_mat . ' a',[
-            'select' => 'a.*',
-            'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
-            'where' => [
-                'b.tahun' => $tahun,
-                'a.posting_code' => 'STA',
-                'b.parent_item' => 'CIGSAL22DM',
-                'a.material_code' => 'CILBSBAL53',
-            ],
-        ])->result();
+    //     $data['produk'] = get_data($table_mat . ' a',[
+    //         'select' => 'a.*',
+    //         'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
+    //         'where' => [
+    //             'b.tahun' => $tahun,
+    //             'a.posting_code' => 'STA',
+    //             'b.parent_item' => 'CIGSAL22DM',
+    //             'a.material_code' => 'CILBSBAL53',
+    //         ],
+    //     ])->result();
 
-        foreach($data['produk'] as $d) {
-            $data['prod'][$d->material_code] = get_data($table_mat . ' a',[
+    //     foreach($data['produk'] as $d) {
+    //         $data['prod'][$d->material_code] = get_data($table_mat . ' a',[
+    //             'select' => 'a.*',
+    //             'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
+    //             'where'  => [
+    //                 'b.tahun' => $tahun,
+    //                 'a.posting_code' => 'ARQ',
+    //                 'a.material_code' => $d->material_code,
+    //                 // 'b.parent_item' => 'CIGSAL22DM'
+    //             ],
+    //         ])->row_array();
+
+    //         $data['arival'][$d->material_code] = get_data($table_mat . ' a',[
+    //             'select' => 'a.*',
+    //             'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
+    //             'where'  => [
+    //                 'b.tahun' => $tahun,
+    //                 'a.posting_code' => 'PBL',
+    //                 'a.material_code' => $d->material_code,
+    //                 // 'b.parent_item' => 'CIGSAL22DM'
+    //             ],
+    //         ])->row_array();
+
+    //         $data['pakai'][$d->material_code] = get_data($table_mat . ' a',[
+    //             'select' => 'a.*',
+    //             'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
+    //             'where'  => [
+    //                 'b.tahun' => $tahun,
+    //                 'a.posting_code' => 'PMK',
+    //                 'a.material_code' => $d->material_code,
+    //                 // 'b.parent_item' => 'CIGSAL22DM'
+    //             ],
+    //         ])->row_array();
+
+    //         $data['available'][$d->material_code] = get_data($table_mat . ' a',[
+    //             'select' => 'a.*',
+    //             'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
+    //             'where'  => [
+    //                 'b.tahun' => $tahun,
+    //                 'a.posting_code' => 'AVA',
+    //                 'a.material_code' => $d->material_code,
+    //                 // 'b.parent_item' => 'CIGSAL22DM'
+    //             ],
+    //         ])->row_array();
+
+    //         // debug($data['pakai']);die;
+
+    //         $data['iventory'][$d->material_code] = get_data($table_mat . ' a',[
+    //             'select' => 'a.*',
+    //             'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
+    //             'where'  => [
+    //                 'b.tahun' => $tahun,
+    //                 'a.posting_code' => 'STE',
+    //                 'a.material_code' => $d->material_code,
+    //                 // 'b.parent_item' => 'CIGSAL22DM'
+    //             ],
+    //         ])->row_array();
+
+    //         $data['cov'][$d->material_code] = get_data($table_mat . ' a',[
+    //             'select' => 'a.*',
+    //             'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
+    //             'where'  => [
+    //                 'b.tahun' => $tahun,
+    //                 'a.posting_code' => 'COV',
+    //                 'a.material_code' => $d->material_code,
+    //                 // 'b.parent_item' => 'CIGSAL22DM'
+    //             ],
+    //         ])->row_array();
+    //     }
+
+  
+    //     $response	= array(
+    //         'table'		=> $this->load->view('material_cost/material_planning/table',$data,true),
+    //     );
+	   
+	//     render($response,'json');
+    // }
+
+    function data($tahun = "", $cost_centre = "", $tipe = 'table') {
+    ini_set('memory_limit', '-1');
+    ini_set('max_execution_time', 0);
+
+    $table_mat = 'tbl_material_planning_' . $tahun;
+
+    $arr = [
+        'select' => 'a.*',
+        'join' => ['tbl_material_formula b on a.material_code = b.component_item and b.tahun = "' . $tahun . '" type LEFT',
+            'tbl_fact_product c on b.parent_item = c.code type LEFT',
+        ],
+        'where' => [
+            'b.tahun' => $tahun,
+            'a.posting_code' => 'STA',
+            'c.cost_centre' => '2110'
+
+        ],
+    ];
+
+    if ($cost_centre && $cost_centre != 'ALL') $arr['where']['c.cost_centre'] = $cost_centre;
+    // Ambil produk STA saja sekali
+    $data['produk'] = get_data($table_mat . ' a', $arr )->result();
+
+
+
+    // Daftar posting_code yang diperlukan
+    $posting_codes = [
+        'ARQ' => 'prod',
+        'PBL' => 'arival',
+        'PMK' => 'pakai',
+        'AVA' => 'available',
+        'STE' => 'iventory',
+        'COV' => 'cov',
+    ];
+
+    foreach ($data['produk'] as $d) {
+        foreach ($posting_codes as $code => $key) {
+            $data[$key][$d->material_code] = get_data($table_mat . ' a', [
                 'select' => 'a.*',
-                'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
-                'where'  => [
+                'join' => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun = "' . $tahun . '" type LEFT',
+                'where' => [
                     'b.tahun' => $tahun,
-                    'a.posting_code' => 'ARQ',
+                    'a.posting_code' => $code,
                     'a.material_code' => $d->material_code,
-                    // 'b.parent_item' => 'CIGSAL22DM'
-                ],
-            ])->row_array();
-
-            $data['arival'][$d->material_code] = get_data($table_mat . ' a',[
-                'select' => 'a.*',
-                'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
-                'where'  => [
-                    'b.tahun' => $tahun,
-                    'a.posting_code' => 'PBL',
-                    'a.material_code' => $d->material_code,
-                    // 'b.parent_item' => 'CIGSAL22DM'
-                ],
-            ])->row_array();
-
-            $data['pakai'][$d->material_code] = get_data($table_mat . ' a',[
-                'select' => 'a.*',
-                'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
-                'where'  => [
-                    'b.tahun' => $tahun,
-                    'a.posting_code' => 'PMK',
-                    'a.material_code' => $d->material_code,
-                    // 'b.parent_item' => 'CIGSAL22DM'
-                ],
-            ])->row_array();
-
-            $data['available'][$d->material_code] = get_data($table_mat . ' a',[
-                'select' => 'a.*',
-                'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
-                'where'  => [
-                    'b.tahun' => $tahun,
-                    'a.posting_code' => 'AVA',
-                    'a.material_code' => $d->material_code,
-                    // 'b.parent_item' => 'CIGSAL22DM'
-                ],
-            ])->row_array();
-
-            // debug($data['pakai']);die;
-
-            $data['iventory'][$d->material_code] = get_data($table_mat . ' a',[
-                'select' => 'a.*',
-                'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
-                'where'  => [
-                    'b.tahun' => $tahun,
-                    'a.posting_code' => 'STE',
-                    'a.material_code' => $d->material_code,
-                    // 'b.parent_item' => 'CIGSAL22DM'
-                ],
-            ])->row_array();
-
-            $data['cov'][$d->material_code] = get_data($table_mat . ' a',[
-                'select' => 'a.*',
-                'join'   => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun ="'.$tahun.'" type LEFT',
-                'where'  => [
-                    'b.tahun' => $tahun,
-                    'a.posting_code' => 'COV',
-                    'a.material_code' => $d->material_code,
-                    // 'b.parent_item' => 'CIGSAL22DM'
                 ],
             ])->row_array();
         }
-
-  
-        $response	= array(
-            'table'		=> $this->load->view('material_cost/material_planning/table',$data,true),
-        );
-	   
-	    render($response,'json');
     }
+
+    $response = [
+        'table' => $this->load->view('material_cost/material_planning/table', $data, true),
+    ];
+
+    render($response, 'json');
+}
+
 
     function proses(){
 		ini_set('memory_limit', '-1');
