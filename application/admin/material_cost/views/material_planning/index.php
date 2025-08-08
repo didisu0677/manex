@@ -14,7 +14,7 @@
 
 			<label class=""><?php echo lang('factory'); ?>  &nbsp</label>
 			<select class="select2 infinity custom-select" style="width: 180px;" id="filter_cost_centre">
-				<!-- <option value="ALL">ALL FACTORY</option> -->
+				<option value="ALL">ALL FACTORY</option>
 				<?php foreach ($cc as $c) { ?>
                 <option value="<?php echo $c->kode; ?>"><?php echo $c->cost_centre; ?></option>
                 <?php } ?>
