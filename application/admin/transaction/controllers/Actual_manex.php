@@ -129,7 +129,13 @@ class Actual_manex extends BE_Controller {
 	function export() {
 		ini_set('memory_limit', '-1');
 		$arr = ['tahun' => 'Tahun','bulan' => 'Bulan','account_code' => 'Account Code','cost_centre' => 'Cost Centre','sub_account'=> 'Sub Account','initial_cc' => 'Initial Cc','total' => 'Total','is_active' => 'Aktif'];
-		$data = get_data('tbl_actual_manex')->result_array();
+		$data = get_data('tbl_actual_manex',[
+			'where' => [
+				'tahun' => get('tahun'),
+				'bulan' => get('bulan'),
+				'is_estimate' => get('is_estimate'),
+			]
+		])->result_array();
 		$config = [
 			'title' => 'data_actual_manex',
 			'data' => $data,

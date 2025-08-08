@@ -111,7 +111,12 @@ class Actual_sales extends BE_Controller {
 	function export() {
 		ini_set('memory_limit', '-1');
 		$arr = ['tahun'=>'Tahun','bulan' => 'Bulan','product_code' => 'Product Code','description' => 'Description','pl_code' => 'Pl Code','desc_pl' => 'Desc Pl','factory' => 'Factory','address' => 'Address','sector' => 'Sector','group_sector' => 'Group Sector','qty_sales' => 'Qty Sales','sales_amount' => 'Sales Amount','discount' => 'Discount','cogs' => 'Cogs','unit_cogs' => 'Unit Cogs','cogs_idle' => 'Cogs Idle','cogs_loss' => 'Cogs Loss','gross_prpofit' => 'Gross Prpofit','customer' => 'Customer','is_active' => 'Aktif'];
-		$data = get_data('tbl_actual_gross_profit')->result_array();
+		$data = get_data('tbl_actual_gross_profit',[
+			'where' => [
+				'tahun' => get('tahun'),
+				'bulan' => get('bulan'),
+			]
+		])->result_array();
 		$config = [
 			'title' => 'data_actual_sales',
 			'data' => $data,

@@ -167,4 +167,10 @@ var id_proses = '';
 			}
 		});
 	}
+
+	$(document).on('click','.btn-act-export',function(e){
+		// alert('x');die;
+		e.preventDefault();
+		$.redirect(base_url + 'transaction/actual_manex/export/', {tahun:$('#filter_tahun').val(),bulan:$('#bulan').val(),is_estimate:$('#filter_estimate').val()} , 'get');
+	});
 </script>
