@@ -131,60 +131,63 @@ class Material_planning extends BE_Controller {
     // }
 
     function data($tahun = "", $cost_centre = "", $tipe = 'table') {
-    ini_set('memory_limit', '-1');
-    ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '-1');
+        ini_set('max_execution_time', 0);
 
-    $table_mat = 'tbl_material_planning_' . $tahun;
+        $table_mat = 'tbl_material_planning_' . $tahun;
 
-    $arr = [
-        'select' => 'a.*',
-        'join' => ['tbl_material_formula b on a.material_code = b.component_item and b.tahun = "' . $tahun . '" type LEFT',
-            'tbl_fact_product c on b.parent_item = c.code type LEFT',
-        ],
-        'where' => [
-            'b.tahun' => $tahun,
-            'a.posting_code' => 'STA',
-            // 'c.cost_centre' => '2110'
+        $arr = [
+            'select' => 'a.*',
+            'join' => ['tbl_material_formula b on a.material_code = b.component_item and b.tahun = "' . $tahun . '"',
+                'tbl_fact_product c on b.parent_item = c.code type LEFT',
+            ],
+            'where' => [
+                'b.tahun' => $tahun,
+                'a.posting_code' => 'STA',
+                'a.material_code' => 'CIRPOB15PB',
+                'c.cost_centre' => '2110'
+            ],
+            'group_by' => 'a.material_code'
+        ];
 
-        ],
-    ];
+        if ($cost_centre && $cost_centre != 'ALL') $arr['where']['c.cost_centre'] = $cost_centre;
+        // Ambil produk STA saja sekali
+        $data['produk'] = get_data($table_mat . ' a', $arr )->result();
 
-    if ($cost_centre && $cost_centre != 'ALL') $arr['where']['c.cost_centre'] = $cost_centre;
-    // Ambil produk STA saja sekali
-    $data['produk'] = get_data($table_mat . ' a', $arr )->result();
-
+        // debug($data['produk']);die;
 
 
-    // Daftar posting_code yang diperlukan
-    $posting_codes = [
-        'ARQ' => 'prod',
-        'PBL' => 'arival',
-        'PMK' => 'pakai',
-        'AVA' => 'available',
-        'STE' => 'iventory',
-        'COV' => 'cov',
-    ];
 
-    foreach ($data['produk'] as $d) {
-        foreach ($posting_codes as $code => $key) {
-            $data[$key][$d->material_code] = get_data($table_mat . ' a', [
-                'select' => 'a.*',
-                'join' => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun = "' . $tahun . '" type LEFT',
-                'where' => [
-                    'b.tahun' => $tahun,
-                    'a.posting_code' => $code,
-                    'a.material_code' => $d->material_code,
-                ],
-            ])->row_array();
+        // Daftar posting_code yang diperlukan
+        $posting_codes = [
+            'ARQ' => 'prod',
+            'PBL' => 'arival',
+            'PMK' => 'pakai',
+            'AVA' => 'available',
+            'STE' => 'iventory',
+            'COV' => 'cov',
+        ];
+
+        foreach ($data['produk'] as $d) {
+            foreach ($posting_codes as $code => $key) {
+                $data[$key][$d->material_code] = get_data($table_mat . ' a', [
+                    'select' => 'a.*',
+                    'join' => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun = "' . $tahun . '" type LEFT',
+                    'where' => [
+                        'b.tahun' => $tahun,
+                        'a.posting_code' => $code,
+                        'a.material_code' => $d->material_code,
+                    ],
+                ])->row_array();
+            }
         }
+
+        $response = [
+            'table' => $this->load->view('material_cost/material_planning/table', $data, true),
+        ];
+
+        render($response, 'json');
     }
-
-    $response = [
-        'table' => $this->load->view('material_cost/material_planning/table', $data, true),
-    ];
-
-    render($response, 'json');
-}
 
 
     function proses(){
@@ -199,19 +202,19 @@ class Material_planning extends BE_Controller {
  
         $arr = [
             'select' => 'a.component_item,a.material_name,a.um,e.supplier,e.moq,e.m_cov,e.order_multiple,e.total_stock, 
-                        sum(a.total * b.B_01) as B_01, sum(a.total * b.B_02) as B_02, sum(a.total * b.B_03) as B_03, 
+                        sum(a.total * b.B_01) as B_01, GROUP_CONCAT(a.total separator "/") ,  sum(a.total * b.B_02) as B_02, sum(a.total * b.B_03) as B_03, 
                         sum(a.total * b.B_04) as B_04, sum(a.total * b.B_05) as B_05, sum(a.total * b.B_06) as B_06, 
                         sum(a.total * b.B_07) as B_07, sum(a.total * b.B_08) as B_08, sum(a.total * b.B_09) as B_09, 
                         sum(a.total * b.B_10) as B_10, sum(a.total * b.B_11) as B_11, sum(a.total * b.B_12) as B_12',
-             'join'   => [$table_prod .' b on a.parent_item = b.budget_product_code and b.tahun ="'.$tahun.'" type LEFT',
-                         'tbl_beginning_stock d on a.parent_item = b.budget_product_code and b.tahun ="'.$tahun.'"',
-                         'tbl_beginning_stock_material e on a.component_item = e.material_code and e.tahun ="'.$tahun.'" type LEFT',
-                         'tbl_fact_cost_centre c on b.id_cost_centre = c.id type LEFT'
+             'join'   => [$table_prod .' b on a.parent_item = b.budget_product_code and b.tahun ="'.$tahun.'"',
+                         'tbl_beginning_stock d on a.parent_item = d.budget_product_code and d.tahun ="'.$tahun.'"',
+                         'tbl_beginning_stock_material e on a.component_item = e.material_code and e.tahun ="'.$tahun.'"',
+                         'tbl_fact_cost_centre c on b.id_cost_centre = c.id'
                         ],
             'where' => [
                 'a.tahun' => $tahun,
                 // 'a.parent_item' => 'CIGSAL22DM',
-                // 'a.component_item' => 'CILBSBAL53'
+                'a.component_item' => 'CIRPOB15PB'
             ],
             'group_by' => 'a.component_item,a.material_name',
             'sort_by' => 'a.component_item'
@@ -559,6 +562,7 @@ class Material_planning extends BE_Controller {
                         ];
                     }
 
+                    // debug($average_sales_per_4_month);die;
                     # sales
                     update_data($table_prod, [
                         'P_' . sprintf('%02d', $i) => $tmp_data['beginning_stock'],
