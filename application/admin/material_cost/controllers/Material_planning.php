@@ -144,8 +144,8 @@ class Material_planning extends BE_Controller {
             'where' => [
                 'b.tahun' => $tahun,
                 'a.posting_code' => 'STA',
-                'a.material_code' => 'CIRPOB15PB',
-                'c.cost_centre' => '2110'
+                // 'a.material_code' => 'CIRPOB15PB',
+                // 'c.cost_centre' => '2110'
             ],
             'group_by' => 'a.material_code'
         ];
@@ -214,7 +214,7 @@ class Material_planning extends BE_Controller {
             'where' => [
                 'a.tahun' => $tahun,
                 // 'a.parent_item' => 'CIGSAL22DM',
-                'a.component_item' => 'CIRPOB15PB'
+                // 'a.component_item' => 'CIRPOB15PB'
             ],
             'group_by' => 'a.component_item,a.material_name',
             'sort_by' => 'a.component_item'
