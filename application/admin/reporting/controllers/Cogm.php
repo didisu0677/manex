@@ -57,6 +57,9 @@ class Cogm extends BE_Controller {
 
     function data($tahun = "",$cost_centre="" , $tipe = 'table') {
 
+        $bari_type = get('type');
+
+
         $arr = [
                     'select' => 'a.cost_centre as kode, b.id, b.cost_centre',
                     'join' => 'tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
@@ -75,6 +78,8 @@ class Cogm extends BE_Controller {
         $data['total_biaya'] = [];
         foreach($data['grup'][0] as $m0) {	
 
+            // select if $bari type = 'total_after' e.bottle - ((e.bottle * (f.prsn_alloc / 100)) else e.bottle 
+            $select_bottle = ($bari_type == 'total_after') ? 'e.bottle - (e.bottle * (f.prsn_alloc / 100))' : 'e.bottle';
            
             $data['produk'][$m0->id]= get_data('tbl_fact_product_ovh a',[
                 'select' => 'a.product_code,a.qty_production,(a.direct_labour+d.direct_labour) as direct_labour,(a.utilities+d.utilities) as utilities
@@ -82,11 +87,12 @@ class Cogm extends BE_Controller {
                             ,(a.repair+d.repair) as repair, (a.depreciation+d.depreciation) as depreciation,
                             ,(a.rent+d.rent) as rent, (a.others+d.others) as others
                             ,b.product_name,b.destination, c.abbreviation as initial, c.cost_centre, c.kode
-                            ,e.bottle,e.content,e.packing,e.set,e.subrm_total',
+                            ,e.content,e.packing,e.set,e.subrm_total, ' . $select_bottle . ' as bottle, f.prsn_alloc', 
                 'join' =>  ['tbl_fact_allocation_qc d on a.tahun = d.tahun and a.product_code = d.product_code',
                             'tbl_fact_product b on a.product_code = b.code',
                             'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
-                            'tbl_unit_material_cost e on a.tahun = e.tahun and a.product_code = e.product_code type LEFT'
+                            'tbl_unit_material_cost e on a.tahun = e.tahun and a.product_code = e.product_code type LEFT',
+                            'tbl_allocation_bari f on a.tahun = f.tahun and a.product_code = f.product_code type LEFT'
                            ],
                 'where' => [
                     'a.tahun' => $tahun,
@@ -97,7 +103,8 @@ class Cogm extends BE_Controller {
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
-            
+
+           
             $n1 = [];
             $new_alloc = get_data('tbl_new_allocation_product',[
                 'where' => [

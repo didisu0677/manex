@@ -1,0 +1,20 @@
+{
+    "field": {
+        "id": "primary_key",
+        "tahun": "int",
+        "product_code": "varchar",
+        "product_name": "varchar",
+        "prsn_alloc": "int",
+        "is_active": "boolean"
+    },
+    "label": {
+        "id": "Id",
+        "tahun": "Tahun",
+        "product_code": "Product Code",
+        "product_name": "Product Name",
+        "prsn_alloc": "Prsn Alloc",
+        "is_active": "Aktif"
+    },
+    "validation": [],
+    "alias": []
+}

@@ -174,5 +174,6 @@
     "sales_unlock": "Budget Sales Unlock",
     "id_cost_centre": "Id Cost Centre",
     "cost_center": "Cost Center",
-    "prsn_allocation": "Prsn Allocation"
+    "prsn_allocation": "Prsn Allocation",
+    "prsn_alloc": "Prsn Alloc"
 }

@@ -20,6 +20,11 @@
                 <option value="<?php echo $c->kode; ?>"><?php echo $c->cost_centre; ?></option>
                 <?php } ?>
 			</select>
+
+			<select class="select2 infinity custom-select" style="width: 150px;" id="filter_type">
+				<option value="total_after">COGM After Bari</option>
+				<option value="total_before">COGM Before Bari</option>
+			</select>
     		<?php 
 			// echo '<button class="btn btn-danger btn-proses" href="javascript:;" ><i class="fa-process"></i> Save Report</button>';
 			$arr = [];
@@ -127,13 +132,17 @@ $('#filter_cost_centre').change(function(){
 	getData();
 });
 
+$('#filter_type').change(function(){
+	getData();
+});
+
 function getData() {
 
 		cLoader.open(lang.memuat_data + '...');
 		$('.overlay-wrap').removeClass('hidden');
 		var page = base_url + 'reporting/cogm/data';
 			page 	+= '/'+$('#filter_tahun').val();
-			page 	+= '/'+$('#filter_cost_centre').val();
+			page 	+= '/'+$('#filter_cost_centre').val() + '?type='+$('#filter_type').val();
 
 		$.ajax({
 			url 	: page,
