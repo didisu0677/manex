@@ -1,17 +1,33 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Allocation_bari extends BE_Controller {
-
+	var $controller = 'Allocation_bari';
 	function __construct() {
 		parent::__construct();
 	}
 
 	function index() {
-		render();
+		$data['tahun'] = get_data('tbl_fact_tahun_budget', [
+            'where' => [
+                'is_active' => 1,
+                'tahun' => user('tahun_budget') -1 
+            ]
+        ])->result();     
+
+		$access         = get_access($this->controller);
+        $data['access'] = $access ;
+
+		render($data);
 	}
 
-	function data() {
-		$data = data_serverside();
+	function data($tahun="") {
+		$config = [];
+
+		if($tahun) {
+	    	$config['where']['tahun']	= $tahun;	
+	    }
+
+		$data = data_serverside($config);
 		render($data,'json');
 	}
 
@@ -23,6 +39,35 @@ class Allocation_bari extends BE_Controller {
 	function save() {
 		$response = save_data('tbl_allocation_bari',post(),post(':validation'));
 		render($response,'json');
+	}
+
+	function proses(){
+		ini_set('memory_limit', '-1');
+		ini_set('max_execution_time', 0);
+
+		$tahun = post('tahun');
+
+		$bari = get_data('tbl_allocation_bari a',[
+			'select' => 'a.product_code, a.prsn_alloc, b.bottle as before_bari, b.bottle * (a.prsn_alloc / 100) as bari, b.bottle - (b.bottle * (a.prsn_alloc / 100)) as after_bari',
+				'join' =>  'tbl_unit_material_cost b on a.tahun = b.tahun and a.product_code = b.product_code',
+			'where' => [
+				'a.tahun' => $tahun,
+				],
+		])->result();
+		
+		foreach($bari as $b) {
+			update_data('tbl_allocation_bari',[
+				'before_bari' => $b->before_bari,
+				'bari' => $b->bari,
+				'after_bari' => $b->after_bari
+			],['tahun' => $tahun, 'product_code' => $b->product_code]);
+		}
+
+
+		render([
+			'status'	=> 'success',
+			'message'	=> 'Proses Allocation Bari berhasil dilakukan'
+		],'json');	
 	}
 
 	function delete() {

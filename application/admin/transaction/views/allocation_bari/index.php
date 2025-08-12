@@ -5,6 +5,20 @@
 			<?php echo breadcrumb(); ?>
 		</div>
 		<div class="float-right">
+
+			<label class=""><?php echo lang('tahun'); ?> &nbsp</label>
+			<select class="select2 infinity custom-select" style="width: 80px;" id="filter_tahun">
+				<?php foreach ($tahun as $tahun) { ?>
+					<option value="<?php echo $tahun->tahun; ?>"<?php if($tahun->tahun == user('tahun_budget')) echo ' selected'; ?>><?php echo $tahun->tahun; ?></option>
+                <?php } ?>
+			</select>
+
+			<?php 
+
+			echo '<button class="btn btn-info btn-proses" href="javascript:;" ><i class="fa-process"></i> Alloacation Bari</button>';
+			
+			?>
+
 			<?php echo access_button('delete,active,inactive,export,import'); ?>
 		</div>
 		<div class="clearfix"></div>
@@ -20,6 +34,9 @@
 				th(lang('product_code'),'','data-content="product_code"');
 				th(lang('product_name'),'','data-content="product_name"');
 				th(lang('prsn_alloc'),'','data-content="prsn_alloc"');
+				th(lang('before_bari'),'','data-content="before_bari"');
+				th(lang('bari'),'','data-content="bari"');
+				th(lang('after_bari'),'','data-content="after_bari"');
 				th(lang('aktif').'?','text-center','data-content="is_active" data-type="boolean"');
 				th('&nbsp;','','width="30" data-content="action_button"');
 	table_close();
@@ -49,3 +66,40 @@ modal_open('modal-import',lang('impor'));
 		form_close();
 modal_close();
 ?>
+
+<script>
+	$(document).ready(function() {
+		var url = base_url + 'transaction/allocation_bari/data/' ;
+			url 	+= '/'+$('#filter_tahun').val() 
+		$('[data-serverside]').attr('data-serverside',url);
+		refreshData();
+	});	
+
+	$('#filter_tahun').change(function(){
+		var url = base_url + 'transaction/allocation_bari/data/' ;
+			url 	+= '/'+$('#filter_tahun').val() 
+		$('[data-serverside]').attr('data-serverside',url);
+		refreshData();
+	});
+
+	var id_proses = '';
+	var tahun = 0;
+	$(document).on('click','.btn-proses',function(e){
+		e.preventDefault();
+		id_proses = 'proses';
+		tahun = $('#filter_tahun').val();
+		cConfirm.open(lang.apakah_anda_yakin + '?','lanjut');
+	});
+
+	function lanjut() {
+		$.ajax({
+			url : base_url + 'transaction/allocation_bari/proses',
+			data : {id:id_proses,tahun : tahun},
+			type : 'post',
+			dataType : 'json',
+			success : function(res) {
+				cAlert.open(res.message,res.status,'refreshData');
+			}
+		});
+	}
+</script>
