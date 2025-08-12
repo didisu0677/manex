@@ -175,5 +175,8 @@
     "id_cost_centre": "Id Cost Centre",
     "cost_center": "Cost Center",
     "prsn_allocation": "Prsn Allocation",
-    "prsn_alloc": "Prsn Alloc"
+    "prsn_alloc": "Prsn Alloc",
+    "bari": "Bari",
+    "before_bari": "Before Bari",
+    "after_bari": "After Bari"
 }
