@@ -78,9 +78,14 @@ class Cogm extends BE_Controller {
         $data['total_biaya'] = [];
         foreach($data['grup'][0] as $m0) {	
 
-            // select if $bari type = 'total_after' e.bottle - ((e.bottle * (f.prsn_alloc / 100)) else e.bottle 
-            $select_bottle = ($bari_type == 'total_after') ? 'e.bottle - (e.bottle * (f.prsn_alloc / 100))' : 'e.bottle';
-           
+            // select if $bari type = 'total_after' and f.prsn_alloc not null  e.bottle - ((e.bottle * (f.prsn_alloc / 100)) else e.bottle    
+            $select_bottle = ($bari_type == 'total_after') ? 'CASE 
+        WHEN f.prsn_alloc IS NOT NULL 
+            THEN e.bottle - (e.bottle * (f.prsn_alloc / 100)) 
+        ELSE e.bottle 
+    END ' : 'e.bottle';
+            
+            
             $data['produk'][$m0->id]= get_data('tbl_fact_product_ovh a',[
                 'select' => 'a.product_code,a.qty_production,(a.direct_labour+d.direct_labour) as direct_labour,(a.utilities+d.utilities) as utilities
                             ,(a.supplies+d.supplies) as supplies, (a.indirect_labour+d.indirect_labour) as indirect_labour
