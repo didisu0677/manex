@@ -208,7 +208,7 @@ class Material_planning extends BE_Controller {
 		ini_set('max_execution_time', 0);
 
 		$tahun = post('tahun');
-        $factory = post('factory');
+        $produk = post('produk');
 
         $table_prod = 'tbl_budget_production' ;
         $table_mat = 'tbl_material_planning_' . $tahun ;
@@ -233,7 +233,7 @@ class Material_planning extends BE_Controller {
             'sort_by' => 'a.component_item'
         ];
 
-        if (!empty($factory) && $factory != 'ALL') $arr['where']['c.kode'] = $factory;
+        if (!empty($produk) && $produk != 'ALL') $arr['where']['a.component_item'] = $produk;
 
         $prod = get_data('tbl_material_formula  a',$arr)->result();
 
