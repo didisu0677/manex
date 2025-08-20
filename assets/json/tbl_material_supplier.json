@@ -1,0 +1,30 @@
+{
+    "field": {
+        "id": "primary_key",
+        "kode_supplier": "varchar",
+        "nama_supplier": "varchar",
+        "material_code": "varchar",
+        "material_name": "varchar",
+        "um": "varchar",
+        "moq": "int",
+        "order_multiple": "int",
+        "m_cov": "int",
+        "total_stock": "int",
+        "is_active": "boolean"
+    },
+    "label": {
+        "id": "Id",
+        "kode_supplier": "Kode Supplier",
+        "nama_supplier": "Nama Supplier",
+        "material_code": "Material Code",
+        "material_name": "Material Name",
+        "um": "Um",
+        "moq": "Moq",
+        "order_multiple": "Order Multiple",
+        "m_cov": "M Cov",
+        "total_stock": "Total Stock",
+        "is_active": "Aktif"
+    },
+    "validation": [],
+    "alias": []
+}

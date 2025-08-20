@@ -12,11 +12,11 @@
 				<?php } ?>
 			</select>
 
-			<label class=""><?php echo lang('item_material'); ?> &nbsp</label>
-			<select class="select2 custom-select" style="width: 280px;" id="filter_produk">
+			<label class=""><?php echo lang('supplier'); ?> &nbsp</label>
+			<select class="select2 custom-select" style="width: 280px;" id="filter_supplier">
 				<option value="ALL">ALL</option>
-				<?php foreach ($produk_items as $p) { ?>
-					<option value="<?php echo $p->component_item; ?>"><?php echo $p->component_item . ' | ' . $p->material_name; ?></option>
+				<?php foreach ($supplier as $p) { ?>
+					<option value="<?php echo $p->code; ?>"><?php echo $p->code . ' | ' . $p->nama; ?></option>
 				<?php } ?>
 			</select>
 
@@ -99,7 +99,7 @@ $('#filter_tahun').change(function() {
   
 
 
-$('#filter_produk').change(function() {
+$('#filter_supplier').change(function() {
 	getData()
 });
 
@@ -108,7 +108,7 @@ function getData() {
 	$('.overlay-wrap').removeClass('hidden');
 	var page = base_url + 'material_cost/material_planning/data';
 		page 	+= '/'+$('#filter_tahun').val();
-		page 	+= '/'+$('#filter_produk').val();
+		page 	+= '/'+$('#filter_supplier').val();
 
 	$.ajax({
 		url 	: page,
@@ -130,14 +130,14 @@ $(document).on('click','.btn-proses',function(e){
 	e.preventDefault();
 	id_proses = 'proses';
 	tahun = $('#filter_tahun').val();
-	produk = $('#filter_produk').val();
+	supplier = $('#filter_supplier').val();
 	cConfirm.open(lang.apakah_anda_yakin + '?','lanjut');
 });
 
 function lanjut() {
 	$.ajax({
 		url : base_url + 'material_cost/material_planning/proses',
-		data : {id:id_proses,tahun : tahun, produk : produk},
+		data : {id:id_proses,tahun : tahun, supplier : supplier},
 		type : 'post',
 		dataType : 'json',
 		success : function(res) {

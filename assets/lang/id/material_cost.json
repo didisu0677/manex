@@ -58,8 +58,14 @@
     "group": "Group",
     "group_formula": "Group Formula",
     "kode": "Kode",
-    "product_code" : "Product Code",
-    "product_name" : "Product Nane",
-    "material_detail" : "Material Detail",
-    "price" : "Price"
+    "product_code": "Product Code",
+    "product_name": "Product Nane",
+    "material_detail": "Material Detail",
+    "price": "Price",
+    "kode_supplier": "Kode Supplier",
+    "nama_supplier": "Nama Supplier",
+    "moq": "Moq",
+    "order_multiple": "Order Multiple",
+    "m_cov": "M Cov",
+    "total_stock": "Total Stock"
 }

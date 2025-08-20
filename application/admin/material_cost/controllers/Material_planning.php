@@ -13,6 +13,12 @@ class Material_planning extends BE_Controller {
                 'tahun' => user('tahun_budget')
             ]
         ])->result();     
+
+        $data['supplier'] = get_data('tbl_m_supplier', [
+            'where' => [
+                'is_active' => 1,
+            ]
+        ])->result();     
         
         $arr = [
             'select' => 'a.cost_centre as kode, b.id, b.cost_centre',
@@ -143,7 +149,7 @@ class Material_planning extends BE_Controller {
 	//     render($response,'json');
     // }
 
-    function data($tahun = "", $produk = "", $tipe = 'table') {
+    function data($tahun = "", $supplier = "", $tipe = 'table') {
         ini_set('memory_limit', '-1');
         ini_set('max_execution_time', 0);
 
@@ -152,7 +158,7 @@ class Material_planning extends BE_Controller {
         $arr = [
             'select' => 'a.*',
             'join' => ['tbl_material_formula b on a.material_code = b.component_item and b.tahun = "' . $tahun . '"',
-                'tbl_fact_product c on b.parent_item = c.code type LEFT',
+                        'tbl_material_supplier c on a.material_code = c.material_code type LEFT',
             ],
             'where' => [
                 'b.tahun' => $tahun,
@@ -163,7 +169,7 @@ class Material_planning extends BE_Controller {
             'group_by' => 'a.material_code'
         ];
 
-        if ($produk && $produk != 'ALL') $arr['where']['a.material_code'] = $produk;
+        if ($supplier && $supplier != 'ALL') $arr['where']['c.kode_supplier'] = $supplier;
         // Ambil produk STA saja sekali
         $data['produk'] = get_data($table_mat . ' a', $arr )->result();
 
