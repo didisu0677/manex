@@ -12,13 +12,21 @@
 				<?php } ?>
 			</select>
 
-			<label class=""><?php echo lang('factory'); ?>  &nbsp</label>
+			<label class=""><?php echo lang('item_product'); ?> &nbsp</label>
+			<select class="select2 custom-select" style="width: 280px;" id="filter_produk">
+				<option value="ALL">ALL</option>
+				<?php foreach ($produk_items as $p) { ?>
+					<option value="<?php echo $p->component_item; ?>"><?php echo $p->component_item . ' | ' . $p->material_name; ?></option>
+				<?php } ?>
+			</select>
+
+			<!-- <label class=""><?php echo lang('factory'); ?>  &nbsp</label>
 			<select class="select2 infinity custom-select" style="width: 180px;" id="filter_cost_centre">
 				<option value="ALL">ALL FACTORY</option>
-				<?php foreach ($cc as $c) { ?>
-                <option value="<?php echo $c->kode; ?>"><?php echo $c->cost_centre; ?></option>
-                <?php } ?>
-			</select>
+				<?php //foreach ($cc as $c) { ?>
+                <option value="<?php //echo $c->kode; ?>"><?php echo $c->cost_centre; ?></option>
+                <?php //} ?>
+			</select> -->
 
 			<?php  
 
@@ -88,8 +96,10 @@ $(document).ready(function() {
 $('#filter_tahun').change(function() {
 	getData()
 });
+  
 
-$('#filter_cost_centre').change(function() {
+
+$('#filter_produk').change(function() {
 	getData()
 });
 
@@ -98,7 +108,7 @@ function getData() {
 	$('.overlay-wrap').removeClass('hidden');
 	var page = base_url + 'material_cost/material_planning/data';
 		page 	+= '/'+$('#filter_tahun').val();
-		page 	+= '/'+$('#filter_cost_centre').val();
+		page 	+= '/'+$('#filter_produk').val();
 
 	$.ajax({
 		url 	: page,
@@ -120,14 +130,14 @@ $(document).on('click','.btn-proses',function(e){
 	e.preventDefault();
 	id_proses = 'proses';
 	tahun = $('#filter_tahun').val();
-	factory = $('#filter_cost_centre').val();
+	produk = $('#filter_produk').val();
 	cConfirm.open(lang.apakah_anda_yakin + '?','lanjut');
 });
 
 function lanjut() {
 	$.ajax({
 		url : base_url + 'material_cost/material_planning/proses',
-		data : {id:id_proses,tahun : tahun, factory : factory},
+		data : {id:id_proses,tahun : tahun, produk : produk},
 		type : 'post',
 		dataType : 'json',
 		success : function(res) {

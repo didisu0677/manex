@@ -28,6 +28,19 @@ class Material_planning extends BE_Controller {
 
 	    $data['cc']= get_data('tbl_fact_product a',$arr)->result();
 
+
+        $arr = [
+            'select' => 'distinct a.component_item,a.material_name',
+            'join' =>  'tbl_budget_production b on b.budget_product_code= a.parent_item and and b.tahun="'.user('tahun_budget').'" type LEFT',
+            'where' => [
+                'a.tahun' => user('tahun_budget'),
+                'a.total !=' => 0,
+                'b.total_budget !=' => 0
+            ],
+        ];
+
+        $data['produk_items'] = get_data('tbl_material_formula a', $arr)->result();
+
         // debug($data);die;
 
 		render($data);
@@ -130,7 +143,7 @@ class Material_planning extends BE_Controller {
 	//     render($response,'json');
     // }
 
-    function data($tahun = "", $cost_centre = "", $tipe = 'table') {
+    function data($tahun = "", $produk = "", $tipe = 'table') {
         ini_set('memory_limit', '-1');
         ini_set('max_execution_time', 0);
 
@@ -150,7 +163,7 @@ class Material_planning extends BE_Controller {
             'group_by' => 'a.material_code'
         ];
 
-        if ($cost_centre && $cost_centre != 'ALL') $arr['where']['c.cost_centre'] = $cost_centre;
+        if ($produk && $produk != 'ALL') $arr['where']['a.material_code'] = $produk;
         // Ambil produk STA saja sekali
         $data['produk'] = get_data($table_mat . ' a', $arr )->result();
 
