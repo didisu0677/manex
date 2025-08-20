@@ -13,7 +13,7 @@
 				<?php } ?>
 			</select>
 
-			<label class=""><?php echo lang('item_product'); ?> &nbsp</label>
+			<label class=""><?php echo lang('item_material'); ?> &nbsp</label>
 			<select class="select2 custom-select" style="width: 280px;" id="filter_produk">
 				<option value="ALL">ALL</option>
 				<?php foreach ($produk_items as $p) { ?>
