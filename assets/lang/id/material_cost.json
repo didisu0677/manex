@@ -67,5 +67,6 @@
     "moq": "Moq",
     "order_multiple": "Order Multiple",
     "m_cov": "M Cov",
-    "total_stock": "Total Stock"
+    "total_stock": "Total Stock",
+    "supplier" : "Supplier"
 }
