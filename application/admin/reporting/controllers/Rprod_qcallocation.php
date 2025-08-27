@@ -75,7 +75,8 @@ class Rprod_qcallocation extends BE_Controller {
                            ],
                 'where' => [
                     'a.tahun' => $tahun,
-                    'a.id_cost_centre' =>$m0->id
+                    'a.id_cost_centre' =>$m0->id,
+                    'a.produk_qty !='=> 0
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
