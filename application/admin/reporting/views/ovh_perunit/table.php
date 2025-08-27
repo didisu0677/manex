@@ -68,7 +68,7 @@
 			// $sum_totalovh += ($total_fixed + $total_variable);
 			
 			
-			$total_foh =  (intval(@$total_ovh) ?? 0) * intval(@$m1->qty_production ?? 0) ;
+			$total_foh =  ($total_ovh * $m1->qty_production) ;
 			$sum_totalfoh += $total_foh ;
 			$grand_totalfoh += $total_foh ;
 
