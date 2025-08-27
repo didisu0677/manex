@@ -76,8 +76,8 @@ class Ovh_perunit extends BE_Controller {
                             ,(a.repair+d.repair) as repair, (a.depreciation+d.depreciation) as depreciation,
                             ,(a.rent+d.rent) as rent, (a.others+d.others) as others
                             ,b.product_name,b.destination, c.abbreviation as initial, c.cost_centre, c.kode',
-                'join' =>  ['tbl_fact_allocation_qc d on a.tahun = d.tahun and a.product_code = d.product_code',
-                            'tbl_fact_product b on a.product_code = b.code',
+                'join' =>  ['tbl_fact_allocation_qc d on a.tahun = d.tahun and a.product_code = d.product_code type LEFT',
+                            'tbl_fact_product b on a.product_code = b.code type LEFT',
                             'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
                            ],
                 'where' => [
@@ -85,7 +85,7 @@ class Ovh_perunit extends BE_Controller {
                     'd.tahun' => $tahun,
                     'a.id_cost_centre' =>$m0->id,
                     '__m' => 'a.product_code in (select budget_product_code from tbl_beginning_stock where is_active ="1" and tahun="'.$tahun.'")',
-                    // 'a.qty_production !=' => 0
+                    'a.qty_production !=' => 0
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
