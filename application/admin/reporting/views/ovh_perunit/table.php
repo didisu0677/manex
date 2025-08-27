@@ -70,7 +70,7 @@
 			
 			$total_foh =  @(intval($total_ovh) ?? 0) * intval($m1->qty_production) ;
 			$sum_totalfoh += $total_foh ;
-			$grand_totalfoh += @(intval($total_ovh) ?? 0) * intval($m1->qty_production) ; //$total_foh ;
+			$grand_totalfoh += $total_ovh * $m1->qty_production ; //$total_foh ;
 
 
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money-custom-6 alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="">'.number_format($m1->direct_labour / $m1->qty_production,4).'</td>';
