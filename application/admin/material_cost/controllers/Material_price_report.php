@@ -94,7 +94,7 @@ class Material_price_report extends BE_Controller {
     function submit_report() {
         $tahun = post('tahun');
 
-        $cost = get_data('tbl_material_formula a',[
+        $cost = get_data('tbl_material_formula1 a',[
             'select'	=> 'd.id as id_product, a.parent_item, a.item_name, a.component_item, a.material_name, 
                             a.total as quantity, a.um, a.group_formula, b.bm, 
                             b.bank_charges, b.handling_charges, b.price_us ,b.curr, c.rates, c.ppn, c.pph, (b.price_us * c.rates) as total_price,
