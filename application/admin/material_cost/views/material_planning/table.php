@@ -65,7 +65,7 @@
 				$field0 = 'P_' . sprintf('%02d', $i);
 
 				// echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0x.'" data-name="'.$field0x.'" data-id="'.$m1->id.'" data-value="" data-nilai = "'.$m1->batch_size.'" id="id="'.$field0x.$m1->id.'"></td>';
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0.'" data-name="'.$field0.'" data-id="" data-value="" data-nilai = "" id="'.$field0.$m1->id.'">'.number_format($prod[$m1->material_code][$field0]).'</td>';
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right xprod xproduksi '.$field0.'" data-name="'.$field0.'" data-id="" data-value="" data-nilai = "" id="'.$field0.$m1->id.'">'.number_format($prod[$m1->material_code][$field0]).' test</td>';
 
 			}
 			?>
