@@ -98,6 +98,7 @@ class Unit_materialcost extends BE_Controller {
 					$data['id_product'] = 0;
 					$product = get_data('tbl_fact_product','code',$data['product_code'])->row();
 					if(isset($product->id)) $data['id_product'] = $product->id;
+					if(isset($product->product_name)) $data['description'] = $product->product_name;
 
 					$data['create_at'] = date('Y-m-d H:i:s');
 					$data['create_by'] = user('nama');
