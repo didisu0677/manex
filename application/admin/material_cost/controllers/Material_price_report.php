@@ -102,7 +102,7 @@ class Material_price_report extends BE_Controller {
             'join' => ['tbl_material_price b on a.component_item = b.material_code and b.year="'.$tahun.'" type LEFT ',
                     'tbl_currency_rates c on b.curr = c.curr type LEFT',
                     'tbl_fact_product d on a.parent_item = d.code type LEFT',
-                    'tbl_budget_production e on a.parent_item = e.budget_product_code and e.tahun ="'.$tahun.'" type RIGHT'
+                    'tbl_budget_production e on a.parent_item = e.budget_product_code and e.tahun ="'.$tahun.'" type LEFT'
                     ],
             'where'		=> [
                 '__m' => 'a.parent_item in (select budget_product_code from tbl_beginning_stock where is_active = 1 and tahun="'.$tahun.'")',

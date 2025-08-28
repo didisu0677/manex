@@ -214,7 +214,7 @@ class Material_planning extends BE_Controller {
 		ini_set('max_execution_time', 0);
 
 		$tahun = post('tahun');
-        $produk = post('produk');
+        $supplier = post('supplier');
 
         $table_prod = 'tbl_budget_production' ;
         $table_mat = 'tbl_material_planning_' . $tahun ;
@@ -228,7 +228,7 @@ class Material_planning extends BE_Controller {
              'join'   => [$table_prod .' b on a.parent_item = b.budget_product_code and b.tahun ="'.$tahun.'"',
                          'tbl_beginning_stock d on a.parent_item = d.budget_product_code and d.tahun ="'.$tahun.'"',
                          'tbl_beginning_stock_material e on a.component_item = e.material_code and e.tahun ="'.$tahun.'"',
-                         'tbl_fact_cost_centre c on b.id_cost_centre = c.id'
+                         'tbl_fact_cost_centre c on b.id_cost_centre = c.id',
                         ],
             'where' => [
                 'a.tahun' => $tahun,
@@ -239,7 +239,7 @@ class Material_planning extends BE_Controller {
             'sort_by' => 'a.component_item'
         ];
 
-        if (!empty($produk) && $produk != 'ALL') $arr['where']['a.component_item'] = $produk;
+        if (!empty($supplier) && $supplier != 'ALL') $arr['where']['e.supplier'] = $supplier;
 
         $prod = get_data('tbl_material_formula  a',$arr)->result();
 
@@ -534,10 +534,11 @@ class Material_planning extends BE_Controller {
 
                         // cari value_production  sampai value_coverage > $c1->m_cov value production dimulai dari $c->moq  
                         if ($value_coverage < $c->m_cov) {
-                            $value_production = $c->moq;
+                            // $value_production = $c->moq;
                             $value_end_stock = $tmp_data['beginning_stock'] + $value_production - $sales;
                             $unit_available = $tmp_data['beginning_stock'] + $value_production;
                             $value_coverage = $value_end_stock / $average_sales_per_4_month;
+                            //  debug($value_coverage);die;
 
 
                             while ($value_coverage < $c->m_cov) {
