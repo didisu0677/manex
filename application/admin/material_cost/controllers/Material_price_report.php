@@ -94,15 +94,16 @@ class Material_price_report extends BE_Controller {
     function submit_report() {
         $tahun = post('tahun');
 
-        $cost = get_data('tbl_material_formula a',[
+        $cost = get_data('tbl_budget_production e',[
             'select'	=> 'd.id as id_product, a.parent_item, a.item_name, a.component_item, a.material_name, 
                             a.total as quantity, a.um, a.group_formula, b.bm, 
                             b.bank_charges, b.handling_charges, b.price_us ,b.curr, c.rates, c.ppn, c.pph, (b.price_us * c.rates) as total_price,
                             e.total_budget as qty_production',
-            'join' => ['tbl_material_price b on a.component_item = b.material_code and b.year="'.$tahun.'" type LEFT ',
+            'join' => [
+                    'tbl_material_formula a on a.parent_item = e.budget_product_code and e.tahun ="'.$tahun.'" type LEFT',
+                    'tbl_material_price b on a.component_item = b.material_code and b.year="'.$tahun.'" type LEFT ',
                     'tbl_currency_rates c on b.curr = c.curr type LEFT',
                     'tbl_fact_product d on a.parent_item = d.code type LEFT',
-                    'tbl_budget_production e on a.parent_item = e.budget_product_code and e.tahun ="'.$tahun.'" type LEFT'
                     ],
             'where'		=> [
                 '__m' => 'a.parent_item in (select budget_product_code from tbl_beginning_stock where is_active = 1 and tahun="'.$tahun.'")',
