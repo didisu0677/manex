@@ -186,7 +186,7 @@ $(document).on('click','.btn-export',function(){
 	});
 	var table	= '<table>';
 	table += '<tr><td colspan="1">PT Otsuka Indonesia</td></tr>';
-	table += '<tr><td colspan="1">Report Manex Allocation '+$('#filter_type').text()+'</td></tr>';
+	table += '<tr><td colspan="1">Report Manex Allocation '+$('#filter_type').val()+'</td></tr>';
 	table += '<tr><td colspan="1"> Tahun </td><td colspan="25">: '+$('#filter_tahun option:selected').text()+'</td></tr>';
 	table += '<tr><td colspan="1"> Print date </td><td colspan="25">: '+datetime+'</td></tr>';
 	table += '</table><br />';
