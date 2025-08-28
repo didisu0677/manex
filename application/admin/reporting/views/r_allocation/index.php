@@ -186,7 +186,9 @@ $(document).on('click','.btn-export',function(){
 	});
 	var table	= '<table>';
 	table += '<tr><td colspan="1">PT Otsuka Indonesia</td></tr>';
-	table += '<tr><td colspan="1">Report Manex Allocation '+$('#filter_type').val()+'</td></tr>';
+	table += '<tr><td colspan="1"> Report Manex Allocation </td></tr>';
+	// biar bisa nampil filter type di export excel
+	table += '<tr><td colspan="1"> Type </td><td colspan="25">: '+$('#filter_type option:selected').text()+'</td></tr>';
 	table += '<tr><td colspan="1"> Tahun </td><td colspan="25">: '+$('#filter_tahun option:selected').text()+'</td></tr>';
 	table += '<tr><td colspan="1"> Print date </td><td colspan="25">: '+datetime+'</td></tr>';
 	table += '</table><br />';
