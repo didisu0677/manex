@@ -61,13 +61,13 @@
 				}
 			}
 
-			$stotal_rm += $m1->subrm_total;
-			$sum_rm += $m1->subrm_total ;
+			$stotal_rm += $subrm_total;
+			$sum_rm += $subrm_total ;
 
 			$total_variable = ($m1->direct_labour / $m1->qty_production) + ($m1->utilities / $m1->qty_production) + ($m1->supplies / $m1->qty_production) ;
 			$total_fixed = ($m1->indirect_labour / $m1->qty_production) + ($m1->repair / $m1->qty_production)  + ($depreciation) + ($m1->rent/ $m1->qty_production) + ($m1->others/ $m1->qty_production);
 			$total_ovh = $total_variable+$total_fixed;
-			$unit_cost = $total_ovh + $m1->subrm_total;
+			$unit_cost = $total_ovh + $subrm_total;
 
 			$total_cogm = @(intval($unit_cost) ?? 0) * intval($m1->qty_production) ;
 
