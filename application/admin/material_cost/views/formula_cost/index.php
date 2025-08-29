@@ -164,7 +164,7 @@ modal_close();
 
 		// Add table rows
 		table += '<tr><td colspan="1">PT Otsuka Indonesia</td></tr>';
-		table += '<tr><td colspan="1">' + judul + ' Material Cost Budget </td></tr>';
+		table += '<tr><td colspan="1">Material Cost Budget </td></tr>';
 		table += '<tr><td colspan="1"> Print date </td><td>: ' + datetime + '</td></tr>';
 		table += '</table><br><br>';
 
