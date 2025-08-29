@@ -120,7 +120,7 @@ class Allocation_bari extends BE_Controller {
 
 	function export() {
 		ini_set('memory_limit', '-1');
-		$arr = ['tahun' => 'Tahun','product_code' => 'Product Code','product_name' => 'Product Name','prsn_alloc' => 'Prsn Alloc','is_active' => 'Aktif'];
+		$arr = ['tahun' => 'Tahun','product_code' => 'Product Code','product_name' => 'Product Name','prsn_alloc' => 'Prsn Alloc','before_bari' => 'Before Bari','bari' => 'Bari','after_bari' => 'After Bari','is_active' => 'Aktif'];
 		$data = get_data('tbl_allocation_bari')->result_array();
 		$config = [
 			'title' => 'data_allocation_bari',
