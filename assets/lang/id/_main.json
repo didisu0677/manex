@@ -229,5 +229,8 @@
     "pilih_provinsi" : "Pilih Provinsi",
     "pilih_kota" : "Pilih Kota/Kabupaten",
     "pilih_kecamatan" : "Pilih Kecamatan",
-    "all" : "All"
+    "all" : "All",
+    "budget_mode" : "Budget Manex",
+    "simulation_mode" : "Simulation Manex",
+    "actual_mode" : "Actual Manex"
 }

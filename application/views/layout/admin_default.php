@@ -125,7 +125,11 @@ echo Asset::render();
 						</li>
 						<?php } ?>
 						<?php } ?>
-					</ul>
+					</ul>                   
+                <!-- Running text nama user di dalam navbar-container -->
+                <div class="navbar-user-marquee">
+                    <span class="user-marquee-text">Transaction and application Mode : <?php echo lang(user('transaction_mode')) . ' | Tahun Budget : ' . user('tahun_budget'); ?></span>
+                </div>
 					<ul class="nav navbar-nav float-xs-right pr-md-2">
 						<li class="nav-item nav-btn">
 							<div class="btn-group">

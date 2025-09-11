@@ -44,6 +44,7 @@ class Cron extends MY_Controller {
         $res = get_data('information_schema.tables',[
             'select' => 'table_name',
             'where' => [
+                'table_schema' => 'manex',     
                 'table_name like' => '%'. $tahun0,
             ]
         ])->result();
@@ -54,6 +55,71 @@ class Cron extends MY_Controller {
         foreach($res as $v) {
             $old_table = ($v->table_name);
             $new_table = str_replace($tahun0, ($tahun1), $old_table);
+            $sql = "CREATE TABLE $new_table LIKE $old_table";
+
+            if(!table_exists($new_table)) {
+                $this->db->query($sql);
+                $jum++;
+            }
+        }
+
+        if ($jum > 0) echo "Berhasil create $jum table";
+    }
+
+    function create_file_simulasi_budget($tahun="") {
+
+        $tahun1 = $tahun ;
+        $tahun0 = $tahun - 1 ;
+    
+        $res = get_data('information_schema.tables',[
+            'select' => 'distinct table_name',
+            'where' => [
+                'table_schema' => 'manex',     
+                'table_name like' => '%'. $tahun1,
+                'substr(table_name, 1, 4) !=' => 'act_',
+                'substr(table_name, 1, 4) !=' => 'sim_'
+            ]
+        ])->result();
+
+
+        $jum = 0;
+        $old_table = '';
+        $new_table = '';
+        foreach($res as $v) {
+            $old_table = ($v->table_name);
+            $new_table = 'sim_'.$old_table;
+            $sql = "CREATE TABLE $new_table LIKE $old_table";
+
+            if(!table_exists($new_table)) {
+                $this->db->query($sql);
+                $jum++;
+            }
+        }
+
+        if ($jum > 0) echo "Berhasil create $jum table";
+    }
+
+    function create_file_actual_budget($tahun="") {
+
+        $tahun1 = $tahun ;
+        $tahun0 = $tahun - 1 ;
+    
+        $res = get_data('information_schema.tables',[
+            'select' => 'table_name',
+            'where' => [
+                'table_schema' => 'manex',     
+                'table_name like' => '%'. $tahun1,
+                'substr(table_name, 1, 4) !=' => 'act_',
+                'substr(table_name, 1, 4) !=' => 'sim_'
+            ]
+        ])->result();
+
+        $jum = 0;
+        $old_table = '';
+        $new_table = '';
+        foreach($res as $v) {
+            $old_table = ($v->table_name);
+            $new_table = 'act_'.$old_table;
             $sql = "CREATE TABLE $new_table LIKE $old_table";
 
             if(!table_exists($new_table)) {

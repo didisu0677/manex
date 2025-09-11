@@ -27,6 +27,7 @@ class Login extends BE_Controller {
         $remember           = post('remember');
         $notification_id    = post('notification_id');
         $tahun_budget       = post('tahun_budget');
+        $transaction_mode   = post('transaction_mode');
         $data               = false;
         $response           = [
             'status'        => 'failed',
@@ -84,6 +85,7 @@ class Login extends BE_Controller {
                         'notification_id'   => $notification_id,
                         'invalid_password'  => 0,
                         'tahun_budget'      => $tahun_budget,   
+                        'transaction_mode'  => $transaction_mode
 
                     ),'id',$user->id);
                     $this->session->set_userdata($data);

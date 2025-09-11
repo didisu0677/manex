@@ -18,18 +18,30 @@
 		<label class="inline-icon fa-calendar" for="password"><?php echo lang('kata_sandi'); ?></label>
 	    <select id="tahun_budget" class="infinity custom-select select2" name="tahun_budget" data-validation="required">
 			<?php foreach($tahun as $u) {
-				echo '<option value="'.$u['tahun'].'">'.str_repeat('&nbsp;', 6).$u['tahun'].'</option>';
+				echo '<option value="'.$u['tahun'].'">'.str_repeat('&nbsp;', 8).$u['tahun'].'</option>';
 			} ?>
 	    </select>
 	</div>
 	<div class="fieldset">
-		<label class="inline-icon fa-building" for="location"><?php echo lang('location'); ?></label>
+		<label class="inline-icon fa-home" for="location"><?php echo lang('location'); ?></label>
 	    <select id="location" class="infinity custom-select select2" name="location" data-validation="required">
 			<?php foreach($location as $u) {
-				echo '<option value="'.$u['domain'].'">'.str_repeat('&nbsp;', 6).$u['location'].'</option>';
+				echo '<option value="'.$u['domain'].'">'.str_repeat('&nbsp;', 8).$u['location'].'</option>';
 			} ?>
 	    </select>
 	</div>
+
+	<div class="fieldset">
+		<label class="inline-icon fa-calculator" for="transaction_mode"><?php echo lang('transaction_mode'); ?></label>
+	    <select id="transaction_mode" class="infinity custom-select select2" name="transaction_mode" data-validation="required">
+			<?php 
+				echo '<option value="budget_mode">'.str_repeat('&nbsp;', 8).' Budget Mode</option>';
+				echo '<option value="actual_mode">'.str_repeat('&nbsp;', 8).' Actual Mode</option>';
+				echo '<option value="simulation_mode">'.str_repeat('&nbsp;', 8).' Simulation Mode</option>';
+			?>
+	    </select>
+	</div>
+
 	<?php if(!setting('single_login')) { ?>
 	<div class="fieldset">
 		<label class="custom-control custom-checkbox">
