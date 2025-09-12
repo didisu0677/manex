@@ -67,7 +67,7 @@
 			$contentedit ="false" ;
 			for ($i = 1; $i <= 12; $i++) {
 				$totalfield0 = 'TotalB_' . sprintf('%02d', $i);
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sub_totalfield0.'"><b>'.number_format($$sub_totalfield0).'</b></td>';
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sub_totalfield0.'"><b>'.number_format($$totalfield0).'</b></td>';
 			}
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sub_stotal_budget.'"><b>'.number_format($sub_stotal_budget).'</b></td>';
 
