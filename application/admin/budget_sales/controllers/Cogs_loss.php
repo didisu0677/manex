@@ -441,6 +441,11 @@ class Cogs_loss extends BE_Controller {
                     'id' => $cek->id
                 ]);
 
+                $this->db->set('total_budget', '(B_01+B_02+B_03+B_04+B_05+B_06+B_07+B_08+B_09+B_10+B_11+B_12)', FALSE);
+                $this->db->set('total_est', '(EST_01+EST_02+EST_03+EST_04+EST_05+EST_06+EST_07+EST_08+EST_09+EST_10+EST_11+EST_12)', FALSE);
+                $this->db->where('id', $cek->id);
+                $this->db->update($table);
+
                 recalculate_sales($tahun,$loop_data['CODE'],$sector);
 
                 if($save){
