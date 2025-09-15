@@ -1,0 +1,524 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Allocation extends MY_Controller {
+	function __construct(){
+		parent::__construct();
+		$this->cek_login();
+	}
+    
+	function index(){
+	    $data                      = $this->app_data();
+	    $data['css']               = array(
+	        'templates/css/select2.min.css',
+	        'templates/css/jquery.autocomplete.css',
+	        'templates/css/bootstrap-datepicker.min.css',
+	    );
+	    $data['js']                = array(
+	        'templates/js/jquery.autocomplete.min.js',
+	        'templates/js/select2.min.js',
+	        'templates/js/jquery.mask.min.js',
+	        'templates/js/bootstrap-datepicker.min.js',
+	        'templates/js/applications/budget/allocation.js'
+	    );
+	    $data['datatable']         = 'budget/allocation/data';
+	    $data['multiple_delete']   = true;
+	    
+	    $data['department']            = get_data($this->tbl_divisi,array('where_array'=>array('status'=>1)))->result();
+	    $data['sub_account']            = get_data($this->tbl_subaccount,array('where_array'=>array('status'=>1,'parent_id'=>0)))->result();
+	    view(':budget/allocation/content',$data,$data['access']['view']);
+	}
+	
+	function data() {
+	    $dt        = $this->session->userdata('dt');
+	    $access    = $this->get_access();
+
+	    $this->datatables->select('a.id as k,a.kode_proses,a.nama,a.total_alokasi,a.last_process,b.nama as nama_user')
+	    ->from($this->tbl_m_prosesalokasi . ' a')
+	    ->join($this->tbl_user.' b','a.user_processed=b.id','LEFT');
+
+	    $this->datatables->add_column('action',get_buttons('$1',$access['edit'],$access['delete']),'k','false');
+	    echo $this->datatables->generate();
+	}
+	
+	
+	function get_data(){
+
+        $dt        = $this->session->userdata('dt');
+
+	    $data      = get_data( $this->tbl_m_prosesalokasi ,array('where_array'=>array('id'=>post('id'))))->row_array();
+	    
+	    $id_trx    = array();
+	    $trx   = get_data($this->tbl_detail_mprosesalokasi,array('where_array'=>array('id_m_prosesalokasi'=>post('id'))))->result();
+	    foreach($trx as $t) {
+	        $id_trx[] = $t->cost_center;
+	    }
+	    
+	    $data['kode_divisi'] = $id_trx;
+	    
+	    $id_trx2    = array();
+	    $trx2   = get_data($this->tbl_detail_mprosesalokasi2,array('where_array'=>array('id_m_prosesalokasi'=>post('id'))))->result();
+	    foreach($trx2 as $t) {
+	        $id_trx2[] = $t->sub_account;
+	    }
+	
+	    $data['sub_account'] = $id_trx2;
+        $data['tahun'] = $dt['tahun_budget'];
+	    
+	    $this->returnJson($data);
+	}
+	
+	
+    function save(){
+        $access             = $this->get_access();
+        $id                 = post('id');
+        $data               = input();
+        $kode_divisi        = post('kode_divisi');
+        $sub_account        = post('sub_account');
+        
+        if($data['kode_proses'] && $data['nama']){
+            $check = get_data( $this->tbl_m_prosesalokasi ,array('where_array'=>array('id'=>$id)))->row();
+            if($id){
+                if(!$access['edit']) {
+                    $this->returnJson(array('message'=>lang('msg_permission_denied'),'status'=>'error'));
+                    exit;
+                }
+                $save                   = update_data( $this->tbl_m_prosesalokasi ,$data,'id',$id);
+            }else{
+                if(!$access['input']) {
+                    $this->returnJson(array('message'=>lang('msg_permission_denied'),'status'=>'error'));
+                    exit;
+                }
+                if($check){
+                    $this->returnJson(array('message'=>lang('msg_code_has_been_used'),'status'=>'error'));
+                    die;
+                }
+                $save   = insert_data( $this->tbl_m_prosesalokasi ,$data);             
+            }
+            
+            if ($save) {
+                delete_data( $this->tbl_detail_mprosesalokasi , array('id_m_prosesalokasi'=>$id));
+                delete_data( $this->tbl_detail_mprosesalokasi2 , array('id_m_prosesalokasi'=>$id));
+                foreach($kode_divisi as $acc){
+                    $data1 = array(
+                        'id_m_prosesalokasi'  => $id,
+                        'cost_center'   => $acc
+                    );
+                    
+                    $check  = get_data( $this->tbl_detail_mprosesalokasi , array('where_array'=>array('id_m_prosesalokasi'=>$id,'cost_center'=>$acc)))->row();
+                    if(isset($check->cost_center))
+                        $save             = update_data($this->tbl_detail_mprosesalokasi,$data1,'id',$check->id);
+                        else
+                            $save             = insert_data($this->tbl_detail_mprosesalokasi,$data1);
+                            
+                }
+                
+                foreach($sub_account as $acc2){
+                    $data2 = array(
+                        'id_m_prosesalokasi'  => $id,
+                        'sub_account'   => $acc2
+                    );
+                    
+                    $check2  = get_data( $this->tbl_detail_mprosesalokasi2 , array('where_array'=>array('id_m_prosesalokasi'=>$id,'sub_account'=>$acc2)))->row();
+                    if(isset($check2->sub_account))
+                        $save             = update_data($this->tbl_detail_mprosesalokasi2,$data2,'id',$check->id);
+                        else
+                            $save             = insert_data($this->tbl_detail_mprosesalokasi2,$data2);
+                            
+                }
+            }
+            
+            if($save){
+                $this->returnJson(array('message'=>lang('msg_data_has_been_saved'),'status'=>'ok'));
+            }else
+                $this->returnJson(array('message'=>lang('msg_data_not_saved'),'status'=>'error'));
+        }else
+            $this->returnJson(array('message'=>lang('msg_insert_not_completed'),'status'=>'error'));
+            
+    }
+    
+    function delete(){
+        $id         = post('id');
+        $access     = $this->get_access();
+        if($access['delete']){
+            $id_u   = explode(',',$id);
+            if(count($id_u) == 1){
+                $get_data = get_data( $this->tbl_m_prosesalokasi ,array('where_array'=>array('id'=>$id)))->row();
+                if(isset($get_data->id)){
+                    $delete = delete_data( $this->tbl_m_prosesalokasi ,'id',$get_data->id);
+                    $delete = delete_data( $this->tbl_detail_mprosesalokasi ,'id_m_prosesalokasi',$get_data->id);
+        			$this->returnJson( array( 'status' => 'ok', 'message' => lang('msg_delete_success') ) );
+                }else
+        			$this->returnJson( array( 'status' => 'error', 'message' => lang('msg_delete_failed') ) );
+            }else{
+                foreach($id_u as $i){
+                    $get_data = get_data( $this->tbl_m_prosesalokasi ,array('where_array'=>array('id'=>$i)))->row();
+                    if(isset($get_data->kode_proses)){
+                        $delete = delete_data( $this->tbl_m_prosesalokasi ,'id',$get_data->id);
+                        $delete = delete_data( $this->tbl_detail_mprosesalokasi ,'id_m_prosesalokasi',$get_data->id);
+                    }                    
+                }
+        		$this->returnJson( array( 'status' => 'ok', 'message' => lang('msg_delete_success') ) );
+            }
+        }else
+			$this->returnJson( array( 'status' => 'error', 'message' => lang('msg_permission_denied') ) );
+    }
+    
+    function alocation_process(){
+        ini_set('memory_limit', '-1');
+        ini_set('max_execution_time', 0);
+        $access            = $this->get_access();
+        $data          = $this->app_data();
+        $dt        = $this->session->userdata('dt');
+        $user_id   = $this->session->userdata('id');
+        
+        $last_update    = date('Y-m-d H:i:s');
+        $login_id       = $this->session->userdata('id');
+        $login_user     = get_data($this->tbl_user,array('where_array'=>array('id'=>$login_id)))->row();
+ 
+        $access             = $this->get_access();
+        $tahun_budget       = post('tahun');
+        $dtalokasi          = post('sub_account');
+        $cost_center        = post('cost_center');
+        $kode_proses        = post('kode_proses');
+        
+        $kosong = "";    
+        $tabel = $this->tbl_lstbudget. "_" .$tahun_budget;
+        $tabelprod = $this->tbl_budget_byprod. "_" .$tahun_budget;
+        
+        $delete = delete_data($tabelprod ,'kode_proses',$kode_proses);
+
+        foreach($dtalokasi as $dt1){
+            
+            $account_trx      = get_data($this->tbl_account,array('where_array'=>array('status'=>1)))->result();
+            foreach($account_trx as $dt){
+                
+                $select_acc = 'gl_account,sum(B_01 ) as TB_01,
+                                        sum(B_02 ) as TB_02, sum(B_03 ) as TB_03, sum(B_04 ) as TB_04,
+                                        sum(B_05 ) as TB_05, sum(B_06 ) as TB_06, sum(B_07 ) as TB_07,
+                                        sum(B_08 ) as TB_08, sum(B_09 ) as TB_09, sum(B_10 ) as TB_10,
+                                        sum(B_11 ) as TB_11, sum(B_12 ) as TB_12, sum(total_budget ) as Ttotal_budget';
+                $arr_acc    = array(
+                    'select'       => $select_acc,
+                    'where_array'  => array(
+                        'parent_id' => 0,
+                        'sub_account' => $kosong,
+                        'gl_account' => $dt->acctmfg1
+                    ),
+                    
+                );
+                
+                $arr_acc['where_in']['cost_center']      = $cost_center;
+                
+                $databudget = get_data($tabel,$arr_acc)->row();
+                
+                $prdTB_01 = 0;
+                $prdTB_02 = 0;
+                $prdTB_03 = 0;
+                $prdTB_04 = 0;
+                $prdTB_05 = 0;
+                $prdTB_06 = 0;
+                $prdTB_07 = 0;
+                $prdTB_08 = 0;
+                $prdTB_09 = 0;
+                $prdTB_10 = 0;
+                $prdTB_11 = 0;
+                $prdTB_12 = 0;
+                $prdTtotal_budget=0;
+                
+                $select_scc = 'gl_account,sum(B_01 ) as TB_01,
+                                        sum(B_02 ) as TB_02, sum(B_03 ) as TB_03, sum(B_04 ) as TB_04,
+                                        sum(B_05 ) as TB_05, sum(B_06 ) as TB_06, sum(B_07 ) as TB_07,
+                                        sum(B_08 ) as TB_08, sum(B_09 ) as TB_09, sum(B_10 ) as TB_10,
+                                        sum(B_11 ) as TB_11, sum(B_12 ) as TB_12, sum(total_budget ) as Ttotal_budget';
+                $arr_scc    = array(
+                    'select'       => $select_scc,
+                    'where_array'  => array(
+                        'parent_id' => 0,
+                        'sub_account' => $dt1,
+                        'gl_account' => $dt->acctmfg1,
+                    ),
+                    'group_by'  => 'gl_account'
+                    
+                );
+                
+                $arr_scc['where_in']['cost_center']      = $cost_center;
+
+                $databudget_prod = get_data($tabel,$arr_scc)->row();
+
+                if(isset($databudget_prod->gl_account)){
+                    $prdTB_01 = $databudget_prod->TB_01;
+                    $prdTB_02 = $databudget_prod->TB_02;
+                    $prdTB_03 = $databudget_prod->TB_03;
+                    $prdTB_04 = $databudget_prod->TB_04;
+                    $prdTB_05 = $databudget_prod->TB_05;
+                    $prdTB_06 = $databudget_prod->TB_06;
+                    $prdTB_07 = $databudget_prod->TB_07;
+                    $prdTB_08 = $databudget_prod->TB_08;
+                    $prdTB_09 = $databudget_prod->TB_09;
+                    $prdTB_10 = $databudget_prod->TB_10;
+                    $prdTB_11 = $databudget_prod->TB_11;
+                    $prdTB_12 = $databudget_prod->TB_12;
+                    $prdTtotal_budget=$databudget_prod->Ttotal_budget;
+                }
+                
+                
+                $val_awal = 0;
+                $prsnaloc = 0;
+                $bisunit = '';
+                if ($kode_proses == 'A01' || $kode_proses == 'A02' )  {
+                    $alokasiawal = get_data($this->tbl_subaccount,array('where_array'=>array('subaccount_code'=>$dt1,'parent_id'=>0)))->row();
+                    if(isset($alokasiawal->subaccount_code)){
+                        $val_awal = $alokasiawal->prsn_aloc;
+                        $bisunit  = $alokasiawal->bisunit;
+                    }
+                }else {                    
+                    $alokasiawal = get_data($this->tbl_subaccount,array('where_array'=>array('subaccount_code'=>$dt1,'department'=>$kode_proses)))->row();
+                    if(isset($alokasiawal->subaccount_code)){
+                        $val_awal = $alokasiawal->prsn_aloc;
+                        $bisunit  = $alokasiawal->bisunit;
+                    }
+                    
+                }
+
+                $prsnaloc = ($val_awal / 100);
+                
+                $data = array(
+                    'gl_account' => $dt->acctmfg1,
+                    'sub_account' => $dt1,
+                    'kode_proses' => $kode_proses,
+                    'prsn_alokasi' => $prsnaloc,
+                    'bisunit' => $bisunit,
+                    'B_01' => ($prsnaloc * $databudget->TB_01) + $prdTB_01,
+                    'B_02' => ($prsnaloc * $databudget->TB_02) + $prdTB_02,
+                    'B_03' => ($prsnaloc * $databudget->TB_03) + $prdTB_03,
+                    'B_04' => ($prsnaloc * $databudget->TB_04) + $prdTB_04,
+                    'B_05' => ($prsnaloc * $databudget->TB_05) + $prdTB_05,
+                    'B_06' => ($prsnaloc * $databudget->TB_06) + $prdTB_06,
+                    'B_07' => ($prsnaloc * $databudget->TB_07) + $prdTB_07,
+                    'B_08' => ($prsnaloc * $databudget->TB_08) + $prdTB_08,
+                    'B_09' => ($prsnaloc * $databudget->TB_09) + $prdTB_09,
+                    'B_10' => ($prsnaloc * $databudget->TB_10) + $prdTB_10,
+                    'B_11' => ($prsnaloc * $databudget->TB_11) + $prdTB_11,
+                    'B_12' => ($prsnaloc * $databudget->TB_12) + $prdTB_12,
+                    'total_budget' => ($prsnaloc * $databudget->Ttotal_budget) + $prdTtotal_budget,
+                    'imported_id'           => $login_id,
+                    'imported_name'         => $login_user->nama,
+                    'last_update'           => $last_update,
+                    
+                );
+                       
+                $check2 = get_data($tabelprod,array('where_array'=>array('kode_proses'=>$kode_proses,'gl_account'=>$dt->acctmfg1,'sub_account'=>$dt1)))->row();
+                if(!isset($check2->kode_proses) || empty($check2->kode_proses)) {
+                    $save = insert_data($tabelprod,$data);
+                }else {
+                    //           debug($prsnaloc);die;
+                    $save               = update_data($tabelprod,array(
+                        'B_01' => ($prsnaloc * $databudget->TB_01) + $prdTB_01,
+                        'B_02' => ($prsnaloc * $databudget->TB_02) + $prdTB_02,
+                        'B_03' => ($prsnaloc * $databudget->TB_03) + $prdTB_03,
+                        'B_04' => ($prsnaloc * $databudget->TB_04) + $prdTB_04,
+                        'B_05' => ($prsnaloc * $databudget->TB_05) + $prdTB_05,
+                        'B_06' => ($prsnaloc * $databudget->TB_06) + $prdTB_06,
+                        'B_07' => ($prsnaloc * $databudget->TB_07) + $prdTB_07,
+                        'B_08' => ($prsnaloc * $databudget->TB_08) + $prdTB_08,
+                        'B_09' => ($prsnaloc * $databudget->TB_09) + $prdTB_09,
+                        'B_10' => ($prsnaloc * $databudget->TB_10) + $prdTB_10,
+                        'B_11' => ($prsnaloc * $databudget->TB_11) + $prdTB_11,
+                        'B_12' => ($prsnaloc * $databudget->TB_12) + $prdTB_12,
+                        'total_budget' => ($prsnaloc * $databudget->Ttotal_budget) + $prdTtotal_budget,
+                        'imported_id'           => $login_id,
+                        'last_update'           => $last_update,
+                    ),
+                        array(
+                            'gl_account'        => $dt->acctmfg1,
+                            'kode_proses'       => $kode_proses,
+                            'bisunit'           => $bisunit,
+                            'sub_account'       => $dt1
+                            
+                        ));
+                    
+                }                
+            }            
+        }
+        if($save){
+            $save               = update_data($this->tbl_m_prosesalokasi,array(
+                'user_processed'           => $login_id,
+                'last_process'           => $last_update,
+            ),
+                array(
+                    'kode_proses'       => $kode_proses,
+                    'tahun'             => $tahun_budget,
+                    
+                ));
+            $this->returnJson(array('message'=>lang('msg_data_has_been_alocated'),'status'=>'ok'));
+        }
+        //    }
+    }
+    
+    function alocation_budget_cimload(){
+        ini_set('memory_limit', '-1');
+        ini_set('max_execution_time', 0);
+        
+        $last_update = date('Y-m-d H:i:s');
+        $login_id = $this->session->userdata('id');
+        $login_user = get_data($this->tbl_user,array('where_array'=>array('id'=>$login_id)))->row();
+        
+        $tahun_budget = post('tahun');
+        $dtalokasi = post('sub_account');
+        $cost_center = post('cost_center');
+        $kode_proses = post('kode_proses');
+        
+        $kosong = "";
+        $tabel = $this->tbl_lstbudget. "_" .$tahun_budget;
+        $tabelprod = $this->tbl_budget_cimload. "_" .$tahun_budget;
+        
+        // PERBAIKAN: Hapus SEMUA data sekaligus berdasarkan kode_proses dan cost_center
+        $delete = delete_data($tabelprod, array(
+            'kode_proses' => $kode_proses
+        ));
+        
+        // PERBAIKAN: Restruktur loop - cost_center di luar
+        foreach($cost_center as $cc){
+            
+            // 1. COPY data yang sudah ada sub_account nya (tidak kosong) langsung tanpa alokasi
+            $select_existing = 'cost_center,gl_account,sub_account,B_01,B_02,B_03,B_04,B_05,B_06,
+                            B_07,B_08,B_09,B_10,B_11,B_12,total_budget';
+            $arr_existing = array(
+                'select' => $select_existing,
+                'where_array' => array(
+                    'cost_center' => $cc,
+                    'parent_id' => 0,
+                    'sub_account !=' => $kosong,
+                    'total_budget >' => 0
+                )
+            );
+            
+            $existing_data = get_data($tabel, $arr_existing)->result();
+            
+            foreach($existing_data as $existing){
+                $data_existing = array(
+                    'cost_center' => $existing->cost_center,
+                    'gl_account' => $existing->gl_account,
+                    'sub_account' => $existing->sub_account,
+                    'kode_proses' => $kode_proses,
+                    'prsn_alokasi' => 1, // 100% karena langsung copy
+                    'bisunit' => '',
+                    'B_01' => $existing->B_01,
+                    'B_02' => $existing->B_02,
+                    'B_03' => $existing->B_03,
+                    'B_04' => $existing->B_04,
+                    'B_05' => $existing->B_05,
+                    'B_06' => $existing->B_06,
+                    'B_07' => $existing->B_07,
+                    'B_08' => $existing->B_08,
+                    'B_09' => $existing->B_09,
+                    'B_10' => $existing->B_10,
+                    'B_11' => $existing->B_11,
+                    'B_12' => $existing->B_12,
+                    'total_budget' => $existing->total_budget,
+                    'imported_id' => $login_id,
+                    'imported_name' => $login_user->nama,
+                    'last_update' => $last_update,
+                );
+                
+                $save = insert_data($tabelprod,$data_existing);
+            }
+            
+            // 2. ALOKASI untuk data yang sub_account nya kosong
+            foreach($dtalokasi as $dt1){
+                $account_trx = get_data($this->tbl_account,array('where_array'=>array('status'=>1)))->result();
+                foreach($account_trx as $dt){
+                    
+                    // Get budget untuk cost_center ini yang sub_account nya kosong
+                    $select_acc = 'cost_center,gl_account,sum(B_01) as TB_01,
+                                    sum(B_02) as TB_02, sum(B_03) as TB_03, sum(B_04) as TB_04,
+                                    sum(B_05) as TB_05, sum(B_06) as TB_06, sum(B_07) as TB_07,
+                                    sum(B_08) as TB_08, sum(B_09) as TB_09, sum(B_10) as TB_10,
+                                    sum(B_11) as TB_11, sum(B_12) as TB_12, sum(total_budget) as Ttotal_budget';
+                    $arr_acc = array(
+                        'select' => $select_acc,
+                        'where_array' => array(
+                            'cost_center' => $cc,
+                            'parent_id' => 0,
+                            'sub_account' => $kosong, // HANYA yang kosong
+                            'gl_account' => $dt->acctmfg1,
+                            'total_budget >' => 0,
+                        ),
+                    );
+                    
+                    $databudget = get_data($tabel,$arr_acc)->row();
+                    
+                    // Skip jika tidak ada source budget
+                    if(!isset($databudget->gl_account) || $databudget->Ttotal_budget == 0) {
+                        continue;
+                    }
+                    
+                    // Get allocation percentage
+                    $val_awal = 0;
+                    $prsnaloc = 0;
+                    $bisunit = '';
+                    
+                    if ($kode_proses == 'A01' || $kode_proses == 'A02' || $kode_proses == 'A05') {
+                        $alokasiawal = get_data($this->tbl_subaccount,array('where_array'=>array('subaccount_code'=>$dt1,'parent_id'=>0)))->row();
+                        if(isset($alokasiawal->subaccount_code)){
+                            $val_awal = $alokasiawal->prsn_aloc;
+                            $bisunit = $alokasiawal->bisunit;
+                        }
+                    } else {
+                        $alokasiawal = get_data($this->tbl_subaccount,array('where_array'=>array('subaccount_code'=>$dt1,'department'=>$kode_proses)))->row();
+                        if(isset($alokasiawal->subaccount_code)){
+                            $val_awal = $alokasiawal->prsn_aloc;
+                            $bisunit = $alokasiawal->bisunit;
+                        }
+                    }
+                    
+                    $prsnaloc = ($val_awal / 100);
+                    
+                    // Skip jika tidak ada persentase alokasi
+                    if($prsnaloc == 0) {
+                        continue;
+                    }
+                    
+                    // PURE allocation
+                    $data = array(
+                        'cost_center' => $cc,
+                        'gl_account' => $dt->acctmfg1,
+                        'sub_account' => $dt1,
+                        'kode_proses' => $kode_proses,
+                        'prsn_alokasi' => $prsnaloc,
+                        'bisunit' => $bisunit,
+                        'B_01' => round($prsnaloc * $databudget->TB_01, 2),
+                        'B_02' => round($prsnaloc * $databudget->TB_02, 2),
+                        'B_03' => round($prsnaloc * $databudget->TB_03, 2),
+                        'B_04' => round($prsnaloc * $databudget->TB_04, 2),
+                        'B_05' => round($prsnaloc * $databudget->TB_05, 2),
+                        'B_06' => round($prsnaloc * $databudget->TB_06, 2),
+                        'B_07' => round($prsnaloc * $databudget->TB_07, 2),
+                        'B_08' => round($prsnaloc * $databudget->TB_08, 2),
+                        'B_09' => round($prsnaloc * $databudget->TB_09, 2),
+                        'B_10' => round($prsnaloc * $databudget->TB_10, 2),
+                        'B_11' => round($prsnaloc * $databudget->TB_11, 2),
+                        'B_12' => round($prsnaloc * $databudget->TB_12, 2),
+                        'total_budget' => round($prsnaloc * $databudget->Ttotal_budget, 2),
+                        'imported_id' => $login_id,
+                        'imported_name' => $login_user->nama,
+                        'last_update' => $last_update,
+                    );
+                    
+                    $save = insert_data($tabelprod,$data);
+                }
+            }
+        }
+        
+        if($save){
+            $save = update_data($this->tbl_m_prosesalokasi,array(
+                'user_processed' => $login_id,
+                'last_process' => $last_update,
+            ), array(
+                'kode_proses' => $kode_proses,
+                'tahun' => $tahun_budget,
+            ));
+            $this->returnJson(array('message'=>lang('msg_data_has_been_alocated'),'status'=>'ok'));
+        }
+    }
+}
