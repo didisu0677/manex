@@ -56,6 +56,7 @@
 			}
 			$sub_stotal_budget += $m1->total_budget;
 			$stotal_budget += $m1->total_budget;
+			$sumstotal_budget += $m1->total_budget;
             echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_budget" data-name="total_budget" data-id="'.$m1->total_budget.'" data-value="">'.number_format($m1->total_budget).'</td>';
 
 			?>
