@@ -51,8 +51,8 @@
 
 				$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
 				$$sumtotalfield0 += $m1->$field0;
-				$stotal_budget += $stotal_est;
-				$sumstotal_budget += $stotal_est;
+				$stotal_budget += $m1->total_budget;
+				$sumstotal_budget += $stotal_budget;
 
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$x1.'</td>';
 			}
