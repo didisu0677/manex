@@ -57,7 +57,7 @@
             $stotal_budget += $stotal_est;
 			$sumstotal_budget += $stotal_est;
 
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$stotal_budget.'"><b>'.number_format($stotal_est).'xxx</b></td>';
+			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$stotal_budget.'"><b>'.number_format($stotal_est).'/b></td>';
 
 			?>
 
@@ -79,3 +79,24 @@
 	</tr
 	?>
 <?php } ?>
+<tr>
+	<td class="sub-1" colspan="3"><b>GRAND TOTAL</b></td>
+	<?php
+		$bgedit ="";
+		$contentedit ="false" ;
+		for ($i = 1; $i <= 12; $i++) {
+			if($i <= setting('actual_budget')) {
+				$bgedit = '#F7F7EB';
+				$contentedit = "false";
+			}else{
+				$bgedit = '';
+				$contentedit = "false";
+			}
+
+			$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
+			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$sumtotalfield0.'"><b>'.number_format($$sumtotalfield0).'</b></td>';
+		}
+		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$sumstotal_budget.'"><b>'.number_format($sumstotal_budget).'</b></td>';
+
+		?>
+</tr
