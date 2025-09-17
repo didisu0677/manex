@@ -20,7 +20,7 @@
 		$$totalfield0 = 0;
 	}
 	$stotal_budget = 0;
-
+	$stotal_est = 0;
 	foreach($produk[$m0->product_line] as $m2 => $m1) { 
 		// debug($m1->product_name);die;
 		// debug(isset($m1['product_name']) ? $m1['product_name'] : '');die;
