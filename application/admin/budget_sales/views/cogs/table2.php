@@ -49,10 +49,8 @@
 				$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
 				$$sumtotalfield0 += $m1->$field0;
 
-
-				$totalfield0 = 'TotalB_' . sprintf('%02d', $i);
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$totalfield0.'"><b>'.number_format($$totalfield0).'</b></td>';
-			}
+				$x1 = (number_format($m1->$field0));
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$x1.'</td>';			}
 			$stotal_est = $m1->EST_01+$m1->EST_02+$m1->EST_03+$m1->EST_04+$m1->EST_05+$m1->EST_06+$m1->EST_07+$m1->EST_08+$m1->EST_09+$m1->EST_10+$m1->EST_11+$m1->EST_12;
             $stotal_budget += $stotal_est;
 			$sumstotal_budget += $stotal_est;
