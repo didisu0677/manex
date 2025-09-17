@@ -70,10 +70,10 @@
 			$bgedit ="";
 			$contentedit ="false" ;
 			for ($i = 1; $i <= 12; $i++) {
-				$sumtotalfield0 = 'sumTotalB_' . sprintf('%02d', $i);
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$totalfield0.'">'.number_format($$sumtotalfield0).'</div></td>';
+				$totalfield0 = 'TotalB_' . sprintf('%02d', $i);
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget " data-name="" data-id="'.$m1->id.'" data-value="'.$$totalfield0.'">'.number_format($$totalfield0).'</div></td>';
 			}
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$stotal_budge.'">'.number_format($sumstotal_budget).'</div></td>';
+			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$stotal_budget.'">'.number_format($stotal_budget).'</div></td>';
 
 			?>
 	</tr>
