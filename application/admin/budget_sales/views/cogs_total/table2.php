@@ -54,9 +54,11 @@
 
 				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget '.$field0.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-value="'.$x1.'">'.$x1.'</div></td>';
 			}
-			$stotal_budget += $m1->total_budget;
-			$sumstotal_budget += $m1->total_budget;
-            echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_budget" data-name="total_budget" data-id="'.$m1->total_budget.'" data-value="">'.number_format($m1->total_budget).'</div></td>';
+			
+			$stotal_est = $m1->B_01+$m1->B_02+$m1->B_03+$m1->B_04+$m1->B_05+$m1->B_06+$m1->B_07+$m1->B_08+$m1->B_09+$m1->B_10+$m1->B_11+$m1->B_12;
+			$stotal_budget += $stotal_est;
+			$sumstotal_budget += $stotal_est;
+            echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate total_budget" data-name="total_budget" data-id="'.$m1->id.'" data-value="'.$stotal_est.'"><b>'.number_format($stotal_est).'</b></div></td>';
 
 			?>
 
