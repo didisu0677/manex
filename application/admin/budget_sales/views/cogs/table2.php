@@ -57,7 +57,7 @@
             $stotal_budget += $stotal_est;
 			$sumstotal_budget += $stotal_est;
 
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$stotal_budget.'"><b>'.number_format($stotal_est).'</b></div></td>';
+			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right calculate" data-name="" data-id="'.$m1->id.'" data-value="'.$stotal_budget.'"><b>'.number_format($stotal_est).'</b>xxx</div></td>';
 
 			?>
 
