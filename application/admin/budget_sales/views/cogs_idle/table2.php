@@ -75,7 +75,7 @@
 			?>
 	</tr>
 	<?php
-<?php } ?>
+} ?>
 
 <tr>
 	<td class="sub-1" colspan="3"><b>GRAND TOTAL</b></td>
