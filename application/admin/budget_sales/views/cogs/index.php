@@ -36,7 +36,7 @@
 			</select>
 
 			<?php
-			if(user('id_group')==1)
+			if(in_array(user('id_group'),[DEVELOPER,ADMIN_UTAMA])) {
 			echo '<button class="btn btn-danger btn-proses" href="javascript:;" ><i class="fa-process"></i> Recalculate Report</button>';
 
 			$arr = [];
