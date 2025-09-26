@@ -96,6 +96,7 @@ function render($data=array(),$tipe='',$force_view=false) {
             }
             if(!isset($data['title']) || !$data['title']) {
                 $data['title']  = isset($data['menu_access']['title']) && $data['menu_access']['title'] ? $data['menu_access']['title'] : 'Unknown';
+                $data['title'] .= user('transaction_mode') != 'budget_mode' ? '<span style="color: blue;">' . ' ('. lang(user('transaction_mode')) . ' Mode)'. '</span>' : "";
             }
             $data['uri_string']	= $CI->uri->uri_string();
             $access             = setting('interface') == 'public' ? true : $menu['access_view'];
@@ -127,7 +128,113 @@ function render($data=array(),$tipe='',$force_view=false) {
     }
 }
 
-function menu($type="all",$segment_f=""){
+function menu($type="all",$segment_f="") {
+    $menu = array();
+    $cur_menu = array();
+    if(user('id_group')) {
+        $segment = $cur_segment = uri_segment(2) ? uri_segment(2) : uri_segment(1);
+        if($segment_f) {
+            $cur_segment = $segment_f;
+        }
+        
+        // Get base menu data
+        $cur_menu = get_data('tbl_menu','target',$cur_segment)->row();
+
+        if($cur_segment != uri_segment(1) && !$segment_f) {
+            $parent_menu = get_data('tbl_menu','target',uri_segment(1))->row();
+            if(!isset($parent_menu->id)) {
+                $cur_menu = new stdClass();
+            }
+        }
+
+        if($type == 'all' || $type == '') {
+            $menu[0] = get_menu('tbl_user_akses', 'tbl_menu', user('id_group'));
+            
+            // Process menu items and modify targets if needed
+            foreach($menu[0] as $m) {
+                // Check if menu needs actual mode target
+                if(isset($m->is_mode) && $m->is_mode == 1 && user('transaction_mode') == 'actual_mode') {
+                    $m->target = $m->target . '_actual';
+                }
+                
+                $menu[$m->id] = get_menu('tbl_user_akses', 'tbl_menu', user('id_group'), $m->id);
+                foreach($menu[$m->id] as $s) {
+                    // Check submenu for actual mode target
+                    if(isset($s->is_mode) && $s->is_mode == 1 && user('transaction_mode') == 'actual_mode') {
+                        $s->target = $s->target . '_actual';
+                    }
+                    
+                    $menu[$s->id] = get_menu('tbl_user_akses', 'tbl_menu', user('id_group'), $s->id);
+                    foreach($menu[$s->id] as $e) {
+                        // Check sub-submenu for actual mode target
+                        if(isset($e->is_mode) && $e->is_mode == 1 && user('transaction_mode') == 'actual_mode') {
+                            $e->target = $e->target . '_actual';
+                        }
+                        
+                        $menu[$e->id] = get_menu('tbl_user_akses', 'tbl_menu', user('id_group'), $e->id);
+                    }
+                }
+            }
+        }
+    }
+
+    if(isset($cur_menu->id)) {
+        // Modify current menu target if needed
+        if(isset($cur_menu->is_mode) && $cur_menu->is_mode == 1 && user('transaction_mode') == 'actual_mode') {
+            $cur_menu->target = $cur_menu->target . '_actual';
+        }
+
+        $access = get_data('tbl_user_akses',array(
+            'where_array' => array(
+                'id_group' => user('id_group'),
+                'id_menu' => $cur_menu->id
+            )
+        ))->row();
+        if($segment_f && isset($access->id)) $access->act_view = 1;
+    } else {
+        $is_cur = false;
+        if(isset($segment) && $segment == uri_segment(2)) {
+            $segment = uri_segment(1);
+            $cur_menu = get_data('tbl_menu','target',$segment)->row();
+            if(isset($cur_menu->id)) {
+                $access = get_data('tbl_user_akses',array(
+                    'where_array' => array(
+                        'id_group' => user('id_group'),
+                        'id_menu' => $cur_menu->id
+                    )
+                ))->row();
+                $is_cur = true;
+            }
+        }
+        if(!$is_cur) {
+            $access = new stdClass();
+            $access->id = 999;
+            $access->act_view = 1;
+            $access->act_input = 1;
+            $access->act_edit = 1;
+            $access->act_delete = 1;
+            $access->act_additional = 1;
+        }
+    }
+
+    // Rest of the existing code...
+    return array(
+        'menu' => $menu,
+        'active_l1' => isset($cur_menu->id) ? $cur_menu->level1 : 0,
+        'active_l2' => isset($cur_menu->id) ? $cur_menu->level2 : 0,
+        'active_l3' => isset($cur_menu->id) ? $cur_menu->level3 : 0, 
+        'active_l4' => isset($cur_menu->id) ? $cur_menu->level4 : 0,
+        'title' => isset($cur_menu->id) ? lang($cur_menu->target,$cur_menu->nama) : '',
+        'target' => isset($cur_menu->id) ? $cur_menu->target : '',
+        'access_view' => isset($access->id) ? $access->act_view : 0,
+        'access_input' => isset($access->id) ? $access->act_input : 0,
+        'access_edit' => isset($access->id) ? $access->act_edit : 0,
+        'access_delete' => isset($access->id) ? $access->act_delete : 0,
+        'access_additional' => isset($access->id) ? $access->act_additional : 0,
+    );
+}
+
+function _bak_menu($type="all",$segment_f=""){
     $menu                       = array();
     $cur_menu                   = array();
     if(user('id_group')) {

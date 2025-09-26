@@ -113,7 +113,137 @@ function breadcrumb($last='',$multiple_child=false) {
     return $breadcrumb;
 }
 
-function access_button($button='',$link_add='') {
+function access_button($button='', $link_add='') {
+    $delete     = false;
+    $active     = false;
+    $inactive   = false;
+    $export     = false;
+    $import     = false;
+    $input      = false;
+    $setting    = false;
+    
+    // Get current URL
+    $current_url = str_replace('index','',current_url());
+    $url_segment = basename($current_url);
+    
+    // Find matching menu target by removing suffixes
+    $menu_target = '';
+    $CI = get_instance();
+    
+    // Get all menu targets from database
+    $menus = get_data('tbl_menu', array('select' => 'target'))->result();
+    $menu_targets = array();
+    foreach($menus as $m) {
+        if($m->target) {
+            $menu_targets[] = $m->target;
+        }
+    }
+    
+    // Sort by length descending to match longer targets first
+    usort($menu_targets, function($a, $b) {
+        return strlen($b) - strlen($a);
+    });
+    
+    // Find matching target
+    foreach($menu_targets as $target) {
+        if(strpos($url_segment, $target) === 0) {
+            $menu_target = $target;
+            break;
+        }
+    }
+    
+    // If no match found, use the URL segment as is
+    if(!$menu_target) {
+        $menu_target = $url_segment;
+    }
+    
+    // Get menu access using the found target
+    $menu = menu('access', $menu_target);
+    
+    // Set link using the menu target
+    $link = dirname($current_url) . '/' . $menu_target;
+    
+    if(substr($link, -1) != '/') $link .= '/';
+    if($menu['access_input']) $input = true;
+    
+    if($button) {
+        $exp = explode(',', $button);
+        foreach($exp as $e) {
+            if($e == 'delete' && $menu['access_delete']) $delete = true;
+            else if($e == 'active' && $menu['access_edit']) $active = true;
+            else if($e == 'inactive' && $menu['access_edit']) $inactive = true;
+            else if($e == 'export') $export = true;
+            else if($e == 'import' && $menu['access_input']) $import = true;
+            else if($e == 'setting') $setting = true;
+        }
+    }
+    
+    $a_button = '';
+    if(is_array($link_add) && count($link_add) > 0) {
+        $additional  = '';
+        foreach($link_add as $l) {
+            if(isset($l[0]) && isset($l[1]) && $l[0] && $l[1]) {
+                $add_icon   = isset($l[2]) ? $l[2] : 'fa-list';
+                $add_access = isset($l[3]) && in_array($l[3], ['view','input','edit','delete']) ? 'access_'.$l[3] : 'access_view';
+                if($menu[$add_access]) {
+                    if(strpos($l[0], '/')) {
+                        $additional .= '<a class="dropdown-item" href="'.$l[0].'"><i class="'.$add_icon.'"></i>'.$l[1].'</a>' . PHP_EOL;
+                    } else {
+                        $additional .= '<a class="dropdown-item '.$l[0].'" href="javascript:;"><i class="'.$add_icon.'"></i>'.$l[1].'</a>' . PHP_EOL;
+                    }
+                }
+            }
+        }
+    }
+    
+    if($delete || $active || $inactive || $export || $import || (isset($additional) && $additional)) {
+        $add_class = $input ? ' caret-only' : '';
+        $a_button .= '<div class="btn-group" role="group" aria-label="Access Button">' . PHP_EOL;
+        if($input) {
+            if($link_add && !is_array($link_add)) {
+                $a_button .= '<a href="'.$link_add.'" class="btn btn-primary btn-sm"><i class="fa-plus"></i>'.lang('tambah').'</a>' . PHP_EOL;
+            } else {
+                $a_button .= '<button type="button" class="btn btn-primary btn-sm btn-input" data-id="0"><i class="fa-plus"></i>'.lang('tambah').'</button>' . PHP_EOL;
+            }
+        }
+        $a_button .= '<div class="btn-group" role="group">' . PHP_EOL;
+        $a_button .= '<button id="btnAccess" type="button" class="btn btn-sm btn-primary dropdown-toggle'.$add_class.'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+        $a_button .= $input ? '' : lang('tombol_aksi');
+        $a_button .= '</button>' . PHP_EOL;
+        $a_button .= '<div class="dropdown-menu" aria-labelledby="btnAccess">' . PHP_EOL;
+        
+        if(isset($additional) && $additional) {
+            $a_button .= $additional;
+            $a_button .= '<div class="dropdown-divider"></div>' . PHP_EOL;
+        }
+        if($setting) $a_button .= '<a class="dropdown-item btn-act-setting" href="javascript:;"><i class="fa-cog"></i>'.lang('pengaturan').'</a>' . PHP_EOL;
+        if($export) $a_button .= '<a class="dropdown-item btn-act-export" href="'.$link.'export" target="_blank"><i class="fa-download"></i>'.lang('ekspor').'</a>' . PHP_EOL;
+        if($import) {
+            $a_button .= '<a class="dropdown-item btn-act-import" href="javascript:;"><i class="fa-upload"></i>'.lang('impor').'</a>' . PHP_EOL;
+            $a_button .= '<a class="dropdown-item btn-act-template" href="'.$link.'template" target="_blank"><i class="fa-file-alt"></i>'.lang('templat_impor').'</a>' . PHP_EOL;
+        }
+        if(($export || $import || $setting) && ($delete || $active || $inactive)) $a_button .= '<div class="dropdown-divider"></div>' . PHP_EOL;
+        if($active) $a_button .= '<a class="dropdown-item btn-act-active" data-value="1" href="javascript:;"><i class="fa-toggle-on"></i>'.lang('aktif').'</a>' . PHP_EOL;
+        if($inactive) $a_button .= '<a class="dropdown-item btn-act-active" data-value="0" href="javascript:;"><i class="fa-toggle-off"></i>'.lang('tidak_aktif').'</a>' . PHP_EOL;
+        if(($active || $inactive) && $delete) $a_button .= '<div class="dropdown-divider"></div>' . PHP_EOL;
+        if($delete) $a_button .= '<a class="dropdown-item btn-act-delete" href="javascript:;"><i class="fa-trash"></i>'.lang('hapus').'</a>' . PHP_EOL;
+        
+        $a_button .= '</div>' . PHP_EOL;
+        $a_button .= '</div>' . PHP_EOL;
+        $a_button .= '</div>' . PHP_EOL;
+    } else {
+        if($input) {
+            if($link_add && !is_array($link_add)) {
+                $a_button .= '<a href="'.$link_add.'" class="btn btn-primary btn-sm"><i class="fa-plus"></i>'.lang('tambah').'</a>' . PHP_EOL;
+            } else {
+                $a_button = '<button type="button" class="btn btn-primary btn-sm btn-input" data-id="0"><i class="fa-plus"></i>'.lang('tambah').'</button>' . PHP_EOL;
+            }
+        }
+    }
+    return $a_button;
+}
+
+function _x_access_button($button='',$link_add='') {
 	$delete 	= false;
 	$active		= false;
 	$inactive 	= false;
