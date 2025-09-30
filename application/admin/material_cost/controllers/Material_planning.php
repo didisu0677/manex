@@ -156,9 +156,10 @@ class Material_planning extends BE_Controller {
         $table_mat = 'tbl_material_planning_' . $tahun;
 
         $arr = [
-            'select' => 'a.*',
+            'select' => 'a.*, d.m_cov, d.moq, d.order_multiple',
             'join' => ['tbl_material_formula b on a.material_code = b.component_item and b.tahun = "' . $tahun . '"',
                         'tbl_material_supplier c on a.material_code = c.material_code type LEFT',
+                        'tbl_beginning_stock_material d on a.material_code = d.material_code and d.tahun = "' . $tahun . '" type LEFT',
             ],
             'where' => [
                 'b.tahun' => $tahun,

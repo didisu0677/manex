@@ -277,35 +277,62 @@ function calculate() {
 					columnData[key] += budget * nilai;
 					columnData1[key1] += budget * nilai;
 					
-					let value_sales = $('#' + key_sales + idx).text().replace(/\,/g, '');
-					let value_end_stock = $('#' + key_end_stock + idx).text().replace(/\,/g, '');
-					let value_begining_stock = $('#' + key_begining_stock + idx).text().replace(/\,/g, '');
-					let value_production = columnData1[key1];
-
-					// Calculate Unit Available for Use = Beginning Stock + Arrival Qty
-					let unitAvailableForUse = parseInt(value_begining_stock) + parseInt(budget);
+					let value_sales = parseInt($('#' + key_sales + idx).text().replace(/\,/g, '')) || 0;
+					let value_begining_stock = parseInt($('#' + key_begining_stock + idx).text().replace(/\,/g, '')) || 0;
 					
-					// Update unit available display
-					$('#unit_available_' + String(i).padStart(2, '0') + idx).text(numberFormat(unitAvailableForUse));
-
-					// Calculate End Stock = Unit Available for Use - Unit Used in Production
-					let new_end_stock = unitAvailableForUse - parseInt(value_sales);
-					let txt_new_end_stock = new_end_stock < 0 ? '-' + (numberFormat(Math.abs(new_end_stock), 0)) : numberFormat(new_end_stock, 0);
-					$('#' + key_end_stock + idx).text(txt_new_end_stock);
-
-					// Calculate Month Coverage
+					// Ambil nilai m_cov dan moq dari data attribute
+					let max_coverage = parseFloat($(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('m-cov')) || 0;
+					let moq = parseInt($(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('moq')) || 0;
+					
+					// Calculate average sales untuk 4 bulan ke depan
 					let value_total_sales = 0;
 					let divide_number = 0;
 					for (let j = 0; j < 4; j++) {
 						if (j + i > 12) {
 							continue;
 						}
-						let value_sales_future = parseInt($(`#sales_${String(j + i).padStart(2, '0')}${idx}`).text().replace(/\,/g, ''));
-						value_total_sales += !isNaN(value_sales_future) ? value_sales_future : 0;
+						let value_sales_future = parseInt($(`#sales_${String(j + i).padStart(2, '0')}${idx}`).text().replace(/\,/g, '')) || 0;
+						value_total_sales += value_sales_future;
 						divide_number++;
 					}
 
-					let coverage = new_end_stock / (value_total_sales / divide_number);
+					let average_sales = divide_number > 0 ? value_total_sales / divide_number : 0;
+					
+					// Logika seperti di controller: cari arrival_qty sampai coverage >= max_coverage
+					let arrival_qty = budget; // gunakan arrival qty yang diinput user
+					let unitAvailableForUse = value_begining_stock + arrival_qty;
+					let new_end_stock = unitAvailableForUse - value_sales;
+					let coverage = average_sales > 0 ? new_end_stock / average_sales : 0;
+					
+					// Jika coverage kurang dari target, dan ada MOQ, coba sesuaikan
+					if (coverage < max_coverage && max_coverage > 0 && moq > 0 && average_sales > 0) {
+						// Hitung arrival_qty minimum untuk mencapai target coverage
+						let required_end_stock = max_coverage * average_sales;
+						let required_arrival = required_end_stock + value_sales - value_begining_stock;
+						
+						// Bulatkan ke MOQ terdekat (ke atas)
+						if (required_arrival > arrival_qty) {
+							arrival_qty = Math.ceil(required_arrival / moq) * moq;
+							
+							// Recalculate dengan arrival_qty yang baru
+							unitAvailableForUse = value_begining_stock + arrival_qty;
+							new_end_stock = unitAvailableForUse - value_sales;
+							coverage = average_sales > 0 ? new_end_stock / average_sales : 0;
+							
+							// Update arrival qty di display (jika tidak sedang di-edit)
+							let arrivalElement = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`);
+							if (!arrivalElement.is(':focus')) {
+								arrivalElement.text(numberFormat(arrival_qty));
+							}
+						}
+					}
+					
+					// Update displays
+					$('#unit_available_' + String(i).padStart(2, '0') + idx).text(numberFormat(unitAvailableForUse));
+					
+					let txt_new_end_stock = new_end_stock < 0 ? '-' + (numberFormat(Math.abs(new_end_stock), 0)) : numberFormat(new_end_stock, 0);
+					$('#' + key_end_stock + idx).text(txt_new_end_stock);
+					
 					if (!Number.isFinite(coverage) || isNaN(coverage)) {
 						$('#' + key_m_cov + idx).text(numberFormat(0, 2));
 					} else {

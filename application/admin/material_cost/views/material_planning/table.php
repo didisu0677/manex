@@ -64,7 +64,7 @@
 				$field0 = 'P_' . sprintf('%02d', $i);
 				$fieldx = 'xproduksi_' . sprintf('%02d', $i);
 
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right '.$fieldx.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-nilai="1" id="'.$fieldx.$m1->id.'">'.number_format($prod[$m1->material_code][$field0]).'</div></td>';
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right '.$fieldx.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-nilai="1" data-m-cov="'.$m1->m_cov.'" data-moq="'.$m1->moq.'" id="'.$fieldx.$m1->id.'">'.number_format($prod[$m1->material_code][$field0]).'</div></td>';
 			}
 			?>
 		</tr>
