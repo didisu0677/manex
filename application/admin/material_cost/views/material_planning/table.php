@@ -1,13 +1,15 @@
 <?php 
 //debug($dtx_core2018);die;
 	$hno = 0;
-	// for ($i = setting('actual_budget'); $i <= 12; $i++) {
-
+	
 	for ($i = 1; $i <= 12; $i++) {
 		$totalfield0 = 'TotalB_' . sprintf('%02d', $i);
 		$$totalfield0 = 0;
 	}
 	$stotal_budget = 0;
+	
+
+	
 	foreach($produk as $m2 => $m1) { 
 						
 		$bgedit ="";
@@ -64,7 +66,24 @@
 				$field0 = 'P_' . sprintf('%02d', $i);
 				$fieldx = 'xproduksi_' . sprintf('%02d', $i);
 
-				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right '.$fieldx.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-nilai="1" data-m-cov="'.$m1->m_cov.'" data-moq="'.$m1->moq.'" id="'.$fieldx.$m1->id.'">'.number_format($prod[$m1->material_code][$field0]).'</div></td>';
+				// Logic seperti production planning: ERD flag menentukan tampilan
+				$display_value = $arival[$m1->material_code][$field0] ?? 0; // Default suggestion
+				$is_edited_class = '';
+				
+				// Cek ERD flag: jika 1 maka tampilkan ERQ (hasil edit)
+				if (isset($erd[$m1->material_code]) && !empty($erd[$m1->material_code]) && 
+					isset($erd[$m1->material_code][$field0]) && 
+					$erd[$m1->material_code][$field0] == 1) {
+					
+					// Ada flag edit, tampilkan ERQ data
+					if (isset($erq[$m1->material_code]) && !empty($erq[$m1->material_code]) && 
+						isset($erq[$m1->material_code][$field0])) {
+						$display_value = $erq[$m1->material_code][$field0];
+						$is_edited_class = ' edited';
+					}
+				}
+				
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right '.$fieldx.$is_edited_class.'" data-name="'.$field0.'" data-id="'.$m1->id.'" data-nilai="1" data-m-cov="'.$m1->m_cov.'" data-moq="'.$m1->moq.'" data-material-code="'.$m1->material_code.'" data-month="'.$i.'" data-value="'.($arival[$m1->material_code][$field0] ?? 0).'" id="'.$fieldx.$m1->id.'">'.number_format($display_value).'</div></td>';
 			}
 			?>
 		</tr>

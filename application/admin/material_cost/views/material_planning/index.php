@@ -1,7 +1,22 @@
 <div class="content-header">
 	<div class="main-container position-relative">
 		<div class="header-info">
-			<div class="content-title"><?php echo $title; ?></div>
+			<div cl			// Load ERQ (Edited Requirement Quantity) data jika ada
+			if(response.erq) {
+				$.each(response.erq, function(k, v) {
+					if(v) {
+						for (let i = 1; i <= 12; i++) {
+							let field0 = `xproduksi_${String(i).padStart(2, '0')}`;
+							let field1 = `P_${String(i).padStart(2, '0')}`;
+							if(v[field1] != undefined && v[field1] != '') {
+								$('#' + field0 + v.id).text(numberFormat(v[field1], 0));  
+								$('#' + field0 + v.id).attr('data-value', v[field1]); // Update data-value
+								$('#' + field0 + v.id).addClass('edited'); // Mark as edited
+							}
+						}
+					}
+				});
+			}tle"><?php echo $title; ?></div>
 			<?php echo breadcrumb(); ?>
 		</div>
 		<div class="float-right">
@@ -47,6 +62,8 @@
 		<div class="clearfix"></div>
 	</div>
 </div>
+
+
 
 <div class="content-body mt-6">
 	<div class="main-container mt-2">
@@ -109,6 +126,8 @@ function getData() {
 		success: function(response) {
 			$('.table-1 tbody').html(response.table);
 			
+			// Data ERQ sudah ditampilkan langsung dari server-side di table.php
+			
 			// Call calculate after data loaded
 			calculate();
 			
@@ -160,6 +179,9 @@ $(document).on('blur', '.edit-value', function() {
 $(document).on('keyup', '[class*="xproduksi_"]', function(e) {
 	var wh = e.which;
 	if ((48 <= wh && wh <= 57) || (96 <= wh && wh <= 105) || wh == 8) {
+		// Mark as user edited
+		$(this).addClass('user-edited');
+		
 		if ($(this).text() == '') {
 			$(this).text('');
 		} else {
@@ -201,46 +223,89 @@ $(document).on('keyup', '[class*="xproduksi_"]', function(e) {
 	}
 });
 
+// Mark element as user-edited when focus
+$(document).on('focus', '[class*="xproduksi_"]', function() {
+	$(this).addClass('user-edited');
+});
+
+// Allow auto-calculation after user finished editing (blur event)
+$(document).on('blur', '[class*="xproduksi_"]', function() {
+	let val = parseFloat($(this).text().replace(/,/g, '')) || 0;
+	let originalValue = parseFloat($(this).attr('data-value') || 0);
+	
+	$(this).text(numberFormat(val));
+	
+	// Mark as edited jika value berubah dari original (suggestion)
+	if (val !== originalValue) {
+		$(this).addClass('edited');
+	} else {
+		$(this).removeClass('edited');
+	}
+	
+	// Remove user-edited class after a delay to allow auto-calculation again
+	let element = $(this);
+	setTimeout(function() {
+		element.removeClass('user-edited');
+	}, 1000); // Wait 1 second after blur before allowing auto-calculation
+	
+	calculate();
+});
+
 $(document).on('click', '.btn-save', function() {
 	var i = 0;
 	$('.edited').each(function() {
 		i++;
 	});
 	if (i == 0) {
-		cAlert.open('tidak ada data yang di ubah');
+		cAlert.open('Tidak ada data yang diubah');
 	} else {
 		var msg = lang.anda_yakin_menyetujui;
-		if (i == 0) msg = lang.anda_yakin_menolak;
 		cConfirm.open(msg, 'save_perubahan');
 	}
 });
 
 function save_perubahan() {
-	var data_edit = {};
 	var i = 0;
-
+	
+	// Collect edited data
+	let edited_data = [];
+	
 	$('.edited').each(function() {
-		var content = $(this).children('div');
-		if (typeof data_edit[$(this).attr('data-id')] == 'undefined') {
-			data_edit[$(this).attr('data-id')] = {};
+		if($(this).hasClass('xproduksi_01') || $(this).hasClass('xproduksi_02') || $(this).hasClass('xproduksi_03') || 
+		   $(this).hasClass('xproduksi_04') || $(this).hasClass('xproduksi_05') || $(this).hasClass('xproduksi_06') || 
+		   $(this).hasClass('xproduksi_07') || $(this).hasClass('xproduksi_08') || $(this).hasClass('xproduksi_09') || 
+		   $(this).hasClass('xproduksi_10') || $(this).hasClass('xproduksi_11') || $(this).hasClass('xproduksi_12')) {
+			
+			edited_data.push({
+				material_code: $(this).data('material-code'),
+				month: $(this).data('month'),
+				value: $(this).text().replace(/,/g, '')
+			});
+			i++;
 		}
-		data_edit[$(this).attr('data-id')][$(this).attr('data-name')] = $(this).text().replace(/[^0-9\-]/g, '');
-		i++;
 	});
 
-	var jsonString = JSON.stringify(data_edit);
+	if (i == 0) {
+		cAlert.open('Tidak ada data yang diubah');
+		return;
+	}
+
 	$.ajax({
 		url: base_url + 'material_cost/material_planning/save_perubahan',
 		data: {
-			'json': jsonString,
-			verifikasi: i,
 			tahun: $('#filter_tahun').val(),
+			edited_data: JSON.stringify(edited_data),
 		},
 		type: 'post',
+		dataType: 'json',
 		success: function(response) {
-			cAlert.open(response, 'success', 'refreshData');
+			cAlert.open(response.message, response.status, 'refreshData');
 		}
-	})
+	});
+}
+
+function refreshData() {
+	getData();
 }
 
 function calculate() {
@@ -266,14 +331,15 @@ function calculate() {
 			let key_m_cov = `m_cov_${String(i).padStart(2, '0')}`;
 			
 			let budget = moneyToNumber($(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).text().replace(/\,/g, ''));
-			let value_xproduction = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).text().replace(/\,/g, '');
+			let value_xproduction = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).text().replace(/\,/g, '').trim();
 			let nilai = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('nilai');
 			let idx = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('id');
 			
 			if (!isNaN(idx) && idx) {
 				let total = budget * nilai;
 				
-				if (value_xproduction != '') {
+				// Biarkan user edit termasuk nilai 0, cek jika tidak undefined/null/empty string
+				if (value_xproduction !== '' && value_xproduction !== undefined && value_xproduction !== null) {
 					columnData[key] += budget * nilai;
 					columnData1[key1] += budget * nilai;
 					
@@ -298,32 +364,37 @@ function calculate() {
 
 					let average_sales = divide_number > 0 ? value_total_sales / divide_number : 0;
 					
-					// Logika seperti di controller: cari arrival_qty sampai coverage >= max_coverage
-					let arrival_qty = budget; // gunakan arrival qty yang diinput user
+					// Logic seperti production planning: jangan override yang sudah edited
+					let arrivalElement = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`);
+					let isUserManualInput = arrivalElement.is(':focus') || arrivalElement.hasClass('user-edited');
+					let isEdited = arrivalElement.hasClass('edited');
+					
+					let arrival_qty = parseFloat(arrivalElement.text().replace(/,/g, '')) || 0;
 					let unitAvailableForUse = value_begining_stock + arrival_qty;
 					let new_end_stock = unitAvailableForUse - value_sales;
 					let coverage = average_sales > 0 ? new_end_stock / average_sales : 0;
 					
-					// Jika coverage kurang dari target, dan ada MOQ, coba sesuaikan
-					if (coverage < max_coverage && max_coverage > 0 && moq > 0 && average_sales > 0) {
+					// Auto-calculate HANYA jika belum edited dan coverage kurang
+					if (!isEdited && coverage < max_coverage && max_coverage > 0 && moq > 0 && average_sales > 0 && !isUserManualInput) {
 						// Hitung arrival_qty minimum untuk mencapai target coverage
 						let required_end_stock = max_coverage * average_sales;
 						let required_arrival = required_end_stock + value_sales - value_begining_stock;
 						
-						// Bulatkan ke MOQ terdekat (ke atas)
-						if (required_arrival > arrival_qty) {
+						// Bulatkan ke MOQ terdekat (ke atas), tapi jika required_arrival <= 0, set ke 0
+						if (required_arrival > 0) {
 							arrival_qty = Math.ceil(required_arrival / moq) * moq;
-							
-							// Recalculate dengan arrival_qty yang baru
-							unitAvailableForUse = value_begining_stock + arrival_qty;
-							new_end_stock = unitAvailableForUse - value_sales;
-							coverage = average_sales > 0 ? new_end_stock / average_sales : 0;
-							
-							// Update arrival qty di display (jika tidak sedang di-edit)
-							let arrivalElement = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`);
-							if (!arrivalElement.is(':focus')) {
-								arrivalElement.text(numberFormat(arrival_qty));
-							}
+						} else {
+							arrival_qty = 0;
+						}
+						
+						// Recalculate dengan arrival_qty yang baru
+						unitAvailableForUse = value_begining_stock + arrival_qty;
+						new_end_stock = unitAvailableForUse - value_sales;
+						coverage = average_sales > 0 ? new_end_stock / average_sales : 0;
+						
+						// Update arrival qty di display (jika tidak sedang di-edit)
+						if (!arrivalElement.is(':focus')) {
+							arrivalElement.text(numberFormat(arrival_qty));
 						}
 					}
 					
@@ -354,9 +425,12 @@ function calculate() {
 // Helper function untuk mengkonversi formatted number ke number - sesuai production planning
 function moneyToNumber(value) {
 	if (typeof value === 'string') {
-		return parseInt(value.replace(/[^0-9\-]/g, '')) || 0;
+		let cleaned = value.replace(/[^0-9\-]/g, '');
+		if (cleaned === '') return 0;
+		return parseInt(cleaned) || 0;
 	}
-	return value || 0;
+	if (value === null || value === undefined) return 0;
+	return Number(value) || 0;
 }
 
 function parseNumber(str) {

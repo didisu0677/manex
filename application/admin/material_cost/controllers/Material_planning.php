@@ -202,8 +202,35 @@ class Material_planning extends BE_Controller {
             }
         }
 
+        // Load ERQ dan ERD (Edited Requirement Quantity + Edit Flag) seperti EPR dan EPD
+        foreach ($data['produk'] as $d) {
+            // Load ERQ data (hasil edit)
+            $data['erq'][$d->material_code] = get_data($table_mat . ' a', [
+                'select' => 'a.*',
+                'join' => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun = "' . $tahun . '" type LEFT',
+                'where' => [
+                    'b.tahun' => $tahun,
+                    'a.posting_code' => 'ERQ',
+                    'a.material_code' => $d->material_code,
+                ],
+            ])->row_array();
+
+            // Load ERD flag (edit flag)
+            $data['erd'][$d->material_code] = get_data($table_mat . ' a', [
+                'select' => 'a.*',
+                'join' => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun = "' . $tahun . '" type LEFT',
+                'where' => [
+                    'b.tahun' => $tahun,
+                    'a.posting_code' => 'ERD',
+                    'a.material_code' => $d->material_code,
+                ],
+            ])->row_array();
+        }
+
         $response = [
             'table' => $this->load->view('material_cost/material_planning/table', $data, true),
+            'erq' => $data['erq'] ?? [],
+            'erd' => $data['erd'] ?? [],
         ];
 
         render($response, 'json');
@@ -434,7 +461,7 @@ class Material_planning extends BE_Controller {
         // debug($c);die;
 
         if ($c) {
-            $list_posting_code = ['ERQ', 'ARQ', 'AVA'];
+            $list_posting_code = ['ARQ', 'AVA'];
             foreach ($list_posting_code as $pc) {
                 $cek_mat = get_data($table_prod, [
                     'where' => [
@@ -503,13 +530,13 @@ class Material_planning extends BE_Controller {
                     }
 
                     // cari data yang di edit 
-                    $cari_epr = get_data('tbl_material_planning_' . $tahun, [
-                        'select' => 'P_' . sprintf('%02d', $i) . ' as jml',
-                        'where' => [
-                            'material_code' => $material_code,
-                            'posting_code' => 'EPR'
-                        ]
-                    ])->row_array();
+                    // $cari_erq = get_data('tbl_material_planning_' . $tahun, [
+                    //     'select' => 'P_' . sprintf('%02d', $i) . ' as jml',
+                    //     'where' => [
+                    //         'material_code' => $material_code,
+                    //         'posting_code' => 'ERQ'
+                    //     ]
+                    // ])->row_array();
 
 
                     $value_xproduction = $c->moq;
@@ -549,21 +576,24 @@ class Material_planning extends BE_Controller {
                                 $value_coverage = $value_end_stock / $average_sales_per_4_month;
                             }
                         } else {
-                            if (isset($cari_epr['jml']) && !empty($cari_epr['jml'])) {
-                                if ($cari_epr['jml'] > 0) {
-                                    // jika ada data yang sudah di edit
-                                    // gunakan value production yang sudah di edit
-                                    $value_production = $cari_epr['jml'];
-                                } else {
-                                    // jika tidak ada data yang sudah di edit
-                                    // gunakan value production yang sudah dihitung
-                                    $value_production = 0;
-                                }
-                            } else {
-                                // jika tidak ada data yang sudah di edit
-                                // gunakan value production yang sudah dihitung
-                                $value_production = 0;
-                            }
+                            // if (isset($cari_erq['jml']) && !empty($cari_erq['jml'])) {
+                            //     if ($cari_erq['jml'] > 0) {
+                            //         // jika ada data yang sudah di edit
+                            //         // gunakan value production yang sudah di edit
+                            //         $value_production = $cari_erq['jml'];
+                            //     } else {
+                            //         // jika tidak ada data yang sudah di edit
+                            //         // gunakan value production yang sudah dihitung
+                            //         $value_production = 0;
+                            //     }
+                            // } else {
+                            //     // jika tidak ada data yang sudah di edit
+                            //     // gunakan value production yang sudah dihitung
+                            //     $value_production = 0;
+                            // }
+                            
+                            // Default value tanpa ERQ checking
+                            $value_production = 0;
                         }
 
                     } else {
@@ -615,31 +645,31 @@ class Material_planning extends BE_Controller {
                         'posting_code' => 'COV'
                     ]);
 
-                    $data_epd = get_data($table_prod, [
-                        'where' => [
-                            'material_code' => $material_code,
-                            'posting_code' => 'ERQ'
-                        ]
-                    ])->row_array();
+                    // $data_epd = get_data($table_prod, [
+                    //     'where' => [
+                    //         'material_code' => $material_code,
+                    //         'posting_code' => 'ERQ'
+                    //     ]
+                    // ])->row_array();
 
-                    if(empty($data_epd) || @$data_epd['P_' . sprintf('%02d', $i)] <= 0){
-                        # production
+                    // if(empty($data_epd) || @$data_epd['P_' . sprintf('%02d', $i)] <= 0){
+                        # production - update langsung tanpa ERQ checking
                         update_data($table_prod, [
                             'P_' . sprintf('%02d', $i) => $value_production,
                         ], [
                             'material_code' => $material_code,
                             'posting_code' => 'ARQ'
                         ]);
-                    }
+                    // }
 
-                    # x production
-                    update_data($table_prod, [
-                        'P_' . sprintf('%02d', $i) => $value_production,
-                        'update_at' => date('Y-m-d H:i:s')
-                    ], [
-                        'material_code' => $material_code,
-                        'posting_code' => 'EPR',
-                    ]);
+                    # x production - comment ERQ update
+                    // update_data($table_prod, [
+                    //     'P_' . sprintf('%02d', $i) => $value_production,
+                    //     'update_at' => date('Y-m-d H:i:s')
+                    // ], [
+                    //     'material_code' => $material_code,
+                    //     'posting_code' => 'ERQ',
+                    // ]);
                 }
             }
 
@@ -700,22 +730,108 @@ class Material_planning extends BE_Controller {
     }
 
     function save_perubahan() {       
-        
         $tahun = post('tahun');
+        $table = 'tbl_material_planning_' . $tahun;
 
-        $table = 'tbl_production_planning_' . $tahun ;
+        // Save data seperti production planning: ERQ + ERD
+        $edited_data_json = post('edited_data');
+        
+        if ($edited_data_json) {
+            $edited_data = json_decode($edited_data_json, true);
+            
+            if ($edited_data && is_array($edited_data)) {
+                foreach ($edited_data as $item) {
+                    $material_code = $item['material_code'];
+                    $month = $item['month'];
+                    $value = $item['value'];
 
-        $data   = json_decode(post('json'),true);
+                    if ($material_code && $month !== null) {
+                        $field = 'P_' . sprintf('%02d', $month);
+                        
+                        // Get material info for ERQ/ERD creation
+                        $material_info = get_data($table, [
+                            'where' => [
+                                'material_code' => $material_code,
+                                'posting_code' => 'STA',
+                            ]
+                        ])->row();
+                        
+                        // 1. Save/Update ERQ (data hasil edit)
+                        $cek_erq = get_data($table, [
+                            'where' => [
+                                'material_code' => $material_code,
+                                'posting_code' => 'ERQ',
+                            ]
+                        ])->row();
 
-        foreach($data as $id => $record) {
-            $result = $record;
-             foreach ($result as $r => $v) {       
-                update_data($table, $result,'id',$id);
-            }      
+                        if (!isset($cek_erq->id)) {
+                            // Create new ERQ record
+                            if ($material_info) {
+                                $data_erq = [
+                                    'revision' => 0,
+                                    'posting_code' => 'ERQ',
+                                    'material_code' => $material_code,
+                                    'material_name' => $material_info->material_name,
+                                    'um' => $material_info->um,
+                                    'supplier' => $material_info->supplier ?? '',
+                                    'moq' => $material_info->moq ?? 0,
+                                    'order_multiple' => $material_info->order_multiple ?? 0,
+                                    $field => $value,
+                                ];
+                                insert_data($table, $data_erq);
+                            }
+                        } else {
+                            // Update existing ERQ record
+                            update_data($table, [
+                                $field => $value,
+                            ], ['id' => $cek_erq->id]);
+                        }
+
+                        // 2. Save/Update ERD (flag edit = 1)
+                        $cek_erd = get_data($table, [
+                            'where' => [
+                                'material_code' => $material_code,
+                                'posting_code' => 'ERD',
+                            ]
+                        ])->row();
+
+                        if (!isset($cek_erd->id)) {
+                            // Create new ERD record
+                            if ($material_info) {
+                                $data_erd = [
+                                    'revision' => 0,
+                                    'posting_code' => 'ERD',
+                                    'material_code' => $material_code,
+                                    'material_name' => $material_info->material_name,
+                                    'um' => $material_info->um,
+                                    'supplier' => $material_info->supplier ?? '',
+                                    'moq' => $material_info->moq ?? 0,
+                                    'order_multiple' => $material_info->order_multiple ?? 0,
+                                    $field => 1, // Flag edit = 1
+                                ];
+                                insert_data($table, $data_erd);
+                            }
+                        } else {
+                            // Update existing ERD record
+                            update_data($table, [
+                                $field => 1, // Flag edit = 1
+                            ], ['id' => $cek_erd->id]);
+                        }
+                    }
+                }
+            }
+        } else {
+            render([
+                'status' => 'failed',
+                'message' => 'Tidak ada data yang diubah'
+            ], 'json');
+            return;
         }
+
+        render([
+            'status' => 'success',
+            'message' => 'Data berhasil disimpan'
+        ], 'json');
     }
-
-
-
 
 }
