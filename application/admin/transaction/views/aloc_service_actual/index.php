@@ -295,6 +295,7 @@ $(document).on('click','.btn-proses',function(e){
 	e.preventDefault();
 	id_proses = 'proses';
 	tahun = $('#filter_tahun').val();
+	bulan = $('#bulan').val();
 	id_allocation = $('#filter_allocation').val();
 	cConfirm.open(lang.apakah_anda_yakin + '?','lanjut');
 });
@@ -302,7 +303,7 @@ $(document).on('click','.btn-proses',function(e){
 function lanjut() {
 	$.ajax({
 		url : base_url + 'transaction/aloc_service_actual/proses',
-		data : {id:id_proses,tahun : tahun, id_allocation : id_allocation},
+		data : {id:id_proses,tahun : tahun, bulan : bulan, id_allocation : id_allocation},
 		type : 'post',
 		dataType : 'json',
 		success : function(res) {

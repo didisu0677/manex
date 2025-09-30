@@ -84,91 +84,86 @@
 <script>
 $(document).ready(function() {
 	getData();
-	$(document).on('keyup', '.xproduksi', function(e) {
-		// calculate();
-		if (e.keyCode === 13 || e.key === 'Enter' || e.keyCode === 9 || e.key === 'Tab') {
-			calculate(); // Panggil fungsi calculate()
-		}
-	});
-
 });
 
 $('#filter_tahun').change(function() {
-	getData()
+	getData();
 });
-  
-
 
 $('#filter_supplier').change(function() {
-	getData()
+	getData();
 });
 
 function getData() {
 	cLoader.open(lang.memuat_data + '...');
 	$('.overlay-wrap').removeClass('hidden');
 	var page = base_url + 'material_cost/material_planning/data';
-		page 	+= '/'+$('#filter_tahun').val();
-		page 	+= '/'+$('#filter_supplier').val();
+		page += '/' + $('#filter_tahun').val();
+		page += '/' + $('#filter_supplier').val();
 
 	$.ajax({
-		url 	: page,
-		data 	: {},
-		type	: 'get',
+		url: page,
+		data: {},
+		type: 'get',
 		dataType: 'json',
-		success	: function(response) {
+		success: function(response) {
 			$('.table-1 tbody').html(response.table);
+			
+			// Call calculate after data loaded
+			calculate();
+			
 			cLoader.close();
-			$('.overlay-wrap').addClass('hidden');	
-			// money_init();
-		}
-	});
-}    
-
-var id_proses = '';
-var tahun = 0;
-$(document).on('click','.btn-proses',function(e){
-	e.preventDefault();
-	id_proses = 'proses';
-	tahun = $('#filter_tahun').val();
-	supplier = $('#filter_supplier').val();
-	cConfirm.open(lang.apakah_anda_yakin + '?','lanjut');
-});
-
-function lanjut() {
-	$.ajax({
-		url : base_url + 'material_cost/material_planning/proses',
-		data : {id:id_proses,tahun : tahun, supplier : supplier},
-		type : 'post',
-		dataType : 'json',
-		success : function(res) {
-			cAlert.open(res.message,res.status,'refreshData');
+			$('.overlay-wrap').addClass('hidden');
 		}
 	});
 }
 
-$(document).on('focus','.edit-value',function(){
+var id_proses = '';
+var tahun = 0;
+$(document).on('click', '.btn-proses', function(e) {
+	e.preventDefault();
+	id_proses = 'proses';
+	tahun = $('#filter_tahun').val();
+	supplier = $('#filter_supplier').val();
+	cConfirm.open(lang.apakah_anda_yakin + '?', 'lanjut');
+});
+
+function lanjut() {
+	$.ajax({
+		url: base_url + 'material_cost/material_planning/proses',
+		data: {id: id_proses, tahun: tahun, supplier: supplier},
+		type: 'post',
+		dataType: 'json',
+		success: function(res) {
+			cAlert.open(res.message, res.status, 'refreshData');
+		}
+	});
+}
+
+$(document).on('focus', '.edit-value', function() {
 	$(this).parent().removeClass('edited');
 });
 
-$(document).on('blur','.edit-value',function(){
+$(document).on('blur', '.edit-value', function() {
 	var tr = $(this).closest('tr');
-	if($(this).text() != $(this).attr('data-value')) {
+	if ($(this).text() != $(this).attr('data-value')) {
 		$(this).addClass('edited');
 	}
-	if(tr.find('td.edited').length > 0) {
+	if (tr.find('td.edited').length > 0) {
 		tr.addClass('edited-row');
 	} else {
 		tr.removeClass('edited-row');
 	}
 });
 
-$(document).on('keyup','.edit-value',function(e){
-	var wh 			= e.which;
-	if((48 <= wh && wh <= 57) || (96 <= wh && wh <= 105) || wh == 8) {
-		if($(this).text() == '') {
+// Event handler untuk xproduksi - sama seperti production planning
+$(document).on('keyup', '[class*="xproduksi_"]', function(e) {
+	var wh = e.which;
+	if ((48 <= wh && wh <= 57) || (96 <= wh && wh <= 105) || wh == 8) {
+		if ($(this).text() == '') {
 			$(this).text('');
 		} else {
-			var n = parseInt($(this).text().replace(/[^0-9\-]/g,''),10);
+			var n = parseInt($(this).text().replace(/[^0-9\-]/g, ''), 10);
 			$(this).text(n.toLocaleString());
 			var selection = window.getSelection();
 			var range = document.createRange();
@@ -181,194 +176,172 @@ $(document).on('keyup','.edit-value',function(e){
 	}
 });
 
-$(document).on('keypress','.edit-value',function(e){
-	var wh 			= e.which;
+$(document).on('keypress', '[class*="xproduksi_"]', function(e) {
+	var wh = e.which;
 	if (e.shiftKey) {
-		if(wh == 0) return true;
+		if (wh == 0) return true;
 	}
-	if(e.metaKey || e.ctrlKey) {
-		if(wh == 86 || wh == 118) {
-			$(this)[0].onchange = function(){
+	if (e.metaKey || e.ctrlKey) {
+		if (wh == 86 || wh == 118) {
+			$(this)[0].onchange = function() {
 				$(this)[0].innerHTML = $(this)[0].innerHTML.replace(/[^0-9\-]/g, '');
 			}
 		}
 		return true;
 	}
-	if(wh == 0 || wh == 8 || wh == 45 || (48 <= wh && wh <= 57) || (96 <= wh && wh <= 105)) 
+	if (wh == 0 || wh == 8 || wh == 45 || (48 <= wh && wh <= 57) || (96 <= wh && wh <= 105))
 		return true;
 	return false;
 });
 
-$(document).on('click','.btn-save',function(){
+// Trigger calculate - sama seperti production planning
+$(document).on('keyup', '[class*="xproduksi_"]', function(e) {
+	if (e.keyCode === 13 || e.key === 'Enter' || e.keyCode === 9 || e.key === 'Tab') {
+		calculate();
+	}
+});
+
+$(document).on('click', '.btn-save', function() {
 	var i = 0;
-	$('.edited').each(function(){
+	$('.edited').each(function() {
 		i++;
 	});
-	if(i == 0) {
+	if (i == 0) {
 		cAlert.open('tidak ada data yang di ubah');
 	} else {
-		var msg 	= lang.anda_yakin_menyetujui;
-		if( i == 0) msg = lang.anda_yakin_menolak;
-		cConfirm.open(msg,'save_perubahan');        
+		var msg = lang.anda_yakin_menyetujui;
+		if (i == 0) msg = lang.anda_yakin_menolak;
+		cConfirm.open(msg, 'save_perubahan');
 	}
-
 });
 
 function save_perubahan() {
 	var data_edit = {};
 	var i = 0;
-	
-	$('.edited').each(function(){
+
+	$('.edited').each(function() {
 		var content = $(this).children('div');
-		if(typeof data_edit[$(this).attr('data-id')] == 'undefined') {
+		if (typeof data_edit[$(this).attr('data-id')] == 'undefined') {
 			data_edit[$(this).attr('data-id')] = {};
 		}
-		data_edit[$(this).attr('data-id')][$(this).attr('data-name')] = $(this).text().replace(/[^0-9\-]/g,'');
+		data_edit[$(this).attr('data-id')][$(this).attr('data-name')] = $(this).text().replace(/[^0-9\-]/g, '');
 		i++;
 	});
-	
-	var jsonString = JSON.stringify(data_edit);		
+
+	var jsonString = JSON.stringify(data_edit);
 	$.ajax({
-		url : base_url + 'material_cost/material_planning/save_perubahan',
-		data 	: {
-			'json' : jsonString,
-			verifikasi : i,
-			tahun : $('#filter_tahun').val(),
+		url: base_url + 'material_cost/material_planning/save_perubahan',
+		data: {
+			'json': jsonString,
+			verifikasi: i,
+			tahun: $('#filter_tahun').val(),
 		},
-		type : 'post',
-		success : function(response) {
-			cAlert.open(response,'success','refreshData');
+		type: 'post',
+		success: function(response) {
+			cAlert.open(response, 'success', 'refreshData');
 		}
 	})
 }
 
-	$(document).on('keyup', '.xproduksi', function(e) {
-		var wh = e.which;
-		if ((48 <= wh && wh <= 57) || (96 <= wh && wh <= 105) || wh == 8) {
-			if ($(this).text() == '') {
-				$(this).text('');
-			} else {
-				var n = parseInt($(this).text().replace(/[^0-9\-]/g, ''), 10);
-				$(this).text(n.toLocaleString());
-				var selection = window.getSelection();
-				var range = document.createRange();
-				selection.removeAllRanges();
-				range.selectNodeContents($(this)[0]);
-				range.collapse(false);
-				selection.addRange(range);
-				$(this)[0].focus();
-			}
-		}
-	});
-
-	$(document).on('keypress', '.xproduksi', function(e) {
-		var wh = e.which;
-		if (e.shiftKey) {
-			if (wh == 0) return true;
-		}
-		if (e.metaKey || e.ctrlKey) {
-			if (wh == 86 || wh == 118) {
-				$(this)[0].onchange = function() {
-					$(this)[0].innerHTML = $(this)[0].innerHTML.replace(/[^0-9\-]/g, '');
-				}
-			}
-			return true;
-		}
-		if (wh == 0 || wh == 8 || wh == 45 || (48 <= wh && wh <= 57) || (96 <= wh && wh <= 105))
-			return true;
-		return false;
-	});
-
-	function calculate() {
-	// Objek untuk menyimpan data per kolom
-		$('.table-1 tbody tr').each(function() {
-			let columnData = {
-			B_01: 0,
-			B_02: 0,
-			B_03: 0,
-			B_04: 0,
-			B_05: 0,
-			B_06: 0,
-			B_07: 0,
-			B_08: 0,
-			B_09: 0,
-			B_10: 0,
-			B_11: 0,
-			B_12: 0
+function calculate() {
+	// Objek untuk menyimpan data per kolom - sama seperti production planning
+	$('.table-1 tbody tr').each(function() {
+		let columnData = {
+			B_01: 0, B_02: 0, B_03: 0, B_04: 0, B_05: 0, B_06: 0,
+			B_07: 0, B_08: 0, B_09: 0, B_10: 0, B_11: 0, B_12: 0
 		};
 
 		let columnData1 = {
-			prod_01: 0,
-			prod_02: 0,
-			prod_03: 0,
-			prod_04: 0,
-			prod_05: 0,
-			prod_06: 0,
-			prod_07: 0,
-			prod_08: 0,
-			prod_09: 0,
-			prod_10: 0,
-			prod_11: 0,
-			prod_12: 0
+			prod_01: 0, prod_02: 0, prod_03: 0, prod_04: 0, prod_05: 0, prod_06: 0,
+			prod_07: 0, prod_08: 0, prod_09: 0, prod_10: 0, prod_11: 0, prod_12: 0
 		};
 
-			if ($(this).find('.xproduksi').text() !== '') {
-				for (let i = 1; i <= 12; i++) {
-					let key = `B_${String(i).padStart(2, '0')}`; // Membuat key seperti B_01, B_02, dst.
-					let key1 = `prod_${String(i).padStart(2, '0')}`; 
-					let key_begining_stock = `begining_stock_${String(i).padStart(2, '0')}`;
-					let key_sales = `sales_${String(i).padStart(2, '0')}`;
-					let key_end_stock = `end_stock_${String(i).padStart(2, '0')}`;
-					let key_m_cov = `m_cov_${String(i).padStart(2, '0')}`;
-					let budget = moneyToNumber($(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).text().replace(/\,/g, ''));
-					let value_xproduction = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).text().replace(/\,/g, '')
-					let nilai = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('nilai');
-					let idx = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('id');
-					let total = budget * nilai ;
-					if(value_xproduction != ''){
-						columnData[key] += budget * nilai;		
-						columnData1[key1] += budget * nilai;	
-						$('#'+key1+idx).text(columnData1[key1]);
-						let value_sales = $('#'+key_sales+idx).text().replace(/\,/g, '');
-						let value_end_stock = $('#'+key_end_stock+idx).text().replace(/\,/g, '');
-						let value_begining_stock = $('#'+key_begining_stock+idx).text().replace(/\,/g, '');
-						let value_production = columnData1[key1];
+		// Proses setiap bulan secara berurutan
+		for (let i = 1; i <= 12; i++) {
+			let key = `B_${String(i).padStart(2, '0')}`;
+			let key1 = `prod_${String(i).padStart(2, '0')}`;
+			let key_begining_stock = `begining_stock_${String(i).padStart(2, '0')}`;
+			let key_sales = `sales_${String(i).padStart(2, '0')}`;
+			let key_end_stock = `end_stock_${String(i).padStart(2, '0')}`;
+			let key_m_cov = `m_cov_${String(i).padStart(2, '0')}`;
+			
+			let budget = moneyToNumber($(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).text().replace(/\,/g, ''));
+			let value_xproduction = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).text().replace(/\,/g, '');
+			let nilai = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('nilai');
+			let idx = $(this).find(`.xproduksi_${String(i).padStart(2, '0')}`).data('id');
+			
+			if (!isNaN(idx) && idx) {
+				let total = budget * nilai;
+				
+				if (value_xproduction != '') {
+					columnData[key] += budget * nilai;
+					columnData1[key1] += budget * nilai;
+					
+					let value_sales = $('#' + key_sales + idx).text().replace(/\,/g, '');
+					let value_end_stock = $('#' + key_end_stock + idx).text().replace(/\,/g, '');
+					let value_begining_stock = $('#' + key_begining_stock + idx).text().replace(/\,/g, '');
+					let value_production = columnData1[key1];
 
-						let new_end_stock = parseInt(value_begining_stock) + parseInt(value_production) - parseInt(value_sales)
-						let txt_new_end_stock = new_end_stock < 0 ? '-'+(numberFormat(new_end_stock, 0).replace(/[()]/g,'')) : numberFormat(new_end_stock)
-						$('#'+key_end_stock+idx).text(txt_new_end_stock);
-						let value_total_sales = 0
-						let divide_number = 0
-						for(let j=0;j<4;j++){
-							if(j+i > 12){
-								continue;
-							}
-							let value_sales = parseInt($(`#sales_${String(j+i).padStart(2, '0')}${idx}`).text().replace(/\,/g,''))
-							value_total_sales += !isNaN(value_sales) ? value_sales : 0
-							divide_number++;
+					// Calculate Unit Available for Use = Beginning Stock + Arrival Qty
+					let unitAvailableForUse = parseInt(value_begining_stock) + parseInt(budget);
+					
+					// Update unit available display
+					$('#unit_available_' + String(i).padStart(2, '0') + idx).text(numberFormat(unitAvailableForUse));
+
+					// Calculate End Stock = Unit Available for Use - Unit Used in Production
+					let new_end_stock = unitAvailableForUse - parseInt(value_sales);
+					let txt_new_end_stock = new_end_stock < 0 ? '-' + (numberFormat(Math.abs(new_end_stock), 0)) : numberFormat(new_end_stock, 0);
+					$('#' + key_end_stock + idx).text(txt_new_end_stock);
+
+					// Calculate Month Coverage
+					let value_total_sales = 0;
+					let divide_number = 0;
+					for (let j = 0; j < 4; j++) {
+						if (j + i > 12) {
+							continue;
 						}
+						let value_sales_future = parseInt($(`#sales_${String(j + i).padStart(2, '0')}${idx}`).text().replace(/\,/g, ''));
+						value_total_sales += !isNaN(value_sales_future) ? value_sales_future : 0;
+						divide_number++;
+					}
 
-						let coverage = new_end_stock / (value_total_sales / divide_number);
-						$('#'+key_m_cov+idx).text(numberFormat(coverage, 2));
+					let coverage = new_end_stock / (value_total_sales / divide_number);
+					if (!Number.isFinite(coverage) || isNaN(coverage)) {
+						$('#' + key_m_cov + idx).text(numberFormat(0, 2));
+					} else {
+						$('#' + key_m_cov + idx).text(numberFormat(coverage, 2));
+					}
 
-						// update begining stock
-						for(let j=i; j<=12; j++){
-							let value_end_stock = $(`#end_stock_${String(j).padStart(2, '0')}${idx}`).text();
-							$(`#begining_stock_${String(j+1).padStart(2, '0')}${idx}`).text(value_end_stock);
-						}
+					// Update beginning stock untuk bulan berikutnya
+					// Beginning stock bulan februari dan seterusnya adalah end stock bulan sebelumnya
+					for (let j = i; j <= 12; j++) {
+						let value_end_stock_current = $(`#end_stock_${String(j).padStart(2, '0')}${idx}`).text();
+						$(`#begining_stock_${String(j + 1).padStart(2, '0')}${idx}`).text(value_end_stock_current);
 					}
 				}
 			}
+		}
+	});
+}
 
-			// for (let key1 in columnData1) {
-			// 	$(this).find('.'+key1+'').text(columnData1[key1]); // Perbaikan di sini
-			// }
-
-		});
-
-
-		// Menampilkan data per kolom
-		
-
+// Helper function untuk mengkonversi formatted number ke number - sesuai production planning
+function moneyToNumber(value) {
+	if (typeof value === 'string') {
+		return parseInt(value.replace(/[^0-9\-]/g, '')) || 0;
 	}
+	return value || 0;
+}
+
+function parseNumber(str) {
+	return parseInt(str.replace(/\,/g,'').trim()) || 0;
+}
+
+// Helper function untuk format number
+function numberFormat(number, decimals = 0) {
+	if (isNaN(number)) return '0';
+	return Number(number).toLocaleString('en-US', {
+		minimumFractionDigits: decimals,
+		maximumFractionDigits: decimals
+	});
+}
 </script>
