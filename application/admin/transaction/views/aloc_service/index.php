@@ -10,7 +10,7 @@
 
 			<select class="select2 infinity custom-select" style="width: 80px;" id="filter_tahun">
 				<?php foreach ($tahun as $tahun) { ?>
-					<option value="<?php echo $tahun->tahun; ?>"<?php if($tahun->tahun == user('tahun_budget')) echo ' selected'; ?>><?php echo $tahun->tahun; ?></option>
+					<option value="<?php echo $tahun->tahun; ?>"<?php if($tahun->tahun == user('tahun_budget')-1) echo ' selected'; ?>><?php echo $tahun->tahun; ?></option>
                 <?php } ?>
 			</select>
 
