@@ -8,10 +8,11 @@
 
 	$total_actual = 0;
 	$total_curbudget = 0;
+	$total_cogs_budget = 0;
 
 	foreach($grup[0] as $m0) { ?>
 		<tr>
-            <?php $colspan = 15; ?>
+            <?php $colspan = 16; ?>
 			<th colspan="<?php echo $colspan ; ?>" style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"><?php echo $m0->sub_product; ?></font></th>
 		</tr>		
   	<?php
@@ -23,6 +24,7 @@
 
 	$sub_total_actual = 0;
 	$sub_total_curbudget = 0;
+	$sub_total_cogs_budget = 0;
 
 	foreach($produk[$m0->product_line] as $m2 => $m1) { 
 		// debug($m1->product_name);die;
@@ -49,10 +51,21 @@
 			$total_actual += $actual ;
 			$sub_total_actual += $actual ;
 
+			// Hitung total COGS budget dari B_01 sampai B_12
+			$cogs_budget = 0;
+			for($i = 1; $i <= 12 ; $i++) {
+				$field_budget = 'B_' . sprintf('%02d', $i);
+				$cogs_budget += $m1->$field_budget;
+			}
+
+			$total_cogs_budget += $cogs_budget;
+			$sub_total_cogs_budget += $cogs_budget;
+
 			$total_curbudget += $m1->total_budget;
 			$sub_total_curbudget += $m1->total_budget;
 
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget actual" data-name="actual" data-id="'.$m1->id.'" data-value="">'.number_format($actual).'</td>';
+			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget cogs_budget" data-name="cogs_budget" data-id="'.$m1->id.'" data-value="">'.number_format($cogs_budget).'</td>';
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget actual" data-name="actual" data-id="'.$m1->id.'" data-value="">'.number_format($m1->total_budget).'</td>';
 
 			for ($i = 1; $i <= 10; $i++) {
@@ -80,6 +93,7 @@
 			$bgedit ="";
 			$contentedit = "false"; 
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget actual" data-name="actual" data-id="'.$m1->id.'" data-value=""><b>'.number_format($sub_total_actual).'</b></td>';
+			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget cogs_budget" data-name="cogs_budget" data-id="'.$m1->id.'" data-value=""><b>'.number_format($sub_total_cogs_budget).'</b></td>';
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget actual" data-name="actual" data-id="'.$m1->id.'" data-value=""><b>'.number_format($sub_total_curbudget).'</b></td>';
 
 			for ($i = 1; $i <= 10; $i++) {
@@ -95,6 +109,7 @@
 		$bgedit ="";
 		$contentedit = "false"; 
 		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget actual" data-name="actual" data-id="'.$m1->id.'" data-value=""><b>'.number_format($total_actual).'</b></td>';
+		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget cogs_budget" data-name="cogs_budget" data-id="'.$m1->id.'" data-value=""><b>'.number_format($total_cogs_budget).'</b></td>';
 		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right budget actual" data-name="actual" data-id="'.$m1->id.'" data-value=""><b>'.number_format($total_curbudget).'</b></td>';
 
 		for ($i = 1; $i <= 10; $i++) {
