@@ -147,4 +147,10 @@ function detail_callback(id){
 		cInfo.open(lang.detil,result);
 	});
 }
+
+$(document).on('click','.btn-act-template',function(e){
+	// alert('x');die;
+	e.preventDefault();
+	$.redirect(base_url + 'transaction/additional_allocation_actual/template/');
+});
 </script>

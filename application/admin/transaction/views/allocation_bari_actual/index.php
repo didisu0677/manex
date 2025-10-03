@@ -148,4 +148,11 @@ modal_close();
 			}
 		});
 	}
+
+	$(document).on('click','.btn-act-template',function(e){
+		// alert('x');die;
+		e.preventDefault();
+		$.redirect(base_url + 'transaction/allocation_bari_actual/template/');
+	});
+
 </script>

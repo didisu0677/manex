@@ -135,4 +135,11 @@ function lanjut() {
 		}
 	});
 }
+
+$(document).on('click','.btn-act-template',function(e){
+	// alert('x');die;
+	e.preventDefault();
+	$.redirect(base_url + 'transaction/idle_allocation_actual/template/');
+});
+
 </script>
