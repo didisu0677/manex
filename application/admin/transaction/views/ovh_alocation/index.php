@@ -34,7 +34,7 @@
 					// ['btn-save','Save Data','fa-save'],
 					['btn-export','Export Data','fa-upload'],
 					($access['access_input'] ? ['btn-act-import','Import Data','fa-download'] :''),
-					['btn-template','Template Import','fa-reg-file-alt']
+					// ['btn-template','Template Import','fa-reg-file-alt']
 				];
 			
 			
