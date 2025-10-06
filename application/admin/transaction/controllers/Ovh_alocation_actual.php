@@ -135,7 +135,7 @@ class Ovh_alocation_actual extends BE_Controller {
 
         $table = 'tbl_fact_product_ovh_actual';
         $tahun = post('tahun') ;
-        $bulan = post('bulan') ;
+        $bulan = post('bulan_import') ;
    
 		$file = post('fileimport');
 		$col = ['description','code','factory', 'quantity','manworking','machineworking', 'total_manwh', 'total_machinewh'];

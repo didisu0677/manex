@@ -122,7 +122,7 @@ class Allocation_qc_actual extends BE_Controller {
 
         $table = 'tbl_fact_allocation_qc_actual';
         $tahun = post('tahun') ;
-        $bulan = post('bulan') ;
+        $bulan = post('bulan_import') ;
    
 		$file = post('fileimport');
 		$col = ['description','code','factory', 'quantity', 'pointunit', 'total_point', 'prsn_aloc'];
@@ -145,6 +145,7 @@ class Allocation_qc_actual extends BE_Controller {
                             'product_code' => $data['code'],
                         ],
                     ])->row();
+
                     if(isset($cek->id)) {
                         $data2['product_qty'] = str_replace([','],'',$data['quantity']) ;
                         $data2['point_perunit'] = str_replace([','],'',$data['pointunit']) ;
