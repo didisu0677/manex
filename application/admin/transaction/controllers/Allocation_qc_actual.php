@@ -195,6 +195,7 @@ class Allocation_qc_actual extends BE_Controller {
 		ini_set('max_execution_time', 0);
 
         $table = 'tbl_fact_allocation_qc_actual';
+        $bulan = post('bulan') ;
 
         update_data('tbl_fact_allocation_qc_actual',['point_perunit' =>0, 'total_point' => 0],['tahun' => $tahun, 'product_qty' => 0]);
 
@@ -203,6 +204,7 @@ class Allocation_qc_actual extends BE_Controller {
             'where' => [
                 'tahun' => $tahun,
                 'bulan' => $bulan,
+                'total_point !=' => 0,
             ],
         ])->row();
         
@@ -210,6 +212,7 @@ class Allocation_qc_actual extends BE_Controller {
             'where' => [
                 'tahun' => $tahun,
                 'bulan' => $bulan,
+                'total_point !=' => 0,
             ],
         ])->result();
 

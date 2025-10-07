@@ -383,6 +383,7 @@ $(document).on('click','.btn-proses',function(e){
 	e.preventDefault();
 	id_proses = 'proses';
 	tahun = $('#filter_tahun').val();
+	bulan = $('#bulan').val();
 	cConfirm.open(lang.apakah_anda_yakin + '?','lanjut');
 });
 
