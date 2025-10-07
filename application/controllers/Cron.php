@@ -45,6 +45,7 @@ class Cron extends MY_Controller {
             'select' => 'table_name',
             'where' => [
                 'table_schema' => 'manex',     
+                'table_name REGEXP' => '_[0-9]{4}$',
                 'table_name like' => "%_" . $tahun0,
                 '__m' => "(substr(table_name, 1, 4) != 'act_' AND substr(table_name, 1, 4) != 'sim_')"
  
@@ -78,6 +79,7 @@ class Cron extends MY_Controller {
             'select' => 'distinct table_name',
             'where' => [
                 'table_schema' => 'manex',     
+                'table_name REGEXP' => '_[0-9]{4}$',
                 'table_name like' => '%_'. $tahun0,
                 '__m' => "(substr(table_name, 1, 4) != 'act_' AND substr(table_name, 1, 4) != 'sim_')"
             ]
@@ -109,10 +111,13 @@ class Cron extends MY_Controller {
             'select' => 'distinct table_name',
             'where' => [
                 'table_schema' => 'manex',     
+                'table_name REGEXP' => '_[0-9]{4}$',
                 'table_name like' => '%_'. $tahun0,
                 '__m' => "(substr(table_name, 1, 4) != 'act_' AND substr(table_name, 1, 4) != 'sim_')"
             ]
         ])->result();
+
+        debug($res);die;
 
         $jum = 0;
         $old_table = '';
