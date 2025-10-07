@@ -109,11 +109,12 @@ class Aloc_service_actual extends BE_Controller {
 		ini_set('max_execution_time', 0);
 
         $tahun = post('tahun') ;
+        $tahun_budget = user('tahun_budget') ;
         $bulan = post('bulan') ;
         $field = 'B_' . sprintf('%02d', $bulan);
 
-        $table0 = 'tbl_fact_lstbudget_2026_' .$tahun ;
-        $table = 'act_tbl_fact_lstbudget_2026_' .$tahun ;
+        $table0 = 'tbl_fact_lstbudget_' .$tahun_budget ;
+        $table = 'act_tbl_fact_lstbudget_' .$tahun ;
         $source = get_data('tbl_fact_ccallocation',[
             'where' => [
                 'id' => post('id_allocation'),
