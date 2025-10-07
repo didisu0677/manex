@@ -11,7 +11,7 @@ class Budget_production_actual extends BE_Controller {
         $data['tahun'] = get_data('tbl_fact_tahun_budget', [
             'where' => [
                 'is_active' => 1,
-                'tahun' => user('tahun_budget')
+                'tahun' => user('tahun_budget') - 1 
             ]
         ])->result();     
         
