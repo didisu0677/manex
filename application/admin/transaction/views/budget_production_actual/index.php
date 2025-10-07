@@ -81,7 +81,7 @@ modal_body();
 		input('hidden',lang('import_data'),'judul','','','readonly');
     	
             // Create months array using HTML select element
-        $current_month = date('m');
+        $current_month = date(setting('actual_budget'));
         ?>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label"><?php echo lang('bulan'); ?></label>
