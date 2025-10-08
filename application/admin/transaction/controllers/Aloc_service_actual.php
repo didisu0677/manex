@@ -135,7 +135,7 @@ class Aloc_service_actual extends BE_Controller {
                           sum(a.'.$field.') as "'.$field.'", sum(a.'.$field.') as total_budget',
                      'where' => [
                         'a.cost_centre' => $c,
-                        'a.'.$field.' >' => 0
+                        // 'a.'.$field.' >' => 0
                     ],
                     'group_by' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account'
                 ])->result();   
@@ -182,7 +182,7 @@ class Aloc_service_actual extends BE_Controller {
                                 $data2['prsn_aloc'] = $a->prsn_aloc;
                                 $data2[$field] = $s->$field * ($a->prsn_aloc/100);
                                 $data2['total_budget'] = $s->$field * ($a->prsn_aloc/100);
-                                debug($data2);die;
+                                // debug($data2);die;
                                 update_data($table,$data2,'id',$cek->id);
                             }
                         }
