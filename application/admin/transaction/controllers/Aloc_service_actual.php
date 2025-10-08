@@ -139,7 +139,7 @@ class Aloc_service_actual extends BE_Controller {
                     'group_by' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account'
                 ])->result();   
 
-                debug($sum);die;
+                // debug($sum);die;
                 
                 if(count($sum)) {
                      foreach($sum as $s) {
@@ -176,13 +176,13 @@ class Aloc_service_actual extends BE_Controller {
                                 $data2['account_code'] = $s->account_code;
                                 $data2['account_name'] = $s->account_name;                   
                                 $data2[$field] = $s->$field * ($a->prsn_aloc/100);
-                                $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc/100);        
+                                $data2['total_budget'] = $s->$field * ($a->prsn_aloc/100);        
                                 insert_data($table,$data2);
                             }else{
                                 $data2['prsn_aloc'] = $a->prsn_aloc;
                                 $data2[$field] = $s->$field * ($a->prsn_aloc/100);
-                                $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc/100);
-                                // debug($data2);die;
+                                $data2['total_budget'] = $s->$field * ($a->prsn_aloc/100);
+                                debug($data2);die;
                                 update_data($table,$data2,'id',$cek->id);
                             }
                         }
