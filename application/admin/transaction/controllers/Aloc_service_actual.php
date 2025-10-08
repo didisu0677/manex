@@ -111,7 +111,7 @@ class Aloc_service_actual extends BE_Controller {
         $tahun = post('tahun') ;
         $tahun_budget = user('tahun_budget') ;
         $bulan = post('bulan') ;
-        $field = 'B_' . sprintf('%02d', $bulan);
+        $field = 'EST_' . sprintf('%02d', $bulan);
 
         $table0 = 'tbl_fact_lstbudget_' .$tahun_budget ;
         $table = 'act_tbl_fact_lstbudget_' .$tahun ;
