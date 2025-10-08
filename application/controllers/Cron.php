@@ -123,8 +123,8 @@ class Cron extends MY_Controller {
         $old_table = '';
         $new_table = '';
         foreach($res as $v) {
-            $old_table = ($v->table_name);
-            $new_table = 'act_'. str_replace($tahun0, $tahun1, $old_table);;
+            $old_table = ($v->TABLE_NAME);
+            $new_table = 'act_'. str_replace($tahun0, $tahun1, $old_table);
             $sql = "CREATE TABLE $new_table LIKE $old_table";
 
             if(!table_exists($new_table)) {
