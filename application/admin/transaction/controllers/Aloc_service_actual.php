@@ -131,11 +131,11 @@ class Aloc_service_actual extends BE_Controller {
 
             foreach($cc_source as $c) {
                 $sum = get_data($table0 . ' a',[
-                    'select' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account,a.account_name,
+                    'select' => 'a.cost_centre1,a.id_cost_centre,a.sub_account,a.account_code,a.id_account,a.account_name,
                         sum("'.$field.'") as "'.$field.'", sum(total_budget) as total_budget',
                      'where' => [
                         'a.cost_centre' => $c,
-                        $field.' >' => 0
+                        'a.'.$field.' >' => 0
                     ],
                     'group_by' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account'
                 ])->result();   
