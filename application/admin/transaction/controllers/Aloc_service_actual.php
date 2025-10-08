@@ -177,7 +177,6 @@ class Aloc_service_actual extends BE_Controller {
                                 $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc/100);        
                                 insert_data($table,$data2);
                             }else{
-                                debug($field);die;
                                 $data2['prsn_aloc'] = $a->prsn_aloc;
                                 $data2[$field] = $s->$field * ($a->prsn_aloc/100);                                $data2['B_03'] = $s->B_03 * ($a->prsn_aloc/100);
                                 $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc/100);
