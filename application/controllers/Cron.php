@@ -117,7 +117,7 @@ class Cron extends MY_Controller {
             ]
         ])->result();
 
-        debug($res);die;
+        // debug($res);die;
 
         $jum = 0;
         $old_table = '';
