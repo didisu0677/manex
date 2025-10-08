@@ -138,6 +138,8 @@ class Aloc_service_actual extends BE_Controller {
                     ],
                     'group_by' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account'
                 ])->result();   
+
+                debug($sum);die;
                 
                 if(count($sum)) {
                      foreach($sum as $s) {
