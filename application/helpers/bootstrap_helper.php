@@ -9,19 +9,28 @@ function breadcrumb($last='',$multiple_child=false) {
     );
 	$module     = ($CI->uri->segment(2)) ? $CI->uri->segment(2) : $CI->uri->segment(1);
 	if($CI->session->userdata('as_access')) $module = $CI->session->userdata('as_access');
-    $cur_menu   = get_data('tbl_menu','target',$module)->row();
+    
+    // Remove '_actual' suffix for breadcrumb menu lookup
+    $module_clean = str_replace('_actual', '', $module);
+    $cur_menu   = get_data('tbl_menu','target',$module_clean)->row();
 
     if(!isset($cur_menu->id) && $module == $CI->uri->segment(2)) {
     	$module = $CI->uri->segment(1);
-	    $cur_menu   = get_data('tbl_menu','target',$module)->row();
+        $module_clean = str_replace('_actual', '', $module);
+	    $cur_menu   = get_data('tbl_menu','target',$module_clean)->row();
     }
     if(isset($cur_menu->id)) {
         if($cur_menu->level2) {
             $menu_l1    = get_data('tbl_menu','id',$cur_menu->level1)->row();
             if(isset($menu_l1->id)) {
             	$module = $menu_l1->target;
+                // Use original target for link, add _actual suffix if in actual mode and menu has is_mode = 1
+                $link_target = $menu_l1->target;
+                if(isset($menu_l1->is_mode) && $menu_l1->is_mode == 1 && user('transaction_mode') == 'actual_mode') {
+                    $link_target = $menu_l1->target . '_actual';
+                }
                 $br[]   = array(
-                    'link'  => $module == $menu_l1->target ? $module : $module . '/' . $menu_l1->target,
+                    'link'  => $module == $menu_l1->target ? $link_target : $module . '/' . $link_target,
                     'title' => lang($menu_l1->target,$menu_l1->nama)
                 );
             }
@@ -29,8 +38,13 @@ function breadcrumb($last='',$multiple_child=false) {
         if($cur_menu->level3) {
             $menu_l2    = get_data('tbl_menu','id',$cur_menu->level2)->row();
             if(isset($menu_l2->id)) {
+                // Use original target for link, add _actual suffix if in actual mode and menu has is_mode = 1
+                $link_target = $menu_l2->target;
+                if(isset($menu_l2->is_mode) && $menu_l2->is_mode == 1 && user('transaction_mode') == 'actual_mode') {
+                    $link_target = $menu_l2->target . '_actual';
+                }
                 $br[]   = array(
-                    'link'  => $module == $menu_l2->target ? $module : $module . '/' . $menu_l2->target,
+                    'link'  => $module == $menu_l2->target ? $link_target : $module . '/' . $link_target,
                     'title' => lang($menu_l2->target,$menu_l2->nama)
                 );
             }
@@ -38,8 +52,13 @@ function breadcrumb($last='',$multiple_child=false) {
         if($cur_menu->level4) {
             $menu_l3    = get_data('tbl_menu','id',$cur_menu->level3)->row();
             if(isset($menu_l3->id)) {
+                // Use original target for link, add _actual suffix if in actual mode and menu has is_mode = 1
+                $link_target = $menu_l3->target;
+                if(isset($menu_l3->is_mode) && $menu_l3->is_mode == 1 && user('transaction_mode') == 'actual_mode') {
+                    $link_target = $menu_l3->target . '_actual';
+                }
                 $br[]   = array(
-                    'link'  => $module == $menu_l3->target ? $module : $module . '/' . $menu_l3->target,
+                    'link'  => $module == $menu_l3->target ? $link_target : $module . '/' . $link_target,
                     'title' => lang($menu_l3->target,$menu_l3->nama)
                 );
             }
@@ -56,8 +75,13 @@ function breadcrumb($last='',$multiple_child=false) {
 		}
 
 		if($show_last_br) {
+            // Use original target for link, add _actual suffix if in actual mode and menu has is_mode = 1
+            $link_target = $cur_menu->target;
+            if(isset($cur_menu->is_mode) && $cur_menu->is_mode == 1 && user('transaction_mode') == 'actual_mode') {
+                $link_target = $cur_menu->target . '_actual';
+            }
 			$br[]   = array(
-				'link'  => $module == $cur_menu->target ? $module : $module . '/' . $cur_menu->target,
+				'link'  => $module == $cur_menu->target ? $link_target : $module . '/' . $link_target,
 				'title' => lang($cur_menu->target,$cur_menu->nama)
 			);
 		}
