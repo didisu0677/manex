@@ -157,6 +157,11 @@ function menu($type="all",$segment_f="") {
                     $m->target = $m->target . '_actual';
                 }
                 
+                // Add transaction mode to menu name if is_mode = 1 and transaction mode is not budget_mode
+                if(isset($m->is_mode) && $m->is_mode == 1 && user('transaction_mode') != 'budget_mode') {
+                    $m->nama = $m->nama . ' (' . lang(user('transaction_mode')) . ')';
+                }
+                
                 $menu[$m->id] = get_menu('tbl_user_akses', 'tbl_menu', user('id_group'), $m->id);
                 foreach($menu[$m->id] as $s) {
                     // Check submenu for actual mode target
@@ -164,11 +169,21 @@ function menu($type="all",$segment_f="") {
                         $s->target = $s->target . '_actual';
                     }
                     
+                    // Add transaction mode to submenu name if is_mode = 1 and transaction mode is not budget_mode
+                    if(isset($s->is_mode) && $s->is_mode == 1 && user('transaction_mode') != 'budget_mode') {
+                        $s->nama = $s->nama . ' (' . lang(user('transaction_mode')) . ')';
+                    }
+                    
                     $menu[$s->id] = get_menu('tbl_user_akses', 'tbl_menu', user('id_group'), $s->id);
                     foreach($menu[$s->id] as $e) {
                         // Check sub-submenu for actual mode target
                         if(isset($e->is_mode) && $e->is_mode == 1 && user('transaction_mode') == 'actual_mode') {
                             $e->target = $e->target . '_actual';
+                        }
+                        
+                        // Add transaction mode to sub-submenu name if is_mode = 1 and transaction mode is not budget_mode
+                        if(isset($e->is_mode) && $e->is_mode == 1 && user('transaction_mode') != 'budget_mode') {
+                            $e->nama = $e->nama . ' (' . lang(user('transaction_mode')) . ')';
                         }
                         
                         $menu[$e->id] = get_menu('tbl_user_akses', 'tbl_menu', user('id_group'), $e->id);
@@ -184,6 +199,11 @@ function menu($type="all",$segment_f="") {
             $cur_menu->target = $cur_menu->target . '_actual';
         }
 
+        // Add transaction mode to current menu name if is_mode = 1 and transaction mode is not budget_mode
+        if(isset($cur_menu->is_mode) && $cur_menu->is_mode == 1 && user('transaction_mode') != 'budget_mode') {
+            $cur_menu->nama = $cur_menu->nama . ' (' . lang(user('transaction_mode')) . ')';
+        }
+
         $access = get_data('tbl_user_akses',array(
             'where_array' => array(
                 'id_group' => user('id_group'),
@@ -197,6 +217,11 @@ function menu($type="all",$segment_f="") {
             $segment = uri_segment(1);
             $cur_menu = get_data('tbl_menu','target',$segment)->row();
             if(isset($cur_menu->id)) {
+                // Add transaction mode to current menu name if is_mode = 1 and transaction mode is not budget_mode
+                if(isset($cur_menu->is_mode) && $cur_menu->is_mode == 1 && user('transaction_mode') != 'budget_mode') {
+                    $cur_menu->nama = $cur_menu->nama . ' (' . lang(user('transaction_mode')) . ')';
+                }
+                
                 $access = get_data('tbl_user_akses',array(
                     'where_array' => array(
                         'id_group' => user('id_group'),
