@@ -50,8 +50,7 @@ class Sum_alldept_actual extends BE_Controller {
         $data['production'] = get_data('tbl_fact_cost_centre', $arr)->result(); 
 
         $status = 0;
-        $table = 'act_tbl_fact_lstbudget_' . $tahun ;
-
+        $table = 'tbl_fact_lstbudget_' . $tahun ;
 
         $arr = [
             'select' => 'a.id,a.account_code,a.account_name,a.urutan',
@@ -67,7 +66,6 @@ class Sum_alldept_actual extends BE_Controller {
 
         $customSelect2 = '';
 
-      
         foreach($data['mst_account'][0] as $m0) {
 
             $customWhere = [
