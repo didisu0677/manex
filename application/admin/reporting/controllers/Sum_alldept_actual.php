@@ -35,7 +35,8 @@ class Sum_alldept_actual extends BE_Controller {
 
     function data($tahun="", $bulan="",$status="",$tipe = 'table') {
 
-        $field = 'EST_' . sprintf('%02d', $bulan);
+        $field0 = 'EST_' . sprintf('%02d', $bulan);
+        $field1 = 'B_' . sprintf('%02d', $bulan);
         
 		ini_set('memory_limit', '-1');
         $arr = [
@@ -119,7 +120,7 @@ class Sum_alldept_actual extends BE_Controller {
 
 
         $sum_budget = get_data($table, [
-            'select' => 'cost_centre,account_code,sum('.$field.') as total_budget, sum('.$field.') as total_le',
+            'select' => 'cost_centre,account_code,sum('.$field0.') as total_budget, sum('.$field1.') as total_le',
             'where'  => [
                 'tahun' => $tahun,
                 'id_ccallocation' => 0
@@ -149,7 +150,7 @@ class Sum_alldept_actual extends BE_Controller {
         foreach($total_labour as $m) {
 
             $arr = [
-                'select' => 'cost_centre, sum('.$field.') as total_budget, sum('.$field.') as total_le',
+                'select' => 'cost_centre, sum('.$field0.') as total_budget, sum('.$field1.') as total_le',
                 'where' => [
                     'a.account_code' => json_decode($m->sum_of),
                     'a.id_ccallocation' => $status
