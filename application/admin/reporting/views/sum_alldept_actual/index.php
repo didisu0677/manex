@@ -15,7 +15,7 @@
 			<label for="periode"><?php echo lang('bulan'); ?></label>
 			<select class="select2 infinity custom-select" style = "width : 100px" name="bulan" id="bulan">
 				<?php for($i = 1; $i <= 12; $i++) { $j = sprintf('%02d',$i); ?>
-				<option value="<?php echo $j; ?>"<?php if($j == setting('actual_budget')-1) echo ' selected'; ?>><?php echo bulan($j); ?></option>
+				<option value="<?php echo $j; ?>"<?php if($j == setting('actual_budget')) echo ' selected'; ?>><?php echo bulan($j); ?></option>
 				<?php } ?>
 			</select>
 
