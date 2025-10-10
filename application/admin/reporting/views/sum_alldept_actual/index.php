@@ -110,13 +110,10 @@ $('#filter_tahun').change(function(){
 	getData();
 });
 
-$('#filter_cost_centre').change(function(){
+$('#bulan').change(function(){
 	getData();
 });
 
-$('#filter_allocated').change(function(){
-	getData();
-});
 
 function getData() {
 
