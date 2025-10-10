@@ -99,6 +99,8 @@ class Allocation_qc_actual extends BE_Controller {
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
 
+            $this->isi_budget_production_actual($tahun) ;
+
         }
 
         $response	= array(
@@ -123,6 +125,8 @@ class Allocation_qc_actual extends BE_Controller {
         $table = 'tbl_fact_allocation_qc_actual';
         $tahun = post('tahun') ;
         $bulan = post('bulan_import') ;
+
+        $field = 'B_' . sprintf('%02d', $bulan);
    
 		$file = post('fileimport');
 		$col = ['description','code','factory', 'quantity', 'pointunit', 'total_point', 'prsn_aloc'];
@@ -153,7 +157,12 @@ class Allocation_qc_actual extends BE_Controller {
                         $data2['update_at'] = date('Y-m-d H:i:s');
                         $data2['update_by'] = user('nama');
                     
-					    $save = update_data($table,$data2,['id'=>$cek->id]);					
+					    $save = update_data($table,$data2,['id'=>$cek->id]);		
+                        if($save) {
+                            update_data('tbl_budget_production_actual',
+                                [$field => str_replace([','],'',$data['quantity'])],
+                                ['tahun'=>$tahun,'budget_product_code'=>$data['code']]);  
+                        }					
                     }
 
                     if($save) $c++;
@@ -228,6 +237,57 @@ class Allocation_qc_actual extends BE_Controller {
 
         // echo 'success update ' .$jum . ' data' ;
 
+    }
+
+    function isi_budget_production_actual($tahun="") {
+        ini_set('memory_limit', '-1');
+        ini_set('max_execution_time', 0);
+
+        $table = 'tbl_budget_production_actual';
+
+        $arr = [
+            'select' => 'a.cost_centre as kode, b.id, b.cost_centre',
+            'join' => 'tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
+            'where' => [
+                'a.is_active' => 1,
+                'a.id_cost_centre !=' => 0,
+            ],
+            'group_by' => 'a.id_cost_centre',
+            'sort_by' => 'b.id', 
+             ];
+
+
+	    $data['grup'][0]= get_data('tbl_fact_product a',$arr)->result();
+
+
+        foreach($data['grup'][0] as $m0) {	
+
+            $cproduk = get_data('tbl_fact_product a',[
+                'where' => [
+                    'a.is_active' => 1,
+                    'a.id_cost_centre' => $m0->id,
+                ],
+                'sort_by' => 'a.id_cost_centre'
+            ])->result();
+            
+            foreach($cproduk as $p) {   
+                $cek = get_data($table . ' a',[
+                    'select' => 'a.*',
+                    'where' => [
+                        'a.tahun' => $tahun,
+                        'a.budget_product_code' => $p->code,
+                        'a.product_line' => $p->product_line,
+                    ]
+                ])->row();
+                if(!isset($cek->id)){
+                    insert_data($table,
+                    ['tahun' => $tahun, 'id_cost_centre' => $p->id_cost_centre ,'divisi' => $p->divisi, 'product_line' => $p->product_line, 'id_budget_product'=>$p->id, 'budget_product_code'=>$p->code, 
+                    'budget_product_name' => $p->product_name, 'category' => $p->sub_product]
+                );
+                }
+            }
+
+        }
     }
 }
 
