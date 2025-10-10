@@ -35,7 +35,7 @@ class Sum_alldept_actual extends BE_Controller {
 
     function data($tahun="", $bulan="",$status="",$tipe = 'table') {
 
-        $field = 'B_' . sprintf('%02d', $bulan);
+        $field = 'EST_' . sprintf('%02d', $bulan);
         
 		ini_set('memory_limit', '-1');
         $arr = [
