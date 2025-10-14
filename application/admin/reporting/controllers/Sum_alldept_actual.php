@@ -35,6 +35,7 @@ class Sum_alldept_actual extends BE_Controller {
 
     function data($tahun="", $bulan="",$status="",$tipe = 'table') {
 
+        $tahun = user('tahun_budget') 
         $field0 = 'EST_' . sprintf('%02d', $bulan);
         $field1 = 'B_' . sprintf('%02d', $bulan);
         
@@ -51,7 +52,7 @@ class Sum_alldept_actual extends BE_Controller {
         $data['production'] = get_data('tbl_fact_cost_centre', $arr)->result(); 
 
         $status = 0;
-        $table = 'tbl_fact_lstbudget_' . user('tahun_budget') ;
+        $table = 'tbl_fact_lstbudget_' . $tahun ;
 
         $arr = [
             'select' => 'a.id,a.account_code,a.account_name,a.urutan',
