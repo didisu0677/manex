@@ -8,7 +8,12 @@ class Manex_budget_actual extends BE_Controller {
     
     function index() {
 
-        $data['tahun'] = get_data('tbl_fact_tahun_budget', 'is_active',1)->result();   
+        $data['tahun'] = get_data('tbl_fact_tahun_budget', [
+            'where' => [
+                'is_active'=>1,
+                'tahun' => user('tahun_budget') - 1
+            ]
+        ])->result();  
         $data['cc'] = get_data('tbl_fact_cost_centre', 'is_active',1)->result(); 
         $access         = get_access($this->controller);
         $data['access_additional']  = $access['access_additional'];
@@ -21,6 +26,7 @@ class Manex_budget_actual extends BE_Controller {
 
     function data($tahun="",$cost_centre="",$status="",$tipe = 'table') {
 
+        $tahun = user('tahun_budget') ;
         $where = [];
         $where1 = [];
 
