@@ -51,7 +51,7 @@ class Sum_alldept_actual extends BE_Controller {
         $data['production'] = get_data('tbl_fact_cost_centre', $arr)->result(); 
 
         $status = 0;
-        $table = 'tbl_fact_lstbudget_' . $tahun ;
+        $table = 'tbl_fact_lstbudget_' . user('tahun_budget') ;
 
         $arr = [
             'select' => 'a.id,a.account_code,a.account_name,a.urutan',
