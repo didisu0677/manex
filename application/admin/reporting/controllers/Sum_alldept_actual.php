@@ -34,12 +34,13 @@ class Sum_alldept_actual extends BE_Controller {
     }
 
     function data($tahun="", $bulan="",$status="",$tipe = 'table') {
-
-        $tahun = user('tahun_budget') 
+		ini_set('memory_limit', '-1');
+        
+        $tahun = user('tahun_budget') ;
         $field0 = 'EST_' . sprintf('%02d', $bulan);
         $field1 = 'B_' . sprintf('%02d', $bulan);
         
-		ini_set('memory_limit', '-1');
+
         $arr = [
             'select' => '*',
             'where'	=> [
