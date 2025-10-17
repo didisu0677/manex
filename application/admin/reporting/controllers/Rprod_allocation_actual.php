@@ -73,7 +73,7 @@ class Rprod_allocation_actual extends BE_Controller {
         foreach($data['grup'][0] as $m0) {	
 
            
-            $data['produk'][$m0->id]= get_data('tbl_fact_product_ovh a',[
+            $data['produk'][$m0->id]= get_data('tbl_fact_product_ovh_actual a',[
                 'select' => 'a.*,b.product_name,b.destination, c.abbreviation as initial, c.cost_centre, c.kode',
                 'join' =>  ['tbl_fact_product b on a.product_code = b.code type LEFT',
                             'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
