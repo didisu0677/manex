@@ -214,6 +214,9 @@ class R_allocation extends BE_Controller {
 			'join' => ['tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
                        'tbl_idle_allocation c on b.id = c.id_cost_centre and b.is_active = 1 type left',
                       ],
+                      'where' => [
+                        'a.tahun' => $tahun,
+                      ]
   		])->result();
 
         foreach($lst as $l) {

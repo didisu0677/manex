@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Rprod_allocation extends BE_Controller {
+class Rprod_allocation_actual extends BE_Controller {
     var $controller = 'rprod_allocation';
     function __construct() {
         parent::__construct();
@@ -35,7 +35,12 @@ class Rprod_allocation extends BE_Controller {
             ],
         ])->result();
 
-        $data['tahun'] = get_data('tbl_fact_tahun_budget', 'is_active',1)->result();   
+        $data['tahun'] = get_data('tbl_fact_tahun_budget', [
+            'where' => [
+                'is_active'=>1,
+                'tahun' => user('tahun_budget') - 1
+            ],
+            ])->result();   
 
 
         $access         = get_access($this->controller);
@@ -48,7 +53,7 @@ class Rprod_allocation extends BE_Controller {
         render();
     }
 
-    function data($tahun = "",$cost_centre="" , $tipe = 'table') {
+    function data($tahun = "", $bulan = "", $cost_centre="" , $tipe = 'table') {
 
         $arr = [
                     'select' => 'a.cost_centre as kode, b.id, b.cost_centre',
@@ -75,17 +80,19 @@ class Rprod_allocation extends BE_Controller {
                            ],
                 'where' => [
                     'a.tahun' => $tahun,
+                    'a.bulan' => $bulan,
                     'a.id_cost_centre' =>$m0->id,
                     'a.qty_production !=' => 0
                 ],
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
 
-            $biaya = get_data('tbl_fact_manex_allocation a',[
+            $biaya = get_data('tbl_fact_manex_allocation_actual a',[
                 'select' => 'a.*',
                 'join' => 'tbl_fact_cost_centre b on a.cost_centre = b.kode',
                 'where' => [
                     'a.tahun' => $tahun ,
+                    'a.bulan' => $bulan,
                     'b.id' => $m0->id
                 ]
             ])->result();
@@ -119,7 +126,7 @@ class Rprod_allocation extends BE_Controller {
     //    debug($total_biaya);die;
 
         $response	= array(
-            'table'		=> $this->load->view('reporting/rprod_allocation/table',$data,true),
+            'table'		=> $this->load->view('reporting/rprod_allocation_actual/table',$data,true),
         );
 	   
 	    render($response,'json');
@@ -128,13 +135,15 @@ class Rprod_allocation extends BE_Controller {
 
     function save_alokasi() {
         $tahun = post('tahun');
+        $bulan = post('bulan');
 
  
         $list_ccallocation = [];
-        $dtalocation = get_data('tbl_fact_alocation_service a',[
+        $dtalocation = get_data('tbl_fact_alocation_service_actual a',[
             'select' => 'a.cost_centre',
             'where' => [
                 'a.tahun' => $tahun,
+                'a.bulan' => $bulan,
             ],
             'group_by' => 'cost_centre',
             ])->result();
@@ -146,22 +155,24 @@ class Rprod_allocation extends BE_Controller {
         }
 
    
-        $produk = get_data('tbl_fact_product_ovh a',[
+        $produk = get_data('tbl_fact_product_ovh_actual a',[
             'select' => 'a.*,b.product_name,b.destination, c.abbreviation as initial, c.cost_centre, c.kode',
             'join' =>  ['tbl_fact_product b on a.product_code = b.code',
                         'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
                         ],
             'where' => [
                 'a.tahun' => $tahun,
+                'a.bulan' => $bulan,
                 'a.qty_production !=' => 0,
             ],
             'sort_by' => 'a.id_cost_centre'
         ])->result();
 
-        $biaya = get_data('tbl_fact_manex_allocation a',[
+        $biaya = get_data('tbl_fact_manex_allocation_actual a',[
             'select' => 'a.cost_centre,a.manex_account as account_code, sum(a.total) as total,sum(a.total_idle) as total_idle, sum(a.after_idle) as after_idle',
             'where' => [
                 'a.tahun' => $tahun,
+                'a.bulan' => $bulan,
                 'a.cost_centre' => $list_ccallocation,
             ],
             'group_by' => 'a.cost_centre,a.manex_account'
@@ -240,9 +251,9 @@ class Rprod_allocation extends BE_Controller {
                 }
             }
 
-            update_data('tbl_fact_product_ovh',['direct_labour' => $direct_labour,'utilities' => $utilities,'supplies' => $supplies,
+            update_data('tbl_fact_product_ovh_actual',['direct_labour' => $direct_labour,'utilities' => $utilities,'supplies' => $supplies,
                 'indirect_labour' => $indirect_labour,'repair' => $repair, 'depreciation' => $depreciation, 'rent'=>$rent, 'others'=>$others],
-                ['tahun'=>$tahun,'product_code'=>$p->product_code]);
+                ['tahun'=>$tahun, 'bulan' => $bulan, 'product_code'=>$p->product_code]);
 
         }
 

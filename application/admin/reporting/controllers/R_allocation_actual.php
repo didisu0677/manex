@@ -199,28 +199,33 @@ class R_allocation_actual extends BE_Controller {
         }
 
         // debug($data['total_budget_idle']);die;
-        delete_data('tbl_fact_manex_allocation_actual', ['tahun'=>$tahun,'cost_centre !=' => '3100']);
+        delete_data('tbl_fact_manex_allocation_actual', ['tahun'=>$tahun,'bulan' => $bulan,'cost_centre !=' => '3100']);
         //simpan report ke database
         foreach($data['total_budget'] as $d => $v) {
             foreach($v as $vc => $t1) {
    
                 $data_insert = [
                     'tahun' => $tahun,
+                    'bulan' => $bulan,
                     'manex_account' => $d,
                     'cost_centre' => $vc,
                     'total' => $t1
                 ];
-                insert_data('tbl_fact_manex_allocation',$data_insert);
+                insert_data('tbl_fact_manex_allocation_actual',$data_insert);
             }
         }
 
 
         $lst = get_data('tbl_fact_manex_allocation_actual a',[
 			'select' => 'a.*,b.kode as cost_centre,c.prsn_allocation',
-			'join' => ['tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
+			'join'   => ['tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
                        'tbl_idle_allocation c on b.id = c.id_cost_centre and b.is_active = 1 type left',
-                      ],
-  		])->result();
+                        ],
+            'where'  => [
+                        'a.tahun' => $tahun,
+                        'a.bulan' => $bulan,
+                        ]
+  		    ])->result();
 
         foreach($lst as $l) {
             $total_idle = 0;
@@ -230,9 +235,9 @@ class R_allocation_actual extends BE_Controller {
                 $after_idle = $l->total - ($l->total * ($l->prsn_allocation /100));
             }
 
-                update_data('tbl_fact_manex_allocation',
+                update_data('tbl_fact_manex_allocation_actual',
                     ['total_idle' => $total_idle, 'after_idle' => $after_idle ],
-                    ['tahun' => $l->tahun,'manex_account'=>$l->manex_account,'cost_centre' => $l->cost_centre],
+                    ['tahun' => $l->tahun,'bulan' => $l->bulan,'manex_account'=>$l->manex_account,'cost_centre' => $l->cost_centre],
                 );
 
             $data['total_budget_idle'][$l->manex_account][$l->cost_centre] = $total_idle;

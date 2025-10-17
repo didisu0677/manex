@@ -184,13 +184,14 @@ class Resume_costing_actual extends BE_Controller {
 
         // debug($data['total_budget']);die;
 
-        delete_data('tbl_fact_manex_allocation_actual', ['tahun'=>$tahun-1,'cost_centre' => "3100"]);
+        delete_data('tbl_fact_manex_allocation_actual', ['tahun'=>$tahun-1, 'bulan' => $bulan, 'cost_centre' => "3100"]);
         //simpan report ke database
         foreach($data['total_budget'] as $d => $v) {
             foreach($v as $vc => $t1) {
                 if($vc == "3100"){
                     $data_insert = [
                         'tahun' => $tahun-1,
+                        'bulan' => $bulan,
                         'manex_account' => $d,
                         'cost_centre' => $vc,
                         'total' => $t1
