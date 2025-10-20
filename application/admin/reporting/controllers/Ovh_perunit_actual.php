@@ -36,7 +36,13 @@ class Ovh_perunit_actual extends BE_Controller {
             ],
         ])->result();
 
-        $data['tahun'] = get_data('tbl_fact_tahun_budget', 'is_active',1)->result();   
+        $data['tahun'] = get_data('tbl_fact_tahun_budget', [
+            'where' => [
+                'is_active'=>1,
+                'tahun' => user('tahun_budget') - 1
+            ],
+        ])->result();   
+
 
 
         $access         = get_access($this->controller);
