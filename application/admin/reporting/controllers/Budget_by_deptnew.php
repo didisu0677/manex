@@ -633,6 +633,11 @@ class Budget_by_deptnew extends BE_Controller {
             $data['id_labour'][] = $m->id;
         }
 
+        // Debug: Check if total_header has data
+        // Uncomment these lines to debug:
+        // error_log('Total Header Count: ' . count($data['total_header']));
+        // error_log('Total Header Data: ' . print_r(array_keys($data['total_header']), true));
+
         $response	= array(
             'table'		=> $this->load->view('reporting/budget_by_deptnew/table',$data,true),
             'table2'		=> $this->load->view('reporting/budget_by_deptnew/table2',$data,true),

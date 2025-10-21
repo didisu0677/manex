@@ -44,17 +44,9 @@
 		</div>
 	</div>
 
-<div class="content-body mt-6">
+<div class="content-body table-freeze-fullwidth">
 
-	<div class="main-container mt-2">
-		<div class="row">
-
-			<div class="col-sm-12">
-
-				<div class="card">
-
-	    			<div class="card-body">
-	    				<div class="table-responsive tab-pane fade active show height-window" id="result">
+		<div class="table-responsive tab-pane fade active show" id="result">
 	    				<?php
 						table_open('table table-bordered table-app table-hover table-1');
 							thead();
@@ -90,12 +82,7 @@
 							tbody();
 						table_close();
 						?>
-	    				</div>
-	    			</div>
-	    		</div>
-	    	</div>
-	    </div>
-	</div>
+		</div>
 </div>
 	
 	<div class="overlay-wrap hidden">
@@ -155,14 +142,49 @@ function getData() {
 				$('.overlay-wrap').addClass('hidden');	
 
                 // calculate();
-				money_init()
+				money_init();
+				
+				// Ensure sticky header is properly positioned after data load
+				setTimeout(function(){
+					adjustStickyHeader();
+				}, 100);
 			}
 		});
 }
 
 
+// Function to adjust sticky header position when using page scroll
+function adjustStickyHeader() {
+    // Calculate the offset from page top elements
+    var contentHeaderHeight = $('.content-header').outerHeight() || 0;
+    var navbarHeight = $('.header-navbar').outerHeight() || 0;
+    
+    // Adjust the top position for sticky header
+    var stickyTop = 0; // Since we're using page scroll, keep it at top of viewport
+    
+    $('.table-1 thead th').css({
+        'top': stickyTop + 'px'
+    });
+}
+
 $(function(){
-	getData();
+    getData();
+    
+    // Adjust sticky header position
+    setTimeout(function(){
+        adjustStickyHeader();
+    }, 300);
+    
+    // Re-adjust on window resize
+    $(window).resize(function(){
+        adjustStickyHeader();
+    });
+    
+    // Monitor scroll to ensure header stays visible
+    $(window).scroll(function(){
+        // Header will automatically stick due to CSS position: sticky
+        // No additional JS needed for basic sticky behavior
+    });
 });
 
 

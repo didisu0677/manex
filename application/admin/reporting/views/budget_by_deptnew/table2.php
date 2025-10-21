@@ -1,4 +1,4 @@
-<?php 
+free<?php 
 $gnTotal = "";
 for ($i = 1; $i <= 12; $i++) { 
 	$gnTotal = "gTotal_" . sprintf('%02d', $i);
@@ -326,7 +326,7 @@ foreach($mst_account[0] as $m0) {
 		<?php } ?>
 	<?php } ?>
 	<tr>
-		<td bgcolor="#778899" style="color: white;">SUB TOTAL <?php echo strtoupper($m0->account_name);?></td>
+		<td bgcolor="#778899" style="color: white; font-weight: bold; background-color: #778899 !important;">SUB TOTAL <?php echo strtoupper($m0->account_name);?></td>
 		<?php
 		$field0 = '';
 		foreach($total_header as $h => $th){
@@ -335,13 +335,13 @@ foreach($mst_account[0] as $m0) {
 				for ($i = 1; $i <= 12; $i++) { 
 					$sTotal = "sTotal_" . sprintf('%02d', $i);
 	
-					echo '<td class="text-right" bgcolor="#778899" style="color: white;">'.number_format($$sTotal).'</td>';
-				}
+				echo '<td class="text-right" bgcolor="#778899" style="color: white;">'.number_format($$sTotal).'</td>';
+			}
 
-				$sub_total_incr_ = ($sTotal_le !=0 ? (($sTotal_budget / $sTotal_le)-1) * 100 : 0);
-				echo '<td class="text-right" bgcolor="#778899" style="color: white;">'.number_format($sTotal_budget).'</td>';
-				echo '<td class="text-right" bgcolor="#778899" style="color: white;">'.number_format($sTotal_le).'</td>';
-				echo '<td class="text-right" bgcolor="#778899" style="color: white;">'.number_format($sub_total_incr_,2).' %</td>';
+			$sub_total_incr_ = ($sTotal_le !=0 ? (($sTotal_budget / $sTotal_le)-1) * 100 : 0);
+			echo '<td class="text-right" bgcolor="#778899" style="color: white;">'.number_format($sTotal_budget).'</td>';
+			echo '<td class="text-right" bgcolor="#778899" style="color: white;">'.number_format($sTotal_le).'</td>';
+			echo '<td class="text-right" bgcolor="#778899" style="color: white;">'.number_format($sub_total_incr_,2).' %</td>';
 			}
 		}
 
@@ -375,21 +375,19 @@ foreach($mst_account[0] as $m0) {
 
 
 	<tr>
-		<th bgcolor="#D2691E" style="color: white;" colspan=""><b>GRAND TOTAL</b></th>
+		<th bgcolor="#D2691E" style="color: white; font-weight: bold; background-color: #D2691E !important;" colspan=""><b>GRAND TOTAL</b></th>
 		<?php
-		$gnTotal = '';
 		for ($i = 1; $i <= 12; $i++) { 
 			$gnTotal = "gTotal_" . sprintf('%02d', $i);
-
 			?>
 			<td class="text-right" bgcolor="#D2691E" style="color: white;"><?php echo number_format($$gnTotal);?></td>
 			<?php
 		}
 
 		$total_incr = ($gnTotal_le !=0 ? (($gnTotal_budget / $gnTotal_le)-1) * 100 : 0);
-		echo '<td class="text-right" bgcolor="#D2691E" style="color: white;"><div style="background:" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($gnTotal_budget).'</td>';
-		echo '<td class="text-right" bgcolor="#D2691E" style="color: white;"><div style="background:" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($gnTotal_le).'</td>';
-		echo '<td class="text-right" bgcolor="#D2691E" style="color: white;"><div style="background:" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right money-custom2"  data-id="" data-value="">'.number_format($total_incr,2).' %</td>';
+		echo '<td class="text-right" bgcolor="#D2691E" style="color: white;"><div style="min-height: 10px; overflow: visible;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($gnTotal_budget).'</div></td>';
+		echo '<td class="text-right" bgcolor="#D2691E" style="color: white;"><div style="min-height: 10px; overflow: visible;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($gnTotal_le).'</div></td>';
+		echo '<td class="text-right" bgcolor="#D2691E" style="color: white;"><div style="min-height: 10px; overflow: visible;" contenteditable="false" class="edit-value text-right money-custom2"  data-id="" data-value="">'.number_format($total_incr,2).' %</div></td>';
 
 		?>	
 	

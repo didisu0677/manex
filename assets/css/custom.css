@@ -126,3 +126,185 @@ ul.custom-nav {
     justify-content: center;
     align-items: stretch;
 }
+
+/* FREEZE HEADER - BASIC VERSION THAT WORKS */
+.table-freeze-fullwidth {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+}
+
+.table-freeze-fullwidth table {
+    width: 100%;
+}
+
+.table-freeze-fullwidth thead th {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background-color: #4a5568;
+    color: white !important;
+    padding: 8px;
+    border-bottom: 2px solid #2d3748 !important;
+}
+
+.table-freeze-fullwidth th {
+    color: white !important;
+    background-color: #4a5568 !important;
+}
+
+/* Body styling for contrast */
+.table-freeze-fullwidth .table-1 tbody td {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0;
+    padding: 8px;
+}
+
+.table-freeze-fullwidth .table-1 tbody tr:nth-child(even) td {
+    background-color: #f7fafc;
+}
+
+.table-freeze-fullwidth .table-1 tbody tr:hover td {
+    background-color: #edf2f7;
+}
+
+/* Full width content body - no margins anywhere */
+.table-freeze-fullwidth .content-body {
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+}
+
+/* Override any framework width restrictions */
+.table-freeze-fullwidth .table-responsive {
+    overflow-x: auto;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Ensure horizontal scroll for wide tables */
+.table-freeze-fullwidth .table-1 {
+    min-width: max-content;
+}
+
+/* Remove all possible margins and paddings */
+.table-freeze-fullwidth .content-body.mt-6 {
+    margin-top: 0 !important;
+}
+
+.table-freeze-fullwidth body .content-body {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* Override framework left positioning */
+.table-freeze-fullwidth .fixed-content .content-body {
+    left: 0 !important;
+}
+
+/* Freeze tab header along with table header */
+.table-freeze-fullwidth .card-header {
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0;
+    padding: 15px 20px;
+}
+
+.table-freeze-fullwidth .nav-pills {
+    margin-bottom: 0;
+}
+
+.table-freeze-fullwidth .nav-pills .nav-link {
+    border-radius: 0.375rem;
+    font-weight: 500;
+}
+
+.table-freeze-fullwidth .nav-pills .nav-link.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Full width layout for both tables */
+.table-freeze-fullwidth #result, 
+.table-freeze-fullwidth #result2 {
+    overflow: visible;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.table-freeze-fullwidth .table-1,
+.table-freeze-fullwidth .table-2 {
+    width: 100% !important;
+    margin: 0;
+    border-collapse: collapse;
+    min-width: max-content;
+}
+
+
+
+
+
+/* Force subtotal and grand total rows to be visible - simple approach */
+.table-freeze-fullwidth .bg-grey-2,
+.table-freeze-fullwidth .bg-grey-2-1,
+.table-freeze-fullwidth .bg-grey-3 {
+    display: table-row !important;
+    visibility: visible !important;
+}
+
+/* Ensure subtotal and grand total rows with bgcolor are not hidden */
+.table-freeze-fullwidth tr:has(td[bgcolor="#778899"]),
+.table-freeze-fullwidth tr:has(td[bgcolor="#D2691E"]) {
+    display: table-row !important;
+    visibility: visible !important;
+}
+
+
+
+/* Body styling for both tables */
+.table-freeze-fullwidth .table-1 tbody td,
+.table-freeze-fullwidth .table-2 tbody td {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0;
+    padding: 8px;
+}
+
+.table-freeze-fullwidth .table-1 tbody tr:nth-child(even) td,
+.table-freeze-fullwidth .table-2 tbody tr:nth-child(even) td {
+    background-color: #f7fafc;
+}
+
+.table-freeze-fullwidth .table-1 tbody tr:hover td,
+.table-freeze-fullwidth .table-2 tbody tr:hover td {
+    background-color: #edf2f7;
+}
+
+
+
+/* Ensure proper spacing between tab and table */
+.table-freeze-fullwidth .card-body {
+    padding-top: 0;
+}
+
+/* SUB TOTAL and GRAND TOTAL styling - Force background colors */
+.table-freeze-fullwidth table td[bgcolor="#778899"],
+.table-freeze-fullwidth table th[bgcolor="#778899"] {
+    background-color: #778899 !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.table-freeze-fullwidth table td[bgcolor="#D2691E"],
+.table-freeze-fullwidth table th[bgcolor="#D2691E"] {
+    background-color: #D2691E !important;
+    color: white !important;
+    font-weight: bold !important;
+}
