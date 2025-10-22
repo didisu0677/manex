@@ -117,6 +117,26 @@
 .height-window { height: calc(100vh - 140px); overflow: auto; }
 .table-2 { border-collapse: collapse; width: 100%; }
 .table-2 th, .table-2 td { white-space: nowrap; min-width: 60px; }
+
+/* CRITICAL: Ensure buttons and form controls remain functional */
+.btn, .btn-proses, .btn-save, .btn-export, .btn-act-import, .btn-template {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 1000 !important;
+}
+
+/* Ensure select dropdowns work */
+.select2, .custom-select {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 1000 !important;
+}
+
+/* Ensure all form controls work */
+input, select, button, textarea {
+    pointer-events: auto !important;
+    z-index: 1000 !important;
+}
 </style>
 
 <?php

@@ -391,4 +391,48 @@ function lanjut() {
 .table-1 .money {
     text-align: right !important;
 }
+
+/* CRITICAL: Ensure editable elements remain functional */
+.table-1 .edit-value {
+    pointer-events: auto !important;
+    user-select: text !important;
+    cursor: text !important;
+    z-index: 100 !important; /* Higher than frozen columns */
+}
+
+/* Ensure contenteditable elements work properly */
+.table-1 [contenteditable="true"] {
+    pointer-events: auto !important;
+    user-select: text !important;
+    cursor: text !important;
+    z-index: 100 !important;
+}
+
+/* Ensure div inside td doesn't interfere */
+.table-1 td div[contenteditable] {
+    pointer-events: auto !important;
+    user-select: text !important;
+    cursor: text !important;
+    z-index: 100 !important;
+}
+
+/* CRITICAL: Ensure buttons and form controls remain functional */
+.btn, .btn-proses, .btn-save, .btn-export, .btn-act-import, .btn-template {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 1000 !important;
+}
+
+/* Ensure select dropdowns work */
+.select2, .custom-select {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 1000 !important;
+}
+
+/* Ensure all form controls work */
+input, select, button, textarea {
+    pointer-events: auto !important;
+    z-index: 1000 !important;
+}
 </style>
