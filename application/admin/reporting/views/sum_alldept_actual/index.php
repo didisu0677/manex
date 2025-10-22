@@ -179,13 +179,15 @@ $(document).ready(function () {
     	calculate();
     });
     
-    // Inisialisasi freeze table setelah data loaded
+	// Inisialisasi freeze table setelah data loaded
 	setTimeout(function() {
 		freeze_table();
 		fix_total_background();
-	}, 1000);
-
-});
+		// Double check dengan delay
+		setTimeout(function() {
+			fix_total_background();
+		}, 500);
+	}, 1000);});
 
 // Fungsi freeze table - sama seperti production planning
 function freeze_table() {
@@ -241,18 +243,32 @@ function fix_total_background() {
 			// Set background untuk row itu sendiri
 			row.attr('style', 'background-color: ' + bgColor + ' !important;');
 			
-			// Set background untuk semua td dalam row ini
-			row.find('td').each(function() {
+			// Set background untuk semua td dalam row ini termasuk yang di akhir
+			row.find('td').each(function(index) {
 				var td = $(this);
 				var isHeadCol = td.hasClass('headcol');
+				var isLastCols = index >= (row.find('td').length - 3); // 3 kolom terakhir
 				
-				if (isHeadCol) {
-					// Untuk kolom freeze, override background dan tambahkan properties sticky
-					td.attr('style', 'background-color: ' + bgColor + ' !important; position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important; font-weight: bold !important;');
+				if (isHeadCol || isLastCols) {
+					// Untuk kolom freeze (awal dan akhir), override background dan tambahkan properties sticky
+					var stickyStyle = 'background-color: ' + bgColor + ' !important; position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important; font-weight: bold !important;';
+					
+					// Untuk kolom di akhir (total, total_le, increase) posisi berbeda
+					if (isLastCols && !td.hasClass('headcol')) {
+						td.addClass('headcol'); // Tambahkan class headcol jika belum ada
+					}
+					
+					td.attr('style', stickyStyle);
 				} else {
 					// Untuk kolom biasa
 					td.attr('style', 'background-color: ' + bgColor + ' !important;');
 				}
+			});
+			
+			// Force update untuk kolom total, total_le, increase khusus
+			row.find('td:nth-last-child(-n+3)').each(function() {
+				$(this).addClass('headcol');
+				$(this).attr('style', 'background-color: ' + bgColor + ' !important; position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important; font-weight: bold !important;');
 			});
 		}
 	});
@@ -291,8 +307,12 @@ function getData() {
 					// Fix background total setelah freeze dengan delay tambahan
 					setTimeout(function() {
 						fix_total_background();
-					}, 50);
-				}, 100);
+						// Delay ekstra untuk memastikan
+						setTimeout(function() {
+							fix_total_background();
+						}, 100);
+					}, 100);
+				}, 200);
 				
 				cLoader.close();
 
