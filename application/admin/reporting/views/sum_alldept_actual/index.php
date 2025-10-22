@@ -1,41 +1,40 @@
 <div class="content-header page-data" data-additional="<?= $access_additional ?>">
 	<div class="main-container position-relative">
-		<div class="header-info d-flex justify-content-between align-items-center">
-			<div>
-				<div class="content-title"><?php echo $title; ?></div>
-				<?php echo breadcrumb(); ?>
-			</div>
-			
-			<div class="float-right d-flex align-items-center">
-				<label class=""><?php echo lang('tahun'); ?>  &nbsp</label>
-				<select class="select2 infinity custom-select" style="width: 80px;" id="filter_tahun">
-					<?php foreach ($tahun as $tahun) { ?>
-	                <option value="<?php echo $tahun->tahun; ?>"<?php if($tahun->tahun == user('tahun_budget')) echo ' selected'; ?>><?php echo $tahun->tahun; ?></option>
-	                <?php } ?>
-				</select>
-				<label for="periode"><?php echo lang('bulan'); ?></label>
-				<select class="select2 infinity custom-select" style = "width : 100px" name="bulan" id="bulan">
-					<?php for($i = 1; $i <= 12; $i++) { $j = sprintf('%02d',$i); ?>
-					<option value="<?php echo $j; ?>"<?php if($j == setting('actual_budget')) echo ' selected'; ?>><?php echo bulan($j); ?></option>
-					<?php } ?>
-				</select>
-
-	    		<?php 
-
-				$arr = [];
-				$arr = [
-					// ['btn-save','Save Data','fa-save'],
-					['btn-export','Export Data','fa-upload'],
-					['btn-act-import','Import Data','fa-download'],
-					// ['btn-act-template','Template Import','fa-reg-file-alt']
-				];
-			
-			
-				echo access_button('',$arr); 
-
-				?>
-	    	</div>
+		<div class="header-info">
+			<div class="content-title"><?php echo $title; ?></div>
+			<?php echo breadcrumb(); ?>
 		</div>
+		
+		<div class="float-right">
+			<label class=""><?php echo lang('tahun'); ?>  &nbsp</label>
+			<select class="select2 infinity custom-select" style="width: 80px;" id="filter_tahun">
+				<?php foreach ($tahun as $tahun) { ?>
+                <option value="<?php echo $tahun->tahun; ?>"<?php if($tahun->tahun == user('tahun_budget')) echo ' selected'; ?>><?php echo $tahun->tahun; ?></option>
+                <?php } ?>
+			</select>
+			<label for="periode"><?php echo lang('bulan'); ?></label>
+			<select class="select2 infinity custom-select" style = "width : 100px" name="bulan" id="bulan">
+				<?php for($i = 1; $i <= 12; $i++) { $j = sprintf('%02d',$i); ?>
+				<option value="<?php echo $j; ?>"<?php if($j == setting('actual_budget')) echo ' selected'; ?>><?php echo bulan($j); ?></option>
+				<?php } ?>
+			</select>
+
+    		<?php 
+
+			$arr = [];
+			$arr = [
+				// ['btn-save','Save Data','fa-save'],
+				['btn-export','Export Data','fa-upload'],
+				['btn-act-import','Import Data','fa-download'],
+				// ['btn-act-template','Template Import','fa-reg-file-alt']
+			];
+		
+		
+			echo access_button('',$arr); 
+
+			?>
+    	</div>
+		<div class="clearfix"></div>
 	</div>
 	</div>
 
@@ -166,6 +165,11 @@
 body {
     margin: 0 !important;
     padding: 0 !important;
+}
+
+/* Positioning filter agar sejajar dengan title */
+.content-header .float-right {
+    margin-top: -50px !important;
 }
 
 
