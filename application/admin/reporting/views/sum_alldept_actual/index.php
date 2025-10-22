@@ -117,14 +117,6 @@
 .height-window { height: calc(100vh - 140px); overflow: auto; }
 .table-2 { border-collapse: collapse; width: 100%; }
 .table-2 th, .table-2 td { white-space: nowrap; min-width: 60px; }
-
-
-S
-
-
-
-
-
 </style>
 
 <?php
