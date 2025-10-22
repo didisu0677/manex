@@ -410,6 +410,11 @@ function lanjut() {
     text-align: right !important;
 }
 
+/* Center alignment for summary rows */
+.table-1 .text-center {
+    text-align: center !important;
+}
+
 /* CRITICAL: Ensure editable elements remain functional */
 .table-1 .edit-value {
     pointer-events: auto !important;

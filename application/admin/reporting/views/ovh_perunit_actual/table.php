@@ -9,8 +9,8 @@
 	foreach($grup[0] as $m0) { ?>
 		<tr class="bg-grey-3">
 			<th colspan="15" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><?php echo $m0->cost_centre; ?></th>
-		</tr>		
-  	<?php
+		</tr>
+	<?php
 
 	$sum_totalfixed = 0;
 	$sum_totalvariable = 0;
@@ -95,7 +95,6 @@
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="'.$total_ovh.'"><b>'.number_format($m1->qty_production).'</b></td>';
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="'.$total_ovh.'"><b>'.number_format($total_foh).'</b></td>';
 			?>
-
 		</tr>
 	<?php 
 	} 
@@ -118,7 +117,6 @@
 		echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($sum_totalfoh).'</b></td>';
 		?>
 	</tr>
-
 <?php } ?>
 <tr class="bg-grey-2">
 	<?php
@@ -138,6 +136,4 @@
 	echo '<td class="text-right" style="background: #D2691E !important; color: white !important; font-weight: bold !important;"><b>'.number_format($grand_totalfoh).'</b></td>';
 
 	?>
-
 </tr>
-			
