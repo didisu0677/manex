@@ -366,8 +366,8 @@ foreach($mst_account[0] as $m0) {
 			<?php } ?>
 		<?php } ?>
 	<?php } ?>
-	<tr>
-		<td bgcolor="#778899" style="color: white;">SUB TOTAL <?php echo strtoupper($m0->account_name);?></td>
+	<tr class="bg-grey-3">
+		<td style="background-color: #778899 !important; color: white !important; font-weight: bold !important;">SUB TOTAL <?php echo strtoupper($m0->account_name);?></td>
 		<?php
 		$field0 = '';
 
@@ -377,36 +377,36 @@ foreach($mst_account[0] as $m0) {
 				foreach($production as $p) { 
 					$sTotal = "sTotal_" . $p->kode;
 	
-					echo '<td class="text-right" bgcolor="#778899" style="color: white;">'.number_format($$sTotal).'</td>';
+					echo '<td class="text-right" style="background-color: #778899 !important; color: white !important; font-weight: bold !important;">'.number_format($$sTotal).'</td>';
 					$sTotal_budget += $$sTotal;
 				}
 
 				$sub_total_incr_ = ($sTotal_le !=0 ? (($sTotal_budget / $sTotal_le)-1) * 100 : 0);
-				echo '<td class="text-right" bgcolor="#778899" style="color: white;">'.number_format($sTotal_budget).'</td>';
-				echo '<td class="text-right" bgcolor="#778899" style="color: white;">'.number_format($sTotal_le).'</td>';
-				echo '<td class="text-right" bgcolor="#778899" style="color: white;">'.number_format($sub_total_incr_,2).' %</td>';
+				echo '<td class="text-right" style="background-color: #778899 !important; color: white !important; font-weight: bold !important;">'.number_format($sTotal_budget).'</td>';
+				echo '<td class="text-right" style="background-color: #778899 !important; color: white !important; font-weight: bold !important;">'.number_format($sTotal_le).'</td>';
+				echo '<td class="text-right" style="background-color: #778899 !important; color: white !important; font-weight: bold !important;">'.number_format($sub_total_incr_,2).' %</td>';
 
 	?>
 	</tr>
 <?php } ?>
 
 
-	<tr>
-		<th bgcolor="#D2691E" style="color: white;" colspan=""><b>GRAND TOTAL</b></th>
+	<tr class="bg-grey-2">
+		<th style="background-color: #D2691E !important; color: white !important; font-weight: bold !important;" colspan=""><b>GRAND TOTAL</b></th>
 		<?php
 		$gnTotal = '';
 		foreach($production as $p) { 
 			$gnTotal = "gTotal_" . $p->kode;
 
 			?>
-			<td class="text-right" bgcolor="#D2691E" style="color: white;"><?php echo number_format($$gnTotal);?></td>
+			<td class="text-right" style="background-color: #D2691E !important; color: white !important; font-weight: bold !important;"><?php echo number_format($$gnTotal);?></td>
 			<?php
 		}
 
 		$total_incr = ($gnTotal_le !=0 ? (($gnTotal_budget / $gnTotal_le)-1) * 100 : 0);
-		echo '<td class="text-right" bgcolor="#D2691E" style="color: white;"><div style="background:" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($gnTotal_budget).'</td>';
-		echo '<td class="text-right" bgcolor="#D2691E" style="color: white;"><div style="background:" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($gnTotal_le).'</td>';
-		echo '<td class="text-right" bgcolor="#D2691E" style="color: white;"><div style="background:" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right money-custom2"  data-id="" data-value="">'.number_format($total_incr,2).' %</td>';
+		echo '<td class="text-right" style="background-color: #D2691E !important; color: white !important; font-weight: bold !important;"><div style="background-color: #D2691E !important;" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($gnTotal_budget).'</td>';
+		echo '<td class="text-right" style="background-color: #D2691E !important; color: white !important; font-weight: bold !important;"><div style="background-color: #D2691E !important;" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($gnTotal_le).'</td>';
+		echo '<td class="text-right" style="background-color: #D2691E !important; color: white !important; font-weight: bold !important;"><div style="background-color: #D2691E !important;" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right money-custom2"  data-id="" data-value="">'.number_format($total_incr,2).' %</td>';
 
 		?>	
 	

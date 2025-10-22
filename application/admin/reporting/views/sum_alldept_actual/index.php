@@ -210,6 +210,41 @@
     background-color: #888888 !important;
 }
 
+/* Override untuk SUB TOTAL dan GRAND TOTAL rows yang menggunakan inline style */
+.table-2 tr.bg-grey-3 td[style*="background-color: #778899"] {
+    background-color: #778899 !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.table-2 tr.bg-grey-3 td:first-child[style*="background-color: #778899"] {
+    background-color: #778899 !important;
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 10 !important;
+    border-right: 2px solid #dee2e6 !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.table-2 tr.bg-grey-2 td[style*="background-color: #D2691E"],
+.table-2 tr.bg-grey-2 th[style*="background-color: #D2691E"] {
+    background-color: #D2691E !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.table-2 tr.bg-grey-2 td:first-child[style*="background-color: #D2691E"],
+.table-2 tr.bg-grey-2 th:first-child[style*="background-color: #D2691E"] {
+    background-color: #D2691E !important;
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 10 !important;
+    border-right: 2px solid #dee2e6 !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
 /* Maksimalkan container table height seperti production planning */
 .height-window {
     height: calc(100vh - 140px) !important;
