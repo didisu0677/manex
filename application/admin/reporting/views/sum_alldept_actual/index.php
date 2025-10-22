@@ -168,10 +168,7 @@ body {
     padding: 0 !important;
 }
 
-/* Hanya jarak dari navbar menu */
-.content-header {
-    margin-top: 20px !important;
-}
+
 </style>
 
 <?php
