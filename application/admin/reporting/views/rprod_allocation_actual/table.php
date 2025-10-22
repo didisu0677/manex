@@ -6,7 +6,7 @@
 	$grandtotal_ovh = 0;
 	foreach($grup[0] as $m0) { ?>
 		<tr class="bg-grey-3">
-			<th colspan="13" style="background: #778899 !important; min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff" style="color: #fff !important;"><?php echo $m0->cost_centre; ?></font></th>
+			<th colspan="13" style="background: #778899 !important; height: 25px !important; padding: 3px 8px !important; font-size: 12px !important; font-weight: bold !important;"><font color="#fff" style="color: #fff !important;"><?php echo $m0->cost_centre; ?></font></th>
 		</tr>		
   	<?php
 

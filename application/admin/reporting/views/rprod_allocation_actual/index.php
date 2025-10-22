@@ -242,10 +242,11 @@ function lanjut() {
     position: sticky !important; 
     top: 0 !important; 
     z-index: 5 !important; 
-    height: 41px !important; /* Set consistent header height */
-    padding: 6px 8px !important;
+    height: 32px !important; /* Reduced header height */
+    padding: 4px 6px !important;
     vertical-align: middle !important;
     box-sizing: border-box !important;
+    font-size: 12px !important; /* Smaller font for compact view */
 }
 
 /* Header row positioning - handle multi-row headers */
@@ -255,17 +256,18 @@ function lanjut() {
 }
 
 .table-1 thead tr:nth-child(2) th { 
-    top: 41px !important; /* Match the height of first row */
+    top: 32px !important; /* Match the height of first row */
     z-index: 6 !important; 
 }
 
 /* Special handling for rowspan columns - Total Overhead */
 .table-1 thead tr:first-child th[rowspan="2"] { 
-    height: 82px !important; /* Double height for rowspan=2 */
+    height: 64px !important; /* Double height for rowspan=2 (32px x 2) */
     top: 0 !important;
     z-index: 7 !important;
     border-bottom: 2px solid #dee2e6 !important;
     vertical-align: middle !important;
+    font-size: 12px !important;
 }
 
 /* First row - "Product" spans 2 columns, freeze it */
@@ -333,14 +335,20 @@ function lanjut() {
 .table-1 th, .table-1 td { 
     white-space: nowrap !important; 
     min-width: 80px !important; 
-    padding: 6px 8px !important; 
+    padding: 3px 5px !important; 
     border: 1px solid #dee2e6 !important; 
-    line-height: 1.2 !important;
+    line-height: 1.1 !important;
+    font-size: 12px !important; /* Smaller font for all cells */
 }
 
 /* Reduce border thickness for headers */
 .table-1 thead th {
     border-width: 1px !important;
+}
+
+/* Compact body rows */
+.table-1 tbody td {
+    height: 28px !important; /* Compact row height */
 }
 
 /* Subtotal rows - maintain background for frozen columns */
@@ -386,5 +394,21 @@ function lanjut() {
 .bg-grey-2 th,
 .bg-grey-2 td {
     color: #fff !important;
+}
+
+/* Compact grouping rows */
+.table-1 .bg-grey-3 th {
+    height: 25px !important;
+    padding: 3px 8px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    line-height: 1.2 !important;
+}
+
+.table-1 .bg-grey-2 td {
+    height: 30px !important;
+    padding: 4px 6px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
 }
 </style>
