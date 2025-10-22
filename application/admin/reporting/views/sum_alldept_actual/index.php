@@ -182,6 +182,7 @@ $(document).ready(function () {
     // Inisialisasi freeze table setelah data loaded
 	setTimeout(function() {
 		freeze_table();
+		fix_total_background();
 	}, 1000);
 
 });
@@ -237,14 +238,21 @@ function fix_total_background() {
 		
 		// Set background untuk semua td dalam row ini
 		if (bgColor) {
-			row.find('td').each(function() {
-				$(this).attr('style', 'background-color: ' + bgColor + ' !important;');
-			});
+			// Set background untuk row itu sendiri
+			row.attr('style', 'background-color: ' + bgColor + ' !important;');
 			
-			// Khusus untuk kolom freeze, tambahkan border-right
-			row.find('td.headcol').each(function() {
-				var currentStyle = $(this).attr('style') || '';
-				$(this).attr('style', currentStyle + ' border-right: 2px solid #dee2e6 !important;');
+			// Set background untuk semua td dalam row ini
+			row.find('td').each(function() {
+				var td = $(this);
+				var isHeadCol = td.hasClass('headcol');
+				
+				if (isHeadCol) {
+					// Untuk kolom freeze, override background dan tambahkan properties sticky
+					td.attr('style', 'background-color: ' + bgColor + ' !important; position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important; font-weight: bold !important;');
+				} else {
+					// Untuk kolom biasa
+					td.attr('style', 'background-color: ' + bgColor + ' !important;');
+				}
 			});
 		}
 	});
@@ -280,8 +288,10 @@ function getData() {
 				// Apply freeze header setelah data loaded
 				setTimeout(function() {
 					freeze_table();
-					// Fix background total setelah freeze
-					fix_total_background();
+					// Fix background total setelah freeze dengan delay tambahan
+					setTimeout(function() {
+						fix_total_background();
+					}, 50);
 				}, 100);
 				
 				cLoader.close();
