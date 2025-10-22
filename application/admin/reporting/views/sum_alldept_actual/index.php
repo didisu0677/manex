@@ -42,7 +42,7 @@
 		<div class="card-body tab-content">
 			<div class="card">
 				<div class="card-body">
-					<div class="table-responsive tab-pane fade active show height-window" id="result2" style="margin: 0 !important; padding: 0 !important;">
+					<div class="table-responsive tab-pane fade active show height-window" id="result2">
 						<?php
 						table_open('table table-bordered table-app table-hover table-2');
 							thead();
@@ -144,23 +144,7 @@
     background: #555 !important;
 }
 
-/* Reset main-container ke default */
 
-.content-body {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-.card {
-    border: none !important;
-    box-shadow: none !important;
-}
-
-/* Maksimalkan viewport usage */
-body {
-    margin: 0 !important;
-    padding: 0 !important;
-}
 
 
 
