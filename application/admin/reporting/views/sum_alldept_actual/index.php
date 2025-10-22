@@ -183,10 +183,6 @@ $(document).ready(function () {
 	setTimeout(function() {
 		freeze_table();
 		fix_total_background();
-		// Double check dengan delay
-		setTimeout(function() {
-			fix_total_background();
-		}, 500);
 	}, 1000);});
 
 // Fungsi freeze table - sama seperti production planning
@@ -218,63 +214,27 @@ function freeze_table() {
 	fix_total_background();
 }
 
-// Fungsi untuk memastikan background total rows konsisten - manual HTML saja
+// Fungsi sederhana untuk background total rows
 function fix_total_background() {
-	// Cari semua baris dengan class bg-grey
-	$('.table-2 tbody tr[class*="bg-grey"]').each(function() {
-		var row = $(this);
-		var bgColor = '';
-		
-		// Tentukan warna background berdasarkan class
-		if (row.hasClass('bg-grey-1')) {
-			bgColor = '#f4f4f4';
-		} else if (row.hasClass('bg-grey-2')) {
-			bgColor = '#dddddd';
-		} else if (row.hasClass('bg-grey-2-1')) {
-			bgColor = '#b4b4b4';
-		} else if (row.hasClass('bg-grey-2-2')) {
-			bgColor = '#aaaaaa';
-		} else if (row.hasClass('bg-grey-3')) {
-			bgColor = '#888888';
-		}
-		
-		// Manual setting HTML inline style untuk background full row
-		if (bgColor) {
-			// Set background untuk row itu sendiri
-			row.attr('style', 'background-color: ' + bgColor + ' !important;');
-			
-			// Set background untuk SEMUA td dalam row ini - manual HTML
-			row.find('td').each(function() {
-				var currentStyle = $(this).attr('style') || '';
-				var newStyle = 'background-color: ' + bgColor + ' !important; color: #000 !important;';
-				
-				// Jika td memiliki class headcol, pertahankan properties freeze tapi override background dan font
-				if ($(this).hasClass('headcol')) {
-					// Hapus background dan color lama, set yang baru
-					var existingStyle = currentStyle.replace(/background-color:[^;]*;?/gi, '').replace(/color:[^;]*;?/gi, '');
-					newStyle = 'background-color: ' + bgColor + ' !important; color: #000 !important; ' + existingStyle;
-					
-					// Pastikan properties freeze ada
-					if (!existingStyle.includes('position: sticky')) {
-						newStyle += ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important; font-weight: bold !important;';
-					} else {
-						// Jika sudah ada sticky, pastikan z-index dan border tetap ada
-						if (!existingStyle.includes('z-index')) {
-							newStyle += ' z-index: 10 !important;';
-						}
-						if (!existingStyle.includes('border-right')) {
-							newStyle += ' border-right: 2px solid #dee2e6 !important;';
-						}
-						if (!existingStyle.includes('font-weight')) {
-							newStyle += ' font-weight: bold !important;';
-						}
-					}
-				}
-				
-				// Set style manual ke HTML
-				$(this).attr('style', newStyle);
-			});
-		}
+	// Cari semua baris dengan class bg-grey dan set background manual
+	$('.table-2 tbody tr.bg-grey-1 td').attr('style', function() {
+		return 'background-color: #f4f4f4 !important; color: #000 !important;' + ($(this).hasClass('headcol') ? ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;' : '');
+	});
+	
+	$('.table-2 tbody tr.bg-grey-2 td').attr('style', function() {
+		return 'background-color: #dddddd !important; color: #000 !important;' + ($(this).hasClass('headcol') ? ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;' : '');
+	});
+	
+	$('.table-2 tbody tr.bg-grey-2-1 td').attr('style', function() {
+		return 'background-color: #b4b4b4 !important; color: #000 !important;' + ($(this).hasClass('headcol') ? ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;' : '');
+	});
+	
+	$('.table-2 tbody tr.bg-grey-2-2 td').attr('style', function() {
+		return 'background-color: #aaaaaa !important; color: #000 !important;' + ($(this).hasClass('headcol') ? ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;' : '');
+	});
+	
+	$('.table-2 tbody tr.bg-grey-3 td').attr('style', function() {
+		return 'background-color: #888888 !important; color: #000 !important;' + ($(this).hasClass('headcol') ? ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;' : '');
 	});
 }	
 
@@ -308,14 +268,7 @@ function getData() {
 				// Apply freeze header setelah data loaded
 				setTimeout(function() {
 					freeze_table();
-					// Fix background total setelah freeze dengan delay tambahan
-					setTimeout(function() {
-						fix_total_background();
-						// Delay ekstra untuk memastikan
-						setTimeout(function() {
-							fix_total_background();
-						}, 100);
-					}, 100);
+					fix_total_background();
 				}, 200);
 				
 				cLoader.close();
