@@ -98,9 +98,114 @@
 	</div>
 </div>
 
+<style>
+/* Freeze header CSS - sama seperti production planning */
+.headcol {
+    position: sticky !important;
+    position: -webkit-sticky !important;
+    left: 0 !important;
+    z-index: 10 !important;
+    background-color: #f8f9fa !important;
+    border-right: 2px solid #dee2e6 !important;
+}
+
+.height-window {
+    height: calc(100vh - 140px) !important;
+    overflow: auto !important;
+    position: relative !important;
+    max-height: calc(100vh - 140px) !important;
+}
+
+.table-1 th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 5 !important;
+    background-color: #4a5569 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+    font-weight: bold !important;
+}
+
+.table-1 th.headcol {
+    z-index: 15 !important;
+    background-color: #4a5569 !important;
+    color: #fff !important;
+    font-weight: bold !important;
+}
+
+/* Header table styling - untuk semua header */
+.table-1 thead th {
+    background-color: #4a5569 !important;
+    color: #fff !important;
+    font-weight: bold !important;
+    border: 1px solid #fff !important;
+}
+
+/* Styling untuk body cells dengan headcol */
+.table-1 td.headcol {
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 10 !important;
+    background-color: #f8f9fa !important;
+    border-right: 2px solid #dee2e6 !important;
+    font-weight: bold !important;
+}
+
+.table-1 td.sub-1 {
+    font-weight: bold;
+    background-color: #e9ecef;
+}
+
+/* Pastikan container parent tidak membatasi height */
+.card {
+    height: auto !important;
+    min-height: calc(100vh - 120px) !important;
+}
+
+.content-body {
+    height: auto !important;
+    min-height: calc(100vh - 100px) !important;
+}
+
+/* Pastikan table memiliki border collapse yang benar */
+.table-1 {
+    border-collapse: collapse !important;
+    width: 100% !important;
+}
+
+/* Memastikan cell table tidak terpotong */
+.table-1 th,
+.table-1 td {
+    white-space: nowrap !important;
+    min-width: 80px !important;
+}
+
+/* Style untuk scrollbar agar lebih mudah dilihat dan digunakan */
+.height-window::-webkit-scrollbar {
+    width: 8px !important;
+    height: 8px !important;
+}
+
+.height-window::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+}
+
+.height-window::-webkit-scrollbar-thumb {
+    background: #888 !important;
+}
+
+.height-window::-webkit-scrollbar-thumb:hover {
+    background: #555 !important;
+}
+</style>
+
 <script>
 $(document).ready(function() {
 	getData();
+	// Inisialisasi freeze table setelah data loaded
+	setTimeout(function() {
+		freeze_table();
+	}, 1000);
 });
 
 $('#filter_tahun').change(function() {
@@ -110,6 +215,40 @@ $('#filter_tahun').change(function() {
 $('#filter_supplier').change(function() {
 	getData();
 });
+
+// Fungsi freeze table - sama seperti production planning
+function freeze_table() {
+	// Pastikan semua kolom pertama memiliki class headcol
+	$('.table-1 td.sub-1').addClass('headcol');
+	
+	// Set styling untuk header
+	$('.table-1 th.headcol').css({
+		'position': 'sticky',
+		'left': '0',
+		'z-index': '15',
+		'background-color': '#4a5569',
+		'color': '#fff'
+	});
+	
+	// Set styling untuk body cells dengan headcol
+	$('.table-1 td.headcol').css({
+		'position': 'sticky',
+		'left': '0',
+		'z-index': '10',
+		'background-color': '#f8f9fa',
+		'border-right': '2px solid #dee2e6',
+		'font-weight': 'bold'
+	});
+	
+	// Styling khusus untuk material name dan code rows
+	$('.table-1 td[colspan="13"]').css({
+		'position': 'sticky',
+		'left': '0',
+		'z-index': '10',
+		'background-color': '#f8f9fa',
+		'font-weight': 'bold'
+	});
+}
 
 function getData() {
 	cLoader.open(lang.memuat_data + '...');
@@ -130,6 +269,11 @@ function getData() {
 			
 			// Call calculate after data loaded
 			calculate();
+			
+			// Apply freeze header setelah data loaded
+			setTimeout(function() {
+				freeze_table();
+			}, 100);
 			
 			cLoader.close();
 			$('.overlay-wrap').addClass('hidden');

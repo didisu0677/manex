@@ -16,13 +16,13 @@
 		$contentedit ="false" ;
 		?>
 		<tr>
-			<td style="width: 150px;" colspan ="13"><b><?php echo $m1->material_name; ?></b></td>
+			<td style="width: 150px; background-color: #f8f9fa; font-weight: bold; position: sticky; left: 0; z-index: 10;" colspan ="13"><?php echo $m1->material_name; ?></td>
 		</tr>	
 		<tr>
-			<td style="width: 150px;" colspan ="13"><b><?php echo 'Code : ' . $m1->material_code .', Min. Order: ' . $m1->moq . ', Order Multiple :' . $m1->order_multiple; ?></b></td>
+			<td style="width: 150px; background-color: #f8f9fa; font-weight: bold; position: sticky; left: 0; z-index: 10;" colspan ="13"><?php echo 'Code : ' . $m1->material_code .', Min. Order: ' . $m1->moq . ', Order Multiple :' . $m1->order_multiple; ?></td>
 		</tr>
 		<tr>
-			<td style="width: 150px;" class="sub-1">Beginning Stock</td>
+			<td style="width: 150px;" class="sub-1 headcol">Beginning Stock</td>
 			<?php
 
 		
@@ -51,7 +51,7 @@
 
 		</tr>
 		<tr>
-			<td class="sub-1">Arrival quantity</td>
+			<td class="sub-1 headcol">Arrival quantity</td>
 			<?php
 			$bgedit ="#CCCCFF";
 			$contentedit ="true" ;
@@ -88,7 +88,7 @@
 			?>
 		</tr>
 		<tr>
-			<td style="background-color:; color: #0101fd;" class="sub-1">Units available for use</td>
+			<td style="background-color:; color: #0101fd;" class="sub-1 headcol">Units available for use</td>
 			<?php
 			$bgedit ="";
 			$contentedit ="false" ;
@@ -102,7 +102,7 @@
 			
 		</tr>
 		<tr>
-			<td class="sub-1">Units used in production</td>
+			<td class="sub-1 headcol">Units used in production</td>
 			<?php
 				$bgedit ="";
 				$contentedit ="false" ;
@@ -117,7 +117,7 @@
 			?>
 		</tr>
 		<tr>
-			<td class="sub-1">End Stock</td>
+			<td class="sub-1 headcol">End Stock</td>
 			<?php
 				$bgedit ="";
 				$contentedit ="false" ;
@@ -138,7 +138,7 @@
 			?>
 		</tr>
 		<tr>
-			<td class="sub-1">Month Coverage</td>
+			<td class="sub-1 headcol">Month Coverage</td>
 			<?php
 				$bgedit ="";
 				$contentedit ="false" ;

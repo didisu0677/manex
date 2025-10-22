@@ -53,21 +53,22 @@
 						table_open('table table-bordered table-app table-hover table-1');
 						thead();
 						tr();
-						th('Revisi ke : ', '', 'width="60" colspan="5" class="text-left"');
+						th('Revisi ke : ', '', 'width="60" colspan="5" class="text-left headcol" style="background-color: #4a5569 !important; color: #ffffff !important; font-weight: 600 !important;"');
 						for ($i = 1; $i <= 12; $i++) {
-							th('', '', 'class="text-center" style="min-width:80px"');
+							th('', '', 'class="text-center headcol" style="min-width:80px; background-color: #4a5569 !important; color: #ffffff !important; font-weight: 600 !important;"');
 						}
-						th(lang('total'), '', 'width="60" rowspan="2" class="text-center align-middle headcol"');
+						th('', '', 'class="text-center headcol" style="background-color: #4a5569 !important; color: #ffffff !important; font-weight: 600 !important;"');
 
 						tr();
-						th(lang('description'), '', 'width="60" rowspan="2" class="text-center align-middle headcol"');
-						th(lang('code'), '', 'width="60" rowspan="2" class="text-center align-middle headcol"');
-						th(lang('dest'), '', 'width="60" rowspan="2" class="text-center align-middle headcol"');
-						th(lang('batch'), '', 'width="60" rowspan="2" class="text-center align-middle headcol"');
-						th(lang(''), '', 'width="60" rowspan="2" class="text-center align-middle headcol"');
+						th(lang('description'), '', 'width="60" class="text-center align-middle headcol" style="background-color: #4a5569 !important; color: #ffffff !important; font-weight: 600 !important;"');
+						th(lang('code'), '', 'width="60" class="text-center align-middle headcol" style="background-color: #4a5569 !important; color: #ffffff !important; font-weight: 600 !important;"');
+						th(lang('dest'), '', 'width="60" class="text-center align-middle headcol" style="background-color: #4a5569 !important; color: #ffffff !important; font-weight: 600 !important;"');
+						th(lang('batch'), '', 'width="60" class="text-center align-middle headcol" style="background-color: #4a5569 !important; color: #ffffff !important; font-weight: 600 !important;"');
+						th(lang(''), '', 'width="60" class="text-center align-middle headcol" style="background-color: #4a5569 !important; color: #ffffff !important; font-weight: 600 !important;"');
 						for ($i = 1; $i <= 12; $i++) {
-							th(month_lang($i), '', 'class="text-center" style="min-width:80px"');
+							th(month_lang($i), '', 'class="text-center headcol" style="min-width:80px; background-color: #4a5569 !important; color: #ffffff !important; font-weight: 600 !important;"');
 						}
+						th(lang('total'), '', 'width="60" class="text-center align-middle headcol" style="background-color: #4a5569 !important; color: #ffffff !important; font-weight: 600 !important;"');
 						tbody();
 						table_close();
 						?>
@@ -767,3 +768,97 @@
 
 
 </script>
+
+<style>
+/* CSS untuk freeze header table menggunakan sticky position */
+.table-1 thead th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 5 !important;
+    white-space: nowrap !important;
+    border: 1px solid #dee2e6 !important;
+    border-bottom: 2px solid #adb5bd !important;
+}
+
+.table-1 thead th.headcol {
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 15 !important;
+    white-space: nowrap !important;
+    border: 1px solid #dee2e6 !important;
+    border-bottom: 2px solid #adb5bd !important;
+}
+
+/* Freeze kolom pertama */
+.table-1 td.headcol,
+.table-1 th.headcol {
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 10 !important;
+    background-color: #ffffff !important;
+    border-right: 2px solid #dee2e6 !important;
+}
+
+/* Pastikan container table dengan height yang wajar */
+.height-window {
+	height: calc(100vh - 200px) !important;
+	overflow: auto !important;
+	position: relative !important;
+}
+
+/* Pastikan table memiliki border collapse yang benar */
+.table-1 {
+	border-collapse: collapse !important;
+	width: 100% !important;
+}
+
+/* Styling untuk kolom total agar tidak seperti header */
+.table-1 th:not(.headcol) {
+	background-color: #ffffff !important;
+	color: #333333 !important;
+	font-weight: normal !important;
+	border: 1px solid #dee2e6 !important;
+	position: static !important;
+}
+
+/* Pastikan tbody tidak overlap dengan header */
+.table-1 tbody {
+	position: relative;
+}
+
+/* Override any conflicting styles */
+.table-1 thead {
+	position: relative;
+}
+
+/* Memastikan table responsive berfungsi */
+.table-responsive {
+	overflow: visible !important;
+}
+
+/* Memastikan cell table tidak terpotong */
+.table-1 th,
+.table-1 td {
+	white-space: nowrap !important;
+	min-width: 80px !important;
+}
+
+/* Style untuk scrollbar agar lebih mudah dilihat dan digunakan */
+.height-window::-webkit-scrollbar {
+	width: 8px !important;
+	height: 8px !important;
+}
+
+.height-window::-webkit-scrollbar-track {
+	background: #f1f1f1 !important;
+}
+
+.height-window::-webkit-scrollbar-thumb {
+	background: #888 !important;
+}
+
+.height-window::-webkit-scrollbar-thumb:hover {
+	background: #555 !important;
+}
+</style>
