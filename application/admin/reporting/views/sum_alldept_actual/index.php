@@ -39,25 +39,23 @@
 		</div>
 	</div>
 
-<div class="content-body mt-6">
-	<div class="main-container mt-6">
-
-
-		<div class="card-body tab-content">
-			<div class="card">
-				<div class="card-body">
-					<div class="table-responsive tab-pane fade active show height-window" id="result2">
+<div class="content-body" style="margin-top: 10px !important;">
+	<div class="main-container" style="margin-top: 0 !important; padding: 0 !important;">
+		<div class="card-body tab-content" style="padding: 0 !important; margin: 0 !important;">
+			<div class="card" style="margin: 0 !important; border: none !important;">
+				<div class="card-body" style="padding: 0 !important; margin: 0 !important;">
+					<div class="table-responsive tab-pane fade active show height-window" id="result2" style="margin: 0 !important; padding: 0 !important;">
 						<?php
 						table_open('table table-bordered table-app table-hover table-2');
 							thead();
 								tr();
-								th(lang('account'),'','class="text-center align-middle headcol" style="min-width:250px"');
+								th(lang('account'),'','class="text-center align-middle headcol" style="min-width:250px; color:#fff !important;"');
 								foreach($production as $p) { 
-									th($p->abbreviation,'','class="text-center" style="min-width:60px"');		
+									th($p->abbreviation,'','class="text-center" style="min-width:60px; color:#fff !important;"');		
 								}
-								th(lang('total'),'','class="text-center align-middle headcol"style="min-width:60px"');
-								th(lang('total_le'),'','class="text-center align-middle headcol"style="min-width:60px"');
-								th(lang('increase'),'','class="text-center align-middle headcol"style="min-width:40px"');
+								th(lang('total'),'','class="text-center align-middle headcol" style="min-width:60px; color:#fff !important;"');
+								th(lang('total_le'),'','class="text-center align-middle headcol" style="min-width:60px; color:#fff !important;"');
+								th(lang('increase'),'','class="text-center align-middle headcol" style="min-width:40px; color:#fff !important;"');
 							tbody();
 						table_close();
 						?>
@@ -77,6 +75,100 @@
 		</div> -->
 	</div>
 </div>
+
+<style>
+/* Freeze header CSS - sama seperti production planning */
+.headcol {
+    position: sticky !important;
+    position: -webkit-sticky !important;
+    left: 0 !important;
+    z-index: 10 !important;
+    background-color: #f8f9fa !important;
+    border-right: 2px solid #dee2e6 !important;
+}
+
+/* Maksimalkan container table height seperti production planning */
+.height-window {
+    height: calc(100vh - 120px) !important;
+    max-height: calc(100vh - 120px) !important;
+    overflow: auto !important;
+    position: relative !important;
+    width: 100% !important;
+}
+
+/* Maksimalkan table width dan optimasi layout */
+.table-2 {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    table-layout: auto !important;
+}
+
+.table-2 th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 5 !important;
+    background-color: #4a5569 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+    font-weight: bold !important;
+}
+
+.table-2 th.headcol {
+    z-index: 15 !important;
+    background-color: #4a5569 !important;
+    color: #fff !important;
+    font-weight: bold !important;
+}
+
+/* Memastikan cell table tidak terpotong */
+.table-2 th,
+.table-2 td {
+    white-space: nowrap !important;
+    min-width: 60px !important;
+}
+
+/* Style untuk scrollbar agar lebih mudah dilihat dan digunakan */
+.height-window::-webkit-scrollbar {
+    width: 8px !important;
+    height: 8px !important;
+}
+
+.height-window::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+}
+
+.height-window::-webkit-scrollbar-thumb {
+    background: #888 !important;
+}
+
+.height-window::-webkit-scrollbar-thumb:hover {
+    background: #555 !important;
+}
+
+/* Hapus margin dan padding yang tidak perlu */
+.main-container {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.content-body {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.card {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Maksimalkan viewport usage */
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+</style>
+
 <?php
 modal_open('modal-import',lang('impor'));
 	modal_body();
@@ -102,9 +194,39 @@ $(document).ready(function () {
 	$(document).on('keyup', '.budget', function (e) {
     	calculate();
     });
+    
+    // Inisialisasi freeze table setelah data loaded
+	setTimeout(function() {
+		freeze_table();
+	}, 1000);
 
+});
 
-});	
+// Fungsi freeze table - sama seperti production planning
+function freeze_table() {
+	// Pastikan semua header kolom pertama dan terakhir memiliki class headcol
+	$('.table-2 th:first-child, .table-2 td:first-child').addClass('headcol');
+	$('.table-2 th:nth-last-child(-n+3), .table-2 td:nth-last-child(-n+3)').addClass('headcol');
+	
+	// Set z-index untuk header yang benar
+	$('.table-2 th.headcol').css({
+		'position': 'sticky',
+		'left': '0',
+		'z-index': '15',
+		'background-color': '#4a5569',
+		'color': '#fff'
+	});
+	
+	// Set z-index untuk body cells
+	$('.table-2 td.headcol').css({
+		'position': 'sticky',
+		'left': '0',
+		'z-index': '10',
+		'background-color': '#f8f9fa',
+		'border-right': '2px solid #dee2e6',
+		'font-weight': 'bold'
+	});
+}	
 
 $('#filter_tahun').change(function(){
 	getData();
@@ -132,6 +254,12 @@ function getData() {
 			success	: function(response) {
 				$('.table-1 tbody').html(response.table);
 				$('.table-2 tbody').html(response.table2);
+				
+				// Apply freeze header setelah data loaded
+				setTimeout(function() {
+					freeze_table();
+				}, 100);
+				
 				cLoader.close();
 
 			// $('.overlay-wrap').addClass('hidden');	
