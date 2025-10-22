@@ -75,14 +75,51 @@
 </div>
 
 <style>
-/* Freeze header CSS - sama seperti production planning */
+/* Freeze header CSS - untuk kolom account dan kolom total */
 .headcol {
     position: sticky !important;
     position: -webkit-sticky !important;
-    left: 0 !important;
     z-index: 10 !important;
     background-color: #f8f9fa !important;
+    font-weight: bold !important;
+}
+
+/* Kolom account (kolom pertama) - freeze di kiri */
+.table-2 th:first-child,
+.table-2 td:first-child {
+    left: 0 !important;
     border-right: 2px solid #dee2e6 !important;
+}
+
+/* 3 kolom terakhir (total, total_le, increase) - freeze di kanan */
+.table-2 th:nth-last-child(1) {
+    right: 0 !important;
+    border-left: 2px solid #dee2e6 !important;
+}
+
+.table-2 th:nth-last-child(2) {
+    right: 60px !important;
+    border-left: 2px solid #dee2e6 !important;
+}
+
+.table-2 th:nth-last-child(3) {
+    right: 120px !important;
+    border-left: 2px solid #dee2e6 !important;
+}
+
+.table-2 td:nth-last-child(1) {
+    right: 0 !important;
+    border-left: 2px solid #dee2e6 !important;
+}
+
+.table-2 td:nth-last-child(2) {
+    right: 60px !important;
+    border-left: 2px solid #dee2e6 !important;
+}
+
+.table-2 td:nth-last-child(3) {
+    right: 120px !important;
+    border-left: 2px solid #dee2e6 !important;
 }
 
 /* Maksimalkan container table height seperti production planning */
@@ -185,23 +222,53 @@ $(document).ready(function () {
 		fix_total_background();
 	}, 1000);});
 
-// Fungsi freeze table - sama seperti production planning
+// Fungsi freeze table - dengan styling background yang konsisten
 function freeze_table() {
-	// Pastikan semua header kolom pertama dan terakhir memiliki class headcol
+	// Pastikan semua header dan data kolom pertama dan 3 kolom terakhir memiliki class headcol
 	$('.table-2 th:first-child, .table-2 td:first-child').addClass('headcol');
 	$('.table-2 th:nth-last-child(-n+3), .table-2 td:nth-last-child(-n+3)').addClass('headcol');
 	
-	// Set z-index untuk header yang benar
-	$('.table-2 th.headcol').css({
+	// Set z-index untuk header kolom account (kolom pertama)
+	$('.table-2 th:first-child').css({
 		'position': 'sticky',
 		'left': '0',
 		'z-index': '15',
 		'background-color': '#4a5569',
-		'color': '#fff'
+		'color': '#fff',
+		'font-weight': 'bold',
+		'border-right': '2px solid #fff'
 	});
 	
-	// Set z-index untuk body cells
-	$('.table-2 td.headcol').css({
+	// Set z-index untuk header 3 kolom terakhir (total, total_le, increase)
+	$('.table-2 th:nth-last-child(1)').css({
+		'position': 'sticky',
+		'right': '0',
+		'z-index': '15',
+		'background-color': '#4a5569',
+		'color': '#fff',
+		'font-weight': 'bold'
+	});
+	
+	$('.table-2 th:nth-last-child(2)').css({
+		'position': 'sticky',
+		'right': '60px',
+		'z-index': '15',
+		'background-color': '#4a5569',
+		'color': '#fff',
+		'font-weight': 'bold'
+	});
+	
+	$('.table-2 th:nth-last-child(3)').css({
+		'position': 'sticky',
+		'right': '120px',
+		'z-index': '15',
+		'background-color': '#4a5569',
+		'color': '#fff',
+		'font-weight': 'bold'
+	});
+	
+	// Set style untuk kolom account (kolom pertama) pada body
+	$('.table-2 td:first-child').css({
 		'position': 'sticky',
 		'left': '0',
 		'z-index': '10',
@@ -210,31 +277,84 @@ function freeze_table() {
 		'font-weight': 'bold'
 	});
 	
-	// Fix background untuk baris total - pastikan kolom freeze mengikuti background row
+	// Set style untuk 3 kolom terakhir pada body (total, total_le, increase)
+	$('.table-2 td:nth-last-child(1)').css({
+		'position': 'sticky',
+		'right': '0',
+		'z-index': '10',
+		'background-color': '#f8f9fa',
+		'border-left': '2px solid #dee2e6',
+		'font-weight': 'bold'
+	});
+	
+	$('.table-2 td:nth-last-child(2)').css({
+		'position': 'sticky',
+		'right': '60px',
+		'z-index': '10',
+		'background-color': '#f8f9fa',
+		'border-left': '2px solid #dee2e6',
+		'font-weight': 'bold'
+	});
+	
+	$('.table-2 td:nth-last-child(3)').css({
+		'position': 'sticky',
+		'right': '120px',
+		'z-index': '10',
+		'background-color': '#f8f9fa',
+		'border-left': '2px solid #dee2e6',
+		'font-weight': 'bold'
+	});
+	
+	// Fix background untuk baris total - pastikan semua kolom mengikuti background row
 	fix_total_background();
 }
 
-// Fungsi sederhana untuk background total rows
+// Fungsi untuk background total rows dan account column yang konsisten
 function fix_total_background() {
-	// Cari semua baris dengan class bg-grey dan set background manual
+	// Background untuk subtotal rows - pastikan semua kolom termasuk account column memiliki background yang sama
 	$('.table-2 tbody tr.bg-grey-1 td').attr('style', function() {
-		return 'background-color: #f4f4f4 !important; color: #000 !important;' + ($(this).hasClass('headcol') ? ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;' : '');
+		var baseStyle = 'background-color: #f4f4f4 !important; color: #000 !important; font-weight: bold !important;';
+		if ($(this).hasClass('headcol')) {
+			baseStyle += ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;';
+		}
+		return baseStyle;
 	});
 	
 	$('.table-2 tbody tr.bg-grey-2 td').attr('style', function() {
-		return 'background-color: #dddddd !important; color: #000 !important;' + ($(this).hasClass('headcol') ? ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;' : '');
+		var baseStyle = 'background-color: #dddddd !important; color: #000 !important; font-weight: bold !important;';
+		if ($(this).hasClass('headcol')) {
+			baseStyle += ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;';
+		}
+		return baseStyle;
 	});
 	
 	$('.table-2 tbody tr.bg-grey-2-1 td').attr('style', function() {
-		return 'background-color: #b4b4b4 !important; color: #000 !important;' + ($(this).hasClass('headcol') ? ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;' : '');
+		var baseStyle = 'background-color: #b4b4b4 !important; color: #000 !important; font-weight: bold !important;';
+		if ($(this).hasClass('headcol')) {
+			baseStyle += ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;';
+		}
+		return baseStyle;
 	});
 	
 	$('.table-2 tbody tr.bg-grey-2-2 td').attr('style', function() {
-		return 'background-color: #aaaaaa !important; color: #000 !important;' + ($(this).hasClass('headcol') ? ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;' : '');
+		var baseStyle = 'background-color: #aaaaaa !important; color: #000 !important; font-weight: bold !important;';
+		if ($(this).hasClass('headcol')) {
+			baseStyle += ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;';
+		}
+		return baseStyle;
 	});
 	
 	$('.table-2 tbody tr.bg-grey-3 td').attr('style', function() {
-		return 'background-color: #888888 !important; color: #000 !important;' + ($(this).hasClass('headcol') ? ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;' : '');
+		var baseStyle = 'background-color: #888888 !important; color: #fff !important; font-weight: bold !important;';
+		if ($(this).hasClass('headcol')) {
+			baseStyle += ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important;';
+		}
+		return baseStyle;
+	});
+	
+	// Pastikan account column (kolom pertama) untuk row biasa memiliki background yang seragam
+	$('.table-2 tbody tr:not([class*="bg-grey"]) td:first-child').attr('style', function() {
+		return 'background-color: #f8f9fa !important; position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important; font-weight: bold !important;';
 	});
 }	
 
