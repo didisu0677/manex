@@ -242,32 +242,30 @@ function lanjut() {
     position: sticky !important; 
     top: 0 !important; 
     z-index: 5 !important; 
-    height: 32px !important; /* Reduced header height */
-    padding: 4px 6px !important;
-    vertical-align: middle !important;
-    box-sizing: border-box !important;
-    font-size: 12px !important; /* Smaller font for compact view */
+    padding: 4px 6px !important; /* More compact padding */
+    line-height: 1.1 !important; /* Tighter line height */
+    font-size: 13px !important; /* Slightly smaller font */
 }
 
 /* Header row positioning - handle multi-row headers */
 .table-1 thead tr:first-child th { 
     top: 0 !important; 
     z-index: 6 !important; 
+    border-bottom: 1px solid #dee2e6 !important; /* Thin border between header rows */
 }
 
 .table-1 thead tr:nth-child(2) th { 
-    top: 32px !important; /* Match the height of first row */
+    top: 28px !important; /* Exact match with first row height */
     z-index: 6 !important; 
 }
 
 /* Special handling for rowspan columns - Total Overhead */
 .table-1 thead tr:first-child th[rowspan="2"] { 
-    height: 64px !important; /* Double height for rowspan=2 (32px x 2) */
     top: 0 !important;
     z-index: 7 !important;
-    border-bottom: 2px solid #dee2e6 !important;
+    border-bottom: 1px solid #dee2e6 !important; /* Same thin border */
     vertical-align: middle !important;
-    font-size: 12px !important;
+    height: 56px !important; /* Double the row height (28px x 2) */
 }
 
 /* First row - "Product" spans 2 columns, freeze it */
@@ -332,23 +330,22 @@ function lanjut() {
     width: 100% !important; 
 }
 
-.table-1 th, .table-1 td { 
-    white-space: nowrap !important; 
-    min-width: 80px !important; 
-    padding: 3px 5px !important; 
-    border: 1px solid #dee2e6 !important; 
-    line-height: 1.1 !important;
-    font-size: 12px !important; /* Smaller font for all cells */
+/* Compact header styling */
+.table-1 thead tr {
+    height: 28px !important; /* Fixed minimal height */
 }
 
-/* Reduce border thickness for headers */
 .table-1 thead th {
     border-width: 1px !important;
+    border-style: solid !important;
+    border-color: #dee2e6 !important;
+    height: 28px !important; /* Match row height */
+    vertical-align: middle !important;
 }
 
-/* Compact body rows */
-.table-1 tbody td {
-    height: 28px !important; /* Compact row height */
+.table-1 th, .table-1 td { 
+    white-space: nowrap !important; 
+    min-width: 60px !important; 
 }
 
 /* Subtotal rows - maintain background for frozen columns */
@@ -396,19 +393,17 @@ function lanjut() {
     color: #fff !important;
 }
 
-/* Compact grouping rows */
+/* Grouping rows styling */
 .table-1 .bg-grey-3 th {
-    height: 25px !important;
-    padding: 3px 8px !important;
-    font-size: 12px !important;
     font-weight: bold !important;
-    line-height: 1.2 !important;
 }
 
 .table-1 .bg-grey-2 td {
-    height: 30px !important;
-    padding: 4px 6px !important;
-    font-size: 12px !important;
     font-weight: bold !important;
+}
+
+/* Ensure money format alignment */
+.table-1 .money {
+    text-align: right !important;
 }
 </style>
