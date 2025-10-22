@@ -210,6 +210,44 @@ function freeze_table() {
 		'border-right': '2px solid #dee2e6',
 		'font-weight': 'bold'
 	});
+	
+	// Fix background untuk baris total - pastikan kolom freeze mengikuti background row
+	fix_total_background();
+}
+
+// Fungsi untuk memastikan background total rows konsisten - manual HTML
+function fix_total_background() {
+	// Cari semua baris dengan class bg-grey
+	$('.table-2 tbody tr[class*="bg-grey"]').each(function() {
+		var row = $(this);
+		var bgColor = '';
+		
+		// Tentukan warna background berdasarkan class
+		if (row.hasClass('bg-grey-1')) {
+			bgColor = '#f4f4f4';
+		} else if (row.hasClass('bg-grey-2')) {
+			bgColor = '#dddddd';
+		} else if (row.hasClass('bg-grey-2-1')) {
+			bgColor = '#b4b4b4';
+		} else if (row.hasClass('bg-grey-2-2')) {
+			bgColor = '#aaaaaa';
+		} else if (row.hasClass('bg-grey-3')) {
+			bgColor = '#888888';
+		}
+		
+		// Set background untuk semua td dalam row ini
+		if (bgColor) {
+			row.find('td').each(function() {
+				$(this).attr('style', 'background-color: ' + bgColor + ' !important;');
+			});
+			
+			// Khusus untuk kolom freeze, tambahkan border-right
+			row.find('td.headcol').each(function() {
+				var currentStyle = $(this).attr('style') || '';
+				$(this).attr('style', currentStyle + ' border-right: 2px solid #dee2e6 !important;');
+			});
+		}
+	});
 }	
 
 $('#filter_tahun').change(function(){
@@ -242,6 +280,8 @@ function getData() {
 				// Apply freeze header setelah data loaded
 				setTimeout(function() {
 					freeze_table();
+					// Fix background total setelah freeze
+					fix_total_background();
 				}, 100);
 				
 				cLoader.close();
