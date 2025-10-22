@@ -89,8 +89,8 @@
 
 /* Maksimalkan container table height seperti production planning */
 .height-window {
-    height: calc(100vh - 120px) !important;
-    max-height: calc(100vh - 120px) !important;
+    height: calc(100vh - 140px) !important;
+    max-height: calc(100vh - 140px) !important;
     overflow: auto !important;
     position: relative !important;
     width: 100% !important;
@@ -166,6 +166,11 @@
 body {
     margin: 0 !important;
     padding: 0 !important;
+}
+
+/* Hanya jarak dari navbar menu */
+.content-header {
+    margin-top: 20px !important;
 }
 </style>
 
