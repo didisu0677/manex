@@ -5,8 +5,8 @@
 	$grandtotal_fixed = 0;
 	$grandtotal_ovh = 0;
 	foreach($grup[0] as $m0) { ?>
-		<tr>
-			<th colspan="13" style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"><?php echo $m0->cost_centre; ?></font></th>
+		<tr class="bg-grey-3">
+			<th colspan="13" style="background: #778899 !important; min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff" style="color: #fff !important;"><?php echo $m0->cost_centre; ?></font></th>
 		</tr>		
   	<?php
 
@@ -78,23 +78,23 @@
 	} ?>
 
 <?php } ?>
-<tr>
+<tr class="bg-grey-2" style="background: #D2691E !important;">
 	<?php
-	echo '<td colspan ="2"><div style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="text-centre"><b>TOTAL</b></div></td>';
+	echo '<td colspan ="2" style="background: #D2691E !important;"><div style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="text-centre"><b><font color="#fff" style="color: #fff !important;">TOTAL</font></b></div></td>';
 	$bgedit ="";
 	$contentedit ="false" ;
 	foreach($variable as $v) {
 
-		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="'.$m1->product_qty.'">'.$m1->product_qty.'</td>';
+		echo '<td style="background: #D2691E !important;"><div style="background: #D2691E !important; min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="'.$m1->product_qty.'"><font color="#fff" style="color: #fff !important;">'.$m1->product_qty.'</font></div></td>';
 	}
-	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="'.$grandtotal_variable.'"><b>'.number_format($grandtotal_variable).'</b></td>';
+	echo '<td style="background: #D2691E !important;"><div style="background: #D2691E !important; min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="'.$grandtotal_variable.'"><b><font color="#fff" style="color: #fff !important;">'.number_format($grandtotal_variable).'</font></b></div></td>';
 
 	foreach($fixed as $f) {
 
-		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="'.$m1->product_qty.'">'.$m1->product_qty.'</td>';
+		echo '<td style="background: #D2691E !important;"><div style="background: #D2691E !important; min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="'.$m1->product_qty.'"><font color="#fff" style="color: #fff !important;">'.$m1->product_qty.'</font></div></td>';
 	}
-	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="'.$grandtotal_fixed.'"><b>'.number_format($grandtotal_fixed).'</b></td>';
-	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="'.$grandtotal_ovh.'"><b>'.number_format($grandtotal_ovh).'</b></td>';
+	echo '<td style="background: #D2691E !important;"><div style="background: #D2691E !important; min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="'.$grandtotal_fixed.'"><b><font color="#fff" style="color: #fff !important;">'.number_format($grandtotal_fixed).'</font></b></div></td>';
+	echo '<td style="background: #D2691E !important;"><div style="background: #D2691E !important; min-height: 10px; width: 50px; overflow: hidden;" contenteditable="'.$contentedit.'" class="edit-value text-right money alokasi product_qty" data-name="product_qty" data-id="'.$m1->id.'" data-value="'.$grandtotal_ovh.'"><b><font color="#fff" style="color: #fff !important;">'.number_format($grandtotal_ovh).'</font></b></div></td>';
 
 	?>
 
