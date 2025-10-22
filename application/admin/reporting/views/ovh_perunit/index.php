@@ -52,9 +52,7 @@
 									th(lang('product'),'','colspan="2" class="text-center align-middle headcol"');
 									th('Variable Overhead / Unit','','colspan ="4" class="text-center align-middle headcol" ');
 									th('Fixed Overhead / Unit','','colspan ="6" class="text-center align-middle headcol" ');
-									th('Overhead / Unit','','rowspan="2" class="text-center align-middle headcol" ');
-									th('Volume Produksi','','rowspan="2" class="text-center align-middle headcol" ');
-									th('Total FOH','','rowspan="2" class="text-center align-middle headcol"');
+									th('&nbsp;','','colspan="3" class="text-center align-middle headcol" ');
 								
 								tr();
 									th(lang('description'),'','rowspan="" width="300"class="text-center align-middle headcol" ');
@@ -67,6 +65,9 @@
 										th($f->account_name,'','rowspan="" class="text-center align-middle headcol" ');
 									}
 									th('total fixed','','rowspan="" class="text-center align-middle headcol" ');
+									th('Overhead / Unit','','class="text-center align-middle headcol" ');
+									th('Volume Produksi','','class="text-center align-middle headcol" ');
+									th('Total FOH','','class="text-center align-middle headcol"');
 
 							tbody();
 						table_close();
