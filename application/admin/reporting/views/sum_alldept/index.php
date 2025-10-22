@@ -73,11 +73,45 @@
 </div>
 
 <style>
-/* Unified header and column styling */
-.table-2 th { position: sticky !important; top: 0 !important; z-index: 5 !important; background-color: #4a5569 !important; color: #fff !important; font-weight: bold !important; }
-.table-2 th:first-child { left: 0 !important; z-index: 15 !important; border-right: 2px solid #fff !important; }
-.table-2 td:first-child { position: sticky; left: 0; z-index: 10; background-color: #f8f9fa; border-right: 2px solid #dee2e6; font-weight: bold; }
-.table-2 td:nth-last-child(-n+3) { background-color: #f8f9fa; font-weight: bold; }
+/* Force white font for ALL headers */
+.table-2 th, 
+.table-2 th *,
+.table-2 thead th,
+.table-2 thead th * { 
+    color: #fff !important; 
+    background-color: #4a5569 !important; 
+    font-weight: bold !important;
+}
+
+/* Header positioning and styling */
+.table-2 th { 
+    position: sticky !important; 
+    top: 0 !important; 
+    z-index: 5 !important; 
+}
+
+.table-2 th:first-child { 
+    left: 0 !important; 
+    z-index: 15 !important; 
+    border-right: 2px solid #fff !important; 
+}
+
+/* Body column styling */
+.table-2 td:first-child { 
+    position: sticky; 
+    left: 0; 
+    z-index: 10; 
+    background-color: #f8f9fa; 
+    border-right: 2px solid #dee2e6; 
+    font-weight: bold; 
+}
+
+.table-2 td:nth-last-child(-n+3) { 
+    background-color: #f8f9fa; 
+    font-weight: bold; 
+}
+
+/* Table container */
 .height-window { height: calc(100vh - 140px); overflow: auto; }
 .table-2 { border-collapse: collapse; width: 100%; }
 .table-2 th, .table-2 td { white-space: nowrap; min-width: 60px; }
