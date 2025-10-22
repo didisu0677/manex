@@ -75,8 +75,20 @@
 </div>
 
 <style>
-/* Kolom account freeze di kiri */
-.table-2 td:first-child, .table-2 th:first-child {
+/* Header kolom account - freeze horizontal dan vertikal */
+.table-2 th:first-child {
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 15 !important;
+    background-color: #4a5569 !important;
+    color: #fff !important;
+    border-right: 2px solid #fff !important;
+    font-weight: bold !important;
+}
+
+/* Body kolom account - background putih */
+.table-2 td:first-child {
     position: sticky !important;
     left: 0 !important;
     z-index: 10 !important;
