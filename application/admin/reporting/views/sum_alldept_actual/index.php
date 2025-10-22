@@ -36,7 +36,6 @@
     	</div>
 		<div class="clearfix"></div>
 	</div>
-	</div>
 
 <div class="content-body mt-6">
 	<div class="main-container mt-6">
@@ -169,7 +168,7 @@ body {
 
 /* Positioning filter agar sejajar dengan title */
 .content-header .float-right {
-    margin-top: -50px !important;
+    margin-top: -60px !important;
 }
 
 
