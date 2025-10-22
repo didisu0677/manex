@@ -218,7 +218,7 @@ function freeze_table() {
 	fix_total_background();
 }
 
-// Fungsi untuk memastikan background total rows konsisten - manual HTML
+// Fungsi untuk memastikan background total rows konsisten - manual HTML saja
 function fix_total_background() {
 	// Cari semua baris dengan class bg-grey
 	$('.table-2 tbody tr[class*="bg-grey"]').each(function() {
@@ -238,37 +238,28 @@ function fix_total_background() {
 			bgColor = '#888888';
 		}
 		
-		// Set background untuk semua td dalam row ini
+		// Manual setting HTML inline style untuk background full row
 		if (bgColor) {
 			// Set background untuk row itu sendiri
 			row.attr('style', 'background-color: ' + bgColor + ' !important;');
 			
-			// Set background untuk semua td dalam row ini termasuk yang di akhir
-			row.find('td').each(function(index) {
-				var td = $(this);
-				var isHeadCol = td.hasClass('headcol');
-				var isLastCols = index >= (row.find('td').length - 3); // 3 kolom terakhir
+			// Set background untuk SEMUA td dalam row ini - manual HTML
+			row.find('td').each(function() {
+				var currentStyle = $(this).attr('style') || '';
+				var newStyle = 'background-color: ' + bgColor + ' !important;';
 				
-				if (isHeadCol || isLastCols) {
-					// Untuk kolom freeze (awal dan akhir), override background dan tambahkan properties sticky
-					var stickyStyle = 'background-color: ' + bgColor + ' !important; position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important; font-weight: bold !important;';
-					
-					// Untuk kolom di akhir (total, total_le, increase) posisi berbeda
-					if (isLastCols && !td.hasClass('headcol')) {
-						td.addClass('headcol'); // Tambahkan class headcol jika belum ada
+				// Jika td memiliki class headcol, pertahankan properties freeze tapi override background
+				if ($(this).hasClass('headcol')) {
+					// Pertahankan properties freeze, tapi paksa background
+					var existingStyle = currentStyle.replace(/background-color:[^;]*;?/gi, '');
+					newStyle = 'background-color: ' + bgColor + ' !important; ' + existingStyle;
+					if (!existingStyle.includes('position: sticky')) {
+						newStyle += ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important; font-weight: bold !important;';
 					}
-					
-					td.attr('style', stickyStyle);
-				} else {
-					// Untuk kolom biasa
-					td.attr('style', 'background-color: ' + bgColor + ' !important;');
 				}
-			});
-			
-			// Force update untuk kolom total, total_le, increase khusus
-			row.find('td:nth-last-child(-n+3)').each(function() {
-				$(this).addClass('headcol');
-				$(this).attr('style', 'background-color: ' + bgColor + ' !important; position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important; font-weight: bold !important;');
+				
+				// Set style manual ke HTML
+				$(this).attr('style', newStyle);
 			});
 		}
 	});
