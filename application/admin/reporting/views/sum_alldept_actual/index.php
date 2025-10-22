@@ -75,10 +75,9 @@
 </div>
 
 <style>
-/* Freeze header CSS - sederhana */
-.headcol {
+/* Kolom account freeze di kiri */
+.table-2 td:first-child, .table-2 th:first-child {
     position: sticky !important;
-    position: -webkit-sticky !important;
     left: 0 !important;
     z-index: 10 !important;
     background-color: #f8f9fa !important;
@@ -86,233 +85,35 @@
     font-weight: bold !important;
 }
 
-/* Background warna untuk kolom account (kolom pertama) */
-.table-2 td:first-child {
-    background-color: #f8f9fa !important;
-    position: sticky !important;
-    left: 0 !important;
-    z-index: 10 !important;
-    border-right: 2px solid #dee2e6 !important;
-    font-weight: bold !important;
-}
-
-/* Background warna untuk 3 kolom terakhir (total, total_le, increase) */
-.table-2 td:nth-last-child(1),
-.table-2 td:nth-last-child(2), 
-.table-2 td:nth-last-child(3) {
+/* 3 kolom terakhir dengan background */
+.table-2 td:nth-last-child(-n+3) {
     background-color: #f8f9fa !important;
     font-weight: bold !important;
-    border-left: 1px solid #dee2e6 !important;
 }
 
-/* Background untuk baris subtotal - bg-grey-1 */
-.table-2 tbody tr.bg-grey-1 td {
-    background-color: #f4f4f4 !important;
-    color: #000 !important;
-    font-weight: bold !important;
+/* Container table */
+.height-window { 
+    height: calc(100vh - 140px) !important; 
+    overflow: auto !important; 
 }
 
-.table-2 tbody tr.bg-grey-1 td:first-child {
-    background-color: #f4f4f4 !important;
-    position: sticky !important;
-    left: 0 !important;
-    z-index: 10 !important;
-    border-right: 2px solid #dee2e6 !important;
+/* Table styling */
+.table-2 { 
+    border-collapse: collapse !important; 
+    width: 100% !important; 
 }
 
-.table-2 tbody tr.bg-grey-1 td:nth-last-child(1),
-.table-2 tbody tr.bg-grey-1 td:nth-last-child(2), 
-.table-2 tbody tr.bg-grey-1 td:nth-last-child(3) {
-    background-color: #f4f4f4 !important;
+.table-2 th { 
+    position: sticky !important; 
+    top: 0 !important; 
+    z-index: 5 !important; 
+    background-color: #4a5569 !important; 
+    color: #fff !important; 
 }
 
-/* Background untuk baris subtotal - bg-grey-2 */
-.table-2 tbody tr.bg-grey-2 td {
-    background-color: #dddddd !important;
-    color: #000 !important;
-    font-weight: bold !important;
-}
-
-.table-2 tbody tr.bg-grey-2 td:first-child {
-    background-color: #dddddd !important;
-    position: sticky !important;
-    left: 0 !important;
-    z-index: 10 !important;
-    border-right: 2px solid #dee2e6 !important;
-}
-
-.table-2 tbody tr.bg-grey-2 td:nth-last-child(1),
-.table-2 tbody tr.bg-grey-2 td:nth-last-child(2), 
-.table-2 tbody tr.bg-grey-2 td:nth-last-child(3) {
-    background-color: #dddddd !important;
-}
-
-/* Background untuk baris subtotal - bg-grey-2-1 */
-.table-2 tbody tr.bg-grey-2-1 td {
-    background-color: #b4b4b4 !important;
-    color: #000 !important;
-    font-weight: bold !important;
-}
-
-.table-2 tbody tr.bg-grey-2-1 td:first-child {
-    background-color: #b4b4b4 !important;
-    position: sticky !important;
-    left: 0 !important;
-    z-index: 10 !important;
-    border-right: 2px solid #dee2e6 !important;
-}
-
-.table-2 tbody tr.bg-grey-2-1 td:nth-last-child(1),
-.table-2 tbody tr.bg-grey-2-1 td:nth-last-child(2), 
-.table-2 tbody tr.bg-grey-2-1 td:nth-last-child(3) {
-    background-color: #b4b4b4 !important;
-}
-
-/* Background untuk baris subtotal - bg-grey-2-2 */
-.table-2 tbody tr.bg-grey-2-2 td {
-    background-color: #aaaaaa !important;
-    color: #000 !important;
-    font-weight: bold !important;
-}
-
-.table-2 tbody tr.bg-grey-2-2 td:first-child {
-    background-color: #aaaaaa !important;
-    position: sticky !important;
-    left: 0 !important;
-    z-index: 10 !important;
-    border-right: 2px solid #dee2e6 !important;
-}
-
-.table-2 tbody tr.bg-grey-2-2 td:nth-last-child(1),
-.table-2 tbody tr.bg-grey-2-2 td:nth-last-child(2), 
-.table-2 tbody tr.bg-grey-2-2 td:nth-last-child(3) {
-    background-color: #aaaaaa !important;
-}
-
-/* Background untuk baris subtotal - bg-grey-3 */
-.table-2 tbody tr.bg-grey-3 td {
-    background-color: #888888 !important;
-    color: #fff !important;
-    font-weight: bold !important;
-}
-
-.table-2 tbody tr.bg-grey-3 td:first-child {
-    background-color: #888888 !important;
-    position: sticky !important;
-    left: 0 !important;
-    z-index: 10 !important;
-    border-right: 2px solid #dee2e6 !important;
-}
-
-.table-2 tbody tr.bg-grey-3 td:nth-last-child(1),
-.table-2 tbody tr.bg-grey-3 td:nth-last-child(2), 
-.table-2 tbody tr.bg-grey-3 td:nth-last-child(3) {
-    background-color: #888888 !important;
-}
-
-/* Override untuk SUB TOTAL dan GRAND TOTAL rows yang menggunakan inline style */
-.table-2 tr.bg-grey-3 td[style*="background-color: #778899"] {
-    background-color: #778899 !important;
-    color: white !important;
-    font-weight: bold !important;
-}
-
-.table-2 tr.bg-grey-3 td:first-child[style*="background-color: #778899"] {
-    background-color: #778899 !important;
-    position: sticky !important;
-    left: 0 !important;
-    z-index: 10 !important;
-    border-right: 2px solid #dee2e6 !important;
-    color: white !important;
-    font-weight: bold !important;
-}
-
-.table-2 tr.bg-grey-2 td[style*="background-color: #D2691E"],
-.table-2 tr.bg-grey-2 th[style*="background-color: #D2691E"] {
-    background-color: #D2691E !important;
-    color: white !important;
-    font-weight: bold !important;
-}
-
-.table-2 tr.bg-grey-2 td:first-child[style*="background-color: #D2691E"],
-.table-2 tr.bg-grey-2 th:first-child[style*="background-color: #D2691E"] {
-    background-color: #D2691E !important;
-    position: sticky !important;
-    left: 0 !important;
-    z-index: 10 !important;
-    border-right: 2px solid #dee2e6 !important;
-    color: white !important;
-    font-weight: bold !important;
-}
-
-/* Maksimalkan container table height seperti production planning */
-.height-window {
-    height: calc(100vh - 140px) !important;
-    max-height: calc(100vh - 140px) !important;
-    overflow: auto !important;
-    position: relative !important;
-    width: 100% !important;
-}
-
-/* Maksimalkan table width dan optimasi layout */
-.table-2 {
-    border-collapse: collapse !important;
-    width: 100% !important;
-    min-width: 100% !important;
-    table-layout: auto !important;
-}
-
-.table-2 th {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 5 !important;
-    background-color: #4a5569 !important;
-    color: #fff !important;
-    border: 1px solid #fff !important;
-    font-weight: bold !important;
-}
-
-.table-2 th.headcol {
-    z-index: 15 !important;
-    background-color: #4a5569 !important;
-    color: #fff !important;
-    font-weight: bold !important;
-}
-
-/* Header kolom pertama (account) - freeze */
-.table-2 th:first-child {
-    position: sticky !important;
-    left: 0 !important;
-    z-index: 15 !important;
-    background-color: #4a5569 !important;
-    color: #fff !important;
-    font-weight: bold !important;
-    border-right: 2px solid #fff !important;
-}
-
-/* Memastikan cell table tidak terpotong */
-.table-2 th,
-.table-2 td {
-    white-space: nowrap !important;
-    min-width: 60px !important;
-}
-
-/* Style untuk scrollbar agar lebih mudah dilihat dan digunakan */
-.height-window::-webkit-scrollbar {
-    width: 8px !important;
-    height: 8px !important;
-}
-
-.height-window::-webkit-scrollbar-track {
-    background: #f1f1f1 !important;
-}
-
-.height-window::-webkit-scrollbar-thumb {
-    background: #888 !important;
-}
-
-.height-window::-webkit-scrollbar-thumb:hover {
-    background: #555 !important;
+.table-2 th, .table-2 td { 
+    white-space: nowrap !important; 
+    min-width: 60px !important; 
 }
 
 
