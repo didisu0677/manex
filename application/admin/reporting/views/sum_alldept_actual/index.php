@@ -144,11 +144,7 @@
     background: #555 !important;
 }
 
-/* Hapus margin dan padding yang tidak perlu */
-.main-container {
-    margin: 0 !important;
-    padding: 0 !important;
-}
+/* Reset main-container ke default */
 
 .content-body {
     margin: 0 !important;
@@ -165,6 +161,8 @@ body {
     margin: 0 !important;
     padding: 0 !important;
 }
+
+
 
 
 
