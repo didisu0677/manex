@@ -73,58 +73,16 @@
 </div>
 
 <style>
-/* Header kolom account - freeze horizontal dan vertikal */
-.table-2 th:first-child {
-    position: sticky !important;
-    top: 0 !important;
-    left: 0 !important;
-    z-index: 15 !important;
-    background-color: #4a5569 !important;
-    color: #fff !important;
-    border-right: 2px solid #fff !important;
-    font-weight: bold !important;
-}
+/* Optimized freeze columns */
+.table-2 th:first-child { position: sticky; top: 0; left: 0; z-index: 15; background-color: #4a5569; color: #fff; border-right: 2px solid #fff; font-weight: bold; }
+.table-2 td:first-child { position: sticky; left: 0; z-index: 10; background-color: #f8f9fa; border-right: 2px solid #dee2e6; font-weight: bold; }
+.table-2 td:nth-last-child(-n+3) { background-color: #f8f9fa; font-weight: bold; }
 
-/* Body kolom account - background putih */
-.table-2 td:first-child {
-    position: sticky !important;
-    left: 0 !important;
-    z-index: 10 !important;
-    background-color: #f8f9fa !important;
-    border-right: 2px solid #dee2e6 !important;
-    font-weight: bold !important;
-}
-
-/* 3 kolom terakhir dengan background */
-.table-2 td:nth-last-child(-n+3) {
-    background-color: #f8f9fa !important;
-    font-weight: bold !important;
-}
-
-/* Container table */
-.height-window { 
-    height: calc(100vh - 140px) !important; 
-    overflow: auto !important; 
-}
-
-/* Table styling */
-.table-2 { 
-    border-collapse: collapse !important; 
-    width: 100% !important; 
-}
-
-.table-2 th { 
-    position: sticky !important; 
-    top: 0 !important; 
-    z-index: 5 !important; 
-    background-color: #4a5569 !important; 
-    color: #fff !important; 
-}
-
-.table-2 th, .table-2 td { 
-    white-space: nowrap !important; 
-    min-width: 60px !important; 
-}
+/* Optimized CSS */
+.height-window { height: calc(100vh - 140px); overflow: auto; }
+.table-2 { border-collapse: collapse; width: 100%; }
+.table-2 th { position: sticky; top: 0; z-index: 5; background-color: #4a5569; color: #fff; }
+.table-2 th, .table-2 td { white-space: nowrap; min-width: 60px; }
 </style>
 <?php
 modal_open('modal-import',lang('impor'));
