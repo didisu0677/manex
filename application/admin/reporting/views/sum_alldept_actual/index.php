@@ -1,49 +1,49 @@
 <div class="content-header page-data" data-additional="<?= $access_additional ?>">
 	<div class="main-container position-relative">
-		<div class="header-info">
-			<div class="content-title"><?php echo $title; ?></div>
-			<?php echo breadcrumb(); ?>
-		</div>
-		
-		<div class="float-right">
-			<label class=""><?php echo lang('tahun'); ?>  &nbsp</label>
-			<select class="select2 infinity custom-select" style="width: 80px;" id="filter_tahun">
-				<?php foreach ($tahun as $tahun) { ?>
-                <option value="<?php echo $tahun->tahun; ?>"<?php if($tahun->tahun == user('tahun_budget')) echo ' selected'; ?>><?php echo $tahun->tahun; ?></option>
-                <?php } ?>
-			</select>
-			<label for="periode"><?php echo lang('bulan'); ?></label>
-			<select class="select2 infinity custom-select" style = "width : 100px" name="bulan" id="bulan">
-				<?php for($i = 1; $i <= 12; $i++) { $j = sprintf('%02d',$i); ?>
-				<option value="<?php echo $j; ?>"<?php if($j == setting('actual_budget')) echo ' selected'; ?>><?php echo bulan($j); ?></option>
-				<?php } ?>
-			</select>
-
-    		<?php 
-
-			$arr = [];
-			$arr = [
-				// ['btn-save','Save Data','fa-save'],
-				['btn-export','Export Data','fa-upload'],
-				['btn-act-import','Import Data','fa-download'],
-				// ['btn-act-template','Template Import','fa-reg-file-alt']
-			];
-		
-		
-			echo access_button('',$arr); 
-
-			?>
-    		</div>
-			<div class="clearfix"></div>
+		<div class="header-info d-flex justify-content-between align-items-center">
+			<div>
+				<div class="content-title"><?php echo $title; ?></div>
+				<?php echo breadcrumb(); ?>
+			</div>
 			
+			<div class="float-right d-flex align-items-center">
+				<label class=""><?php echo lang('tahun'); ?>  &nbsp</label>
+				<select class="select2 infinity custom-select" style="width: 80px;" id="filter_tahun">
+					<?php foreach ($tahun as $tahun) { ?>
+	                <option value="<?php echo $tahun->tahun; ?>"<?php if($tahun->tahun == user('tahun_budget')) echo ' selected'; ?>><?php echo $tahun->tahun; ?></option>
+	                <?php } ?>
+				</select>
+				<label for="periode"><?php echo lang('bulan'); ?></label>
+				<select class="select2 infinity custom-select" style = "width : 100px" name="bulan" id="bulan">
+					<?php for($i = 1; $i <= 12; $i++) { $j = sprintf('%02d',$i); ?>
+					<option value="<?php echo $j; ?>"<?php if($j == setting('actual_budget')) echo ' selected'; ?>><?php echo bulan($j); ?></option>
+					<?php } ?>
+				</select>
+
+	    		<?php 
+
+				$arr = [];
+				$arr = [
+					// ['btn-save','Save Data','fa-save'],
+					['btn-export','Export Data','fa-upload'],
+					['btn-act-import','Import Data','fa-download'],
+					// ['btn-act-template','Template Import','fa-reg-file-alt']
+				];
+			
+			
+				echo access_button('',$arr); 
+
+				?>
+	    	</div>
 		</div>
 	</div>
+	</div>
 
-<div class="content-body" style="margin-top: 10px !important;">
-	<div class="main-container" style="margin-top: 0 !important; padding: 0 !important;">
-		<div class="card-body tab-content" style="padding: 0 !important; margin: 0 !important;">
-			<div class="card" style="margin: 0 !important; border: none !important;">
-				<div class="card-body" style="padding: 0 !important; margin: 0 !important;">
+<div class="content-body mt-6">
+	<div class="main-container mt-6">
+		<div class="card-body tab-content">
+			<div class="card">
+				<div class="card-body">
 					<div class="table-responsive tab-pane fade active show height-window" id="result2" style="margin: 0 !important; padding: 0 !important;">
 						<?php
 						table_open('table table-bordered table-app table-hover table-2');
