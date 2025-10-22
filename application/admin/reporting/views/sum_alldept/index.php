@@ -45,13 +45,13 @@
 						table_open('table table-bordered table-app table-hover table-2');
 							thead();
 								tr();
-								th(lang('account'),'','class="text-center align-middle headcol" style="min-width:250px"');
+								th(lang('account'),'','class="text-center align-middle headcol" style="min-width:250px; color:#fff !important;"');
 								foreach($production as $p) { 
-									th($p->abbreviation,'','class="text-center" style="min-width:60px"');		
+									th($p->abbreviation,'','class="text-center" style="min-width:60px; color:#fff !important;"');		
 								}
-								th(lang('total'),'','class="text-center align-middle headcol" style="min-width:60px"');
-								th(lang('total_le'),'','class="text-center align-middle headcol" style="min-width:60px"');
-								th(lang('increase'),'','class="text-center align-middle headcol" style="min-width:40px"');
+								th(lang('total'),'','class="text-center align-middle headcol" style="min-width:60px; color:#fff !important;"');
+								th(lang('total_le'),'','class="text-center align-middle headcol" style="min-width:60px; color:#fff !important;"');
+								th(lang('increase'),'','class="text-center align-middle headcol" style="min-width:40px; color:#fff !important;"');
 							tbody();
 						table_close();
 						?>
