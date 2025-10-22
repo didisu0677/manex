@@ -166,21 +166,7 @@ body {
     padding: 0 !important;
 }
 
-/* Positioning filter agar sejajar dengan title */
-.content-header .main-container {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: flex-start !important;
-}
 
-.content-header .header-info {
-    flex: 1 !important;
-}
-
-.content-header .float-right {
-    margin-top: 0 !important;
-    margin-left: 20px !important;
-}
 
 
 </style>
