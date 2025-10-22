@@ -246,15 +246,28 @@ function fix_total_background() {
 			// Set background untuk SEMUA td dalam row ini - manual HTML
 			row.find('td').each(function() {
 				var currentStyle = $(this).attr('style') || '';
-				var newStyle = 'background-color: ' + bgColor + ' !important;';
+				var newStyle = 'background-color: ' + bgColor + ' !important; color: #000 !important;';
 				
-				// Jika td memiliki class headcol, pertahankan properties freeze tapi override background
+				// Jika td memiliki class headcol, pertahankan properties freeze tapi override background dan font
 				if ($(this).hasClass('headcol')) {
-					// Pertahankan properties freeze, tapi paksa background
-					var existingStyle = currentStyle.replace(/background-color:[^;]*;?/gi, '');
-					newStyle = 'background-color: ' + bgColor + ' !important; ' + existingStyle;
+					// Hapus background dan color lama, set yang baru
+					var existingStyle = currentStyle.replace(/background-color:[^;]*;?/gi, '').replace(/color:[^;]*;?/gi, '');
+					newStyle = 'background-color: ' + bgColor + ' !important; color: #000 !important; ' + existingStyle;
+					
+					// Pastikan properties freeze ada
 					if (!existingStyle.includes('position: sticky')) {
 						newStyle += ' position: sticky !important; left: 0 !important; z-index: 10 !important; border-right: 2px solid #dee2e6 !important; font-weight: bold !important;';
+					} else {
+						// Jika sudah ada sticky, pastikan z-index dan border tetap ada
+						if (!existingStyle.includes('z-index')) {
+							newStyle += ' z-index: 10 !important;';
+						}
+						if (!existingStyle.includes('border-right')) {
+							newStyle += ' border-right: 2px solid #dee2e6 !important;';
+						}
+						if (!existingStyle.includes('font-weight')) {
+							newStyle += ' font-weight: bold !important;';
+						}
 					}
 				}
 				
