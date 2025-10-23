@@ -42,6 +42,138 @@
 	</div>
 </div>
 
+<style>
+/* Freeze Header Table for Material Price Report */
+.table-responsive {
+    position: relative;
+    overflow: auto;
+    max-height: calc(100vh - 130px);
+    height: calc(100vh - 130px);
+}
+
+.table-1 {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+/* Header freeze */
+.table-1 thead th {
+    position: sticky !important;
+    top: 0px !important;
+    z-index: 999 !important;
+    background-color: #4a5569 !important;
+    color: white !important;
+    border-bottom: 2px solid #333 !important;
+    padding: 6px 8px !important;
+    height: 36px !important;
+    vertical-align: middle !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+/* Subtotal and total row styling */
+.bg-grey-2 {
+    background-color: #D2691E !important;
+}
+
+.bg-grey-3 {
+    background-color: #778899 !important;
+}
+
+/* Preserve form controls and editable elements */
+.table-1 .form-control,
+.table-1 .edit-value,
+.table-1 input,
+.table-1 select {
+    background-color: white !important;
+    position: relative !important;
+    z-index: 20 !important;
+}
+
+/* Additional styling for better visibility */
+.table-1 {
+    font-size: 12px !important;
+}
+
+.table-1 th,
+.table-1 td {
+    white-space: nowrap !important;
+    padding: 4px 6px !important;
+    vertical-align: middle !important;
+}
+
+/* Hover effects */
+.table-1 tbody tr:hover {
+    background-color: rgba(0,123,255,0.1) !important;
+}
+
+/* Protect all buttons and interactive elements */
+.btn,
+.btn-save,
+.btn-export,
+.btn-submit,
+.btn-act-import,
+button {
+    position: relative !important;
+    z-index: 10000 !important;
+    pointer-events: auto !important;
+}
+
+/* Modal content protection */
+.modal,
+.modal-dialog,
+.modal-content {
+    z-index: 99999 !important;
+}
+
+.modal .btn,
+.modal button,
+.modal input,
+.modal select,
+.modal textarea,
+.modal label {
+    position: relative !important;
+    z-index: 100000 !important;
+    pointer-events: auto !important;
+}
+
+/* Header buttons protection */
+.content-header .btn,
+.content-header button,
+.float-right .btn,
+.float-right button {
+    position: relative !important;
+    z-index: 10001 !important;
+    pointer-events: auto !important;
+}
+
+/* Filter elements protection */
+.custom-select,
+.select2,
+#filter_tahun,
+#filter_user {
+    position: relative !important;
+    z-index: 1000 !important;
+    pointer-events: auto !important;
+}
+
+/* Modal and dropdown z-index */
+.modal,
+.modal-backdrop,
+.swal2-container {
+    z-index: 9999 !important;
+}
+
+.select2-container,
+.select2-dropdown {
+    z-index: 9998 !important;
+}
+
+/* General interactive elements */
+input, select, button, a, textarea {
+    pointer-events: auto !important;
+}
+</style>
+
 <div class="content-body mt-6">
 	
 	<div class="main-container mt-6">

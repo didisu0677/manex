@@ -66,7 +66,8 @@
 	<?php 
 	} ?>
 	<tr>
-		<td class="sub-1" colspan="2"><b>TOTAL <?php echo $m0->cost_centre  ?></b></td>
+		<td class="sub-1"><b>TOTAL <?php echo $m0->cost_centre  ?></b></td>
+		<td class="sub-1"></td>
 		<?php
 			$bgedit ="";
 			$contentedit ="false" ;
@@ -81,7 +82,8 @@
 	
 <?php } ;?>
 	<tr>
-		<td class="sub-1" colspan="2"><b>GRAND TOTAL</b></td>
+		<td class="sub-1"><b>GRAND TOTAL</b></td>
+		<td class="sub-1"></td>
 		<?php
 			$bgedit ="";
 			$contentedit ="false" ;
