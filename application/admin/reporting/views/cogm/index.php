@@ -26,7 +26,7 @@
 				<option value="total_before">COGM Before Bari</option>
 			</select>
     		<?php 
-			// echo '<button class="btn btn-danger btn-proses" href="javascript:;" ><i class="fa-process"></i> Save Report</button>';
+			echo '<button class="btn btn-danger btn-proses" href="javascript:;" ><i class="fa-process"></i> Save Report</button>';
 			$arr = [];
 				$arr = [
 					// ['btn-save','Save Data','fa-save'],
@@ -241,7 +241,7 @@ $(document).on('click','.btn-proses',function(e){
 
 function lanjut() {
 	$.ajax({
-		url : base_url + 'reporting/cogm/save_overhead_unit/',
+		url : base_url + 'reporting/cogm/save_unitcogs/',
 		data : {id:id_proses,tahun : tahun},
 		type : 'post',
 		dataType : 'json',

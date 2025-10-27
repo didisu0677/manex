@@ -23,7 +23,7 @@
     		<?php 
 
 			if($access['access_input']==1)
-			echo '<button class="btn btn-danger btn-proses" href="javascript:;" ><i class="fa-process"></i> Save Report</button>';
+			// echo '<button class="btn btn-danger btn-proses" href="javascript:;" ><i class="fa-process"></i> Save Report</button>';
 			$arr = [];
 				$arr = [
 					// ['btn-save','Save Data','fa-save'],

@@ -273,6 +273,164 @@ class Cogm extends BE_Controller {
         
     }
 
+    function save_unitcogs() {
+        $tahun = post('tahun');
+        $bari_type = get('type') ?: 'total_after';
+
+        if(!$tahun) {
+            render([
+                'status' => 'failed',
+                'message' => 'Tahun tidak boleh kosong'
+            ],'json');
+            return;
+        }
+
+        $table = 'tbl_budget_unitcogs_' . $tahun;
+
+        // Get cost centres
+        $arr = [
+            'select' => 'a.cost_centre as kode, b.id, b.cost_centre',
+            'join' => 'tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
+            'where' => [
+                'a.is_active' => 1,
+            ],
+            'group_by' => 'a.cost_centre',
+            'sort_by' => 'id', 
+        ];
+
+        $cost_centres = get_data('tbl_fact_product a',$arr)->result();
+
+        foreach($cost_centres as $cc) {
+            // Get products for each cost centre
+            $select_bottle = ($bari_type == 'total_after') ? 'CASE 
+                                                WHEN f.prsn_alloc IS NOT NULL 
+                                                    THEN e.bottle - (e.bottle * (f.prsn_alloc / 100)) 
+                                                ELSE e.bottle 
+                                                END ' : 'e.bottle';
+        
+            $products = get_data('tbl_fact_product_ovh a',[
+                'select' => 'a.product_code,a.qty_production,(a.direct_labour+d.direct_labour) as direct_labour,(a.utilities+d.utilities) as utilities
+                            ,(a.supplies+d.supplies) as supplies, (a.indirect_labour+d.indirect_labour) as indirect_labour
+                            ,(a.repair+d.repair) as repair, (a.depreciation+d.depreciation) as depreciation,
+                            ,(a.rent+d.rent) as rent, (a.others+d.others) as others
+                            ,b.product_name,b.destination, b.product_line, b.divisi, b.sub_product, c.abbreviation as initial, c.cost_centre, c.kode
+                            ,e.content,e.packing,e.set,e.subrm_total, ' . $select_bottle . ' as bottle, f.prsn_alloc, b.id as id_product', 
+                'join' =>  ['tbl_fact_allocation_qc d on a.tahun = d.tahun and a.product_code = d.product_code',
+                            'tbl_fact_product b on a.product_code = b.code',
+                            'tbl_fact_cost_centre c on a.id_cost_centre = c.id type LEFT',
+                            'tbl_unit_material_cost e on a.tahun = e.tahun and a.product_code = e.product_code type LEFT',
+                            'tbl_allocation_bari f on a.tahun = f.tahun and a.product_code = f.product_code type LEFT'
+                           ],
+                'where' => [
+                    'a.tahun' => $tahun,
+                    'd.tahun' => $tahun,
+                    'a.id_cost_centre' => $cc->id,
+                    'a.qty_production !=' => 0,
+                    '__m' => 'a.product_code in (select budget_product_code from tbl_beginning_stock where is_active ="1" and tahun="'.$tahun.'")',
+                ],
+                'sort_by' => 'a.id_cost_centre'
+            ])->result();
+
+            // Get depreciation adjustments
+            $depr = [];
+            $new_alloc = get_data('tbl_new_allocation_product',[
+                'where' => [
+                    'tahun' => $tahun,
+                    'account_code' => '736'
+                ]
+            ])->result();
+            
+            if($new_alloc) {
+                foreach($new_alloc as $n){
+                    $depr[$n->product_code] = $n->nilai_akun_current;
+                }
+            }
+
+            $new_alloc2 = get_data('tbl_add_alloc_product',[
+                'where' => [
+                    'tahun' => $tahun,
+                    'account_code' => '736'
+                ]
+            ])->row();
+            
+            if($new_alloc2) $depr[$new_alloc2->product_code] = $new_alloc2->jumlah_penyesuaian;
+
+            foreach($products as $product) {
+                // Calculate unit cost (same calculation as in table.php)
+                $subrm_total = $product->bottle + $product->content + $product->packing + $product->set;
+                
+                // Calculate depreciation
+                $depreciation = $product->depreciation / $product->qty_production;
+                if(isset($depr[$product->product_code])) {
+                    if($product->product_code != 'CIGSPRC1DM'){
+                        $depreciation = ($depr[$product->product_code] / $product->qty_production) + ($product->depreciation / $product->qty_production);
+                    } else {
+                        $depreciation = $depr[$product->product_code];
+                    }
+                }
+
+                $total_variable = ($product->direct_labour / $product->qty_production) + ($product->utilities / $product->qty_production) + ($product->supplies / $product->qty_production);
+                $total_fixed = ($product->indirect_labour / $product->qty_production) + ($product->repair / $product->qty_production) + $depreciation + ($product->rent / $product->qty_production) + ($product->others / $product->qty_production);
+                $total_ovh = $total_variable + $total_fixed;
+                $unit_cost = $total_ovh + $subrm_total; // This is the "Total Cost" column
+
+                // Get sectors
+                $sectors = get_data('tbl_sector_price', ['where' => ['is_active' => 1]])->result();
+                
+                foreach($sectors as $sector) {
+                    // Check if record exists
+                    $existing = get_data($table, [
+                        'where' => [
+                            'budget_product_code' => $product->product_code,
+                            'tahun' => $tahun,
+                            'budget_product_sector' => $sector->id
+                        ]
+                    ])->row();
+
+                    if($existing) {
+                        // Update existing record - set all B_01 to B_12 with unit_cost value
+                        $update_data = [];
+                        for($i = 1; $i <= 12; $i++) {
+                            $field = 'B_' . sprintf('%02d', $i);
+                            $update_data[$field] = $unit_cost;
+                        }
+                        
+                        update_data($table, $update_data, [
+                            'budget_product_code' => $product->product_code,
+                            'tahun' => $tahun,
+                            'budget_product_sector' => $sector->id
+                        ]);
+                    } else {
+                        // Insert new record
+                        $insert_data = [
+                            'tahun' => $tahun,
+                            'product_line' => $product->product_line,
+                            'divisi' => $product->divisi,
+                            'category' => $product->sub_product,
+                            'id_budget_product' => $product->id_product,
+                            'budget_product_code' => $product->product_code,
+                            'budget_product_name' => $product->product_name,
+                            'budget_product_sector' => $sector->id
+                        ];
+
+                        // Set all B_01 to B_12 with unit_cost value
+                        for($i = 1; $i <= 12; $i++) {
+                            $field = 'B_' . sprintf('%02d', $i);
+                            $insert_data[$field] = $unit_cost;
+                        }
+
+                        insert_data($table, $insert_data);
+                    }
+                }
+            }
+        }
+
+        render([
+            'status' => 'success',
+            'message' => 'Unit COGS berhasil disimpan'
+        ],'json');
+    }
+
 
 }
 
