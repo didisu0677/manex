@@ -26,7 +26,7 @@
 				<option value="total_before">COGM Before Bari</option>
 			</select>
     		<?php 
-			echo '<button class="btn btn-danger btn-proses" href="javascript:;" ><i class="fa-process"></i> Save Report</button>';
+			echo '<button class="btn btn-danger btn-proses" href="javascript:;" ><i class="fa-process"></i> Save as unitcogs</button>';
 			$arr = [];
 				$arr = [
 					// ['btn-save','Save Data','fa-save'],
