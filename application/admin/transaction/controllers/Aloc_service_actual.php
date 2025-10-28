@@ -128,31 +128,17 @@ class Aloc_service_actual extends BE_Controller {
         if(isset($source->id)) $cc_source = json_decode($source->source_allocation) ;
 
         if(count($cc_source)) {
-            // Validasi total persentase alokasi hanya yang > 0
-            $total_prsn = get_data('tbl_fact_alocation_service_actual',[
-                'select' => 'sum(prsn_aloc) as total_prsn',
+            delete_data($table,'id_ccallocation',post('id_allocation'));
+
+            // Ambil data alokasi sekali saja di luar loop
+            $alloc = get_data('tbl_fact_alocation_service_actual',[
                 'where' => [
                     'tahun' => $tahun,
                     'bulan' => $bulan,
                     'id_ccallocation' => $source->id,
-                    'prsn_aloc >' => 0
                 ],
-            ])->row();
+            ])->result();
 
-            // Tidak perlu validasi 100% karena bisa saja memang tidak semua cost centre dialokasikan
-            // if($total_prsn->total_prsn != 100) {
-            //     render([
-            //         'status' => 'error',
-            //         'message' => 'Total persentase alokasi harus 100%. Saat ini: ' . $total_prsn->total_prsn . '%'
-            //     ],'json');
-            //     return;
-            // }
-
-            // Delete data dengan kondisi yang spesifik untuk id_ccallocation
-            delete_data($table,'id_ccallocation',post('id_allocation'));
-
-            $total_inserted = 0;
-            $total_calculated = 0;
             foreach($cc_source as $c) {
                 $sum = get_data($table0 . ' a',[
                     'select' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account,a.account_name,
@@ -163,20 +149,9 @@ class Aloc_service_actual extends BE_Controller {
                     'group_by' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account'
                 ])->result();   
 
-                
                 if(count($sum)) {
                      foreach($sum as $s) {
-                        $alloc = get_data('tbl_fact_alocation_service_actual',[
-                            'where' => [
-                                'tahun' => $tahun,
-                                'bulan' => $bulan,
-                                'id_ccallocation' => $source->id,
-                                'prsn_aloc >' => 0
-                            ],
-                        ])->result();
-
                         foreach($alloc as $a){
-                            $data2 = [];
                             $data2['tahun'] = $tahun;
                             $data2['id_ccallocation'] = $source->id;
                             $data2['id_cost_centre'] = $a->id_cost_centre;
@@ -186,14 +161,9 @@ class Aloc_service_actual extends BE_Controller {
                             $data2['id_account'] = $s->id_account;
                             $data2['account_code'] = $s->account_code;
                             $data2['account_name'] = $s->account_name;                   
-                            $calculated_value = $s->$field_est * ($a->prsn_aloc/100);
-                            $data2[$field_b] = $calculated_value;
-                            $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc/100);
-                            
-                            $total_calculated += $calculated_value;
-                            
+                            $data2[$field_b] = $s->$field_est * ($a->prsn_aloc/100);
+                            $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc/100);        
                             insert_data($table,$data2);
-                            $total_inserted++;
                         }
                     }
                 }
@@ -202,7 +172,7 @@ class Aloc_service_actual extends BE_Controller {
 
         render([
 			'status'	=> 'success',
-			'message'	=> 'Allocation Process Successfully. Records: ' . $total_inserted . '. Total calculated: ' . number_format($total_calculated)
+			'message'	=> 'Allocation Process Successfully'
 		],'json');	
 
     }
