@@ -128,23 +128,25 @@ class Aloc_service_actual extends BE_Controller {
         if(isset($source->id)) $cc_source = json_decode($source->source_allocation) ;
 
         if(count($cc_source)) {
-            // Validasi total persentase alokasi harus 100%
+            // Validasi total persentase alokasi hanya yang > 0
             $total_prsn = get_data('tbl_fact_alocation_service_actual',[
                 'select' => 'sum(prsn_aloc) as total_prsn',
                 'where' => [
                     'tahun' => $tahun,
                     'bulan' => $bulan,
                     'id_ccallocation' => $source->id,
+                    'prsn_aloc >' => 0
                 ],
             ])->row();
 
-            if($total_prsn->total_prsn != 100) {
-                render([
-                    'status' => 'error',
-                    'message' => 'Total persentase alokasi harus 100%. Saat ini: ' . $total_prsn->total_prsn . '%'
-                ],'json');
-                return;
-            }
+            // Tidak perlu validasi 100% karena bisa saja memang tidak semua cost centre dialokasikan
+            // if($total_prsn->total_prsn != 100) {
+            //     render([
+            //         'status' => 'error',
+            //         'message' => 'Total persentase alokasi harus 100%. Saat ini: ' . $total_prsn->total_prsn . '%'
+            //     ],'json');
+            //     return;
+            // }
 
             // Delete data dengan kondisi yang spesifik untuk id_ccallocation
             delete_data($table,'id_ccallocation',post('id_allocation'));
