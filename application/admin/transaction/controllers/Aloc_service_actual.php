@@ -127,6 +127,11 @@ class Aloc_service_actual extends BE_Controller {
         $cc_source =[];
         if(isset($source->id)) $cc_source = json_decode($source->source_allocation) ;
 
+        $total_source = 0;
+        $total_alokasi = 0;
+        $log_sum = [];
+        $log_alloc = [];
+
         if(count($cc_source)) {
             delete_data($table,'id_ccallocation',post('id_allocation'));
 
@@ -142,6 +147,8 @@ class Aloc_service_actual extends BE_Controller {
 
                 if(count($sum)) {
                      foreach($sum as $s) {
+                        if(count($log_sum) < 5) $log_sum[] = (array)$s;
+                        $total_source += $s->$field_est;
                         $alloc = get_data('tbl_fact_alocation_service_actual',[
                             'where' => [
                                 'tahun' => $tahun,
@@ -149,8 +156,8 @@ class Aloc_service_actual extends BE_Controller {
                                 'id_ccallocation' => $source->id,
                             ],
                         ])->result();
-
                         foreach($alloc as $a){
+                            if(count($log_alloc) < 5) $log_alloc[] = (array)$a;
                             $data2['tahun'] = $tahun;
                             $data2['id_ccallocation'] = $source->id;
                             $data2['id_cost_centre'] = $a->id_cost_centre;
@@ -162,6 +169,7 @@ class Aloc_service_actual extends BE_Controller {
                             $data2['account_name'] = $s->account_name;                   
                             $data2[$field_b] = $s->$field_est * ($a->prsn_aloc/100);
                             $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc/100);        
+                            $total_alokasi += $data2[$field_b];
                             insert_data($table,$data2);
                         }
                     }
@@ -171,7 +179,9 @@ class Aloc_service_actual extends BE_Controller {
 
         render([
 			'status'	=> 'success',
-			'message'	=> 'Allocation Process Successfully'
+			'message'	=> 'Allocation Process Successfully. Total Source: ' . number_format($total_source, 0, ',', '.') . ', Total Alokasi: ' . number_format($total_alokasi, 0, ',', '.') . '. Log aktif, cek log_sum dan log_alloc.',
+            'log_sum' => $log_sum,
+            'log_alloc' => $log_alloc
 		],'json');	
 
     }
