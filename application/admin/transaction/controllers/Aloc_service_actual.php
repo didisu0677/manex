@@ -158,21 +158,13 @@ class Aloc_service_actual extends BE_Controller {
                 $alloc_info[] = "CC: {$ad->cost_centre} = {$ad->prsn_aloc}%";
             }
 
-            // Tampilkan debug info bahkan jika persentase benar
-            render([
-                'status' => 'debug',
-                'message' => 'DEBUG INFO:<br/>' . 
-                           'Source Table: ' . $table0 . '<br/>' .
-                           'Target Table: ' . $table . '<br/>' .
-                           'Field EST: ' . $field_est . '<br/>' .
-                           'Field B: ' . $field_b . '<br/>' .
-                           'Total Source: ' . number_format($total_source) . '<br/>' .
-                           'Source Details: ' . implode(', ', $debug_info) . '<br/>' .
-                           'Total Persentase: ' . $total_prsn . '%<br/>' .
-                           'Allocation Details: ' . implode(', ', $alloc_info) . '<br/>' .
-                           'CC Sources: ' . implode(', ', $cc_source)
-            ],'json');
-            return;
+            if($total_prsn != 100) {
+                render([
+                    'status' => 'error',
+                    'message' => 'Total persentase alokasi harus 100%. Saat ini: ' . $total_prsn . '%'
+                ],'json');
+                return;
+            }
 
             // Delete data dengan kondisi yang spesifik untuk id_ccallocation
             delete_data($table,'id_ccallocation',post('id_allocation'));
