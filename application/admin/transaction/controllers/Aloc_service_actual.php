@@ -128,7 +128,29 @@ class Aloc_service_actual extends BE_Controller {
         if(isset($source->id)) $cc_source = json_decode($source->source_allocation) ;
 
         if(count($cc_source)) {
-            delete_data($table,'id_ccallocation',post('id_allocation'));
+            // Validasi total persentase alokasi harus 100%
+            $total_prsn = get_data('tbl_fact_alocation_service_actual',[
+                'select' => 'sum(prsn_aloc) as total_prsn',
+                'where' => [
+                    'tahun' => $tahun,
+                    'bulan' => $bulan,
+                    'id_ccallocation' => $source->id,
+                ],
+            ])->row();
+
+            if($total_prsn->total_prsn != 100) {
+                render([
+                    'status' => 'error',
+                    'message' => 'Total persentase alokasi harus 100%. Saat ini: ' . $total_prsn->total_prsn . '%'
+                ],'json');
+                return;
+            }
+
+            // Delete data dengan kondisi yang lebih spesifik (tambah bulan)
+            delete_data($table,[
+                'id_ccallocation' => post('id_allocation'),
+                'bulan' => $bulan
+            ]);
 
             foreach($cc_source as $c) {
                 $sum = get_data($table0 . ' a',[
@@ -153,6 +175,7 @@ class Aloc_service_actual extends BE_Controller {
 
                         foreach($alloc as $a){
                             $data2['tahun'] = $tahun;
+                            $data2['bulan'] = $bulan;
                             $data2['id_ccallocation'] = $source->id;
                             $data2['id_cost_centre'] = $a->id_cost_centre;
                             $data2['cost_centre'] = $a->cost_centre;
