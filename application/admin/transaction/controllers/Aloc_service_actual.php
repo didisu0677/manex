@@ -128,6 +128,16 @@ class Aloc_service_actual extends BE_Controller {
         if(isset($source->id)) $cc_source = json_decode($source->source_allocation) ;
 
         if(count($cc_source)) {
+            // Debug: Cek total source data
+            $total_source = 0;
+            foreach($cc_source as $c) {
+                $source_sum = get_data($table0 . ' a',[
+                    'select' => 'sum(a.'.$field_est.') as total_est',
+                    'where' => ['a.cost_centre' => $c],
+                ])->row();
+                $total_source += $source_sum->total_est;
+            }
+            
             // Validasi total persentase alokasi harus 100%
             $total_prsn = get_data('tbl_fact_alocation_service_actual',[
                 'select' => 'sum(prsn_aloc) as total_prsn',
@@ -141,7 +151,7 @@ class Aloc_service_actual extends BE_Controller {
             if($total_prsn->total_prsn != 100) {
                 render([
                     'status' => 'error',
-                    'message' => 'Total persentase alokasi harus 100%. Saat ini: ' . $total_prsn->total_prsn . '%'
+                    'message' => 'Total persentase alokasi harus 100%. Saat ini: ' . $total_prsn->total_prsn . '%. Total source: ' . number_format($total_source)
                 ],'json');
                 return;
             }
@@ -152,11 +162,11 @@ class Aloc_service_actual extends BE_Controller {
             foreach($cc_source as $c) {
                 $sum = get_data($table0 . ' a',[
                     'select' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account,a.account_name,
-                          sum(a.'.$field_est.') as "'.$field_est.'", sum(a.total_budget) as total_budget',
+                          a.'.$field_est.' as "'.$field_est.'", a.total_budget as total_budget',
                      'where' => [
                         'a.cost_centre' => $c,
-                    ],
-                    'group_by' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account'
+                        'a.'.$field_est.' >' => 0
+                    ]
                 ])->result();   
 
                 
