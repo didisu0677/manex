@@ -146,11 +146,8 @@ class Aloc_service_actual extends BE_Controller {
                 return;
             }
 
-            // Delete data dengan kondisi yang lebih spesifik (tambah bulan)
-            delete_data($table,[
-                'id_ccallocation' => post('id_allocation'),
-                'bulan' => $bulan
-            ]);
+            // Delete data dengan kondisi yang spesifik untuk id_ccallocation
+            delete_data($table,'id_ccallocation',post('id_allocation'));
 
             foreach($cc_source as $c) {
                 $sum = get_data($table0 . ' a',[
@@ -175,7 +172,6 @@ class Aloc_service_actual extends BE_Controller {
 
                         foreach($alloc as $a){
                             $data2['tahun'] = $tahun;
-                            $data2['bulan'] = $bulan;
                             $data2['id_ccallocation'] = $source->id;
                             $data2['id_cost_centre'] = $a->id_cost_centre;
                             $data2['cost_centre'] = $a->cost_centre;
