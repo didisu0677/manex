@@ -189,7 +189,6 @@ class Aloc_service_actual extends BE_Controller {
                             $calculated_value = $s->$field_est * ($a->prsn_aloc/100);
                             $data2[$field_b] = $calculated_value;
                             $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc/100);
-                            $data2['created_at'] = date('Y-m-d H:i:s'); // Tambahkan timestamp
                             
                             $total_calculated += $calculated_value;
                             
