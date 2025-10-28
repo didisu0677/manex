@@ -150,7 +150,6 @@ class Aloc_service_actual extends BE_Controller {
             delete_data($table,'id_ccallocation',post('id_allocation'));
 
             $total_inserted = 0;
-            $debug_sample = [];
             foreach($cc_source as $c) {
                 $sum = get_data($table0 . ' a',[
                     'select' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account,a.account_name,
@@ -169,6 +168,7 @@ class Aloc_service_actual extends BE_Controller {
                                 'tahun' => $tahun,
                                 'bulan' => $bulan,
                                 'id_ccallocation' => $source->id,
+                                'prsn_aloc >' => 0
                             ],
                         ])->result();
 
@@ -185,10 +185,7 @@ class Aloc_service_actual extends BE_Controller {
                             $data2[$field_b] = $s->$field_est * ($a->prsn_aloc/100);
                             $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc/100);
                             
-                            // Debug sample perhitungan (hanya 3 record pertama)
-                            if($total_inserted < 3) {
-                                $debug_sample[] = "EST: " . number_format($s->$field_est) . " x " . $a->prsn_aloc . "% = " . number_format($data2[$field_b]) . " (CC: {$a->cost_centre})";
-                            }
+
                             
                             insert_data($table,$data2);
                             $total_inserted++;
@@ -200,7 +197,7 @@ class Aloc_service_actual extends BE_Controller {
 
         render([
 			'status'	=> 'success',
-			'message'	=> 'Allocation Process Successfully. Total records inserted: ' . $total_inserted . '<br/>Sample calculations: ' . implode('<br/>', $debug_sample)
+			'message'	=> 'Allocation Process Successfully'
 		],'json');	
 
     }
