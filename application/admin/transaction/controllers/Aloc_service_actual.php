@@ -128,40 +128,20 @@ class Aloc_service_actual extends BE_Controller {
         if(isset($source->id)) $cc_source = json_decode($source->source_allocation) ;
 
         if(count($cc_source)) {
-            // Debug: Cek total source data
-            $total_source = 0;
-            $debug_info = [];
-            foreach($cc_source as $c) {
-                $source_sum = get_data($table0 . ' a',[
-                    'select' => 'sum(a.'.$field_est.') as total_est, count(*) as count_records',
-                    'where' => ['a.cost_centre' => $c],
-                ])->row();
-                $total_source += $source_sum->total_est;
-                $debug_info[] = "CC: $c = " . number_format($source_sum->total_est) . " (records: {$source_sum->count_records})";
-            }
-            
-            // Validasi total persentase alokasi 
-            $alloc_data = get_data('tbl_fact_alocation_service_actual',[
-                'select' => 'cost_centre, prsn_aloc, sum(prsn_aloc) as total_prsn',
+            // Validasi total persentase alokasi harus 100%
+            $total_prsn = get_data('tbl_fact_alocation_service_actual',[
+                'select' => 'sum(prsn_aloc) as total_prsn',
                 'where' => [
                     'tahun' => $tahun,
                     'bulan' => $bulan,
                     'id_ccallocation' => $source->id,
                 ],
-                'group_by' => 'cost_centre, prsn_aloc'
-            ])->result();
+            ])->row();
 
-            $total_prsn = 0;
-            $alloc_info = [];
-            foreach($alloc_data as $ad) {
-                $total_prsn += $ad->prsn_aloc;
-                $alloc_info[] = "CC: {$ad->cost_centre} = {$ad->prsn_aloc}%";
-            }
-
-            if($total_prsn != 100) {
+            if($total_prsn->total_prsn != 100) {
                 render([
                     'status' => 'error',
-                    'message' => 'Total persentase alokasi harus 100%. Saat ini: ' . $total_prsn . '%'
+                    'message' => 'Total persentase alokasi harus 100%. Saat ini: ' . $total_prsn->total_prsn . '%'
                 ],'json');
                 return;
             }
