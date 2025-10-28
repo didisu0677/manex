@@ -130,15 +130,6 @@ class Aloc_service_actual extends BE_Controller {
         if(count($cc_source)) {
             delete_data($table,'id_ccallocation',post('id_allocation'));
 
-            // Ambil data alokasi sekali saja di luar loop
-            $alloc = get_data('tbl_fact_alocation_service_actual',[
-                'where' => [
-                    'tahun' => $tahun,
-                    'bulan' => $bulan,
-                    'id_ccallocation' => $source->id,
-                ],
-            ])->result();
-
             foreach($cc_source as $c) {
                 $sum = get_data($table0 . ' a',[
                     'select' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account,a.account_name,
@@ -151,6 +142,14 @@ class Aloc_service_actual extends BE_Controller {
 
                 if(count($sum)) {
                      foreach($sum as $s) {
+                        $alloc = get_data('tbl_fact_alocation_service_actual',[
+                            'where' => [
+                                'tahun' => $tahun,
+                                'bulan' => $bulan,
+                                'id_ccallocation' => $source->id,
+                            ],
+                        ])->result();
+
                         foreach($alloc as $a){
                             $data2['tahun'] = $tahun;
                             $data2['id_ccallocation'] = $source->id;
