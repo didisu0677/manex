@@ -171,8 +171,8 @@ class Aloc_service_actual extends BE_Controller {
                                 'tahun' => $tahun,
                                 'bulan' => $bulan,
                                 'id_ccallocation' => $source->id,
-                                // 'cost_centre' => '2110',
-                                // batasan 'prsn_aloc >' dihapus
+                                'cost_centre' => $s->cost_centre,
+                                // batasan 'prsn_aloc >' tetap dihapus agar bisa debug semua record
                             ],
                         ])->row();
                         $prsn_aloc_val = $a ? $a->prsn_aloc : null;
@@ -196,5 +196,90 @@ class Aloc_service_actual extends BE_Controller {
                             $data2['account_code'] = $s->account_code;
                             $data2['account_name'] = $s->account_name;                   
                             $data2[$field_b] = $s->$field_est * ($a->prsn_aloc/100);
-                            $data2['total_budget'
+                            $data2['total_budget'] = $s->total_budget;
+                            $data2['created_at'] = date('Y-m-d H:i:s');
+                            $data2['updated_at'] = date('Y-m-d H:i:s');
+                            insert_data($table,$data2);
+                        }
+                     }
+                }
+            }
+        }
+
+        // Alokasi dari sumber lain (jika ada)
+        $cc_source_lain = [];
+        if(isset($source->source_lain)) $cc_source_lain = json_decode($source->source_lain);
+
+        if(count($cc_source_lain)) {
+            foreach($cc_source_lain as $c) {
+                $sum = get_data($table0 . ' a',[
+                    'select' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account,a.account_name,
+                          sum(a.'.$field_est.') as "'.$field_est.'", sum(a.total_budget) as total_budget',
+                     'where' => [
+                        'a.cost_centre' => $c,
+                    ],
+                    'group_by' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account'
+                ])->result();   
+
+                if(count($sum)) {
+                     foreach($sum as $s) {
+                        $a = get_data('tbl_fact_alocation_service_actual',[
+                            'where' => [
+                                'tahun' => $tahun,
+                                'bulan' => $bulan,
+                                'id_ccallocation' => $source->id,
+                                'cost_centre' => $s->cost_centre,
+                            ],
+                        ])->row();
+                        $prsn_aloc_val = $a ? $a->prsn_aloc : null;
+                        $hasil_kali = ($prsn_aloc_val !== null) ? ($s->$field_est * ($prsn_aloc_val / 100)) : null;
+                        $log_detail[] = [
+                            'cost_centre' => $s->cost_centre,
+                            'field_est' => $s->$field_est,
+                            'prsn_aloc' => $prsn_aloc_val,
+                            'hasil_kali' => $hasil_kali,
+                            'alokasi' => $a ? ($s->$field_est * ($a->prsn_aloc / 100)) : 0
+                        ];
+                        if($a) {
+                            $data2['tahun'] = $tahun;
+                            $data2['id_ccallocation'] = $source->id;
+                            $data2['id_cost_centre'] = $a->id_cost_centre;
+                            $data2['cost_centre'] = $a->cost_centre;
+                            $data2['prsn_aloc'] = $a->prsn_aloc;
+                            $data2['sub_account'] = $s->sub_account;
+                            $data2['id_account'] = $s->id_account;
+                            $data2['account_code'] = $s->account_code;
+                            $data2['account_name'] = $s->account_name;                   
+                            $data2[$field_b] = $s->$field_est * ($a->prsn_aloc/100);
+                            $data2['total_budget'] = $s->total_budget;
+                            $data2['created_at'] = date('Y-m-d H:i:s');
+                            $data2['updated_at'] = date('Y-m-d H:i:s');
+                            insert_data($table,$data2);
+                        }
+                     }
+                }
+            }
+        }
+
+        $total_alokasi = 0;
+        $data_alokasi = get_data($table,[
+            'select' => 'id_ccallocation,sum('.$field_b.') as total',
+            'group_by' => 'id_ccallocation'
+        ])->result();
+        foreach($data_alokasi as $dal) {
+            $total_alokasi += $dal->total;
+            update_data('tbl_fact_ccallocation', ['total_alokasi' => $total_alokasi],'id',post('id_allocation'));
+        }
+
+        // update total source di tbl_fact_ccallocation
+        update_data('tbl_fact_ccallocation', ['total_source' => $total_source],'id',post('id_allocation'));
+
+        // log_activity('Proses Alokasi', $log_detail);
+        $response = [
+            'success' => true,
+            'message' => 'Data berhasil diproses',
+        ];
+        render($response,'json');
+    }
+}
 
