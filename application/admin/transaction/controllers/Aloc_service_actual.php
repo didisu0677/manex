@@ -127,29 +127,7 @@ class Aloc_service_actual extends BE_Controller {
         $cc_source =[];
         if(isset($source->id)) $cc_source = json_decode($source->source_allocation) ;
 
-        $total_source = 0;
-        $total_alokasi = 0;
-        $log_sum = [];
-        $log_alloc = [];
-        $log_prsn_aloc = [];
-        $log_detail = [];
-
-        // Hitung total prosentase alokasi per cost centre
-        $prsn_aloc_map = [];
         if(count($cc_source)) {
-            $alloc_all = get_data('tbl_fact_alocation_service_actual', [
-                'where' => [
-                    'tahun' => $tahun,
-                    'bulan' => $bulan,
-                    'id_ccallocation' => $source->id,
-                ],
-            ])->result();
-            foreach ($alloc_all as $row) {
-                $cc = $row->cost_centre;
-                if (!isset($prsn_aloc_map[$cc])) $prsn_aloc_map[$cc] = 0;
-                $prsn_aloc_map[$cc] += $row->prsn_aloc;
-            }
-
             delete_data($table,'id_ccallocation',post('id_allocation'));
 
             foreach($cc_source as $c) {
@@ -164,28 +142,15 @@ class Aloc_service_actual extends BE_Controller {
 
                 if(count($sum)) {
                      foreach($sum as $s) {
-                        if(count($log_sum) < 5) $log_sum[] = (array)$s;
-                        $total_source += $s->$field_est;
                         $a = get_data('tbl_fact_alocation_service_actual',[
                             'where' => [
                                 'tahun' => $tahun,
                                 'bulan' => $bulan,
                                 'id_ccallocation' => $source->id,
                                 'cost_centre' => $s->cost_centre,
-                                // batasan 'prsn_aloc >' tetap dihapus agar bisa debug semua record
                             ],
                         ])->row();
-                        $prsn_aloc_val = $a ? $a->prsn_aloc : null;
-                        $hasil_kali = ($prsn_aloc_val !== null) ? ($s->$field_est * ($prsn_aloc_val / 100)) : null;
-                        $log_detail[] = [
-                            'cost_centre' => $s->cost_centre,
-                            'field_est' => $s->$field_est,
-                            'prsn_aloc' => $prsn_aloc_val,
-                            'hasil_kali' => $hasil_kali,
-                            'alokasi' => $a ? ($s->$field_est * ($a->prsn_aloc / 100)) : 0
-                        ];
                         if($a) {
-                            if(count($log_alloc) < 5) $log_alloc[] = (array)$a;
                             $data2['tahun'] = $tahun;
                             $data2['id_ccallocation'] = $source->id;
                             $data2['id_cost_centre'] = $a->id_cost_centre;
@@ -196,9 +161,7 @@ class Aloc_service_actual extends BE_Controller {
                             $data2['account_code'] = $s->account_code;
                             $data2['account_name'] = $s->account_name;                   
                             $data2[$field_b] = $s->$field_est * ($a->prsn_aloc/100);
-                            $data2['total_budget'] = $s->total_budget;
-                            $data2['created_at'] = date('Y-m-d H:i:s');
-                            $data2['updated_at'] = date('Y-m-d H:i:s');
+                            $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc / 100);
                             insert_data($table,$data2);
                         }
                      }
@@ -231,15 +194,6 @@ class Aloc_service_actual extends BE_Controller {
                                 'cost_centre' => $s->cost_centre,
                             ],
                         ])->row();
-                        $prsn_aloc_val = $a ? $a->prsn_aloc : null;
-                        $hasil_kali = ($prsn_aloc_val !== null) ? ($s->$field_est * ($prsn_aloc_val / 100)) : null;
-                        $log_detail[] = [
-                            'cost_centre' => $s->cost_centre,
-                            'field_est' => $s->$field_est,
-                            'prsn_aloc' => $prsn_aloc_val,
-                            'hasil_kali' => $hasil_kali,
-                            'alokasi' => $a ? ($s->$field_est * ($a->prsn_aloc / 100)) : 0
-                        ];
                         if($a) {
                             $data2['tahun'] = $tahun;
                             $data2['id_ccallocation'] = $source->id;
@@ -251,9 +205,7 @@ class Aloc_service_actual extends BE_Controller {
                             $data2['account_code'] = $s->account_code;
                             $data2['account_name'] = $s->account_name;                   
                             $data2[$field_b] = $s->$field_est * ($a->prsn_aloc/100);
-                            $data2['total_budget'] = $s->total_budget;
-                            $data2['created_at'] = date('Y-m-d H:i:s');
-                            $data2['updated_at'] = date('Y-m-d H:i:s');
+                            $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc / 100);
                             insert_data($table,$data2);
                         }
                      }
@@ -261,25 +213,10 @@ class Aloc_service_actual extends BE_Controller {
             }
         }
 
-        $total_alokasi = 0;
-        $data_alokasi = get_data($table,[
-            'select' => 'id_ccallocation,sum('.$field_b.') as total',
-            'group_by' => 'id_ccallocation'
-        ])->result();
-        foreach($data_alokasi as $dal) {
-            $total_alokasi += $dal->total;
-            update_data('tbl_fact_ccallocation', ['total_alokasi' => $total_alokasi],'id',post('id_allocation'));
-        }
-
-        // update total source di tbl_fact_ccallocation
-        update_data('tbl_fact_ccallocation', ['total_source' => $total_source],'id',post('id_allocation'));
-
-        // log_activity('Proses Alokasi', $log_detail);
-        $response = [
-            'success' => true,
-            'message' => 'Data berhasil diproses',
-        ];
-        render($response,'json');
+        render([
+            'status' => 'success',
+            'message' => 'Allocation Process Successfully.'
+        ], 'json');
     }
 }
 
