@@ -170,8 +170,8 @@ class Aloc_service_actual extends BE_Controller {
                             'where' => [
                                 'tahun' => $tahun,
                                 'bulan' => $bulan,
-                                'id_ccallocation1' => $source->id,
-                                'cost_centre' => $s->cost_centre,
+                                'id_ccallocation' => $source->id,
+                                'cost_centre' => '2110',
                                 'prsn_aloc >' => 0,
                             ],
                         ])->row();
