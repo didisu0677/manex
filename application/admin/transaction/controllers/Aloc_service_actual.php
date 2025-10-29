@@ -113,8 +113,47 @@ class Aloc_service_actual extends BE_Controller {
         $field1 = 'EST_' . sprintf('%02d', $bulan);
         $field2 = 'B_' . sprintf('%02d', $bulan);
         $table0 = 'tbl_fact_lstbudget_' . user('tahun_budget');
-
         $table = 'act_tbl_fact_lstbudget_' . $tahun;
+
+        // Copy semua data EST_$bulan ke act_tbl_fact_lstbudget_$tahun (field B_$bulan) untuk id_ccallocation=0
+        $all_est = get_data($table0, [
+            'select' => 'a.*',
+            'where' => ['a.id_ccallocation' => 0],
+        ])->result();
+
+        foreach ($all_est as $row) {
+            $where = [
+                'tahun' => $tahun,
+                'id_ccallocation' => 0,
+                'id_cost_centre' => $row->id_cost_centre,
+                'cost_centre' => $row->cost_centre,
+                'sub_account' => $row->sub_account,
+                'id_account' => $row->id_account,
+                'account_code' => $row->account_code,
+            ];
+            $cek = get_data($table, [
+                'where' => $where
+            ])->row();
+            $data_copy = [
+                'tahun' => $tahun,
+                'id_ccallocation' => 0,
+                'id_cost_centre' => $row->id_cost_centre,
+                'cost_centre' => $row->cost_centre,
+                'sub_account' => $row->sub_account,
+                'id_account' => $row->id_account,
+                'account_code' => $row->account_code,
+                'account_name' => $row->account_name,
+                $field2 => $row->$field1
+            ];
+            if (!isset($cek->id)) {
+                insert_data($table, $data_copy);
+            } else {
+                update_data($table, [$field2 => $row->$field1], 'id', $cek->id);
+            }
+        }
+
+
+
         $source = get_data('tbl_fact_ccallocation', [
             'where' => [
                 'id' => post('id_allocation'),
