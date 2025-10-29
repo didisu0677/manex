@@ -129,8 +129,8 @@ class Aloc_service_actual extends BE_Controller {
             delete_data($table, 'id_ccallocation', post('id_allocation'));
 
             foreach ($cc_source as $c) {
-                $sum = get_data($table . ' a', [
-                    'select' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account,a.account_name, sum('.$field1.') as '.$field1.', sum(total_est) as total_est',
+                $sum = get_data($table0 . ' a', [
+                    'select' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account,a.account_name, sum('.$field1.') as '.$field1.', sum(total_budget) as total_budget',
                     'where' => [
                         'a.cost_centre' => $c,
                     ],
@@ -158,7 +158,7 @@ class Aloc_service_actual extends BE_Controller {
                             $data2['account_code'] = $s->account_code;
                             $data2['account_name'] = $s->account_name;
                             $data2[$field2] = $s->$field1 * ($a->prsn_aloc / 100);
-                            $data2['total_budget'] = $s->total_est * ($a->prsn_aloc / 100);
+                            $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc / 100);
                             insert_data($table, $data2);
                         }
                     }
