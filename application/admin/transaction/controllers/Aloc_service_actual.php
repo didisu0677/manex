@@ -106,43 +106,42 @@ class Aloc_service_actual extends BE_Controller {
 
     function proses() {
         ini_set('memory_limit', '-1');
-		ini_set('max_execution_time', 0);
+        ini_set('max_execution_time', 0);
 
-        $tahun = post('tahun') ;
-        $tahun_budget = user('tahun_budget') ;
-        $bulan = post('bulan') ;
+        $tahun = post('tahun');
+        $bulan = post('bulan');
         $field_est = 'EST_' . sprintf('%02d', $bulan);
         $field_b = 'B_' . sprintf('%02d', $bulan);
 
-        $table0 = 'tbl_fact_lstbudget_' .$tahun_budget ;
-        $table = 'act_tbl_fact_lstbudget_' .$tahun ;
-        $source = get_data('tbl_fact_ccallocation',[
+        $table_source = 'tbl_fact_lstbudget_' . $tahun;
+        $table_target = 'act_tbl_fact_lstbudget_' . $tahun;
+
+        $source = get_data('tbl_fact_ccallocation', [
             'where' => [
                 'id' => post('id_allocation'),
                 'is_active' => 1
             ],
         ])->row();
 
+        $cc_source = [];
+        if (isset($source->id)) $cc_source = json_decode($source->source_allocation);
 
-        $cc_source =[];
-        if(isset($source->id)) $cc_source = json_decode($source->source_allocation) ;
+        if (count($cc_source)) {
+            delete_data($table_target, 'id_ccallocation', post('id_allocation'));
 
-        if(count($cc_source)) {
-            delete_data($table,'id_ccallocation',post('id_allocation'));
-
-            foreach($cc_source as $c) {
-                $sum = get_data($table0 . ' a',[
-                    'select' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account,a.account_name,
-                          sum(a.'.$field_est.') as "'.$field_est.'", sum(a.total_budget) as total_budget',
-                     'where' => [
+            foreach ($cc_source as $c) {
+                $sum = get_data($table_source . ' a', [
+                    'select' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account,a.account_name, sum(a.' . $field_est . ') as "' . $field_est . '", sum(a.total_budget) as total_budget',
+                    'where' => [
                         'a.cost_centre' => $c,
                     ],
                     'group_by' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account'
-                ])->result();   
+                ])->result();
 
-                if(count($sum)) {
-                     foreach($sum as $s) {
-                        $a = get_data('tbl_fact_alocation_service_actual',[
+                if (count($sum)) {
+                    foreach ($sum as $s) {
+                        // Ambil prosentase actual dari tbl_fact_alocation_service_actual sesuai bulan
+                        $a = get_data('tbl_fact_alocation_service_actual', [
                             'where' => [
                                 'tahun' => $tahun,
                                 'bulan' => $bulan,
@@ -150,43 +149,45 @@ class Aloc_service_actual extends BE_Controller {
                                 'cost_centre' => $s->cost_centre,
                             ],
                         ])->row();
-                        if($a) {
-                            $data2['tahun'] = $tahun;
-                            $data2['id_ccallocation'] = $source->id;
-                            $data2['id_cost_centre'] = $a->id_cost_centre;
-                            $data2['cost_centre'] = $a->cost_centre;
-                            $data2['prsn_aloc'] = $a->prsn_aloc;
-                            $data2['sub_account'] = $s->sub_account;
-                            $data2['id_account'] = $s->id_account;
-                            $data2['account_code'] = $s->account_code;
-                            $data2['account_name'] = $s->account_name;                   
-                            $data2[$field_b] = $s->$field_est * ($a->prsn_aloc/100);
-                            $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc / 100);
-                            insert_data($table,$data2);
+                        if ($a) {
+                            $data2 = [
+                                'tahun' => $tahun,
+                                'bulan' => $bulan,
+                                'id_ccallocation' => $source->id,
+                                'id_cost_centre' => $a->id_cost_centre,
+                                'cost_centre' => $a->cost_centre,
+                                'prsn_aloc' => $a->prsn_aloc,
+                                'sub_account' => $s->sub_account,
+                                'id_account' => $s->id_account,
+                                'account_code' => $s->account_code,
+                                'account_name' => $s->account_name,
+                                $field_b => $s->$field_est * ($a->prsn_aloc / 100),
+                                'total_budget' => $s->total_budget * ($a->prsn_aloc / 100)
+                            ];
+                            insert_data($table_target, $data2);
                         }
-                     }
+                    }
                 }
             }
         }
 
         // Alokasi dari sumber lain (jika ada)
         $cc_source_lain = [];
-        if(isset($source->source_lain)) $cc_source_lain = json_decode($source->source_lain);
+        if (isset($source->source_lain)) $cc_source_lain = json_decode($source->source_lain);
 
-        if(count($cc_source_lain)) {
-            foreach($cc_source_lain as $c) {
-                $sum = get_data($table0 . ' a',[
-                    'select' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account,a.account_name,
-                          sum(a.'.$field_est.') as "'.$field_est.'", sum(a.total_budget) as total_budget',
-                     'where' => [
+        if (count($cc_source_lain)) {
+            foreach ($cc_source_lain as $c) {
+                $sum = get_data($table_source . ' a', [
+                    'select' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account,a.account_name, sum(a.' . $field_est . ') as "' . $field_est . '", sum(a.total_budget) as total_budget',
+                    'where' => [
                         'a.cost_centre' => $c,
                     ],
                     'group_by' => 'a.cost_centre,a.id_cost_centre,a.sub_account,a.account_code,a.id_account'
-                ])->result();   
+                ])->result();
 
-                if(count($sum)) {
-                     foreach($sum as $s) {
-                        $a = get_data('tbl_fact_alocation_service_actual',[
+                if (count($sum)) {
+                    foreach ($sum as $s) {
+                        $a = get_data('tbl_fact_alocation_service_actual', [
                             'where' => [
                                 'tahun' => $tahun,
                                 'bulan' => $bulan,
@@ -194,21 +195,24 @@ class Aloc_service_actual extends BE_Controller {
                                 'cost_centre' => $s->cost_centre,
                             ],
                         ])->row();
-                        if($a) {
-                            $data2['tahun'] = $tahun;
-                            $data2['id_ccallocation'] = $source->id;
-                            $data2['id_cost_centre'] = $a->id_cost_centre;
-                            $data2['cost_centre'] = $a->cost_centre;
-                            $data2['prsn_aloc'] = $a->prsn_aloc;
-                            $data2['sub_account'] = $s->sub_account;
-                            $data2['id_account'] = $s->id_account;
-                            $data2['account_code'] = $s->account_code;
-                            $data2['account_name'] = $s->account_name;                   
-                            $data2[$field_b] = $s->$field_est * ($a->prsn_aloc/100);
-                            $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc / 100);
-                            insert_data($table,$data2);
+                        if ($a) {
+                            $data2 = [
+                                'tahun' => $tahun,
+                                'bulan' => $bulan,
+                                'id_ccallocation' => $source->id,
+                                'id_cost_centre' => $a->id_cost_centre,
+                                'cost_centre' => $a->cost_centre,
+                                'prsn_aloc' => $a->prsn_aloc,
+                                'sub_account' => $s->sub_account,
+                                'id_account' => $s->id_account,
+                                'account_code' => $s->account_code,
+                                'account_name' => $s->account_name,
+                                $field_b => $s->$field_est * ($a->prsn_aloc / 100),
+                                'total_budget' => $s->total_budget * ($a->prsn_aloc / 100)
+                            ];
+                            insert_data($table_target, $data2);
                         }
-                     }
+                    }
                 }
             }
         }
