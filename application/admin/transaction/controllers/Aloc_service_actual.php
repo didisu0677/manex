@@ -154,6 +154,7 @@ class Aloc_service_actual extends BE_Controller {
                                 'tahun' => $tahun,
                                 'bulan' => $bulan,
                                 'id_ccallocation' => $source->id,
+                                'prsn_aloc >' => 0,
                             ],
                         ])->result();
                         foreach($alloc as $a){
