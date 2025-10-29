@@ -149,15 +149,16 @@ class Aloc_service_actual extends BE_Controller {
                      foreach($sum as $s) {
                         if(count($log_sum) < 5) $log_sum[] = (array)$s;
                         $total_source += $s->$field_est;
-                        $alloc = get_data('tbl_fact_alocation_service_actual',[
+                        $a = get_data('tbl_fact_alocation_service_actual',[
                             'where' => [
                                 'tahun' => $tahun,
                                 'bulan' => $bulan,
                                 'id_ccallocation' => $source->id,
+                                'cost_centre' => $s->cost_centre,
                                 'prsn_aloc >' => 0,
                             ],
-                        ])->result();
-                        foreach($alloc as $a){
+                        ])->row();
+                        if($a) {
                             if(count($log_alloc) < 5) $log_alloc[] = (array)$a;
                             $data2['tahun'] = $tahun;
                             $data2['id_ccallocation'] = $source->id;
