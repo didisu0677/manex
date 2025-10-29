@@ -108,13 +108,14 @@ class Aloc_service_actual extends BE_Controller {
         ini_set('memory_limit', '-1');
         ini_set('max_execution_time', 0);
 
-        $tahun = post('tahun');
-        $bulan = post('bulan');
-        $field_est = 'EST_' . sprintf('%02d', $bulan);
-        $field_b = 'B_' . sprintf('%02d', $bulan);
+    $tahun = post('tahun');
+    $tahun_budget = user('tahun_budget');
+    $bulan = post('bulan');
+    $field_est = 'EST_' . sprintf('%02d', $bulan);
+    $field_b = 'B_' . sprintf('%02d', $bulan);
 
-        $table_source = 'tbl_fact_lstbudget_' . $tahun;
-        $table_target = 'act_tbl_fact_lstbudget_' . $tahun;
+    $table_source = 'tbl_fact_lstbudget_' . $tahun_budget;
+    $table_target = 'act_tbl_fact_lstbudget_' . $tahun;
 
         $source = get_data('tbl_fact_ccallocation', [
             'where' => [
