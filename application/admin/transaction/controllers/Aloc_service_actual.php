@@ -131,8 +131,24 @@ class Aloc_service_actual extends BE_Controller {
         $total_alokasi = 0;
         $log_sum = [];
         $log_alloc = [];
+        $log_prsn_aloc = [];
 
+        // Hitung total prosentase alokasi per cost centre
+        $prsn_aloc_map = [];
         if(count($cc_source)) {
+            $alloc_all = get_data('tbl_fact_alocation_service_actual', [
+                'where' => [
+                    'tahun' => $tahun,
+                    'bulan' => $bulan,
+                    'id_ccallocation' => $source->id,
+                ],
+            ])->result();
+            foreach ($alloc_all as $row) {
+                $cc = $row->cost_centre;
+                if (!isset($prsn_aloc_map[$cc])) $prsn_aloc_map[$cc] = 0;
+                $prsn_aloc_map[$cc] += $row->prsn_aloc;
+            }
+
             delete_data($table,'id_ccallocation',post('id_allocation'));
 
             foreach($cc_source as $c) {
@@ -179,11 +195,20 @@ class Aloc_service_actual extends BE_Controller {
             }
         }
 
+        // Siapkan log prosentase alokasi per cost centre
+        foreach ($prsn_aloc_map as $cc => $prsn) {
+            $log_prsn_aloc[] = [
+                'cost_centre' => $cc,
+                'total_prsn_aloc' => $prsn
+            ];
+        }
+
         render([
 			'status'	=> 'success',
-			'message'	=> 'Allocation Process Successfully. Total Source: ' . number_format($total_source, 0, ',', '.') . ', Total Alokasi: ' . number_format($total_alokasi, 0, ',', '.') . '. Log aktif, cek log_sum dan log_alloc.',
+			'message'	=> 'Allocation Process Successfully. Total Source: ' . number_format($total_source, 0, ',', '.') . ', Total Alokasi: ' . number_format($total_alokasi, 0, ',', '.') . '. Log aktif, cek log_sum, log_alloc, log_prsn_aloc.',
             'log_sum' => $log_sum,
-            'log_alloc' => $log_alloc
+            'log_alloc' => $log_alloc,
+            'log_prsn_aloc' => $log_prsn_aloc
 		],'json');	
 
     }
