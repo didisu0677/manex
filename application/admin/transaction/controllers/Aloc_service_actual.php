@@ -170,16 +170,18 @@ class Aloc_service_actual extends BE_Controller {
                             'where' => [
                                 'tahun' => $tahun,
                                 'bulan' => $bulan,
-                                'id_ccallocation' => $source->id,
+                                'id_ccallocation1' => $source->id,
                                 'cost_centre' => $s->cost_centre,
                                 'prsn_aloc >' => 0,
                             ],
                         ])->row();
                         $prsn_aloc_val = $a ? $a->prsn_aloc : null;
+                        $hasil_kali = ($prsn_aloc_val !== null) ? ($s->$field_est * ($prsn_aloc_val / 100)) : null;
                         $log_detail[] = [
                             'cost_centre' => $s->cost_centre,
                             'field_est' => $s->$field_est,
                             'prsn_aloc' => $prsn_aloc_val,
+                            'hasil_kali' => $hasil_kali,
                             'alokasi' => $a ? ($s->$field_est * ($a->prsn_aloc / 100)) : 0
                         ];
                         if($a) {
