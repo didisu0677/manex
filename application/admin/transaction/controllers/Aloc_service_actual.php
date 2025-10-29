@@ -172,7 +172,7 @@ class Aloc_service_actual extends BE_Controller {
                                 'bulan' => $bulan,
                                 'id_ccallocation' => $source->id,
                                 // 'cost_centre' => '2110',
-                                'prsn_aloc >' => 0,
+                                // batasan 'prsn_aloc >' dihapus
                             ],
                         ])->row();
                         $prsn_aloc_val = $a ? $a->prsn_aloc : null;
@@ -196,32 +196,5 @@ class Aloc_service_actual extends BE_Controller {
                             $data2['account_code'] = $s->account_code;
                             $data2['account_name'] = $s->account_name;                   
                             $data2[$field_b] = $s->$field_est * ($a->prsn_aloc/100);
-                            $data2['total_budget'] = $s->total_budget * ($a->prsn_aloc/100);        
-                            $total_alokasi += $data2[$field_b];
-                            insert_data($table,$data2);
-                        }
-                    }
-                }
-            }
-        }
-
-        // Siapkan log prosentase alokasi per cost centre
-        foreach ($prsn_aloc_map as $cc => $prsn) {
-            $log_prsn_aloc[] = [
-                'cost_centre' => $cc,
-                'total_prsn_aloc' => $prsn
-            ];
-        }
-
-        render([
-			'status'	=> 'success',
-			'message'	=> 'Allocation Process Successfully. Total Source: ' . number_format($total_source, 0, ',', '.') . ', Total Alokasi: ' . number_format($total_alokasi, 0, ',', '.') . '. Log aktif, cek log_sum, log_alloc, log_prsn_aloc, log_detail.',
-            'log_sum' => $log_sum,
-            'log_alloc' => $log_alloc,
-            'log_prsn_aloc' => $log_prsn_aloc,
-            'log_detail' => $log_detail
-		],'json');	
-
-    }
-}
+                            $data2['total_budget'
 
