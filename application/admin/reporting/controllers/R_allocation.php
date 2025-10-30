@@ -225,9 +225,7 @@ class R_allocation extends BE_Controller {
             if(in_array($l->manex_account,['7212','735','736','738','759'])) {
                 $total_idle = ($l->total * ($l->prsn_allocation /100));
                 $after_idle = $l->total - ($l->total * ($l->prsn_allocation /100));
-            }else{
-                $total_idle = 0;
-                $after_idle = $l->total;}
+            }
 
                 update_data('tbl_fact_manex_allocation',
                     ['total_idle' => $total_idle, 'after_idle' => $after_idle ],
