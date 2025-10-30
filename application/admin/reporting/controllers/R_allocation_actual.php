@@ -177,6 +177,7 @@ class R_allocation_actual extends BE_Controller {
                         //  sum(total_budget_idle) as total_budget_idle, sum(budget_after_idle) as budget_after_idle',
                         'where' => [
                             '__m' => '(account_code IN ('.$realAccountNumber.') '.(!empty($customWhere)  ? ' OR ' .$customWhere : '').')',
+
                         ],
                         'group_by' => 'cost_centre'
                     ];
@@ -198,7 +199,7 @@ class R_allocation_actual extends BE_Controller {
         }
 
         // debug($data['total_budget_idle']);die;
-        delete_data('tbl_fact_manex_allocation', ['tahun'=>$tahun,'cost_centre !=' => '3100']);
+        delete_data('tbl_fact_manex_allocation_actual', ['tahun'=>$tahun,'bulan' => $bulan,'cost_centre !=' => '3100']);
         //simpan report ke database
         foreach($data['total_budget'] as $d => $v) {
             foreach($v as $vc => $t1) {
