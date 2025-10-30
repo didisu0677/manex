@@ -224,6 +224,7 @@ class R_allocation_actual extends BE_Controller {
             'where'  => [
                         'a.tahun' => $tahun,
                         'a.bulan' => $bulan,
+                        'c.bulan' => $bulan
                         ]
   		    ])->result();
 
