@@ -98,7 +98,10 @@ class Idle_allocation extends BE_Controller {
 		foreach($jml as $i => $k) {
 			if($i==0) {
 				for($j = 2; $j <= $k; $j++) {
-					$data = $this->simpleexcel->parsing($i,$j);
+					$data = $this->simpleexcel->parsing($i,$j); 
+					$id_cc = get_data('tbl_fact_cost_centre','cost_centre',$data['cost_center'])->row_array();
+					$data['id_cost_centre'] = $id_cc ? $id_cc['id'] : 0;
+
 					$data['create_at'] = date('Y-m-d H:i:s');
 					$data['create_by'] = user('nama');
 					$save = insert_data('tbl_idle_allocation',$data);
