@@ -241,8 +241,8 @@ class R_allocation_actual extends BE_Controller {
                     ['tahun' => $l->tahun,'bulan' => $l->bulan,'manex_account'=>$l->manex_account,'cost_centre' => $l->cost_centre],
                 );
 
-            $data['total_budget_idle'][$l->manex_account][$l->cost_centre] = $total_idle;
-            $data['budget_after_idle'][$l->manex_account][$l->cost_centre] = $after_idle;
+            $data['total_budget_idle'][$l->manex_account][$l->cost_centre] = 0;//$total_idle;
+            $data['budget_after_idle'][$l->manex_account][$l->cost_centre] = 0;//$after_idle;
 
 		}
 
