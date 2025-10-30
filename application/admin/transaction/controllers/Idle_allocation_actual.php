@@ -100,7 +100,7 @@ class Idle_allocation_actual extends BE_Controller {
 				for($j = 2; $j <= $k; $j++) {
 					$data = $this->simpleexcel->parsing($i,$j);
 
-					$id_cc = get_data('tbl_fact_cost_centre','cost_centre',$data['cost_center'])->row_array();
+					$id_cc = get_data('tbl_fact_cost_centre','kode',$data['cost_center'])->row_array();
 					$data['id_cost_centre'] = $id_cc ? $id_cc['id'] : 0;
 					$data['create_at'] = date('Y-m-d H:i:s');
 					$data['create_by'] = user('nama');
