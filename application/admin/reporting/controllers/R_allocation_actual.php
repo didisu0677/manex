@@ -219,7 +219,7 @@ class R_allocation_actual extends BE_Controller {
         $lst = get_data('tbl_fact_manex_allocation_actual a',[
 			'select' => 'a.*,b.kode as cost_centre,c.prsn_allocation',
 			'join'   => ['tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
-                       'tbl_idle_allocation_actual c on b.id = c.id_cost_centre and a.bulan = c.bulan and b.is_active = 1 type left',
+                       'tbl_idle_allocation_actual c on b.id = c.id_cost_centre and a.bulan = c.bulan and a.tahun = c.tahun and b.is_active = 1 type left',
                         ],
             'where'  => [
                         'a.tahun' => $tahun,
@@ -228,12 +228,11 @@ class R_allocation_actual extends BE_Controller {
   		    ])->result();
 
         foreach($lst as $l) {
+            $total_idle = 0;
+            $after_idle = $l->total;
             if(in_array($l->manex_account,['7212','735','736','738','759'])) {
-                $total_idle = ($l->total * ($l->prsn_allocation / 100));
-                $after_idle = $l->total - $total_idle;
-            } else {
-                $total_idle = 0;
-                $after_idle = $l->total;
+                $total_idle = ($l->total * ($l->prsn_allocation /100));
+                $after_idle = $l->total - ($l->total * ($l->prsn_allocation /100));
             }
 
                 update_data('tbl_fact_manex_allocation_actual',
