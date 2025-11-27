@@ -1,0 +1,103 @@
+pipeline {
+    agent { label 'master' }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+        disableConcurrentBuilds(abortPrevious: true)
+    }
+
+    environment {
+        //git info
+        GIT_CREDENTIALS_ID = "${scm.userRemoteConfigs[0].credentialsId}"
+        GIT_REPO = "${scm.userRemoteConfigs[0].url}"
+        GIT_BRANCH = "${scm.branches[0].name}"
+        //docker info
+        DOCKER_CREDENTIALS = 'gitlab'
+        REGISTRY = "10.3.102.239:5050"
+        IMAGE_NAME = "factory/manex"
+        //server info
+        SERVER_IP = "10.3.102.240"
+        REMOTE_DIR = "/home/it/repo-infra-development/docker-compose/factory/manex"
+    }
+    
+    parameters {
+        string(name: 'TAGS', defaultValue: 'latest', description: 'Tag Docker image version')
+    }
+
+    stages {
+        stage('Checkout Source') {
+            steps {
+                echo "Cloning ${env.GIT_REPO} branch ${env.GIT_BRANCH}"
+                git url: "${env.GIT_REPO}", branch: "${env.GIT_BRANCH}", credentialsId: "${env.GIT_CREDENTIALS_ID}"
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh """
+                echo "Building Docker image..."
+                docker build -f devops/Dockerfile -t ${REGISTRY}/${IMAGE_NAME}:${TAGS} .
+                docker images
+                """
+            }
+        }
+
+        stage('Push to Gitlab Registry') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS}", usernameVariable: 'REG_USER', passwordVariable: 'REG_PASS')]) {
+                    sh """
+                        echo "Logging in to Gitlab"
+                        docker login ${REGISTRY} -u ${REG_USER} --password='${REG_PASS}'
+
+                        echo "Pushing Docker image to Gitlab..."
+                        docker push ${REGISTRY}/${IMAGE_NAME}:${TAGS}
+                    """
+                    sh """
+                        echo "Removing local image..."
+                        set -e
+                        set -x
+                        docker rmi -f ${REGISTRY}/${IMAGE_NAME}:${TAGS}
+                    """
+                }
+            }
+        }
+
+        stage('Deploy to Server with Docker Compose') {
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(credentialsId: 'ssh-development-server', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')
+                ]) {
+                    sh """
+                        echo "Deploying to remote server via SSH..."
+                        ping -c 5 10.3.102.240
+                        ssh -o StrictHostKeyChecking=no -i "${SSH_KEY}" ${SSH_USER}@${SERVER_IP} '
+                            cd ${REMOTE_DIR}
+                            echo "Updating repo..."
+                            git pull
+
+                            echo "Pulling latest image ${REGISTRY}/${IMAGE_NAME}:${TAGS}..."
+                            docker compose pull
+
+                            echo "Restarting services..."
+                            docker compose up -d --no-deps --build
+                        '
+                    """
+                }
+            }
+        }
+
+    }
+
+    post {
+        always {
+            echo 'Cleaning up workspace...'
+            cleanWs()
+        }
+        success {
+            echo '✅ Build, Push, and Deploy succeeded!'
+        }
+        failure {
+            echo '❌ Build failed. Please check logs.'
+        }
+    }
+}
