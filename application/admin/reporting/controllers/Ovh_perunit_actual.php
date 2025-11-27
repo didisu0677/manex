@@ -95,6 +95,7 @@ class Ovh_perunit_actual extends BE_Controller {
                     '__m' => 'a.product_code in (select budget_product_code from tbl_beginning_stock where is_active ="1" and tahun="'.$tahun.'")',
                     'a.qty_production !=' => 0
                 ],
+                'group_by' => 'a.product_code',
                 'sort_by' => 'a.id_cost_centre'
             ])->result();
             
