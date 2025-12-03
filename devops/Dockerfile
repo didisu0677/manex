@@ -7,27 +7,24 @@ RUN composer install --no-dev --optimize-autoloader
 
 COPY . /var/www/html
 
-RUN mkdir -p /var/www/html/application/cache \
-    /var/www/html/application/logs \
-    /var/www/html/assets/cache \
-    /var/www/html/assets/uploads
+# Remove docker files not needed in production
+RUN rm -rf docker docker-compose.yml
 
-RUN chown -R www-data:www-data /var/www/html
+# Permissions fix
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html \
+    && find /var/www/html -type d -exec chmod 755 {} \; \
+    && find /var/www/html -type f -exec chmod 644 {} \; \
+    && mkdir -p /var/www/html/application/cache/session \
+        /var/www/html/assets/cache \
+        /var/www/html/assets/uploads \
+    && chown -R www-data:www-data /var/www/html/application/cache/session \
+        /var/www/html/assets \
+    && chmod -R 775 /var/www/html/application/cache/session \
+        /var/www/html/assets
 
-RUN find /var/www/html/application -type d -exec chmod 755 {} \; \
-    && find /var/www/html/application -type f -exec chmod 644 {} \;
-
-RUN chmod 555 /var/www/html/application/admin
-
-RUN chmod 775 /var/www/html/application/cache \
-    && chmod 775 /var/www/html/application/logs \
-    && chmod 775 /var/www/html/assets/cache \
-    && chmod 775 /var/www/html/assets/uploads
-
-RUN find /var/www/html/assets -type d -exec chmod 755 {} \; \
-    && find /var/www/html/assets -type f -exec chmod 644 {} \;
-
-RUN chmod -R 555 /var/www/html/system
+# php.ini
+# COPY devops/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 EXPOSE 9000
 CMD ["php-fpm"]
