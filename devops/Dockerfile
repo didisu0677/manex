@@ -5,7 +5,7 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader
 
-COPY . .
+COPY . /var/www/html
 
 # Remove docker files not needed in production
 RUN rm -rf docker docker-compose.yml
@@ -15,11 +15,9 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html \
     && find /var/www/html -type d -exec chmod 755 {} \; \
     && find /var/www/html -type f -exec chmod 644 {} \; \
-    && mkdir -p /var/www/html/writable/cache \
-    && mkdir -p /var/www/html/writable/uploads \
-    && chmod -R 775 /var/www/html/writable \
-    && chown -R www-data:www-data /var/www/html/writable
-
+    && mkdir -p /var/www/html/assets/cache /var/www/html/assets/uploads \
+    && chmod -R 775 /var/www/html/assets \
+    && chown -R www-data:www-data /var/www/html/assets
 # php.ini
 # COPY devops/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
