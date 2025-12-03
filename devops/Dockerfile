@@ -18,6 +18,11 @@ RUN chown -R www-data:www-data /var/www/html \
     && mkdir -p /var/www/html/assets/cache /var/www/html/assets/uploads \
     && chmod -R 775 /var/www/html/assets \
     && chown -R www-data:www-data /var/www/html/assets
+
+# Ensure uploads/setting folder exists and has correct permissions
+RUN mkdir -p /var/www/html/assets/uploads/setting \
+    && chown -R www-data:www-data /var/www/html/assets/uploads/setting \
+    && chmod -R 775 /var/www/html/assets/uploads/setting
 # php.ini
 # COPY devops/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
