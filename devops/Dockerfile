@@ -23,6 +23,11 @@ RUN chown -R www-data:www-data /var/www/html \
 RUN mkdir -p /var/www/html/assets/uploads/setting \
     && chown -R www-data:www-data /var/www/html/assets/uploads/setting \
     && chmod -R 775 /var/www/html/assets/uploads/setting
+
+# Ensure session folder exists and has correct permissions (CodeIgniter config)
+RUN mkdir -p /var/www/html/application/cache/session \
+    && chown -R www-data:www-data /var/www/html/application/cache/session \
+    && chmod -R 775 /var/www/html/application/cache/session
 # php.ini
 # COPY devops/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
