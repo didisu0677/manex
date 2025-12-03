@@ -19,10 +19,9 @@ RUN chown -R www-data:www-data /var/www/html \
         /var/www/html/assets/cache \
         /var/www/html/assets/uploads \
     && chown -R www-data:www-data /var/www/html/application/cache/session \
-        /var/www/html/assets
-    && chmod -R 775 /var/www/html/application/cache/session \
         /var/www/html/assets \
-        
+    && chmod -R 775 /var/www/html/application/cache/session \
+        /var/www/html/assets
 
 # php.ini
 # COPY devops/php/php.ini /usr/local/etc/php/conf.d/custom.ini
