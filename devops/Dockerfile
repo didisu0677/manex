@@ -18,10 +18,6 @@ RUN chown -R www-data:www-data /var/www/html \
     && mkdir -p /var/www/html/assets/cache /var/www/html/assets/uploads \
     && chmod -R 775 /var/www/html/assets \
     && chown -R www-data:www-data /var/www/html/assets
-# Session folder fix
-RUN mkdir -p /var/www/html/storage/sessions \
-    && chown -R www-data:www-data /var/www/html/storage/sessions \
-    && chmod -R 775 /var/www/html/storage/sessions
 # php.ini
 # COPY devops/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
