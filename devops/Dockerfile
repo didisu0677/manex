@@ -15,9 +15,12 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html \
     && find /var/www/html -type d -exec chmod 755 {} \; \
     && find /var/www/html -type f -exec chmod 644 {} \; \
-    && mkdir -p /var/www/html/assets/cache /var/www/html/assets/uploads \
+    && mkdir -p /var/www/html/application/cache/session /var/www/html/assets/cache /var/www/html/assets/uploads \
+    && chmod -R 777 /var/www/html/application/cache/session
     && chmod -R 775 /var/www/html/assets \
-    && chown -R www-data:www-data /var/www/html/assets
+    && chown -R www-data:www-data /var/www/html/assets \
+    && chown -R www-data:www-data /var/www/html/application/cache/session
+
 # php.ini
 # COPY devops/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
