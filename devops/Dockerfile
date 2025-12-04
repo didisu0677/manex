@@ -24,6 +24,10 @@ RUN mkdir -p /var/www/html/assets/uploads/setting \
     && chown -R www-data:www-data /var/www/html/assets/uploads/setting \
     && chmod -R 775 /var/www/html/assets/uploads/setting
 
+RUN mkdir -p /var/www/html/assets/uploads/setting \
+    && chown -R www-data:www-data /var/www/html/assets/uploads/temp \
+    && chmod -R 775 /var/www/html/assets/uploads/temp
+
 # Ensure session folder exists and has correct permissions (CodeIgniter config)
 RUN mkdir -p /var/www/html/application/cache/session \
     && chown -R www-data:www-data /var/www/html/application/cache/session \
