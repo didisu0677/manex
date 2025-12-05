@@ -99,7 +99,7 @@ class Ovh_alocation_actual extends BE_Controller {
             ])->result();
 
         }
-
+        // update budget production actual
         $this->isi_budget_production_actual($tahun) ;
 
     //    debug($data['produk']);die;
