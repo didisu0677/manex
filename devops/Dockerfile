@@ -1,39 +1,39 @@
-FROM php:7.4-apache
+FROM 10.3.102.239:5050/devops/repo-infra-development:base-7.4
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    unzip \
-    git \
-    zip \
-    curl \
-    gnupg2 \
-    unixodbc-dev \
-    libgss3 \
-    libgssapi-krb5-2 \
-    libcurl4-openssl-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    && docker-php-ext-install zip \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql mysqli \
-    && rm -rf /var/lib/apt/lists/*
-
-# Enable Apache modules
-RUN a2enmod rewrite && a2enmod headers
-
-# Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# Set workdir
 WORKDIR /var/www/html
 
-# Copy application source code
-COPY . .
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader
 
-# Install PHP dependencies
-RUN composer install --no-interaction --no-dev --prefer-dist || true
+COPY . /var/www/html
 
-# Git safe directory
-RUN git config --global --add safe.directory /var/www/html
+# Remove docker files not needed in production
+RUN rm -rf docker docker-compose.yml
+
+# Permissions fix
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html \
+    && find /var/www/html -type d -exec chmod 755 {} \; \
+    && find /var/www/html -type f -exec chmod 644 {} \; \
+    && mkdir -p /var/www/html/assets/cache /var/www/html/assets/uploads \
+    && chmod -R 775 /var/www/html/assets \
+    && chown -R www-data:www-data /var/www/html/assets
+
+# Ensure uploads/setting folder exists and has correct permissions
+RUN mkdir -p /var/www/html/assets/uploads/setting \
+    && chown -R www-data:www-data /var/www/html/assets/uploads/setting \
+    && chmod -R 775 /var/www/html/assets/uploads/setting
+
+RUN mkdir -p /var/www/html/assets/uploads/setting \
+    && chown -R www-data:www-data /var/www/html/assets/uploads/temp \
+    && chmod -R 775 /var/www/html/assets/uploads/temp
+
+# Ensure session folder exists and has correct permissions (CodeIgniter config)
+RUN mkdir -p /var/www/html/application/cache/session \
+    && chown -R www-data:www-data /var/www/html/application/cache/session \
+    && chmod -R 775 /var/www/html/application/cache/session
+# php.ini
+# COPY devops/php/php.ini /usr/local/etc/php/conf.d/custom.ini
+
+EXPOSE 9000
+CMD ["php-fpm"]
