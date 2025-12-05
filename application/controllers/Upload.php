@@ -86,6 +86,7 @@ class Upload extends BE_Controller {
     }
 
     public function image($image_width=0,$image_height=0,$tipe=''){
+        /// test
         $temp_folder = md5(user('id').post('name'));
         if(!is_dir(FCPATH . 'assets/uploads/temp/'.$temp_folder)){
             $oldmask = umask(0);

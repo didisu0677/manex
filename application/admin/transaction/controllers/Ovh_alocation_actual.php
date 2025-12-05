@@ -214,6 +214,7 @@ class Ovh_alocation_actual extends BE_Controller {
                 'join' =>  'tbl_fact_product b on a.product_code = b.code',
                 'where' => [
                     'a.tahun' => $tahun,
+                    'a.bulan' => $bulan,
                     'b.cost_centre' => $u->cost_centre,
                 ],
             ])->row();
@@ -272,6 +273,7 @@ class Ovh_alocation_actual extends BE_Controller {
                 'join' =>  'tbl_fact_product b on a.product_code = b.code',
                 'where' => [
                     'a.tahun' => $tahun,
+                    'a.bulan' => $bulan,
                     'b.cost_centre' => $u->cost_centre,
                     'a.qty_production !=' => 0,
                 ],
