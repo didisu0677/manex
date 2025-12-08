@@ -1,3 +1,47 @@
+<style>
+/* Container utama untuk freeze header */
+#result, #result2, #result3 {
+	position: relative !important;
+	overflow: auto !important;
+	height: 70vh !important;
+	width: 100% !important;
+}
+
+/* Header sticky untuk semua table */
+#result .table thead th,
+#result2 .table thead th,
+#result3 .table thead th {
+	position: sticky !important;
+	top: 0px !important;
+	z-index: 1000 !important;
+	background-color: #495057 !important;
+	color: #ffffff !important;
+}
+
+/* Frozen column untuk semua table */
+#result .headcol,
+#result2 .headcol,
+#result3 .headcol {
+	position: sticky !important;
+	left: 0px !important;
+	z-index: 999 !important;
+	background-color: #495057 !important;
+	color: #ffffff !important;
+}
+
+/* Kombinasi header + frozen column */
+#result .table thead th.headcol,
+#result2 .table thead th.headcol,
+#result3 .table thead th.headcol {
+	z-index: 1001 !important;
+	position: sticky !important;
+	top: 0px !important;
+	left: 0px !important;
+	background-color: #495057 !important;
+	color: #ffffff !important;
+}
+</style>
+
 <div class="content-header page-data" data-additional="<?= $access_additional ?>">
 	<div class="main-container position-relative">
 		<div class="header-info">
@@ -36,6 +80,9 @@
 			</select>
 
 			<?php
+			if(in_array(user('id_group'),[DEVELOPER,ADMIN_UTAMA])) 
+			echo '<button class="btn btn-danger btn-proses" href="javascript:;" ><i class="fa-process"></i> Recalculate Report</button>';
+
 			$arr = [];
 			$arr = [
 				// ['btn-save','Save Data','fa-save'],
@@ -52,29 +99,25 @@
 	</div>
 </div>
 
-<div class="content-body mt-6">
-	
-	<div class="main-container mt-6">
-
+<div class="content-body table-freeze-fullwidth">
+	<div class="card">
 		<div class="card-header pl-3 pr-3">
 			<ul class="nav nav-pills card-header-pills">
 				<li class="nav-item">
-					<a class="nav-link active" href="#overall" data-toggle="pill" role="tab" aria-controls="pills-overall" aria-selected="true">Actual & Estimate</a>				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#budget" data-toggle="pill" role="tab" aria-controls="pills-budget" aria-selected="true">Monthly Budget</a>
+					<a class="nav-link active" id="overall-tab" data-toggle="pill" href="#overall" role="tab" aria-controls="overall" aria-selected="true">Actual & Estimate</a>
 				</li>
-
 				<li class="nav-item">
-					<a class="nav-link" href="#detail" data-toggle="pill" role="tab" aria-controls="pills-detail" aria-selected="true">Yearly</a>
+					<a class="nav-link" id="budget-tab" data-toggle="pill" href="#budget" role="tab" aria-controls="budget" aria-selected="false">Monthly Budget</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="detail-tab" data-toggle="pill" href="#detail" role="tab" aria-controls="detail" aria-selected="false">Yearly</a>
 				</li>
 			</ul>
 		</div>
 		
-		<div class="card-body tab-content">
-		<div class="table-responsive tab-pane fade active show" id="overall">
-				<div class="card">
-				<div class="card-body">
-						<div class="table-responsive tab-pane fade active show height-window" id="result">
+		<div class="card-body tab-content" id="pills-tabContent">
+			<div class="tab-pane fade show active" id="overall" role="tabpanel" aria-labelledby="overall-tab">
+				<div class="table-responsive" id="result">
 							<?php
 							table_open('table table-bordered table-app table-hover table-1');
 							thead();
@@ -97,15 +140,11 @@
 							tbody();
 							table_close();
 							?>
-						</div>
-					</div>
 				</div>
-			</div>			
+			</div>
 
-			<div class="table-responsive tab-pane fade" id="budget">
-				<div class="card">
-					<div class="card-body">
-						<div class="table-responsive tab-pane fade active show height-window" id="result2">
+			<div class="tab-pane fade" id="budget" role="tabpanel" aria-labelledby="budget-tab">
+				<div class="table-responsive" id="result2">
 							<?php
 							table_open('table table-bordered table-app table-hover table-2');
 							thead();
@@ -121,16 +160,11 @@
 							tbody();
 							table_close();
 							?>
-						</div>
-					</div>
-				</div>		
+				</div>
 			</div>
 
-			<div class="table-responsive tab-pane fade" id="detail">
-				<div class="card">
-				<div class="card">
-					<div class="card-body">
-						<div class="table-responsive tab-pane fade active show height-window" id="result3">
+			<div class="tab-pane fade" id="detail" role="tabpanel" aria-labelledby="detail-tab">
+				<div class="table-responsive" id="result3">
 							<?php
 							table_open('table table-bordered table-app table-hover table-3');
 							thead();
@@ -148,10 +182,7 @@
 							tbody();
 							table_close();
 							?>
-						</div>
-					</div>
 				</div>
-				</div>		
 			</div>
 
 		</div>
@@ -171,7 +202,7 @@ modal_body();
 		
 		fileupload('File Excel','fileimport','required','data-accept="xls|xlsx"');
 
-		// echo '<br><button onclick="window.open(\''.base_url('budget_sales/cogs_total/template').'\', \'_blank\')" type="button" class="btn btn-success btn-block" id="btn-download-template">Download Template Import</button>';
+		// echo '<br><button onclick="window.open(\''.base_url('budget_sales/cogs/template').'\', \'_blank\')" type="button" class="btn btn-success btn-block" id="btn-download-template">Download Template Import</button>';
 		echo '<br><button onclick="download_template()" type="button" class="btn btn-success btn-block" id="btn-download-template">Download Template Import</button>';
 
 		echo '<button onClick="do_import()" class="btn btn-primary btn-block" id="btn-import-excel">Import</button>';
@@ -550,5 +581,26 @@ modal_close();
             }, 1000);
         })
     }
+
+	var id_proses = '';
+	var tahun = 0;
+	$(document).on('click','.btn-proses',function(e){
+		e.preventDefault();
+		id_proses = 'proses';
+		tahun = $('#filter_tahun').val();
+		cConfirm.open(lang.apakah_anda_yakin + '?','lanjut');
+	});
+
+	function lanjut() {
+		$.ajax({
+			url : base_url + 'budget_sales/cogs_total/proses',
+			data : {id:id_proses,tahun : tahun},
+			type : 'post',
+			dataType : 'json',
+			success : function(res) {
+				cAlert.open(res.message,res.status,'refreshData');
+			}
+		});
+	}
 
 </script>

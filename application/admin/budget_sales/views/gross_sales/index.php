@@ -1,3 +1,86 @@
+<style>
+/* Container utama untuk freeze header dengan scroll unified */
+.card-body.tab-content {
+	position: relative !important;
+	overflow: auto !important;
+	height: 80vh !important; /* Unified scroll area */
+	width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+/* Individual tab containers tanpa scroll sama sekali */
+#result, #result2, #result3 {
+	position: relative !important;
+	overflow: visible !important; /* Tidak ada scroll sama sekali */
+	height: auto !important;
+	width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+/* Table responsive juga tidak boleh scroll */
+.table-responsive {
+	overflow: visible !important; /* Hilangkan scroll di table responsive */
+	height: auto !important;
+	width: 100% !important;
+}
+
+/* Maksimalkan container utama */
+.main-container {
+	margin: 0 !important;
+	padding: 0 15px !important;
+	max-width: 100% !important;
+	width: 100% !important;
+}
+
+.tab-pane {
+	padding: 0 !important;
+	margin: 0 !important;
+	overflow: visible !important;
+}
+
+/* Header sticky untuk semua table */
+#result .table thead th,
+#result2 .table thead th,
+#result3 .table thead th {
+	position: sticky !important;
+	top: 0px !important;
+	z-index: 1000 !important;
+	background-color: #495057 !important;
+	color: #ffffff !important;
+}
+
+/* Frozen column untuk semua table */
+#result .headcol,
+#result2 .headcol,
+#result3 .headcol {
+	position: sticky !important;
+	left: 0px !important;
+	z-index: 999 !important;
+	background-color: #495057 !important;
+	color: #ffffff !important;
+}
+
+/* Kombinasi header + frozen column */
+#result .table thead th.headcol,
+#result2 .table thead th.headcol,
+#result3 .table thead th.headcol {
+	z-index: 1001 !important;
+	position: sticky !important;
+	top: 0px !important;
+	left: 0px !important;
+	background-color: #495057 !important;
+	color: #ffffff !important;
+}
+
+/* Maksimalkan lebar table */
+.table {
+	width: 100% !important;
+	margin: 0 !important;
+}
+</style>
+
 <div class="content-header page-data" data-additional="<?= $access_additional ?>">
 	<div class="main-container position-relative">
 		<div class="header-info">
@@ -72,10 +155,8 @@
 		</div>
 		
 		<div class="card-body tab-content">
-		<div class="table-responsive tab-pane fade active show" id="overall">
-				<div class="card">
-					<div class="card-body">
-						<div class="table-responsive tab-pane fade active show height-window" id="result">
+		<div class="tab-pane fade active show" id="overall">
+				<div class="table-responsive" id="result">
 							<?php
 							table_open('table table-bordered table-app table-hover table-1');
 							thead();
@@ -98,15 +179,11 @@
 							tbody();
 							table_close();
 							?>
-						</div>
-					</div>
 				</div>
 			</div>			
 
-			<div class="table-responsive tab-pane fade" id="budget">
-				<div class="card">
-					<div class="card-body">
-						<div class="table-responsive tab-pane fade active show height-window" id="result2">
+			<div class="tab-pane fade" id="budget">
+				<div class="table-responsive" id="result2">
 							<?php
 							table_open('table table-bordered table-app table-hover table-2');
 							thead();
@@ -122,15 +199,9 @@
 							tbody();
 							table_close();
 							?>
-						</div>
-					</div>
-				</div>		
-			</div>
-
-			<div class="table-responsive tab-pane fade" id="detail">
-				<div class="card">
-					<div class="card-body">
-						<div class="table-responsive tab-pane fade active show height-window" id="result3">
+				</div>
+			</div>			<div class="tab-pane fade" id="detail">
+				<div class="table-responsive" id="result3">
 							<?php
 							table_open('table table-bordered table-app table-hover table-3');
 							thead();
@@ -148,9 +219,7 @@
 							tbody();
 							table_close();
 							?>
-						</div>
-					</div>
-				</div>		
+				</div>
 			</div>
 
 		</div>
