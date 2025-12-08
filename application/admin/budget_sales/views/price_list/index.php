@@ -1,3 +1,52 @@
+<style>
+.table-freeze-fullwidth .table thead th {
+	position: sticky;
+	top: 60px;
+	z-index: 1000;
+	background-color: #495057;
+	color: #ffffff;
+}
+
+.table-freeze-fullwidth .headcol {
+	position: sticky;
+	left: 0px;
+	z-index: 999;
+	background-color: #495057;
+	color: #ffffff;
+}
+
+.table-freeze-fullwidth .card-header {
+	position: sticky;
+	top: 0px;
+	z-index: 1001;
+	background-color: #fff;
+}
+
+/* Force untuk table-3 secara brutal */
+#result3 {
+	position: relative !important;
+	overflow: auto !important;
+	height: 70vh !important;
+}
+
+#result3 .table-3 thead th {
+	position: sticky !important;
+	top: 0px !important;
+	z-index: 1000 !important;
+	background-color: #495057 !important;
+	color: #ffffff !important;
+}
+
+#result3 .table-3 .headcol {
+	position: sticky !important;
+	left: 0px !important;
+	top: 0px !important;
+	z-index: 999 !important;
+	background-color: #495057 !important;
+	color: #ffffff !important;
+}
+</style>
+
 <div class="content-header page-data" data-additional="<?= $access_additional ?>">
 	<div class="main-container position-relative">
 		<div class="header-info">
@@ -60,28 +109,25 @@
 	</div>
 </div>
 
-<div class="content-body mt-6">
-	<div class="main-container mt-6">
+<div class="content-body table-freeze-fullwidth">
+	<div class="card">
 		<div class="card-header pl-3 pr-3">
 			<ul class="nav nav-pills card-header-pills">
 				<li class="nav-item">
-					<a class="nav-link active" href="#overall" data-toggle="pill" role="tab" aria-controls="pills-overall" aria-selected="true">Actual & Estimate <?php echo user('tahun_budget') - 1 ; ?></a>
+					<a class="nav-link active" id="overall-tab" data-toggle="pill" href="#overall" role="tab" aria-controls="overall" aria-selected="true">Actual & Estimate <?php echo user('tahun_budget') - 1 ; ?></a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#budget" data-toggle="pill" role="tab" aria-controls="pills-budget" aria-selected="true">Monthly Budget <?php echo user('tahun_budget') ; ?></a>
+					<a class="nav-link" id="budget-tab" data-toggle="pill" href="#budget" role="tab" aria-controls="budget" aria-selected="false">Monthly Budget <?php echo user('tahun_budget') ; ?></a>
 				</li>
-
 				<li class="nav-item">
-					<a class="nav-link" href="#detail" data-toggle="pill" role="tab" aria-controls="pills-detail" aria-selected="true">Yearly</a>
+					<a class="nav-link" id="detail-tab" data-toggle="pill" href="#detail" role="tab" aria-controls="detail" aria-selected="false">Yearly</a>
 				</li>
 			</ul>
 		</div>
 		
-		<div class="card-body tab-content">
-			<div class="table-responsive tab-pane fade active show" id="overall">
-				<div class="card">
-					<div class="card-body">
-						<div class="table-responsive tab-pane fade active show height-window" id="result">
+		<div class="card-body tab-content" id="pills-tabContent">
+			<div class="tab-pane fade show active" id="overall" role="tabpanel" aria-labelledby="overall-tab">
+				<div class="table-responsive" id="result">
 							<?php
 							table_open('table table-bordered table-app table-hover table-1');
 							thead();
@@ -103,15 +149,11 @@
 							tbody();
 							table_close();
 							?>
-						</div>
-					</div>
 				</div>
 			</div>
 
-			<div class="table-responsive tab-pane fade" id="budget">
-				<div class="card">
-					<div class="card-body">
-						<div class="table-responsive tab-pane fade active show height-window" id="result2">
+			<div class="tab-pane fade" id="budget" role="tabpanel" aria-labelledby="budget-tab">
+				<div class="table-responsive" id="result2">
 							<?php
 							table_open('table table-bordered table-app table-hover table-2');
 							thead();
@@ -126,15 +168,11 @@
 							tbody();
 							table_close();
 							?>
-						</div>
-					</div>
-				</div>		
+				</div>
 			</div>
 
-			<div class="table-responsive tab-pane fade" id="detail">
-				<div class="card">
-					<div class="card-body">
-						<div class="table-responsive tab-pane fade active show height-window" id="result3">
+			<div class="tab-pane fade" id="detail" role="tabpanel" aria-labelledby="detail-tab">
+				<div class="table-responsive" id="result3">
 							<?php
 							table_open('table table-bordered table-app table-hover table-3');
 							thead();
@@ -148,13 +186,10 @@
 	
 								th($i, '', 'class="text-center" style="min-width:60px"');
 							}
-							// th('Total', '', 'class="text-center align-middle headcol"style="min-width:60px"');
 							tbody();
 							table_close();
 							?>
-						</div>
-					</div>
-				</div>		
+				</div>
 			</div>
 		</div>
 	</div>
@@ -163,7 +198,7 @@
 <?php
 modal_open('modal-import',lang('impor') . ' Price list ');
 modal_body();
-	form_open(base_url('budget_sales/price_list/import'),'post','form-import');
+	form_open(base_url('budget_sales/price_list/import'),'post','form-import','enctype="multipart/form-data"');
 		col_init(3,9);
 		input('text',lang('tahun'),'tahun','','','readonly');
 		input('text',lang('divisi'),'divisi','','','readonly');
@@ -173,10 +208,6 @@ modal_body();
 		
 		fileupload('File Excel','fileimport','required','data-accept="xls|xlsx"');
         form_button(lang('impor'),lang('batal'));
-		// echo '<br><button onclick="window.open(\''.base_url('budget_sales/price_list/template').'\', \'_blank\')" type="button" class="btn btn-success btn-block" id="btn-download-template">Download Template Import</button>';
-		// echo '<br><button onclick="download_template()" type="button" class="btn btn-success btn-block" id="btn-download-template">Download Template Import</button>';
-
-		// echo '<button class="btn btn-primary btn-block">Import</button>';
 	form_close();
 modal_close();
 ?>
@@ -217,7 +248,6 @@ modal_close();
 
 
     function getSubaccount() {
-        console.log('ok');
         $('#filter_sub_account').html('');
         $.ajax({
                 url : base_url + 'budget_sales/price_list/get_subaccount',
@@ -278,7 +308,12 @@ modal_close();
 				$('.table-2 tbody').html(response.table2);
 				$('.table-3 tbody').html(response.table3);
                 cLoader.close();
-                $('.overlay-wrap').addClass('hidden');	
+                $('.overlay-wrap').addClass('hidden');
+                
+                // Apply sticky header after data load
+                setTimeout(function(){
+                    adjustStickyHeader();
+                }, 100);
             }
         });
     }
@@ -382,7 +417,67 @@ modal_close();
 		});
 	}
 
-	$(document).on('click', '.btn-save', function() {
+	// Function to adjust sticky header position
+	function adjustStickyHeader() {
+		// Get tab header height
+		var tabHeaderHeight = $('.card-header').outerHeight() || 60;
+		
+		// Apply freeze untuk table-1 dan table-2 saja (yang sudah bekerja)
+		$('.content-body.table-freeze-fullwidth .table-1 thead th, .content-body.table-freeze-fullwidth .table-2 thead th').css({
+			'position': 'sticky',
+			'top': tabHeaderHeight + 'px',
+			'z-index': '1000',
+			'background-color': '#495057',
+			'color': '#ffffff'
+		});
+		
+		$('.content-body.table-freeze-fullwidth .table-1 .headcol, .content-body.table-freeze-fullwidth .table-2 .headcol').css({
+			'position': 'sticky',
+			'left': '0px',
+			'z-index': '999',
+			'background-color': '#495057',
+			'color': '#ffffff'
+		});
+		
+		// Fix card header positioning
+		$('.content-body.table-freeze-fullwidth .card-header').css({
+			'position': 'sticky',
+			'top': '0px',
+			'z-index': '1001',
+			'background-color': '#fff'
+		});
+		
+		// Table-3 biarkan CSS yang handle
+	}
+
+	$(document).ready(function(){
+		// Adjust sticky header when page loads
+		adjustStickyHeader();
+		
+		// Re-adjust when tab is switched
+		$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+			var activeTab = $(e.target).attr('href');
+	        if(activeTab == '#overall'){
+				activeTable = '#result'
+				judul = 'Actual and Estimate'
+			}else if(activeTab == '#budget'){
+				activeTable = '#result2'
+				judul = "Budget by Month"
+			}else if(activeTab == '#detail'){
+				activeTable = '#result3'
+				judul = 'Yearly Budget'
+			}
+			
+			adjustStickyHeader();
+		});
+		
+		// Re-adjust on window resize
+		$(window).resize(function(){
+			adjustStickyHeader();
+		});
+	});
+
+	$(document).on('click', '.btn-export', function() {
 		var i = 0;
 		$('.edited').each(function() {
 			i++;
@@ -428,21 +523,21 @@ modal_close();
 	}
 
 	let activeTable = '#result';
-	let judul = 'Actual and Estimate' 
+	let judul = 'Actual and Estimate';
 
-	$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-        var activeTab = $(e.target).attr('href'); // Get the current active tab href attribute
-        if(activeTab == '#overall'){
-			activeTable = '#result'
-			judul = 'Actual and Estimate'
-		}else if(activeTab == '#budget'){
-			activeTable = '#result2'
-			judul = "Budget by Month"
-		}else if(activeTab == '#detail'){
-			activeTable = '#result3'
-			judul = 'Yearly Budget'
+	$(document).on('click', '.btn-save', function() {
+		var i = 0;
+		$('.edited').each(function() {
+			i++;
+		});
+		if (i == 0) {
+			cAlert.open('tidak ada data yang di ubah');
+		} else {
+			var msg = lang.anda_yakin_menyetujui;
+			if (i == 0) msg = lang.anda_yakin_menolak;
+			cConfirm.open(msg, 'save_perubahan');
 		}
-    });
+	});
 
 
 	$(document).on('click', '.btn-export', function() {
@@ -509,7 +604,6 @@ modal_close();
 		} else {
 			segment = 'ALL SECTOR'
 		}
-
 
 		$('#tahun').val($('#filter_tahun').val())
 		$('#divisi').val($('#filter_divisi').val())
