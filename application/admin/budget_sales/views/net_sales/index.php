@@ -1,43 +1,10 @@
 <style>
-/* Container utama untuk freeze header dengan scroll unified */
-.card-body.tab-content {
-	position: relative !important;
-	overflow: auto !important;
-	height: 80vh !important; /* Unified scroll area */
-	width: 100% !important;
-	margin: 0 !important;
-	padding: 0 !important;
-}
-
-/* Individual tab containers tanpa scroll sama sekali */
+/* Container utama untuk freeze header */
 #result, #result2, #result3 {
 	position: relative !important;
-	overflow: visible !important; /* Tidak ada scroll sama sekali */
-	height: auto !important;
+	overflow: auto !important;
+	height: 70vh !important;
 	width: 100% !important;
-	margin: 0 !important;
-	padding: 0 !important;
-}
-
-/* Table responsive juga tidak boleh scroll */
-.table-responsive {
-	overflow: visible !important; /* Hilangkan scroll di table responsive */
-	height: auto !important;
-	width: 100% !important;
-}
-
-/* Maksimalkan container utama */
-.main-container {
-	margin: 0 !important;
-	padding: 0 15px !important;
-	max-width: 100% !important;
-	width: 100% !important;
-}
-
-.tab-pane {
-	padding: 0 !important;
-	margin: 0 !important;
-	overflow: visible !important;
 }
 
 /* Header sticky untuk semua table */
@@ -141,27 +108,24 @@
 	</div>
 </div>
 
-<div class="content-body mt-6">
-	
-	<div class="main-container mt-6">
-
+<div class="content-body table-freeze-fullwidth">
+	<div class="card">
 		<div class="card-header pl-3 pr-3">
 			<ul class="nav nav-pills card-header-pills">
 				<li class="nav-item">
-					<a class="nav-link active" href="#overall" data-toggle="pill" role="tab" aria-controls="pills-overall" aria-selected="true">Actual & Estimate <?php echo user('tahun_budget') - 1 ; ?></a>
+					<a class="nav-link active" id="overall-tab" data-toggle="pill" href="#overall" role="tab" aria-controls="overall" aria-selected="true">Actual & Estimate</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#budget" data-toggle="pill" role="tab" aria-controls="pills-budget" aria-selected="true">Monthly Budget <?php echo user('tahun_budget') ; ?></a>
+					<a class="nav-link" id="budget-tab" data-toggle="pill" href="#budget" role="tab" aria-controls="budget" aria-selected="false">Monthly Budget</a>
 				</li>
-
 				<li class="nav-item">
-					<a class="nav-link" href="#detail" data-toggle="pill" role="tab" aria-controls="pills-detail" aria-selected="true">Yearly</a>
+					<a class="nav-link" id="detail-tab" data-toggle="pill" href="#detail" role="tab" aria-controls="detail" aria-selected="false">Yearly</a>
 				</li>
 			</ul>
 		</div>
 		
-		<div class="card-body tab-content">
-		<div class="tab-pane fade active show" id="overall">
+		<div class="card-body tab-content" id="pills-tabContent">
+			<div class="tab-pane fade show active" id="overall" role="tabpanel" aria-labelledby="overall-tab">
 				<div class="table-responsive" id="result">
 							<?php
 							table_open('table table-bordered table-app table-hover table-1');
@@ -190,9 +154,9 @@
 							table_close();
 							?>
 				</div>
-			</div>			
+			</div>
 
-			<div class="tab-pane fade" id="budget">
+			<div class="tab-pane fade" id="budget" role="tabpanel" aria-labelledby="budget-tab">
 				<div class="table-responsive" id="result2">
 							<?php
 							table_open('table table-bordered table-app table-hover table-2');
@@ -210,7 +174,9 @@
 							table_close();
 							?>
 				</div>
-			</div>			<div class="tab-pane fade" id="detail">
+			</div>
+
+			<div class="tab-pane fade" id="detail" role="tabpanel" aria-labelledby="detail-tab">
 				<div class="table-responsive" id="result3">
 							<?php
 							table_open('table table-bordered table-app table-hover table-3');
