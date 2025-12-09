@@ -1,43 +1,10 @@
 <style>
-/* Container utama untuk freeze header dengan scroll unified */
-.card-body.tab-content {
-	position: relative !important;
-	overflow: auto !important;
-	height: 80vh !important; /* Unified scroll area */
-	width: 100% !important;
-	margin: 0 !important;
-	padding: 0 !important;
-}
-
-/* Individual tab containers tanpa scroll sama sekali */
+/* Container utama untuk freeze header */
 #result, #result2, #result3 {
 	position: relative !important;
-	overflow: visible !important; /* Tidak ada scroll sama sekali */
-	height: auto !important;
+	overflow: auto !important;
+	height: 70vh !important;
 	width: 100% !important;
-	margin: 0 !important;
-	padding: 0 !important;
-}
-
-/* Table responsive juga tidak boleh scroll */
-.table-responsive {
-	overflow: visible !important; /* Hilangkan scroll di table responsive */
-	height: auto !important;
-	width: 100% !important;
-}
-
-/* Maksimalkan container utama */
-.main-container {
-	margin: 0 !important;
-	padding: 0 15px !important;
-	max-width: 100% !important;
-	width: 100% !important;
-}
-
-.tab-pane {
-	padding: 0 !important;
-	margin: 0 !important;
-	overflow: visible !important;
 }
 
 /* Header sticky untuk semua table */
@@ -72,12 +39,6 @@
 	left: 0px !important;
 	background-color: #495057 !important;
 	color: #ffffff !important;
-}
-
-/* Maksimalkan lebar table */
-.table {
-	width: 100% !important;
-	margin: 0 !important;
 }
 </style>
 
@@ -119,6 +80,9 @@
 			</select>
 
 			<?php
+			if(in_array(user('id_group'),[DEVELOPER,ADMIN_UTAMA])) 
+			echo '<button class="btn btn-danger btn-proses" href="javascript:;" ><i class="fa-process"></i> Recalculate Report</button>';
+
 			$arr = [];
 			$arr = [
 				// ['btn-save','Save Data','fa-save'],
@@ -135,27 +99,24 @@
 	</div>
 </div>
 
-<div class="content-body mt-6">
-	
-	<div class="main-container mt-6">
-
+<div class="content-body table-freeze-fullwidth">
+	<div class="card">
 		<div class="card-header pl-3 pr-3">
 			<ul class="nav nav-pills card-header-pills">
 				<li class="nav-item">
-					<a class="nav-link active" href="#overall" data-toggle="pill" role="tab" aria-controls="pills-overall" aria-selected="true">Actual & Estimate  <?php echo user('tahun_budget') - 1 ; ?></a>				
+					<a class="nav-link active" id="overall-tab" data-toggle="pill" href="#overall" role="tab" aria-controls="overall" aria-selected="true">Actual & Estimate</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="#budget" data-toggle="pill" role="tab" aria-controls="pills-budget" aria-selected="true">Monthly Budget  <?php echo user('tahun_budget') ; ?></a>
+					<a class="nav-link" id="budget-tab" data-toggle="pill" href="#budget" role="tab" aria-controls="budget" aria-selected="false">Monthly Budget</a>
 				</li>
-
 				<li class="nav-item">
-					<a class="nav-link" href="#detail" data-toggle="pill" role="tab" aria-controls="pills-detail" aria-selected="true">Yearly</a>
+					<a class="nav-link" id="detail-tab" data-toggle="pill" href="#detail" role="tab" aria-controls="detail" aria-selected="false">Yearly</a>
 				</li>
 			</ul>
 		</div>
 		
-		<div class="card-body tab-content">
-		<div class="tab-pane fade active show" id="overall">
+		<div class="card-body tab-content" id="pills-tabContent">
+			<div class="tab-pane fade show active" id="overall" role="tabpanel" aria-labelledby="overall-tab">
 				<div class="table-responsive" id="result">
 							<?php
 							table_open('table table-bordered table-app table-hover table-1');
@@ -164,6 +125,7 @@
 							th('Product', '', 'class="text-center align-middle headcol"');
 							th('Code', '', 'class="text-center align-middle headcol"');
 							th('Sector', '', 'class="text-center align-middle headcol"');
+							// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 							for ($i = 1; $i <= 12; $i++) {
 								$actual = "";
 								if($i <= setting('actual_budget')) {
@@ -171,18 +133,17 @@
 								}else{
 									$actual = "EST";
 								}
-	
+
 								th($actual . ' ' . month_lang($i), '', 'class="text-center" style="min-width:60px"');
 							}
 							th('Total BE ' . (user('tahun_budget')-1), '', 'class="text-center align-middle headcol"style="min-width:60px"');
-								
 							tbody();
 							table_close();
 							?>
 				</div>
-			</div>			
+			</div>
 
-			<div class="tab-pane fade" id="budget">
+			<div class="tab-pane fade" id="budget" role="tabpanel" aria-labelledby="budget-tab">
 				<div class="table-responsive" id="result2">
 							<?php
 							table_open('table table-bordered table-app table-hover table-2');
@@ -195,12 +156,14 @@
 	
 								th(month_lang($i), '', 'class="text-center" style="min-width:60px"');
 							}
-							th('Total', '', 'class="text-center align-middle headcol"style="min-width:60px"');
+							th('Total BE ' . (user('tahun_budget')), '', 'class="text-center align-middle headcol"style="min-width:60px"');
 							tbody();
 							table_close();
 							?>
 				</div>
-			</div>			<div class="tab-pane fade" id="detail">
+			</div>
+
+			<div class="tab-pane fade" id="detail" role="tabpanel" aria-labelledby="detail-tab">
 				<div class="table-responsive" id="result3">
 							<?php
 							table_open('table table-bordered table-app table-hover table-3');
@@ -239,7 +202,7 @@ modal_body();
 		
 		fileupload('File Excel','fileimport','required','data-accept="xls|xlsx"');
 
-		// echo '<br><button onclick="window.open(\''.base_url('budget_sales/gross_sales/template').'\', \'_blank\')" type="button" class="btn btn-success btn-block" id="btn-download-template">Download Template Import</button>';
+		// echo '<br><button onclick="window.open(\''.base_url('budget_sales/cogs/template').'\', \'_blank\')" type="button" class="btn btn-success btn-block" id="btn-download-template">Download Template Import</button>';
 		echo '<br><button onclick="download_template()" type="button" class="btn btn-success btn-block" id="btn-download-template">Download Template Import</button>';
 
 		echo '<button onClick="do_import()" class="btn btn-primary btn-block" id="btn-import-excel">Import</button>';
@@ -256,13 +219,10 @@ modal_close();
 			// console.log('y');
 		});
 
+		getData();
 	});
 
 	$('#filter_tahun').change(function() {
-		getData()
-	});
-
-	$('#filter_divisi').change(function() {
 		getData()
 	});
 
@@ -277,7 +237,7 @@ modal_close();
 			$('#filter_sector').prop('disabled', true);
 		}
         getSubaccount()
-				
+		
 	});
 
 	$('#filter_sub_account').change(function() {
@@ -287,7 +247,6 @@ modal_close();
 	$('#filter_sector').change(function() {
 		getData();
 	});
-
 
     function getSubaccount() {
         console.log('ok');
@@ -408,7 +367,7 @@ modal_close();
 	});
 
 	function calculate() {
-		$('.table-1 tbody tr').each(function() {
+		$('.table-2 tbody tr').each(function() {
 			let totalMonthly = [];
 			var grandTotal = 0;
 
@@ -432,6 +391,7 @@ modal_close();
 				total_budget = B_01 + B_02 + B_03 + B_04 + B_05 + B_06 + B_07 + B_08 + B_09 + B_10 + B_11 + B_12
 
 				$(this).find('.total_budget').text(customFormat(total_budget))
+
 			}
 
 			for (let i = 1; i <= 12; i++) {
@@ -452,6 +412,29 @@ modal_close();
 
 			$('#grand_total').text(customFormat(grandTotal))
 
+		});
+
+		$('.table-1 tbody tr').each(function(){
+			if ($(this).find('.budget').text() != '') {
+				let EST_01 = moneyToNumber($(this).find('.EST_01').text().replace(/\,/g, ''))
+				let EST_02 = moneyToNumber($(this).find('.EST_02').text().replace(/\,/g, ''))
+				let EST_03 = moneyToNumber($(this).find('.EST_03').text().replace(/\,/g, ''))
+				let EST_04 = moneyToNumber($(this).find('.EST_04').text().replace(/\,/g, ''))
+				let EST_05 = moneyToNumber($(this).find('.EST_05').text().replace(/\,/g, ''))
+				let EST_06 = moneyToNumber($(this).find('.EST_06').text().replace(/\,/g, ''))
+				let EST_07 = moneyToNumber($(this).find('.EST_07').text().replace(/\,/g, ''))
+				let EST_08 = moneyToNumber($(this).find('.EST_08').text().replace(/\,/g, ''))
+				let EST_09 = moneyToNumber($(this).find('.EST_09').text().replace(/\,/g, ''))
+				let EST_10 = moneyToNumber($(this).find('.EST_10').text().replace(/\,/g, ''))
+				let EST_11 = moneyToNumber($(this).find('.EST_11').text().replace(/\,/g, ''))
+				let EST_12 = moneyToNumber($(this).find('.EST_12').text().replace(/\,/g, ''))
+
+				let total_est = 0
+
+				total_est = EST_01 + EST_02 + EST_03 + EST_04 + EST_05 + EST_06 + EST_07 + EST_08 + EST_09 + EST_10 + EST_11 + EST_12
+
+				$(this).find('.total_est').text(customFormat(total_est))
+			}
 		});
 	}
 
@@ -538,7 +521,7 @@ modal_close();
 
 		// Add table rows
 		table += '<tr><td colspan="1">PT Otsuka Indonesia</td></tr>';
-		table += '<tr><td colspan="1">' + judul + ' Gross Sales </td></tr>';
+		table += '<tr><td colspan="1">' + judul + ' GROSS SALES </td></tr>';
 		table += '<tr><td colspan="1"> Divisi </td><td>: ' + $('#filter_divisi option:selected').text() + '</td></tr>';
 		table += '<tr><td colspan="1"> Sector </td><td>: ' + $('#filter_sector option:selected').text() + '</td></tr>';
 		table += '<tr><td colspan="1"> Group Product </td><td>: ' + $('#filter_sub_account option:selected').text() + '</td></tr>';
@@ -551,11 +534,7 @@ modal_close();
 		var target = table;
 		// window.open('data:application/vnd.ms-excel,' + encodeURIComponent(target));
 
-		htmlToExcel(target)
-		
-		// $('.bg-grey-1,.bg-grey-2.bg-grey-2-1,.bg-grey-2-2,.bg-grey-3').each(function(){
-		// 	$(this).removeAttr('bgcolor');
-		// });
+        htmlToExcel(target)
 	});
 
 	function download_template(){
@@ -572,6 +551,8 @@ modal_close();
 		$('#tab').val(activeTable)
 		$('#judul').val(judul)
 	});
+
+
 
 	function do_import(){
 		$.ajax({
@@ -600,5 +581,26 @@ modal_close();
             }, 1000);
         })
     }
+
+	var id_proses = '';
+	var tahun = 0;
+	$(document).on('click','.btn-proses',function(e){
+		e.preventDefault();
+		id_proses = 'proses';
+		tahun = $('#filter_tahun').val();
+		cConfirm.open(lang.apakah_anda_yakin + '?','lanjut');
+	});
+
+	function lanjut() {
+		$.ajax({
+			url : base_url + 'budget_sales/gross_sales/proses',
+			data : {id:id_proses,tahun : tahun},
+			type : 'post',
+			dataType : 'json',
+			success : function(res) {
+				cAlert.open(res.message,res.status,'refreshData');
+			}
+		});
+	}
 
 </script>
