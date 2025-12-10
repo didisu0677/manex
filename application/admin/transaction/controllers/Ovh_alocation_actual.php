@@ -130,6 +130,43 @@ class Ovh_alocation_actual extends BE_Controller {
             update_data('tbl_fact_product_ovh_actual',['manwh_total' => $manwh_total,'macwh_total' => $macwh_total],'id',$upd->id);
 
         }
+
+        // Recalculate percentage after data changes
+        $table = 'tbl_fact_product_ovh_actual';
+        $sample_data = get_data('tbl_fact_product_ovh_actual', 'id', array_keys($data)[0])->row();
+        if($sample_data) {
+            $tahun = $sample_data->tahun;
+            $bulan = $sample_data->bulan;
+
+            $upd_list = get_data($table . ' a',[
+                'select' => 'a.*,b.cost_centre',
+                'join' =>  'tbl_fact_product b on a.product_code = b.code',
+                'where' => [
+                    'a.tahun' => $tahun,
+                    'a.bulan' => $bulan,
+                    'a.id' => array_keys($data)
+                ],
+            ])->result();
+
+            foreach($upd_list as $u) {
+                $prsnmanwh = 0;
+                $prsnmacwh = 0;
+                $sum = get_data($table . ' a',[
+                    'select' => 'b.cost_centre,sum(a.manwh_total) as sum_manwh, sum(a.macwh_total) as sum_macwh ',
+                    'join' =>  'tbl_fact_product b on a.product_code = b.code',
+                    'where' => [
+                        'a.tahun' => $tahun,
+                        'a.bulan' => $bulan,
+                        'b.cost_centre' => $u->cost_centre,
+                    ],
+                ])->row();
+
+                if($u->manwh_total > 0 && $sum->sum_manwh > 0) $prsnmanwh = ($u->manwh_total / $sum->sum_manwh) ;
+                if($u->macwh_total > 0 && $sum->sum_macwh > 0) $prsnmacwh = ($u->macwh_total / $sum->sum_macwh) ;
+
+                update_data($table,['manwh_prsn' => $prsnmanwh, 'macwh_prsn' => $prsnmacwh],['id'=>$u->id]);
+            }
+        }
     } 
 
     function import() {
@@ -233,7 +270,7 @@ class Ovh_alocation_actual extends BE_Controller {
 		render($response,'json');
     }
 
-    function proses_rounding($tahun="", $cost_centre="") {
+    function proses_rounding($tahun="", $bulan="", $cost_centre="") {
         ini_set('memory_limit', '-1');
 		ini_set('max_execution_time', 0);
 

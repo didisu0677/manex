@@ -368,19 +368,21 @@ $(document).on('click','.btn-export',function(){
 
 var id_proses = '';
 var tahun = '';
+var bulan = '';
 var id_cost_centre = '';
 $(document).on('click','.btn-proses',function(e){
 	e.preventDefault();
 	id_proses = 'proses';
 	tahun = $('#filter_tahun').val();
+	bulan = $('#bulan').val();
 	id_cost_centre = $('#filter_cost_centre').val();
 	cConfirm.open(lang.apakah_anda_yakin + '?','lanjut');
 });
 
 function lanjut() {
 	$.ajax({
-		url : base_url + 'transaction/ovh_alocation_actual/proses_rounding/'+tahun+'/'+id_cost_centre,
-			data : {id:id_proses,tahun : tahun, cost_centre : id_cost_centre},
+		url : base_url + 'transaction/ovh_alocation_actual/proses_rounding/'+tahun+'/'+bulan+'/'+id_cost_centre,
+			data : {id:id_proses,tahun : tahun, bulan : bulan, cost_centre : id_cost_centre},
 			type : 'post',
 			dataType : 'json',
 			success : function(res) {
