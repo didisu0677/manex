@@ -16,234 +16,137 @@ class Rencana_pembelian extends BE_Controller {
                 'tahun' => user('tahun_budget')
             ]
         ])->result();     
-        
-		$arr = [
-            'select' => 'distinct a.material_code,a.material_name',
+
+        // Tambahkan data supplier seperti di material planning
+        $data['supplier'] = get_data('tbl_m_supplier', [
             'where' => [
-                'a.is_active' => 0,
+                'is_active' => 1,
+            ]
+        ])->result();
+        
+        // Mengikuti pola material planning - ambil dari tbl_material_formula
+		$arr = [
+            'select' => 'distinct a.component_item as material_code, a.material_name',
+            'join' =>  'tbl_budget_production b on b.budget_product_code= a.parent_item and b.tahun="'.user('tahun_budget').'" type LEFT',
+            'where' => [
+                'a.tahun' => user('tahun_budget'),
+                'a.total !=' => 0,
+                'b.total_budget !=' => 0
             ],
         ];
 
-        $data['produk_items'] = get_data($table. ' a', $arr)->result();
+        $data['produk_items'] = get_data('tbl_material_formula a', $arr)->result();
         $access         = get_access($this->controller);
         $data['access'] = $access ;
         $data['access_additional']  = $access['access_additional'];
         render($data);
 	}
 
-    function data($tahun="",$material_code="",$tipe = 'table'){
+    function data($tahun="",$supplier="",$tipe = 'table'){
 		ini_set('memory_limit', '-1');
-
+        ini_set('max_execution_time', -1);
         $table = 'tbl_material_planning_' . $tahun ;
 
+        // Optimasi: Ambil data material dengan join yang lebih efisien
         $arr = [
-            'select' => '*',
-            'where' => [
-                'a.posting_code' => 'PBL',
+            'select' => 'a.*, d.m_cov, d.moq, d.order_multiple, c.kode_supplier',
+            'join' => ['tbl_material_formula b on a.material_code = b.component_item and b.tahun = "' . $tahun . '"',
+                        'tbl_material_supplier c on a.material_code = c.material_code type LEFT',
+                        'tbl_beginning_stock_material d on a.material_code = d.material_code and d.tahun = "' . $tahun . '" type LEFT',
             ],
+            'where' => [
+                'b.tahun' => $tahun,
+                'a.posting_code' => 'STA', // Ambil dari STA dulu seperti di material planning
+            ],
+            'group_by' => 'a.material_code'
         ];
 
-        if($material_code && $material_code != 'ALL') {
-	    	$arr['where']['a.material_code']	= $material_code;	
+        if($supplier && $supplier != 'ALL' && $supplier != '') {
+	    	$arr['where']['c.kode_supplier']	= $supplier;	
 	    }
+
+        // Ambil produk STA (base data) seperti di material planning
+        $data['produk'] = get_data($table . ' a', $arr)->result();
         
+        // Debug untuk melihat apakah ada data
+        // debug($data['produk']);die;
 
-        $data['material'] = get_data($table .' a',$arr)->result_array();
+        // Optimasi: Ambil semua data posting code sekaligus untuk material yang diperlukan
+        $material_codes = array_column($data['produk'], 'material_code');
+        
+        if(!empty($material_codes)) {
+            // Daftar posting_code yang diperlukan untuk rencana pembelian
+            $posting_codes = ['ARQ', 'PBL', 'PMK', 'AVA', 'STE', 'COV', 'ERQ', 'ERD'];
+            
+            // Query sekaligus untuk semua posting code dan material
+            $all_data = get_data($table . ' a', [
+                'select' => 'a.*, b.tahun',
+                'join' => 'tbl_material_formula b on a.material_code = b.component_item and b.tahun = "' . $tahun . '" type LEFT',
+                'where' => [
+                    'b.tahun' => $tahun,
+                    'a.posting_code' => $posting_codes,
+                    'a.material_code' => $material_codes,
+                ],
+            ])->result_array();
 
+            // Organisir data berdasarkan posting_code dan material_code
+            $organized_data = [];
+            foreach($all_data as $row) {
+                $posting_code = $row['posting_code'];
+                $material_code = $row['material_code'];
+                
+                // Map posting code ke key yang digunakan di view
+                $key_mapping = [
+                    'ARQ' => 'prod',
+                    'PBL' => 'arival',
+                    'PMK' => 'pakai',
+                    'AVA' => 'available',
+                    'STE' => 'inventory',
+                    'COV' => 'cov',
+                    'ERQ' => 'erq',
+                    'ERD' => 'erd',
+                ];
+                
+                if(isset($key_mapping[$posting_code])) {
+                    $key = $key_mapping[$posting_code];
+                    $organized_data[$key][$material_code] = $row;
+                }
+            }
 
-        $response	= array(
-            'table'		=> $this->load->view('material_cost/rencana_pembelian/table',$data,true),
-        );
+            // Assign ke data array
+            $data['prod'] = $organized_data['prod'] ?? [];
+            $data['arival'] = $organized_data['arival'] ?? [];
+            $data['pakai'] = $organized_data['pakai'] ?? [];
+            $data['available'] = $organized_data['available'] ?? [];
+            $data['inventory'] = $organized_data['inventory'] ?? [];
+            $data['cov'] = $organized_data['cov'] ?? [];
+            $data['erq'] = $organized_data['erq'] ?? [];
+            $data['erd'] = $organized_data['erd'] ?? [];
+        } else {
+            // Jika tidak ada data, inisialisasi array kosong
+            $data['prod'] = [];
+            $data['arival'] = [];
+            $data['pakai'] = [];
+            $data['available'] = [];
+            $data['inventory'] = [];
+            $data['cov'] = [];
+            $data['erq'] = [];
+            $data['erd'] = [];
+        }
+
+        $response = [
+            'table' => $this->load->view('material_cost/rencana_pembelian/table',$data,true),
+            'erq' => $data['erq'] ?? [],
+            'erd' => $data['erd'] ?? [],
+        ];
 	   
 	    render($response,'json');
     }
 
     
     function save_perubahan() {       
- 
-        $table = 'tbl_budget_production';
-
-        $table2 = 'tbl_fact_allocation_qc';
-        $table3 = 'tbl_fact_product_ovh';
-
-        $data   = json_decode(post('json'),true);
-
-        foreach($data as $id => $record) {
-            $result = $record;
-            foreach ($result as $r => $v) {               
-                update_data($table, $result,'id',$id);
-
-                $upd = get_data($table, 'id',$id)->row();
-                $total_qty = (isset($upd->total_budget) ? $upd->total_budget : 0);
-
-                $field = '';
-                $total = 0;
-                for ($i = 1; $i <= 12; $i++) { 
-                    $field = 'B_' . sprintf('%02d', $i);
-                    $total += $upd->$field ;
-                }
-                update_data($table,['total_budget' => $total],'id',$upd->id);
-                update_data($table2,['product_qty' => $total], ['tahun'=>post('tahun'),'product_code'=>$upd->budget_product_code]);
-                update_data($table3,['qty_production' => $total], ['tahun'=>post('tahun'),'product_code'=>$upd->budget_product_code]);
-
-            }      
-        }
-    }
-   
-
-    function import() {
-		ini_set('memory_limit', '-1');
-        ini_set('max_execution_time', -1);
-
-        $tahun = post('tahun');
-        $table = 'tbl_budget_production';
-        $table2 = 'tbl_fact_allocation_qc';
-        $table3 = 'tbl_fact_product_ovh';
-		$file = post('fileimport');
-        $filter = post();
-
-
-        $col = ['PRODUCT', 'CODE', 'B_01', 'B_02', 'B_03', 'B_04', 'B_05', 'B_06', 'B_07', 'B_08', 'B_09', 'B_10', 'B_11', 'B_12', 'TOTAL'];
- 
-        $this->load->library('simpleexcel');
-		$this->simpleexcel->define_column($col);
-		$count_import = $this->simpleexcel->read($file);
-        // $loop_data = $this->simpleexcel->parsing(0,326);
-
-        // debug($loop_data);die;
-        $data_imported = 0;
-
-        // $totalData = array();
-  
-            for ($i=8; $i <= $count_import[0]; $i++) { 
-                $loop_data = $this->simpleexcel->parsing(0,$i+1);
-                
-
-                $data['tahun'] = post('tahun');      
-                $data['product_line'] = '';
-                $data['divisi'] = '';
-                $data['category'] = '';
-                $data['id_budget_product'] = 0;
-
-                $product = get_data('tbl_fact_product a',[
-                    'select' => 'a.*',
-                    'where' => [
-                        'code' => $loop_data['CODE']
-                    ],
-                    ])->row();
-
-                if(isset($product->code)) {
-                    $data['product_line'] =  $product->product_line;
-                    $data['divisi'] =  $product->divisi;
-                    $data['category'] =  $product->sub_product;
-                    $data['id_budget_product'] = $product->id;
-    
-                }
-
-                $data['budget_product_code'] = $loop_data['CODE'];
-                $data['budget_product_name'] = $loop_data['PRODUCT'];
-
-   
-
-                $data['B_01'] = (isset($loop_data['B_01']) ? str_replace(['.',','],'', $loop_data['B_01']) : 0);
-                $data['B_02'] = (isset($loop_data['B_02']) ? str_replace(['.',','],'', $loop_data['B_02']) : 0);
-                $data['B_03'] = (isset($loop_data['B_03']) ? str_replace(['.',','],'', $loop_data['B_03']) : 0);
-                $data['B_04'] = (isset($loop_data['B_04']) ? str_replace(['.',','],'', $loop_data['B_04']) : 0);
-                $data['B_05'] = (isset($loop_data['B_05']) ? str_replace(['.',','],'', $loop_data['B_05']) : 0);
-                $data['B_06'] = (isset($loop_data['B_06']) ? str_replace(['.',','],'', $loop_data['B_06']) : 0);
-                $data['B_07'] = (isset($loop_data['B_07']) ? str_replace(['.',','],'', $loop_data['B_07']) : 0);
-                $data['B_08'] = (isset($loop_data['B_08']) ? str_replace(['.',','],'', $loop_data['B_08']) : 0);
-                $data['B_09'] = (isset($loop_data['B_09']) ? str_replace(['.',','],'', $loop_data['B_09']) : 0);
-                $data['B_10'] = (isset($loop_data['B_10']) ? str_replace(['.',','],'', $loop_data['B_10']) : 0);
-                $data['B_11'] = (isset($loop_data['B_11']) ? str_replace(['.',','],'', $loop_data['B_11']) : 0);
-                $data['B_12'] = (isset($loop_data['B_12']) ? str_replace(['.',','],'', $loop_data['B_12']) : 0);
-               
-
-                $data['update_at'] = date('Y-m-d H:i:s');
-                $data['update_by'] = user('nama');
-
-                $arr   = [
-                    'select'    => 'a.*',
-                    'where'     => [
-                        'a.budget_product_code' => $loop_data['CODE'],
-                		'a.tahun' => $tahun,
-                    ],
-                ];
-
-                $arr2   = [
-                    'select'    => 'a.*',
-                    'where'     => [
-                        'a.product_code' => $loop_data['CODE'],
-                		'a.tahun' => $tahun,
-                    ],
-                ];
-
-                $cek = get_data($table . ' a',$arr)->row();
-                $cek2 = get_data($table2 . ' a',$arr2)->row();
-                $cek3 = get_data($table3 . ' a',$arr2)->row();
-
-                $data_prod = [
-                    'tahun' => $data['tahun'],
-                    'id_product' =>   $data['id_budget_product'],
-                    'product_code' =>  $data['budget_product_code'],
-                    'id_cost_centre' =>(isset($product->id_cost_centre) ? $product->id_cost_centre : 0),
-                    'product_qty' => $data['B_01']+$data['B_02']+$data['B_03']+$data['B_04']+$data['B_05']+$data['B_06']+$data['B_07']+$data['B_08']+$data['B_09']+$data['B_10']+$data['B_11']+$data['B_12'],
-                    'qty_production' => $data['B_01']+$data['B_02']+$data['B_03']+$data['B_04']+$data['B_05']+$data['B_06']+$data['B_07']+$data['B_08']+$data['B_09']+$data['B_10']+$data['B_11']+$data['B_12'],
-                 ] ;
-
-
-                if(isset($cek->budget_product_code)) {	
-                    
-                    $save = update_data($table, $data, [
-                        'id' => $cek->id
-                    ]);
-
-                    $this->db->set('total_budget', '(B_01+B_02+B_03+B_04+B_05+B_06+B_07+B_08+B_09+B_10+B_11+B_12)', FALSE);
-                    $this->db->where('id', $cek->id);
-                    $this->db->update($table);
-
-                    if($save){
-                        $data_imported++;
-                    };
-                }
-
-                $data_qc = $data_prod;
-                $data_ovh = $data_prod;
-
-                unset($data_qc['qty_production']);
-                unset($data_ovh['product_qty']);
-
-                if(isset($cek2->product_code)) {	
-                    $save2 = update_data($table2, $data_qc, [
-                        'id' => $cek2->id
-                    ]);
-                }else{
-                    $save2 = insert_data($table2, $data_qc);
-                }
-
-                if(isset($cek3->product_code)) {	
-                    $save3 = update_data($table3, $data_ovh, [
-                        'id' => $cek3->id
-                    ]);
-                }else{
-                    $save3 = insert_data($table3, $data_ovh);
-                }
-            }
-
-            $response = [];
-            if($data_imported > 1){
-                // @unlink($file);
-                $response = [
-                    'status' => 'success',
-                    'message' => "$data_imported Data berhasil terimport!"
-                ];
-            }else{
-                $response = [
-                    'status' => 'failed',
-                    'message' => 'Import data gagal'
-                ];
-            }
-
+        ini_set('memory_limit', '-1');
+        ini_set('max_execution_time', -1);  
         render($response,'json');
 	}
 

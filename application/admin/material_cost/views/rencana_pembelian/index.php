@@ -13,11 +13,11 @@
 				<?php } ?>
 			</select>
 
-			<label class=""><?php echo lang('item_material'); ?> &nbsp</label>
-			<select class="select2 custom-select" style="width: 280px;" id="filter_produk">
+			<label class=""><?php echo lang('supplier'); ?> &nbsp</label>
+			<select class="select2 custom-select" style="width: 280px;" id="filter_supplier">
 				<option value="ALL">ALL</option>
-				<?php foreach ($produk_items as $p) { ?>
-					<option value="<?php echo $p->material_code; ?>"><?php echo $p->material_code . ' | ' . $p->material_name; ?></option>
+				<?php foreach ($supplier as $p) { ?>
+					<option value="<?php echo $p->code; ?>"><?php echo $p->code . ' | ' . $p->nama; ?></option>
 				<?php } ?>
 			</select>
 
@@ -53,16 +53,12 @@
 					table_open('table table-bordered table-app table-hover table-1');
 					thead();
 					tr();
-					th('Material_name', '', 'class="text-center align-middle headcol"');
-					th('Code', '', 'class="text-center align-middle headcol"');
-					th('Um', '', 'class="text-center align-middle headcol"');
-					th('Supplier', '', 'class="text-center align-middle headcol"');
+					th('Material Name', '', 'class="text-center align-middle headcol" style="width:250px"');
+					th('Material Code', '', 'class="text-center align-middle headcol" style="width:150px"');
 					// for ($i = setting('actual_budget'); $i <= 12; $i++) {
 					for ($i = 1; $i <= 12; $i++) {
 						th(month_lang($i), '', 'class="text-center" style="min-width:60px"');
 					}
-
-					th('Total', '', 'class="text-center align-middle headcol"style="min-width:60px"');
 					tbody();
 					table_close();
 					?>
@@ -104,28 +100,41 @@ modal_close();
 		getData()
 	});
 
-	$('#filter_produk').change(function() {
+	$('#filter_supplier').change(function() {
 		getData()
 	});
 
 
     function getData() {
-
         cLoader.open(lang.memuat_data + '...');
         $('.overlay-wrap').removeClass('hidden');
+        
+        // Tampilkan pesan loading yang informatif
+        $('.table-1 tbody').html('<tr><td colspan="14" class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading data arrival quantity...</td></tr>');
+        
         var page = base_url + 'material_cost/rencana_pembelian/data';
             page 	+= '/'+$('#filter_tahun').val();
-			page 	+= '/'+$('#filter_produk').val();
+			page 	+= '/'+$('#filter_supplier').val();
 
         $.ajax({
             url 	: page,
             data 	: {},
             type	: 'get',
             dataType: 'json',
+            timeout: 120000, // 2 menit timeout
             success	: function(response) {
                 $('.table-1 tbody').html(response.table);
                 cLoader.close();
                 $('.overlay-wrap').addClass('hidden');	
+            },
+            error: function(xhr, status, error) {
+                cLoader.close();
+                $('.overlay-wrap').addClass('hidden');
+                if(status === 'timeout') {
+                    $('.table-1 tbody').html('<tr><td colspan="14" class="text-center text-danger">Loading timeout. Please try with more specific filter.</td></tr>');
+                } else {
+                    $('.table-1 tbody').html('<tr><td colspan="14" class="text-center text-danger">Error loading data: ' + error + '</td></tr>');
+                }
             }
         });
     }
