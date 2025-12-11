@@ -1,6 +1,6 @@
 <?php 
 if(empty($produk)) {
-    echo '<tr><td colspan="14" class="text-center">No data found for selected criteria</td></tr>';
+    echo '<tr><td colspan="15" class="text-center">No data found for selected criteria</td></tr>';
     return;
 }
 
@@ -15,6 +15,7 @@ foreach($produk as $m2 => $m1) {
         
         // Pre-calculate values untuk semua bulan sekaligus untuk efisiensi
         $monthly_values = [];
+        $total_material = 0;
         for ($i = 1; $i <= 12; $i++) {
             $field0 = 'P_' . sprintf('%02d', $i);
             
@@ -39,6 +40,7 @@ foreach($produk as $m2 => $m1) {
                 $source_info = 'ARQ';
             }
             
+            $total_material += $display_value;
             $monthly_values[$i] = [
                 'value' => $display_value,
                 'source' => $source_info,
@@ -50,6 +52,10 @@ foreach($produk as $m2 => $m1) {
         for ($i = 1; $i <= 12; $i++) {
             echo '<td style="background: '.$bgedit.';" class="text-right" title="Source: '.$monthly_values[$i]['source'].'">'.$monthly_values[$i]['display'].'</td>';
         }
+        
+        // Total column
+        $total_display = ($total_material > 0) ? number_format($total_material) : '-';
+        echo '<td style="background: '.$bgedit.';" class="text-right"><b>'.$total_display.'</b></td>';
         ?>
     </tr>
 <?php 

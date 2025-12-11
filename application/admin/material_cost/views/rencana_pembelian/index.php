@@ -59,6 +59,7 @@
 					for ($i = 1; $i <= 12; $i++) {
 						th(month_lang($i), '', 'class="text-center" style="min-width:60px"');
 					}
+					th('Total', '', 'class="text-center align-middle headcol" style="min-width:80px"');
 					tbody();
 					table_close();
 					?>
@@ -110,7 +111,7 @@ modal_close();
         $('.overlay-wrap').removeClass('hidden');
         
         // Tampilkan pesan loading yang informatif
-        $('.table-1 tbody').html('<tr><td colspan="14" class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading data arrival quantity...</td></tr>');
+        $('.table-1 tbody').html('<tr><td colspan="15" class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading data arrival quantity...</td></tr>');
         
         var page = base_url + 'material_cost/rencana_pembelian/data';
             page 	+= '/'+$('#filter_tahun').val();
@@ -131,9 +132,9 @@ modal_close();
                 cLoader.close();
                 $('.overlay-wrap').addClass('hidden');
                 if(status === 'timeout') {
-                    $('.table-1 tbody').html('<tr><td colspan="14" class="text-center text-danger">Loading timeout. Please try with more specific filter.</td></tr>');
+                    $('.table-1 tbody').html('<tr><td colspan="15" class="text-center text-danger">Loading timeout. Please try with more specific filter.</td></tr>');
                 } else {
-                    $('.table-1 tbody').html('<tr><td colspan="14" class="text-center text-danger">Error loading data: ' + error + '</td></tr>');
+                    $('.table-1 tbody').html('<tr><td colspan="15" class="text-center text-danger">Error loading data: ' + error + '</td></tr>');
                 }
             }
         });

@@ -13,11 +13,11 @@
 				<?php } ?>
 			</select>
 
-			<label class=""><?php echo lang('item_product'); ?> &nbsp</label>
-			<select class="select2 custom-select" style="width: 280px;" id="filter_produk">
+			<label class=""><?php echo lang('supplier'); ?> &nbsp</label>
+			<select class="select2 custom-select" style="width: 280px;" id="filter_supplier">
 				<option value="ALL">ALL</option>
-				<?php foreach ($produk_items as $p) { ?>
-					<option value="<?php echo $p->component_item; ?>"><?php echo $p->component_item . ' | ' . $p->material_name; ?></option>
+				<?php foreach ($supplier as $p) { ?>
+					<option value="<?php echo $p->code; ?>"><?php echo $p->code . ' | ' . $p->nama; ?></option>
 				<?php } ?>
 			</select>
 
@@ -104,7 +104,7 @@ modal_close();
 		getData()
 	});
 
-	$('#filter_produk').change(function() {
+	$('#filter_supplier').change(function() {
 		getData()
 	});
 
@@ -113,190 +113,42 @@ modal_close();
 
         cLoader.open(lang.memuat_data + '...');
         $('.overlay-wrap').removeClass('hidden');
+        
+        // Tampilkan pesan loading yang informatif
+        $('.table-1 tbody').html('<tr><td colspan="16" class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading data rencana pemakaian...</td></tr>');
+        
         var page = base_url + 'material_cost/rencana_pemakaian/data';
             page 	+= '/'+$('#filter_tahun').val();
-			page 	+= '/'+$('#filter_produk').val();
+			page 	+= '/'+$('#filter_supplier').val();
 
         $.ajax({
             url 	: page,
             data 	: {},
             type	: 'get',
             dataType: 'json',
+            timeout: 120000, // 2 menit timeout
             success	: function(response) {
                 $('.table-1 tbody').html(response.table);
                 cLoader.close();
                 $('.overlay-wrap').addClass('hidden');	
+            },
+            error: function(xhr, status, error) {
+                cLoader.close();
+                $('.overlay-wrap').addClass('hidden');
+                if(status === 'timeout') {
+                    $('.table-1 tbody').html('<tr><td colspan="16" class="text-center text-danger">Loading timeout. Please try with more specific filter.</td></tr>');
+                } else {
+                    $('.table-1 tbody').html('<tr><td colspan="16" class="text-center text-danger">Error loading data: ' + error + '</td></tr>');
+                }
             }
         });
     }
 
-	$(document).on('focus','.edit-value',function(){
-		$(this).parent().removeClass('edited');
-	});
+	// Removed edit-related JavaScript functions since table is now read-only
 
-	$(document).on('blur','.edit-value',function(){
-		var tr = $(this).closest('tr');
-		if($(this).text() != $(this).attr('data-value')) {
-			$(this).addClass('edited');
-		}
-		if(tr.find('td.edited').length > 0) {
-			tr.addClass('edited-row');
-		} else {
-			tr.removeClass('edited-row');
-		}
-	});
-	$(document).on('keyup','.edit-value',function(e){
-		var wh 			= e.which;
-		if((48 <= wh && wh <= 57) || (96 <= wh && wh <= 105) || wh == 8) {
-			if($(this).text() == '') {
-				$(this).text('');
-			} else {
-				var n = parseInt($(this).text().replace(/[^0-9\-]/g,''),10);
-				$(this).text(n.toLocaleString());
-				var selection = window.getSelection();
-				var range = document.createRange();
-				selection.removeAllRanges();
-				range.selectNodeContents($(this)[0]);
-				range.collapse(false);
-				selection.addRange(range);
-				$(this)[0].focus();
-			}
-		}
-	});
-	$(document).on('keypress','.edit-value',function(e){
-		var wh 			= e.which;
-		if (e.shiftKey) {
-			if(wh == 0) return true;
-		}
-		if(e.metaKey || e.ctrlKey) {
-			if(wh == 86 || wh == 118) {
-				$(this)[0].onchange = function(){
-					$(this)[0].innerHTML = $(this)[0].innerHTML.replace(/[^0-9\-]/g, '');
-				}
-			}
-			return true;
-		}
-		if(wh == 0 || wh == 8 || wh == 45 || (48 <= wh && wh <= 57) || (96 <= wh && wh <= 105)) 
-			return true;
-		return false;
-	});
+	// Calculate function simplified for read-only display
 
-	function calculate() {
-		$('.table-2 tbody tr').each(function() {
-			let totalMonthly = [];
-			var grandTotal = 0;
-
-			if ($(this).find('.budget').text() != '') {
-
-				let B_01 = moneyToNumber($(this).find('.B_01').text().replace(/\,/g, ''))
-				let B_02 = moneyToNumber($(this).find('.B_02').text().replace(/\,/g, ''))
-				let B_03 = moneyToNumber($(this).find('.B_03').text().replace(/\,/g, ''))
-				let B_04 = moneyToNumber($(this).find('.B_04').text().replace(/\,/g, ''))
-				let B_05 = moneyToNumber($(this).find('.B_05').text().replace(/\,/g, ''))
-				let B_06 = moneyToNumber($(this).find('.B_06').text().replace(/\,/g, ''))
-				let B_07 = moneyToNumber($(this).find('.B_07').text().replace(/\,/g, ''))
-				let B_08 = moneyToNumber($(this).find('.B_08').text().replace(/\,/g, ''))
-				let B_09 = moneyToNumber($(this).find('.B_09').text().replace(/\,/g, ''))
-				let B_10 = moneyToNumber($(this).find('.B_10').text().replace(/\,/g, ''))
-				let B_11 = moneyToNumber($(this).find('.B_11').text().replace(/\,/g, ''))
-				let B_12 = moneyToNumber($(this).find('.B_12').text().replace(/\,/g, ''))
-
-				let total_budget = 0
-
-				total_budget = B_01 + B_02 + B_03 + B_04 + B_05 + B_06 + B_07 + B_08 + B_09 + B_10 + B_11 + B_12
-
-				$(this).find('.total_budget').text(customFormat(total_budget))
-
-			}
-
-			for (let i = 1; i <= 12; i++) {
-				let total = 0;
-
-				$('.B_' + ('0' + i).slice(-2)).each(function() {
-					let value = moneyToNumber($(this).text().replace(/\,/g, ''));
-					total += value;
-				});
-
-				totalMonthly.push(total);
-				grandTotal += total;
-			}
-
-			for (let i = 0; i < totalMonthly.length; i++) {
-				$('#totalB' + ('0' + (i + 1)).slice(-2)).text(customFormat(totalMonthly[i]));
-			}
-
-			$('#grand_total').text(customFormat(grandTotal))
-
-		});
-
-		$('.table-1 tbody tr').each(function(){
-			if ($(this).find('.budget').text() != '') {
-				let EST_01 = moneyToNumber($(this).find('.EST_01').text().replace(/\,/g, ''))
-				let EST_02 = moneyToNumber($(this).find('.EST_02').text().replace(/\,/g, ''))
-				let EST_03 = moneyToNumber($(this).find('.EST_03').text().replace(/\,/g, ''))
-				let EST_04 = moneyToNumber($(this).find('.EST_04').text().replace(/\,/g, ''))
-				let EST_05 = moneyToNumber($(this).find('.EST_05').text().replace(/\,/g, ''))
-				let EST_06 = moneyToNumber($(this).find('.EST_06').text().replace(/\,/g, ''))
-				let EST_07 = moneyToNumber($(this).find('.EST_07').text().replace(/\,/g, ''))
-				let EST_08 = moneyToNumber($(this).find('.EST_08').text().replace(/\,/g, ''))
-				let EST_09 = moneyToNumber($(this).find('.EST_09').text().replace(/\,/g, ''))
-				let EST_10 = moneyToNumber($(this).find('.EST_10').text().replace(/\,/g, ''))
-				let EST_11 = moneyToNumber($(this).find('.EST_11').text().replace(/\,/g, ''))
-				let EST_12 = moneyToNumber($(this).find('.EST_12').text().replace(/\,/g, ''))
-
-				let total_est = 0
-
-				total_est = EST_01 + EST_02 + EST_03 + EST_04 + EST_05 + EST_06 + EST_07 + EST_08 + EST_09 + EST_10 + EST_11 + EST_12
-
-				$(this).find('.total_est').text(customFormat(total_est))
-			}
-		});
-	}
-
-	$(document).on('click', '.btn-save', function() {
-		var i = 0;
-		$('.edited').each(function() {
-			i++;
-		});
-		if (i == 0) {
-			cAlert.open('tidak ada data yang di ubah');
-		} else {
-			var msg = lang.anda_yakin_menyetujui;
-			if (i == 0) msg = lang.anda_yakin_menolak;
-			cConfirm.open(msg, 'save_perubahan');
-		}
-	});
-
-	function save_perubahan() {
-		var data_edit = {};
-		var i = 0;
-
-		$('.edited').each(function() {
-			var content = $(this).children('div');
-			if (typeof data_edit[$(this).attr('data-id')] == 'undefined') {
-				data_edit[$(this).attr('data-id')] = {};
-			}
-			data_edit[$(this).attr('data-id')][$(this).attr('data-name')] = $(this).text().replace(/[^0-9\-]/g, '');
-			i++;
-		});
-
-		var jsonString = JSON.stringify(data_edit);
-		// var jsonString = JSON.stringify(data_edit, null, 2); // 2 spaces indentation
-
-		console.log(jsonString);
-		$.ajax({
-			url: base_url + 'material_cost/rencana_pemakaian/save_perubahan',
-			data: {
-				'json': jsonString,
-				'tahun': $('#filter_tahun').val(),
-				verifikasi: i
-			},
-			type: 'post',
-			success: function(response) {
-				cAlert.open(response, 'success', 'refreshData');
-			}
-		})
-	}
+	// Removed calculate, save, and edit functions since table is now read-only
 
 	let activeTable = '#result';
 	let judul = 'Actual and Estimate' 
