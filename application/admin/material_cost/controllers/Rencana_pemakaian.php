@@ -16,10 +16,17 @@ class Rencana_pemakaian extends BE_Controller {
                 'tahun' => user('tahun_budget')
             ]
         ])->result();     
+
+        // Tambahkan data supplier seperti di rencana pembelian
+        $data['supplier'] = get_data('tbl_m_supplier', [
+            'where' => [
+                'is_active' => 1,
+            ]
+        ])->result();
         
 		$arr = [
             'select' => 'distinct a.component_item,a.material_name',
-            'join' =>  $table . ' b on b.budget_product_code= a.parent_item and and b.tahun="'.user('tahun_budget').'" type LEFT',
+            'join' =>  $table . ' b on b.budget_product_code= a.parent_item and b.tahun="'.user('tahun_budget').'" type LEFT',
             'where' => [
                 'a.tahun' => user('tahun_budget'),
                 'a.total !=' => 0,
@@ -35,30 +42,35 @@ class Rencana_pemakaian extends BE_Controller {
         render($data);
 	}
 
-    function data($tahun="",$material_code="",$tipe = 'table'){
+    function data($tahun="",$supplier="",$tipe = 'table'){
 		ini_set('memory_limit', '-1');
+        ini_set('max_execution_time', -1);
 
         $table = 'tbl_budget_production' ;
 
+        // Optimasi: Tambahkan join dengan supplier untuk filter
         $arr = [
             'select' => 'a.component_item,a.material_name, 
                         sum(a.total * b.B_01) as B_01, sum(a.total * b.B_02) as B_02, sum(a.total * b.B_03) as B_03, 
                         sum(a.total * b.B_04) as B_04, sum(a.total * b.B_05) as B_05, sum(a.total * b.B_06) as B_06, 
                         sum(a.total * b.B_07) as B_07, sum(a.total * b.B_08) as B_08, sum(a.total * b.B_09) as B_09, 
                         sum(a.total * b.B_10) as B_10, sum(a.total * b.B_11) as B_11, sum(a.total * b.B_12) as B_12',
-            'join' =>  $table . ' b on b.budget_product_code= a.parent_item and b.tahun = "'.user('tahun_budget').'" type LEFT',
+            'join' =>  [
+                $table . ' b on b.budget_product_code= a.parent_item and b.tahun = "'.$tahun.'" type LEFT',
+                'tbl_material_supplier c on a.component_item = c.material_code type LEFT'
+            ],
             'where' => [
                 'a.tahun' => $tahun,
                 'a.total !=' => 0,
                 'b.total_budget !=' => 0
-                // 'b.product_code' => 'CIHODD5PDM',
             ],
             'group_by' => 'a.component_item,a.material_name',
             'sort_by' => 'a.component_item'
         ];
 
-        if($material_code && $material_code != 'ALL') {
-	    	$arr['where']['a.component_item']	= $material_code;	
+        // Filter berdasarkan supplier
+        if($supplier && $supplier != 'ALL' && $supplier != '') {
+	    	$arr['where']['c.kode_supplier']	= $supplier;	
 	    }
 
         $data['material'] = get_data('tbl_material_formula' .' a',$arr)->result_array();
