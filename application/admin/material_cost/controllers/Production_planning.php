@@ -1325,4 +1325,142 @@ class Production_planning extends BE_Controller
         echo 'success';
         die;
     }
+
+
+    Function save_volume_production()
+    {
+        $id_save_volume = post('id_save_volume');
+        $tahun_volume = post('tahun_volume');
+        $factory_volume = post('factory_volume');
+
+           
+        if(!$id_save_volume || !$tahun_volume) {
+            render(['status' => 'failed', 'message' => 'Parameter tidak lengkap'], 'json');
+            return;
+        }
+
+        $table = 'tbl_budget_production_dev2';
+        $table_prod = 'tbl_production_planning_' . $tahun_volume;
+
+        // Get all cost centres to process
+        $arr = [
+            'select' => 'a.cost_centre as kode, b.id, b.cost_centre, c.kapasitas,
+                        WD_01,WD_02,WD_03,WD_04,WD_05,WD_06,WD_07,WD_08,WD_09,WD_10,WD_11,WD_12',
+            'join' => [
+                'tbl_fact_cost_centre b on a.cost_centre = b.kode type LEFT',
+                'tbl_kapasitas_produksi c on a.cost_centre = c.cost_centre type LEFT'
+            ],
+            'where' => [
+                'a.is_active' => 1,
+                'a.id_cost_centre !=' => 0,
+                'b.cost_centre !=' => ''
+            ],
+            'group_by' => 'b.cost_centre',
+            'sort_by' => 'b.id',
+        ];
+
+        if ($factory_volume && $factory_volume != 'ALL') {
+            $arr['where']['a.cost_centre'] = $factory_volume;
+        }
+
+        $cost_centres = get_data('tbl_fact_product a', $arr)->result();
+
+        foreach($cost_centres as $cost_centre) {
+            // Get products for this cost centre with batch_size from tbl_beginning_stock
+            $products = get_data('tbl_fact_product a', [
+                'select' => 'a.*, b.batch_size',
+                'join' => [
+                    'tbl_beginning_stock b on a.code = b.budget_product_code and b.tahun = "' . $tahun_volume . '"'
+                ],
+                'where' => [
+                    'a.is_active' => 1,
+                    'a.id_cost_centre' => $cost_centre->id,
+                    'b.is_active' => 1
+                ],
+                'sort_by' => 'a.id_cost_centre'
+            ])->result();
+
+            foreach($products as $product) {
+                // Check if record already exists in tbl_budget_production
+                $existing = get_data($table, [
+                    'where' => [
+                        'tahun' => $tahun_volume,
+                        'budget_product_code' => $product->code,
+                        'id_cost_centre' => $cost_centre->id
+                    ]
+                ])->row();
+
+                // Calculate production values based on the view logic
+                $production_data = [];
+                $total_budget = 0;
+                
+                for ($i = 1; $i <= 12; $i++) {
+                    $field_month = 'B_' . sprintf('%02d', $i);
+                    $field_prod = 'P_' . sprintf('%02d', $i);
+                    
+                    // Get X Produksi value from production planning table
+                    $xprod_data = get_data($table_prod, [
+                        'where' => [
+                            'product_code' => $product->code,
+                            'posting_code' => 'EPR',
+                            'id_cost_centre' => $cost_centre->id
+                        ]
+                    ])->row();
+                    
+                    // Calculate production value (X Produksi * batch size)
+                    $xproduksi_value = 0;
+                    if($xprod_data) {
+                        $xproduksi_value = isset($xprod_data->$field_prod) ? $xprod_data->$field_prod : 0;
+                    }
+                    
+                    // Production calculation: if X Produksi > 0, use X Produksi * batch_size, otherwise 0
+                    $prod_value = 0;
+                    if($xproduksi_value > 0) {
+                        $batch_size = isset($product->batch_size) ? $product->batch_size : 0;
+                        $prod_value = $xproduksi_value * $batch_size;
+                    }
+                    
+                    $production_data[$field_month] = $prod_value;
+                    $total_budget += $prod_value;
+                }
+
+                // Prepare data for insert/update
+                $data_to_save = [
+                    'tahun' => $tahun_volume,
+                    'id_cost_centre' => $cost_centre->id,
+                    'divisi' => $product->divisi,
+                    'product_line' => $product->product_line,
+                    'id_budget_product' => $product->id,
+                    'budget_product_code' => $product->code,
+                    'budget_product_name' => $product->product_name,
+                    'category' => $product->sub_product,
+                    'total_budget' => $total_budget
+                ];
+
+                // Add monthly production data
+                $data_to_save = array_merge($data_to_save, $production_data);
+
+                if($existing) {
+                    // Update existing record
+                    update_data($table, $data_to_save, 'id', $existing->id);
+                } else {
+                    // Insert new record
+                    insert_data($table, $data_to_save);
+                }
+
+                // // Update related tables
+                // update_data('tbl_fact_allocation_qc', 
+                //     ['product_qty' => $total_budget], 
+                //     ['tahun' => $tahun_volume, 'product_code' => $product->code]
+                // );
+                
+                // update_data('tbl_fact_product_ovh', 
+                //     ['qty_production' => $total_budget], 
+                //     ['tahun' => $tahun_volume, 'product_code' => $product->code]
+                // );
+            }
+        }
+
+        render(['status' => 'success', 'message' => 'Data volume produksi berhasil disimpan'], 'json');
+    }
 }

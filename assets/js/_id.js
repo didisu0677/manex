@@ -19,6 +19,7 @@ var lang = {
     "ok": "OK",
     "apakah_anda_yakin": "Apakah anda yakin",
     "apakah_anda_yakin_untuk_submit_data_produksi": "Apakah anda yakin untuk submit data produksi",
+    "apakah_anda_yakin_untuk_save_data_volume_produksi": "Apakah anda yakin untuk submit data volume produksi",
     "konfirmasi": "Konfirmasi",
     "peringatan": "Peringatan",
     "batalkan": "Batalkan",

@@ -24,13 +24,14 @@
 			if($submit==0) {
 				echo '<button class="btn btn-info btn-proses" href="javascript:;" ><i class="fa-process"></i> Running MRP</button>';
 				echo '<button class="btn btn-success btn-save" href="javascript:;" > Save <span class="fa-save"></span></button>';
-				// echo '<button class="btn btn-secondary btn-submit-production" href="javascript:;" > Submit Production <span class="fa-save"></span></button>';
+				// echo '<button class="btn btn-secondary btn-save_volume" href="javascript:;" > Submit Production <span class="fa-save"></span></button>';
 			}
 
 			$arr = [];
 			$arr = [
 				// ['btn-save','Save Data','fa-save'],
 				['btn-export', 'Export Data', 'fa-upload'],
+				($submit == 0 ? ['btn-save_volume','Submit Budget','fa-submit'] :''),
 				// ['btn-import', 'Import Data Begining Stock', 'fa-download'],
 				// ['btn-template', 'Template Import', 'fa-reg-file-alt']
 			];
@@ -190,6 +191,31 @@
 	// }
 
 
+	var id_save_volume = '';
+	var tahun_volume = 0;
+	$(document).on('click', '.btn-save_volume', function(e) {
+		e.preventDefault();
+		id_save_volume = 'proses_save_volume';
+		tahun_volume = $('#filter_tahun').val();
+		factory_volume = $('#filter_cost_centre').val();
+		cConfirm.open(lang.apakah_anda_yakin_untuk_save_data_volume_produksi + '?', 'lanjut_save_volume');
+	});
+
+	function lanjut_save_volume() {
+		let result = $.ajax({
+			url: base_url + 'material_cost/production_planning/save_volume_production',
+			data: {
+				id_save_volume: id_save_volume,
+				tahun_volume: tahun_volume,
+				factory_volume: factory_volume,
+			},
+			type: 'post',
+			dataType: 'json',
+			success: function(res) {
+				cAlert.open(res.message, res.status, 'refreshData');
+			}
+		});
+	}
 
 	$(document).on('focus', '.edit-value', function() {
 		$(this).parent().removeClass('edited');
