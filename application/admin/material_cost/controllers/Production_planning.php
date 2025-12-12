@@ -1445,7 +1445,8 @@ class Production_planning extends BE_Controller
                     update_data($table, $data_to_save, 'id', $existing->id);
                 } else {
                     // Insert new record
-                    insert_data($table, $data_to_save);
+                    insert_data($table, $data_to_save); 
+                    //
                 }
 
                 // // Update related tables
