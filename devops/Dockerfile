@@ -10,33 +10,30 @@ COPY . /var/www/html
 # Remove docker files not needed in production
 RUN rm -rf docker docker-compose.yml
 
-# Create necessary directories FIRST before any permission setting
-RUN mkdir -p /var/www/html/assets/cache \
-    /var/www/html/assets/uploads/setting \
-    /var/www/html/assets/uploads/temp \
-    /var/www/html/application/cache/session
+# Permissions fix
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html \
+    && find /var/www/html -type d -exec chmod 755 {} \; \
+    && find /var/www/html -type f -exec chmod 644 {} \; \
+    && mkdir -p /var/www/html/assets/cache /var/www/html/assets/uploads \
+    && chmod -R 775 /var/www/html/assets \
+    && chown -R www-data:www-data /var/www/html/assets
 
-# Set ownership to www-data FIRST
-RUN chown -R www-data:www-data /var/www/html
+# Ensure uploads/setting folder exists and has correct permissions
+RUN mkdir -p /var/www/html/assets/uploads/setting \
+    && chown -R www-data:www-data /var/www/html/assets/uploads/setting \
+    && chmod -R 775 /var/www/html/assets/uploads/setting
 
-# Set basic permissions for files and directories
-RUN find /var/www/html -type d -exec chmod 755 {} \; \
-    && find /var/www/html -type f -exec chmod 644 {} \;
+RUN mkdir -p /var/www/html/assets/uploads/setting \
+    && chown -R www-data:www-data /var/www/html/assets/uploads/temp \
+    && chmod -R 775 /var/www/html/assets/uploads/temp
 
-# Set SPECIFIC write permissions for cache directories (AFTER basic permissions)
-RUN chmod -R 775 /var/www/html/assets/cache \
-    && chmod -R 775 /var/www/html/assets/uploads \
-    && chmod -R 775 /var/www/html/application/cache
-
-# Ensure www-data ownership for cache directories (FINAL step)
-RUN chown -R www-data:www-data /var/www/html/assets/cache \
-    && chown -R www-data:www-data /var/www/html/assets/uploads \
-    && chown -R www-data:www-data /var/www/html/application/cache
-
-# Create test file to verify write permission works
-RUN echo "test" > /var/www/html/assets/cache/.dockertest \
-    && rm -f /var/www/html/assets/cache/.dockertest \
-    && echo "Cache write permission: OK"
+# Ensure session folder exists and has correct permissions (CodeIgniter config)
+RUN mkdir -p /var/www/html/application/cache/session \
+    && chown -R www-data:www-data /var/www/html/application/cache/session \
+    && chmod -R 775 /var/www/html/application/cache/session
+# php.ini
+# COPY devops/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 EXPOSE 9000
 CMD ["php-fpm"]
