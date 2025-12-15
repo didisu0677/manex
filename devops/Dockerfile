@@ -10,23 +10,30 @@ COPY . /var/www/html
 # Remove docker files not needed in production
 RUN rm -rf docker docker-compose.yml
 
-# Set CI Environment variable untuk development
-ENV CI_ENV=development
-
-# Create directories and fix permissions in one go
-RUN mkdir -p /var/www/html/assets/cache \
-    /var/www/html/assets/uploads/setting \
-    /var/www/html/assets/uploads/temp \
-    /var/www/html/application/cache/session \
-    && chown -R www-data:www-data /var/www/html \
+# Permissions fix
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html \
     && find /var/www/html -type d -exec chmod 755 {} \; \
     && find /var/www/html -type f -exec chmod 644 {} \; \
-    && chmod -R 777 /var/www/html/assets/cache \
-    && chmod -R 775 /var/www/html/assets/uploads \
-    && chmod -R 775 /var/www/html/application/cache
+    && mkdir -p /var/www/html/assets/cache /var/www/html/assets/uploads \
+    && chmod -R 775 /var/www/html/assets \
+    && chown -R www-data:www-data /var/www/html/assets
 
-# Force disable asset combine to prevent cache issues
-RUN sed -i "s/\$config\['asset_combine'\] = ENVIRONMENT == 'production' ? true : false;/\$config['asset_combine'] = false;/" /var/www/html/application/config/asset.php
+# Ensure uploads/setting folder exists and has correct permissions
+RUN mkdir -p /var/www/html/assets/uploads/setting \
+    && chown -R www-data:www-data /var/www/html/assets/uploads/setting \
+    && chmod -R 775 /var/www/html/assets/uploads/setting
+
+RUN mkdir -p /var/www/html/assets/uploads/setting \
+    && chown -R www-data:www-data /var/www/html/assets/uploads/temp \
+    && chmod -R 775 /var/www/html/assets/uploads/temp
+
+# Ensure session folder exists and has correct permissions (CodeIgniter config)
+RUN mkdir -p /var/www/html/application/cache/session \
+    && chown -R www-data:www-data /var/www/html/application/cache/session \
+    && chmod -R 775 /var/www/html/application/cache/session
+# php.ini
+# COPY devops/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 EXPOSE 9000
 CMD ["php-fpm"]
