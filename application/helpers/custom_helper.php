@@ -436,14 +436,34 @@ function render_css($content='',$str_view='') {
     if(isset($res[1])) {
         foreach($res[1] as $k => $r) {
             $buffer = preg_replace('!\s+!',' ',preg_replace('@(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|((?<!:)//.*)|[\t\r\n]|@i','',$r));
-            // $css    .= ENVIRONMENT == 'production' ? $buffer : $r;
             $css    .= $r;
         }
     }
-    // FORCE INLINE - Skip cache system entirely and add timestamp for fresh CSS
+    $filename   = 'assets/cache/' . md5($str_view) . '.css';
     if($css) {
-        $timestamp = time();
-        $return_css .= '<style type="text/css">/* Generated: ' . date('Y-m-d H:i:s', $timestamp) . ' */' . $css . '</style>';
+        $render = false;
+        if(file_exists( $filename )) {
+            $str_file   = file_get_contents($filename);
+            if($str_file != $css) $render = true;
+        } else $render = true;
+        if($render) {
+            // Ensure directory exists
+            $cache_dir = dirname($filename);
+            if (!is_dir($cache_dir)) {
+                @mkdir($cache_dir, 0775, true);
+            }
+            
+            $handle = fopen ($filename, "wb");
+            if($handle) {
+                if(fwrite($handle, $css) !== false) {
+                    fclose($handle);
+                } else {
+                    fclose($handle);
+                    @unlink($filename);
+                }
+            }
+        }
+        $return_css .= file_exists( $filename ) ? '<link rel="stylesheet" type="text/css" href="' . base_url($filename) . '?v='.APP_VERSION.'" />' : '<style type="text/css">' . $css . '</style>';
     }
     return $return_css;
 }
@@ -463,9 +483,31 @@ function render_js($content='',$str_view='') {
             }
         }
     }
-    // FORCE INLINE - Skip cache system entirely to avoid 404 errors
+    $filename   = 'assets/cache/' . md5($str_view) . '.js';
     if($js) {
-        $return_js .= '<script type="text/javascript">' . $js . '</script>';
+        $render = false;
+        if(file_exists( $filename )) {
+            $str_file   = file_get_contents($filename);
+            if($str_file != $js) $render = true;
+        } else $render = true;
+        if($render) {
+            // Ensure directory exists
+            $cache_dir = dirname($filename);
+            if (!is_dir($cache_dir)) {
+                @mkdir($cache_dir, 0775, true);
+            }
+            
+            $handle = fopen ($filename, "wb");
+            if($handle) {
+                if(fwrite($handle, $js) !== false) {
+                    fclose($handle);
+                } else {
+                    fclose($handle);
+                    @unlink($filename);
+                }
+            }
+        }
+        $return_js .= file_exists( $filename ) ? '<script type="text/javascript" src="' . base_url($filename) . '?v='.APP_VERSION.'"></script>' : '<script type="text/javascript">' . $js . '</script>';
     }
     return $return_js;
 }
