@@ -13,7 +13,7 @@ RUN rm -rf docker docker-compose.yml
 # Set CI Environment untuk development
 ENV CI_ENV=development
 
-# Create cache directories and set Docker-specific permissions
+# Create cache directories with full write permissions for Docker
 RUN mkdir -p /var/www/html/assets/cache \
     /var/www/html/assets/uploads/setting \
     /var/www/html/assets/uploads/temp \
@@ -23,12 +23,12 @@ RUN mkdir -p /var/www/html/assets/cache \
     && find /var/www/html -type f -exec chmod 644 {} \; \
     && chmod -R 777 /var/www/html/assets/cache \
     && chmod -R 775 /var/www/html/assets/uploads \
-    && chmod -R 775 /var/www/html/application/cache \
-    && chown -R www-data:www-data /var/www/html/assets \
-    && chown -R www-data:www-data /var/www/html/application/cache
+    && chmod -R 775 /var/www/html/application/cache
 
-# Add volume mount points for persistent cache
-VOLUME ["/var/www/html/assets/cache", "/var/www/html/assets/uploads"]
+# Test write permission and create symlink for nginx access
+RUN echo "test" > /var/www/html/assets/cache/.dockertest \
+    && rm -f /var/www/html/assets/cache/.dockertest \
+    && echo "Cache write test: OK"
 # php.ini
 # COPY devops/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
