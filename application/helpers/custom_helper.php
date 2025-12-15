@@ -474,21 +474,9 @@ function render_js($content='',$str_view='') {
             }
         }
     }
-    $filename   = 'assets/cache/' . md5($str_view) . '.js';
+    // FORCE INLINE - Skip cache system entirely to avoid 404 errors
     if($js) {
-        $render = false;
-        if(file_exists( $filename )) {
-            $str_file   = file_get_contents($filename);
-            if($str_file != $js) $render = true;
-        } else $render = true;
-        if($render) {
-            $handle = fopen ($filename, "wb");
-            if($handle) {
-                fwrite ( $handle, $js );
-            }
-            fclose($handle);
-        }
-        $return_js .= file_exists( $filename ) ? '<script type="text/javascript" src="' . base_url($filename) . '?v='.APP_VERSION.'"></script>' : '<script type="text/javascript">' . $js . '</script>';
+        $return_js .= '<script type="text/javascript">' . $js . '</script>';
     }
     return $return_js;
 }
