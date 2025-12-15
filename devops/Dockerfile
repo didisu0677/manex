@@ -10,6 +10,9 @@ COPY . /var/www/html
 # Remove docker files not needed in production
 RUN rm -rf docker docker-compose.yml
 
+# Set CI Environment variable untuk development
+ENV CI_ENV=development
+
 # Permissions fix
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html \
@@ -32,8 +35,6 @@ RUN mkdir -p /var/www/html/assets/uploads/setting \
 RUN mkdir -p /var/www/html/application/cache/session \
     && chown -R www-data:www-data /var/www/html/application/cache/session \
     && chmod -R 775 /var/www/html/application/cache/session
-# php.ini
-# COPY devops/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 EXPOSE 9000
 CMD ["php-fpm"]
