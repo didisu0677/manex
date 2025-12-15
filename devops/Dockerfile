@@ -10,30 +10,31 @@ COPY . /var/www/html
 # Remove docker files not needed in production
 RUN rm -rf docker docker-compose.yml
 
-# Permissions fix
+# Create necessary directories FIRST
+RUN mkdir -p /var/www/html/assets/cache \
+    /var/www/html/assets/uploads/setting \
+    /var/www/html/assets/uploads/temp \
+    /var/www/html/application/cache/session
+
+# Set basic ownership and permissions
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html \
     && find /var/www/html -type d -exec chmod 755 {} \; \
-    && find /var/www/html -type f -exec chmod 644 {} \; \
-    && mkdir -p /var/www/html/assets/cache /var/www/html/assets/uploads \
-    && chmod -R 775 /var/www/html/assets \
-    && chown -R www-data:www-data /var/www/html/assets
+    && find /var/www/html -type f -exec chmod 644 {} \;
 
-# Ensure uploads/setting folder exists and has correct permissions
-RUN mkdir -p /var/www/html/assets/uploads/setting \
-    && chown -R www-data:www-data /var/www/html/assets/uploads/setting \
-    && chmod -R 775 /var/www/html/assets/uploads/setting
+# Set specific write permissions for cache and upload directories AFTER basic permissions
+RUN chmod -R 775 /var/www/html/assets/cache \
+    && chmod -R 775 /var/www/html/assets/uploads \
+    && chmod -R 775 /var/www/html/application/cache \
+    && chown -R www-data:www-data /var/www/html/assets/cache \
+    && chown -R www-data:www-data /var/www/html/assets/uploads \
+    && chown -R www-data:www-data /var/www/html/application/cache
 
-RUN mkdir -p /var/www/html/assets/uploads/setting \
-    && chown -R www-data:www-data /var/www/html/assets/uploads/temp \
-    && chmod -R 775 /var/www/html/assets/uploads/temp
-
-# Ensure session folder exists and has correct permissions (CodeIgniter config)
-RUN mkdir -p /var/www/html/application/cache/session \
-    && chown -R www-data:www-data /var/www/html/application/cache/session \
-    && chmod -R 775 /var/www/html/application/cache/session
-# php.ini
-# COPY devops/php/php.ini /usr/local/etc/php/conf.d/custom.ini
+# Verify permissions are correct (optional - remove in production)
+RUN echo "=== PERMISSION CHECK ===" \
+    && ls -la /var/www/html/assets/ \
+    && echo "Cache folder:" \
+    && ls -la /var/www/html/assets/cache/ \
+    && echo "======================="
 
 EXPOSE 9000
 CMD ["php-fpm"]
