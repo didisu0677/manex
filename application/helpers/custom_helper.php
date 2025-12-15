@@ -440,21 +440,10 @@ function render_css($content='',$str_view='') {
             $css    .= $r;
         }
     }
-    $filename   = 'assets/cache/' . md5($str_view) . '.css';
+    // FORCE INLINE - Skip cache system entirely and add timestamp for fresh CSS
     if($css) {
-        $render = false;
-        if(file_exists( $filename )) {
-            $str_file   = file_get_contents($filename);
-            if($str_file != $css) $render = true;
-        } else $render = true;
-        if($render) {
-            $handle = fopen ($filename, "wb");
-            if($handle) {
-                fwrite ( $handle, $css );
-            }
-            fclose($handle);
-        }
-        $return_css .= file_exists( $filename ) ? '<link rel="stylesheet" type="text/css" href="' . base_url($filename) . '?v='.APP_VERSION.'" />' : '<style type="text/css">' . $css . '</style>';
+        $timestamp = time();
+        $return_css .= '<style type="text/css">/* Generated: ' . date('Y-m-d H:i:s', $timestamp) . ' */' . $css . '</style>';
     }
     return $return_css;
 }
