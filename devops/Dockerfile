@@ -10,10 +10,10 @@ COPY . /var/www/html
 # Remove docker files not needed in production
 RUN rm -rf docker docker-compose.yml
 
-# Set CI Environment untuk development
+# Set CI Environment untuk development dan disable cache
 ENV CI_ENV=development
 
-# Create directories and set permissions in one step
+# Create directories and set permissions
 RUN mkdir -p /var/www/html/assets/cache \
     /var/www/html/assets/uploads/setting \
     /var/www/html/assets/uploads/temp \
@@ -23,10 +23,10 @@ RUN mkdir -p /var/www/html/assets/cache \
     && find /var/www/html -type f -exec chmod 644 {} \; \
     && chmod -R 777 /var/www/html/assets/cache \
     && chmod -R 777 /var/www/html/assets/uploads \
-    && chmod -R 777 /var/www/html/application/cache \
-    && echo "test cache" > /var/www/html/assets/cache/.dockertest \
-    && rm -f /var/www/html/assets/cache/.dockertest \
-    && echo "Cache write test: SUCCESS"
+    && chmod -R 777 /var/www/html/application/cache
+
+# Force disable asset combine untuk development
+RUN sed -i "s/\$config\['asset_combine'\] = ENVIRONMENT == 'production' ? true : false;/\$config['asset_combine'] = false;/" /var/www/html/application/config/asset.php
 # php.ini
 # COPY devops/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
