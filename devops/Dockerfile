@@ -16,7 +16,7 @@ RUN chown -R www-data:www-data /var/www/html \
     && find /var/www/html -type d -exec chmod 755 {} \; \
     && find /var/www/html -type f -exec chmod 644 {} \; \
     && mkdir -p /var/www/html/assets/cache /var/www/html/assets/uploads \
-    && chmod -R 775 /var/www/html/assets \
+    && chmod -R 775 /var/www/html/assets /var/www/html/assets/cache \ 
     && chown -R www-data:www-data /var/www/html/assets
 
 EXPOSE 9000
