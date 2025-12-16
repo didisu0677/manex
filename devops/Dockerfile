@@ -18,6 +18,6 @@ RUN chown -R www-data:www-data /var/www/html \
     && mkdir -p /var/www/html/manex/assets/cache /var/www/html/manex/assets/uploads /var/www/html/manex/assets/writable \
     && chmod -R 775 /var/www/html/manex/assets /var/www/html/manex/assets/uploads \
     && chown -R www-data:www-data /var/www/html/manex/assets
- 
+
 EXPOSE 9000
 CMD ["php-fpm"]
