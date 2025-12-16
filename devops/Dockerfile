@@ -15,9 +15,9 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html \
     && find /var/www/html -type d -exec chmod 755 {} \; \
     && find /var/www/html -type f -exec chmod 644 {} \; \
-    && mkdir -p /var/www/html/assets/manex/cache /var/www/html/assets/manex/uploads /var/www/html/assets/manex/writable \
-    && chmod -R 775 /var/www/html/assets/manex /var/www/html/assets/manex/cache \
-    && chown -R www-data:www-data /var/www/html/assets/manex
+    && mkdir -p /var/www/html/manex/assets/cache /var/www/html/manex/assets/uploads /var/www/html/manex/assets/writable \
+    && chmod -R 775 /var/www/html/manex/assets \
+    && chown -R www-data:www-data /var/www/html/manex/assets
  
 EXPOSE 9000
 CMD ["php-fpm"]
