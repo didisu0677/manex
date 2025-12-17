@@ -17,7 +17,7 @@ pipeline {
         IMAGE_NAME = "factory/manex"
         //server info
         SERVER_IP = "10.3.102.91"
-        REMOTE_DIR = "/home/it/repo-infra-factory/docker-compose/factory/manex"
+        REMOTE_DIR = "/home/it/repo-infra-finance/docker-compose/factory/manex"
     }
     
     parameters {
