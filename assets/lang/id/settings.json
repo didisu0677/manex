@@ -440,6 +440,7 @@
     "prefix_account": "Prefix Account",
     "description": "Description",
     "account_code": "Account Code",
+    "parent_account_code": "Parent Account Code",
     "group_account": "Group Account",
     "account_name": "Account Name",
     "department": "Department",

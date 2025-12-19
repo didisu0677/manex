@@ -436,7 +436,6 @@ function render_css($content='',$str_view='') {
     if(isset($res[1])) {
         foreach($res[1] as $k => $r) {
             $buffer = preg_replace('!\s+!',' ',preg_replace('@(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/)|((?<!:)//.*)|[\t\r\n]|@i','',$r));
-            // $css    .= ENVIRONMENT == 'production' ? $buffer : $r;
             $css    .= $r;
         }
     }
@@ -448,11 +447,21 @@ function render_css($content='',$str_view='') {
             if($str_file != $css) $render = true;
         } else $render = true;
         if($render) {
+            // Ensure directory exists
+            $cache_dir = dirname($filename);
+            if (!is_dir($cache_dir)) {
+                @mkdir($cache_dir, 0775, true);
+            }
+            
             $handle = fopen ($filename, "wb");
             if($handle) {
-                fwrite ( $handle, $css );
+                if(fwrite($handle, $css) !== false) {
+                    fclose($handle);
+                } else {
+                    fclose($handle);
+                    @unlink($filename);
+                }
             }
-            fclose($handle);
         }
         $return_css .= file_exists( $filename ) ? '<link rel="stylesheet" type="text/css" href="' . base_url($filename) . '?v='.APP_VERSION.'" />' : '<style type="text/css">' . $css . '</style>';
     }
@@ -482,11 +491,21 @@ function render_js($content='',$str_view='') {
             if($str_file != $js) $render = true;
         } else $render = true;
         if($render) {
+            // Ensure directory exists
+            $cache_dir = dirname($filename);
+            if (!is_dir($cache_dir)) {
+                @mkdir($cache_dir, 0775, true);
+            }
+            
             $handle = fopen ($filename, "wb");
             if($handle) {
-                fwrite ( $handle, $js );
+                if(fwrite($handle, $js) !== false) {
+                    fclose($handle);
+                } else {
+                    fclose($handle);
+                    @unlink($filename);
+                }
             }
-            fclose($handle);
         }
         $return_js .= file_exists( $filename ) ? '<script type="text/javascript" src="' . base_url($filename) . '?v='.APP_VERSION.'"></script>' : '<script type="text/javascript">' . $js . '</script>';
     }
