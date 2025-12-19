@@ -42,6 +42,7 @@
 				
 				col_init(3,3);
 				input('text',lang('account_code'),'account_code','required');
+				input('text',lang('parent_account_code'),'parent_account');
 				input('text',lang('urutan'),'urutan','required|number');
 
 				toggle(lang('aktif').'?','is_active');

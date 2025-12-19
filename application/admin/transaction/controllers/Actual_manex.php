@@ -158,23 +158,58 @@ class Actual_manex extends BE_Controller {
 
         $table1 = 'tbl_fact_lstbudget_' .$tahun;
 
-		$arr = [
-            'select' => 'a.account_code,b.account_name,b.id as id_account,c.id as id_cost_centre,a.bulan,a.cost_centre,a.sub_account, sum(a.total) as total',
-			'join'   => ['tbl_fact_account b on a.account_code  = b.account_code',
-			             'tbl_fact_cost_centre c on a.cost_centre = c.kode'
-						],
+		// $arr = [
+        //     'select' => 'a.account_code,b.account_name,b.id as id_account,c.id as id_cost_centre,a.bulan,a.cost_centre,a.sub_account, sum(a.total) as total',
+		// 	'join'   => ['tbl_fact_account b on a.account_code  = b.account_code',
+		// 	             'tbl_fact_cost_centre c on a.cost_centre = c.kode'
+		// 				],
+        //     'where' => [
+		// 	    'tahun' => $tahun_actual,
+		// 		'bulan' => $bulan,
+		// 		'is_estimate' => $is_estimate,
+        //     ],
+        //     'group_by' => 'a.account_code,a.bulan,a.cost_centre,a.sub_account',
+		// ];
+
+		// query dengan parent account
+        $arr = [
+            'select' => 'CASE 
+                            WHEN b.parent_account IS NOT NULL AND b.parent_account != "" 
+                            THEN b.parent_account 
+                            ELSE a.account_code 
+                        END as account_code,
+                        CASE 
+                            WHEN b.parent_account IS NOT NULL AND b.parent_account != "" 
+                            THEN (SELECT account_name FROM tbl_fact_account WHERE account_code = b.parent_account LIMIT 1)
+                            ELSE b.account_name 
+                        END as account_name,
+                        CASE 
+                            WHEN b.parent_account IS NOT NULL AND b.parent_account != "" 
+                            THEN (SELECT id FROM tbl_fact_account WHERE account_code = b.parent_account LIMIT 1)
+                            ELSE b.id 
+                        END as id_account,
+                        c.id as id_cost_centre,
+                        a.bulan,
+                        a.cost_centre,
+                        a.sub_account, 
+                        sum(a.total) as total',
+            'join'   => ['tbl_fact_account b on a.account_code = b.account_code',
+                        'tbl_fact_cost_centre c on a.cost_centre = c.kode'
+                        ],
             'where' => [
-			    'tahun' => $tahun_actual,
-				'bulan' => $bulan,
-				'is_estimate' => $is_estimate,
+                'tahun' => $tahun_actual,
+                'bulan' => $bulan,
+                'is_estimate' => $is_estimate,
             ],
-            'group_by' => 'a.account_code,a.bulan,a.cost_centre,a.sub_account',
-		];
+            'group_by' => '1, a.bulan, a.cost_centre, a.sub_account',
+        ];
 
 		if($is_estimate == "1") $arr['where']['bulan >'] = sprintf('%02d',setting('actual_budget'));
 		
 
 		$actual = get_data('tbl_actual_manex a',$arr)->result();
+
+		debug($actual);die;
 
 
         $field1 = "";
