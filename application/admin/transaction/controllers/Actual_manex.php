@@ -209,7 +209,7 @@ class Actual_manex extends BE_Controller {
 
 		$actual = get_data('tbl_actual_manex a',$arr)->result();
 
-		debug($actual);die;
+		// debug($actual);die;
 
 
         $field1 = "";
