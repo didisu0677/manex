@@ -818,7 +818,12 @@ class Breakdown_budget extends BE_Controller {
         $tahun = post('tahun');
         $table = 'tbl_fact_breakdown_budget_' . $tahun;
 
-        $pic = get_data('tbl_fact_pic_budget','cost_centre',$cost_centre)->row();
+        $pic = get_data('tbl_fact_pic_budget',[
+            'where' => [
+                'cost_centre' => $cost_centre,
+                'tahun' => $tahun
+            ]
+        ])->row();
         $id_pic = '';
         if(isset($pic->user_id)) {
            $id_pic = json_decode($pic->user_id,true) ;
@@ -835,6 +840,7 @@ class Breakdown_budget extends BE_Controller {
         foreach($pic_in as $p) {
             $id_pic2[] = $p->user_id;
         }
+
 
         if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT,MPD,ENG,SCM,ADMIN]) or user('id_group') == HRD) {
             $where = '';
