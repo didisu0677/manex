@@ -31,11 +31,14 @@ class Resume_costing_actual extends BE_Controller {
         render();
     }
 
-    function data($tahun="",$bulan="",$status ="", $tipe = 'table') {
+    function data($tahun="",$bulan="",$jam_transfer_status = "", $tipe = 'table') {
 
         // Field untuk mengambil data actual sesuai bulan yang dipilih
         $tahun = user('tahun_budget') ;
+        $status = 0; // Set default status
         $field_actual = 'EST_' . sprintf('%02d', $bulan);
+        $bulan_formatted = sprintf('%02d', $bulan);
+        $field_jam_transfer = 'amount_' . $bulan_formatted;
         
         $table = 'tbl_fact_lstbudget_' . $tahun ;
         $list_ccallocation = [];
@@ -83,8 +86,6 @@ class Resume_costing_actual extends BE_Controller {
                 
                 ])->result();
 
-
-
         if(table_exists($table)) {
             $data['total_budget'] = [];
 
@@ -103,7 +104,7 @@ class Resume_costing_actual extends BE_Controller {
             foreach($data['production'] as $p) {
                 foreach($manex as $m) {
 
-                    $dataFilter = get_data(' tbl_fact_filter_account',[
+                    $dataFilter = get_data('tbl_fact_filter_account',[
                         'select' => 'account_manex as acc_manex, account_code,tail_subaccount',
                         'where' => [
                             'is_active' => 1,
@@ -117,7 +118,7 @@ class Resume_costing_actual extends BE_Controller {
                         foreach($dataFilter as $dk => $dv){
                             if($dv['acc_manex'] == $m->account_code){
                                 $tailSubAccount = $dv['tail_subaccount'];
-                                $customWhere1[] = '(account_code = "'.$dv['account_code'].'" AND sub_account LIKE "%'.$tailSubAccount.'")';
+                                $customWhere1[] = '(a.account_code = "'.$dv['account_code'].'" AND a.sub_account LIKE "%'.$tailSubAccount.'")';
                             }
                         }
                     }
@@ -148,20 +149,36 @@ class Resume_costing_actual extends BE_Controller {
     
                         if(!$isExistInDataFilter) $realAccountNumber[] = $v;
                     }
-    
-    
+
                     $realAccountNumber = implode(',', array_map(function($value) {
                         return "'" . $value . "'";
                     }, $realAccountNumber));
 
+                    // Jika status jam transfer = "1" (setelah jam transfer), tambahkan amount sesuai cost centre
+                    // Karena data jam transfer sudah disimpan dengan nilai negatif untuk cost centre asal
+                    // dan positif untuk cost centre tujuan, maka cukup ditambahkan saja
+                    // Menggunakan tahun budget - 1 untuk jam transfer
+                    if($jam_transfer_status == "1") {
+                        $select_field = 'a.cost_centre, COALESCE(sum(a.'.$field_actual.'), 0) + COALESCE(sum(jt.'.$field_jam_transfer.'), 0) as total_budget';
+                        $join_condition = 'tbl_jam_transfer jt on a.account_code = jt.account_code and a.cost_centre = jt.cost_centre and jt.tahun = ' . ($tahun - 1) . ' type LEFT';
+                    } else {
+                        $select_field = 'a.cost_centre, COALESCE(sum('.$field_actual.'), 0) as total_budget';
+                        $join_condition = '';
+                    }
+
                     $arr = [
-                        'select' => 'a.cost_centre, COALESCE(sum('.$field_actual.'), 0) as total_budget',
+                        'select' => $select_field,
                         'where' => [
-                            '__m' => '(account_code IN ('.$realAccountNumber.') '.(!empty($customWhere)  ? ' OR ' .$customWhere : '').')',
+                            '__m' => '(a.account_code IN ('.$realAccountNumber.') '.(!empty($customWhere)  ? ' OR ' .$customWhere : '').')',
 
                         ],
                         'group_by' => 'cost_centre'
                     ];
+
+                    // Tambahkan join jika status jam transfer = "1"
+                    if($jam_transfer_status == "1" && !empty($join_condition)) {
+                        $arr['join'] = [$join_condition];
+                    }
 
                     if($status == 0) $arr['where']['a.id_ccallocation'] = 0; 
 
@@ -207,7 +224,6 @@ class Resume_costing_actual extends BE_Controller {
         
         $response	= array(
             'table'		=> $this->load->view('reporting/resume_costing_actual/table',$data,true),
-            // 'table2'		=> $this->load->view('reporting/resume_costing/table2',$data,true),
         );
 	   
 	    render($response,'json');

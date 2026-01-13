@@ -9,7 +9,9 @@ class Settings extends BE_Controller {
 	function index() {
 		$data = array();
 		$module = uri_segment(1);
-		$m_name = get_data('tbl_menu','target',$module)->row();
+		// Strip _actual from target for menu lookup to ensure proper access control
+		$lookup_module = str_replace('_actual', '', $module);
+		$m_name = get_data('tbl_menu','target',$lookup_module)->row();
 		if(isset($m_name->id)) {
 			$access = get_data('tbl_user_akses',array('where_array'=>array('act_view'=>1,'id_group'=>user('id_group'))))->result();
 			$id_menu = array(0);

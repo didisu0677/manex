@@ -137,11 +137,15 @@ function menu($type="all",$segment_f="") {
             $cur_segment = $segment_f;
         }
         
-        // Get base menu data
-        $cur_menu = get_data('tbl_menu','target',$cur_segment)->row();
+        // Strip _actual from target for menu lookup to ensure proper access control
+        $lookup_segment = str_replace('_actual', '', $cur_segment);
+        
+        // Get base menu data using original target without _actual
+        $cur_menu = get_data('tbl_menu','target',$lookup_segment)->row();
 
         if($cur_segment != uri_segment(1) && !$segment_f) {
-            $parent_menu = get_data('tbl_menu','target',uri_segment(1))->row();
+            $parent_lookup = str_replace('_actual', '', uri_segment(1));
+            $parent_menu = get_data('tbl_menu','target',$parent_lookup)->row();
             if(!isset($parent_menu->id)) {
                 $cur_menu = new stdClass();
             }
@@ -215,7 +219,8 @@ function menu($type="all",$segment_f="") {
         $is_cur = false;
         if(isset($segment) && $segment == uri_segment(2)) {
             $segment = uri_segment(1);
-            $cur_menu = get_data('tbl_menu','target',$segment)->row();
+            $lookup_segment = str_replace('_actual', '', $segment);
+            $cur_menu = get_data('tbl_menu','target',$lookup_segment)->row();
             if(isset($cur_menu->id)) {
                 // Add transaction mode to current menu name if is_mode = 1 and transaction mode is not budget_mode
                 if(isset($cur_menu->is_mode) && $cur_menu->is_mode == 1 && user('transaction_mode') != 'budget_mode') {
@@ -267,9 +272,12 @@ function _bak_menu($type="all",$segment_f=""){
         if($segment_f) {
             $cur_segment        = $segment_f;
         }
-        $cur_menu               = get_data('tbl_menu','target',$cur_segment)->row();
+        // Strip _actual from target for menu lookup to ensure proper access control
+        $lookup_segment = str_replace('_actual', '', $cur_segment);
+        $cur_menu               = get_data('tbl_menu','target',$lookup_segment)->row();
         if($cur_segment != uri_segment(1) && !$segment_f) {
-            $parent_menu        = get_data('tbl_menu','target',uri_segment(1))->row();
+            $parent_lookup = str_replace('_actual', '', uri_segment(1));
+            $parent_menu        = get_data('tbl_menu','target',$parent_lookup)->row();
             if(!isset($parent_menu->id)) {
                 $cur_menu       = new stdClass();
             }
@@ -299,7 +307,8 @@ function _bak_menu($type="all",$segment_f=""){
         $is_cur = false;
         if(isset($segment) && $segment == uri_segment(2)) {
             $segment = uri_segment(1);
-            $cur_menu   = get_data('tbl_menu','target',$segment)->row();
+            $lookup_segment = str_replace('_actual', '', $segment);
+            $cur_menu   = get_data('tbl_menu','target',$lookup_segment)->row();
             if(isset($cur_menu->id)) {
                 $access = get_data('tbl_user_akses',array(
                     'where_array'   => array(
@@ -349,7 +358,9 @@ function menu_tab($segment_f=""){
     if($segment_f) {
         $cur_segment        = $segment_f;
     }
-    $cur_menu = get_data('tbl_menu','target',$cur_segment)->row();
+    // Strip _actual from target for menu lookup to ensure proper access control
+    $lookup_segment = str_replace('_actual', '', $cur_segment);
+    $cur_menu = get_data('tbl_menu','target',$lookup_segment)->row();
     $menu = get_menu('tbl_user_akses', 'tbl_menu', user('id_group') , $cur_menu->parent_id);
     return $menu;
 }
@@ -369,7 +380,9 @@ function get_access($target='') {
         'access_delete'     => 0,
         'access_additional' => 0
     ];
-    $cur_menu       = get_data('tbl_menu','target',$target)->row();
+    // Strip _actual from target for menu lookup to ensure proper access control
+    $lookup_target = str_replace('_actual', '', $target);
+    $cur_menu       = get_data('tbl_menu','target',$lookup_target)->row();
     if(isset($cur_menu->id)) {
         $access = get_data('tbl_user_akses',array(
             'where_array'   => array(

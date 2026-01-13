@@ -29,6 +29,7 @@
                 <?php } ?>
 			</select>
     		<?php 
+			
 
 			if($access['access_input']==1)
 			echo '<button class="btn btn-danger btn-proses" href="javascript:;" ><i class="fa-process"></i> Save Report</button>';

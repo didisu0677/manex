@@ -48,10 +48,11 @@ class R_allocation_actual extends BE_Controller {
         render();
     }
 
-    function data($tahun="", $bulan="",$tipe = 'table') {
+    function data($tahun="", $bulan="", $tipe = 'table') {
 
         $total_type = get('type');
         $field = 'B_' . sprintf('%02d', $bulan);
+        $field_jam_transfer = 'amount_' . sprintf('%02d', $bulan);
         $table = 'act_tbl_fact_lstbudget_' . $tahun ;
         $list_ccallocation = [];
         // if($status=="1"){
@@ -135,7 +136,7 @@ class R_allocation_actual extends BE_Controller {
                         foreach($dataFilter as $dk => $dv){
                             if($dv['acc_manex'] == $m->account_code){
                                 $tailSubAccount = $dv['tail_subaccount'];
-                                $customWhere1[] = '(account_code = "'.$dv['account_code'].'" AND sub_account LIKE "%'.$tailSubAccount.'")';
+                                $customWhere1[] = '(a.account_code = "'.$dv['account_code'].'" AND a.sub_account LIKE "%'.$tailSubAccount.'")';
                             }
                         }
                     }
@@ -172,14 +173,18 @@ class R_allocation_actual extends BE_Controller {
                         return "'" . $value . "'";
                     }, $realAccountNumber));
 
+                    // Selalu gunakan jam transfer untuk r_allocation_actual
+                    $select_field = 'a.cost_centre, COALESCE(sum(a.'.$field.'), 0) + COALESCE(sum(jt.'.$field_jam_transfer.'), 0) as total_budget';
+                    $join_condition = 'tbl_jam_transfer jt on a.account_code = jt.account_code and a.cost_centre = jt.cost_centre and jt.tahun = ' . $tahun . ' type LEFT';
+
                     $arr = [
-                        'select' => 'a.cost_centre, sum('.$field.') as total_budget',
-                        //  sum(total_budget_idle) as total_budget_idle, sum(budget_after_idle) as budget_after_idle',
+                        'select' => $select_field,
                         'where' => [
-                            '__m' => '(account_code IN ('.$realAccountNumber.') '.(!empty($customWhere)  ? ' OR ' .$customWhere : '').')',
+                            '__m' => '(a.account_code IN ('.$realAccountNumber.') '.(!empty($customWhere)  ? ' OR ' .$customWhere : '').')',
 
                         ],
-                        'group_by' => 'cost_centre'
+                        'group_by' => 'cost_centre',
+                        'join' => [$join_condition]
                     ];
 
                     // if($status == 0) $arr['where']['a.id_ccallocation'] = 0; 

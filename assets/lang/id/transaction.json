@@ -178,5 +178,8 @@
     "prsn_alloc": "Prsn Alloc",
     "bari": "Bari",
     "before_bari": "Before Bari",
-    "after_bari": "After Bari"
+    "after_bari": "After Bari",
+    "allocation_amount": "Allocation Amount",
+    "cost_centre_asal": "Cost Centre Asal",
+    "cost_centre_tujuan": "Cost Centre Tujuan"
 }
