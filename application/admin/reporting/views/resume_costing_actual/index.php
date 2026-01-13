@@ -20,6 +20,11 @@
 				<?php } ?>
 			</select>
 
+			<select class="select2 infinity custom-select" style="width: 180px;" id="filter_jam_transfer">
+				<option value="0"><?php echo lang('sebelum_jam_transfer') ; ?></option>
+				<option value="1"><?php echo lang('setelah_jam_transfer') ?></option>
+			</select>
+
 			<!-- <select class="select2 infinity custom-select" style="width: 180px;" id="filter_allocated">
 				<option value="0"><?php echo lang('not_allocated') ; ?></option>
 				<option value="1"><?php echo lang('allocated') ?></option>
@@ -137,6 +142,10 @@ $('#bulan').change(function(){
 	getData();
 });
 
+$('#filter_jam_transfer').change(function(){
+	getData();
+});
+
 // $('#filter_allocated').change(function(){
 // 	getData();
 // });
@@ -148,7 +157,7 @@ function getData() {
 		var page = base_url + 'reporting/resume_costing_actual/data';
 			page 	+= '/'+$('#filter_tahun').val();
 			page 	+= '/'+$('#bulan').val();
-			// page    += '/'+$('#filter_allocated').val();
+			page    += '/'+$('#filter_jam_transfer').val();
 
 
 		$.ajax({
@@ -160,8 +169,6 @@ function getData() {
 				$('.table-1 tbody').html(response.table);
 				$('.table-2 tbody').html(response.table2);
 				cLoader.close();
-
-			// $('.overlay-wrap').addClass('hidden');	
 			}
 		});
 }

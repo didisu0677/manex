@@ -1,0 +1,20 @@
+{
+    "field": {
+        "id": "primary_key",
+        "account_code": "varchar",
+        "allocation_amount": "int",
+        "cost_centre_asal": "varchar",
+        "cost_centre_tujuan": "varchar",
+        "is_active": "boolean"
+    },
+    "label": {
+        "id": "Id",
+        "account_code": "Account Code",
+        "allocation_amount": "Allocation Amount",
+        "cost_centre_asal": "Cost Centre Asal",
+        "cost_centre_tujuan": "Cost Centre Tujuan",
+        "is_active": "Aktif"
+    },
+    "validation": [],
+    "alias": []
+}

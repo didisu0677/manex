@@ -18,5 +18,7 @@
     "factory" : "Factory",
     "description" : "Description",
     "code" : "code",
-    "cost_centre" : "Cost Centre"
+    "cost_centre" : "Cost Centre",
+    "sebelum_jam_transfer" : "Sebelum Jam Transfer",
+    "setelah_jam_transfer" : "Setelah Jam Transfer"
 }

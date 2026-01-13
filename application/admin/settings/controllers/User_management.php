@@ -9,7 +9,9 @@ class User_management extends BE_Controller {
 	function index() {
 		$data = array();
 		$t_menu = uri_segment(2);
-		$m_name = get_data('tbl_menu','target',$t_menu)->row();
+		// Strip _actual from target for menu lookup to ensure proper access control
+		$lookup_tmenu = str_replace('_actual', '', $t_menu);
+		$m_name = get_data('tbl_menu','target',$lookup_tmenu)->row();
 		if(isset($m_name->id)) {
 			$access = get_data('tbl_user_akses',array('where_array'=>array('act_view'=>1,'id_group'=>user('id_group'))))->result();
 			$id_menu = array(0);
