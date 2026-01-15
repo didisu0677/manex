@@ -96,7 +96,7 @@ function render($data=array(),$tipe='',$force_view=false) {
             }
             if(!isset($data['title']) || !$data['title']) {
                 $data['title']  = isset($data['menu_access']['title']) && $data['menu_access']['title'] ? $data['menu_access']['title'] : 'Unknown';
-                $data['title'] .= user('transaction_mode') != 'budget_mode' ? '<span style="color: blue;">' . ' ('. lang(user('transaction_mode')) . ' Mode)'. '</span>' : "";
+                // $data['title'] .= user('transaction_mode') != 'budget_mode' ? '<span style="color: blue;">' . ' ('. lang(user('transaction_mode')) . ' Mode)'. '</span>' : "";
             }
             $data['uri_string']	= $CI->uri->uri_string();
             $access             = setting('interface') == 'public' ? true : $menu['access_view'];
