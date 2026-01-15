@@ -65,57 +65,31 @@ class Sum_alldept_actual extends BE_Controller {
         ];
 
         $data['mst_account'][0] = get_data('tbl_fact_template_report a',$arr)->result();
-        $customSelect = '';
-
-        $customSelect2 = '';
-
-        foreach($data['mst_account'][0] as $m0) {
-
-            $customWhere = [
-                '__m0'=>'(a.parent_id = "'.$m0->id.'")',
-            ];
-            
-
-            $arr = [
-                'select' => 'a.id,a.account_code,a.account_name, a.urutan,  
-                                '.$customSelect,
-                       'where' => $customWhere,
-                'group_by' => 'a.id,a.account_code,a.account_name,a.urutan',
-                'sort_by'=>'a.urutan'
-            ];
-
-         
-            $data['mst_account'][$m0->id] = get_data('tbl_fact_template_report a',$arr)->result();
-            foreach($data['mst_account'][$m0->id] as $m1) {
-                $customWhere = [
-                    '__m0'=>'(a.parent_id = "'.$m1->id.'")',
-                ];
-
-                $arr = [
-                    'select' => 'a.id,a.account_code,a.account_name, a.urutan,  
-                                '.$customSelect,
-                 
-                    'group_by' => 'a.id,a.account_code,a.account_name,a.urutan',
-                    'sort_by'=>'a.urutan'
-                ];
-
-                $data['mst_account'][$m1->id] = get_data('tbl_fact_template_report a',$arr)->result();
-
-                foreach($data['mst_account'][$m1->id] as $m2) {
-                    $customWhere = [
-                        '__m0'=>'(a.parent_id = "'.$m2->id.'")',
-                    ];
         
-                    $arr = [
-                        'select' => 'a.id,a.account_code,a.account_name,  a.urutan,  
-                                '.$customSelect,
-
-                        'where' => $customWhere,
-                        'group_by' => 'a.id,a.account_code,a.account_name,a.urutan',
-                        'sort_by'=>'a.urutan'
-                    ];
-
-                    $data['mst_account'][$m2->id] = get_data('tbl_fact_template_report a',$arr)->result();
+        // OPTIMIZED: Fetch all account levels in ONE query instead of nested loops
+        $all_accounts = get_data('tbl_fact_template_report', [
+            'select' => 'id, parent_id, account_code, account_name, urutan',
+            'sort_by' => 'urutan'
+        ])->result();
+        
+        // Index accounts by parent_id for O(1) lookup
+        $accounts_by_parent = [];
+        foreach($all_accounts as $acc) {
+            if(!isset($accounts_by_parent[$acc->parent_id])) {
+                $accounts_by_parent[$acc->parent_id] = [];
+            }
+            $accounts_by_parent[$acc->parent_id][] = $acc;
+        }
+        
+        // Build hierarchy from indexed data (no more database queries)
+        foreach($data['mst_account'][0] as $m0) {
+            $data['mst_account'][$m0->id] = isset($accounts_by_parent[$m0->id]) ? $accounts_by_parent[$m0->id] : [];
+            
+            foreach($data['mst_account'][$m0->id] as $m1) {
+                $data['mst_account'][$m1->id] = isset($accounts_by_parent[$m1->id]) ? $accounts_by_parent[$m1->id] : [];
+                
+                foreach($data['mst_account'][$m1->id] as $m2) {
+                    $data['mst_account'][$m2->id] = isset($accounts_by_parent[$m2->id]) ? $accounts_by_parent[$m2->id] : [];
                 }
             }
         }
@@ -131,6 +105,13 @@ class Sum_alldept_actual extends BE_Controller {
         ])->result();
 
         $data['tbudget'] = $sum_budget;
+        
+        // OPTIMIZED: Index budget data by cost_centre+account_code for O(1) lookup
+        $data['budget_indexed'] = [];
+        foreach($sum_budget as $budget) {
+            $key = $budget->cost_centre . '_' . $budget->account_code;
+            $data['budget_indexed'][$key] = $budget;
+        }
 
 
 

@@ -32,11 +32,12 @@ foreach($mst_account[0] as $m0) {
 				foreach($production as $p) { 
 					$x0 = ($contentedit == 'true'  ? 0 : '');
 					$x00 = ($contentedit == 'true'  ? 0 : '');
-					foreach($tbudget as $t) {
-						if($p->kode == $t->cost_centre && $t->account_code == $m0->account_code) {
-							$x0 = ($contentedit == 'true'  ? number_format($t->total_budget) : '');
-							$x00 = ($contentedit == 'true'  ? number_format($t->total_le) : '');
-						}
+					// OPTIMIZED: O(1) lookup instead of nested loop
+					$key = $p->kode . '_' . $m0->account_code;
+					if(isset($budget_indexed[$key])) {
+						$t = $budget_indexed[$key];
+						$x0 = ($contentedit == 'true'  ? number_format($t->total_budget) : '');
+						$x00 = ($contentedit == 'true'  ? number_format($t->total_le) : '');
 					}
 
 					$xtotal0 += ($contentedit == 'true'  ? str_replace(['.',','],'',$x0) :'');
@@ -120,14 +121,12 @@ foreach($mst_account[0] as $m0) {
 					foreach($production as $p) { 
 						$x1 = ($contentedit == 'true'  ? 0 : '');
 						$x11 = ($contentedit == 'true'  ? 0 : '');
-						foreach($tbudget as $t) {
-							if($p->kode == $t->cost_centre && $t->account_code == $m1->account_code) {
-								$x1 = ($contentedit == 'true'  ? number_format($t->total_budget) : '');
-
-								$x11 = ($contentedit == 'true'  ? number_format($t->total_le) : '');
-		
-
-							}
+						// OPTIMIZED: O(1) lookup instead of nested loop
+						$key = $p->kode . '_' . $m1->account_code;
+						if(isset($budget_indexed[$key])) {
+							$t = $budget_indexed[$key];
+							$x1 = ($contentedit == 'true'  ? number_format($t->total_budget) : '');
+							$x11 = ($contentedit == 'true'  ? number_format($t->total_le) : '');
 						}
 
 						$xtotal1 += ($contentedit == 'true'  ? str_replace(['.',','],'',$x1) :'');
@@ -211,14 +210,13 @@ foreach($mst_account[0] as $m0) {
 				foreach($production as $p) { 
 					$x2 = ($contentedit == 'true'  ? 0 : '');
 					$x22 = ($contentedit == 'true'  ? 0 : '');
-					foreach($tbudget as $t) {
-						if($p->kode == $t->cost_centre && $t->account_code == $m2->account_code) {
-							$x2 = ($contentedit == 'true'  ? number_format($t->total_budget) : '');
-							$x22 = ($contentedit == 'true' ? number_format($t->total_le) : '');
-							
-							$sTotal_budget += str_replace(['.',','],'',$xtotal2) ;
-			
-						}
+					// OPTIMIZED: O(1) lookup instead of nested loop
+					$key = $p->kode . '_' . $m2->account_code;
+					if(isset($budget_indexed[$key])) {
+						$t = $budget_indexed[$key];
+						$x2 = ($contentedit == 'true'  ? number_format($t->total_budget) : '');
+						$x22 = ($contentedit == 'true' ? number_format($t->total_le) : '');
+						$sTotal_budget += str_replace(['.',','],'',$xtotal2) ;
 					}
 
 
@@ -301,13 +299,12 @@ foreach($mst_account[0] as $m0) {
 						foreach($production as $p) { 
 							$x3 = ($contentedit == 'true'  ? 0 : '');
 							$x33 = ($contentedit == 'true'  ? 0 : '');
-							foreach($tbudget as $t) {
-								if($p->kode == $t->cost_centre && $t->account_code == $m3->account_code) {
-									$x3 = ($contentedit == 'true'  ? number_format($t->total_budget) : '');
-
-									$x33 = ($contentedit == 'true'   ? number_format($t->total_le) : '');
-			
-								}
+							// OPTIMIZED: O(1) lookup instead of nested loop
+							$key = $p->kode . '_' . $m3->account_code;
+							if(isset($budget_indexed[$key])) {
+								$t = $budget_indexed[$key];
+								$x3 = ($contentedit == 'true'  ? number_format($t->total_budget) : '');
+								$x33 = ($contentedit == 'true'   ? number_format($t->total_le) : '');
 							}
 
 							$xtotal3 += ($contentedit == 'true'  ? str_replace(['.',','],'',$x3) :'');

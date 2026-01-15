@@ -20,5 +20,8 @@
     "code" : "code",
     "cost_centre" : "Cost Centre",
     "sebelum_jam_transfer" : "Sebelum Jam Transfer",
-    "setelah_jam_transfer" : "Setelah Jam Transfer"
+    "setelah_jam_transfer" : "Setelah Jam Transfer",
+    "total_actual": "Total Actual",
+    "total_budget": "Total Budget", 
+    "budget_remaining": "Budget Remaining"
 }
