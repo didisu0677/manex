@@ -45,6 +45,8 @@ class Budget_by_deptnew_actual extends BE_Controller {
 
         $status = 0;
         $table = 'tbl_fact_lstbudget_' . $tahun ;
+        $prevYear = is_numeric($tahun) ? (int)$tahun - 1 : null;
+        $prevTable = ($prevYear && $prevYear > 0) ? 'tbl_fact_lstbudget_' . $prevYear : null;
         $costCentreUser = getCostCenterByUser(user('id'), $tahun);
 
         $group_cc = false ;
@@ -122,6 +124,37 @@ class Budget_by_deptnew_actual extends BE_Controller {
 
         // debug($acc_akses);die;
 
+        $buildTemplateJoins = function($costClause) use ($table, $prevTable, $status) {
+            $joins = [];
+            $baseCondition = 'a.account_code = b.account_code';
+            if($costClause){
+                $baseCondition .= ' and ' . $costClause;
+            }
+            $baseCondition .= ' and b.id_ccallocation = "' . $status . '"';
+            $joins[] = $table . ' b on ' . $baseCondition . ' type LEFT';
+
+            if($prevTable){
+                $prevCondition = 'bp.account_code = b.account_code and bp.id_ccallocation = b.id_ccallocation';
+                $prevCondition .= ' and ((bp.cost_centre = b.cost_centre) OR (bp.cost_centre IS NULL AND b.cost_centre IS NULL))';
+                if($costClause){
+                    $prevCondition .= ' and ' . str_replace('b.', 'bp.', $costClause);
+                }
+                $prevSource = '(SELECT account_code, cost_centre, id_ccallocation, SUM(IFNULL(B_01,0)+IFNULL(B_02,0)+IFNULL(B_03,0)+IFNULL(B_04,0)+IFNULL(B_05,0)+IFNULL(B_06,0)+IFNULL(B_07,0)+IFNULL(B_08,0)+IFNULL(B_09,0)+IFNULL(B_10,0)+IFNULL(B_11,0)+IFNULL(B_12,0)) total_budget FROM ' . $prevTable . ' WHERE id_ccallocation = "' . $status . '" GROUP BY account_code, cost_centre, id_ccallocation)';
+                $joins[] = $prevSource . ' bp on ' . $prevCondition . ' type LEFT';
+                return $joins;
+            }
+
+            return $joins[0];
+        };
+
+        $buildDataJoin = function() use ($prevTable, $status) {
+            if(!$prevTable){
+                return null;
+            }
+            $prevSource = '(SELECT account_code, cost_centre, id_ccallocation, SUM(IFNULL(B_01,0)+IFNULL(B_02,0)+IFNULL(B_03,0)+IFNULL(B_04,0)+IFNULL(B_05,0)+IFNULL(B_06,0)+IFNULL(B_07,0)+IFNULL(B_08,0)+IFNULL(B_09,0)+IFNULL(B_10,0)+IFNULL(B_11,0)+IFNULL(B_12,0)) total_budget FROM ' . $prevTable . ' WHERE id_ccallocation = "' . $status . '" GROUP BY account_code, cost_centre, id_ccallocation)';
+            return $prevSource . ' bp on a.account_code = bp.account_code and ((bp.cost_centre = a.cost_centre) OR (bp.cost_centre IS NULL AND a.cost_centre IS NULL)) and bp.id_ccallocation = a.id_ccallocation type LEFT';
+        };
+
         $arr = [
             'select' => 'a.id,a.account_code,a.account_name,b.cost_centre, b.cost_centre,a.urutan, 
                          sum(b.B_01) as B_01, sum(b.B_02) as B_02, sum(b.B_03) as B_03, 
@@ -143,16 +176,16 @@ class Budget_by_deptnew_actual extends BE_Controller {
             'sort_by'=>'a.urutan',
         ];
 
-        if($cost_centre == 'ALL') {
-            $arr['group_by'] = 'a.id,a.account_code,a.account_name,a.urutan'; 
-            $arr['join'] =   $table . ' b on a.account_code = b.account_code and b.id_ccallocation = "'.$status.'" type LEFT';            
-        }elseif($group_cc == true){
-            $arr['group_by'] = 'a.id,a.account_code,a.account_name,a.urutan';
-            $arr['join'] =   $table . ' b on a.account_code = b.account_code and b.cost_centre IN ('.implode(',', $cc_member).') and b.id_ccallocation = "'.$status.'" type LEFT';            
-        }else{
-            $arr['group_by'] = 'a.id,a.account_code,a.account_name,b.cost_centre,a.urutan';
-            $arr['join'] =   $table . ' b on a.account_code = b.account_code and b.cost_centre ="'.$cost_centre.'" and b.id_ccallocation = "'.$status.'" type LEFT';            
-        }
+            if($cost_centre == 'ALL') {
+                $arr['group_by'] = 'a.id,a.account_code,a.account_name,a.urutan'; 
+                $arr['join'] = $buildTemplateJoins('');            
+            }elseif($group_cc == true){
+                $arr['group_by'] = 'a.id,a.account_code,a.account_name,a.urutan';
+                $arr['join'] = $buildTemplateJoins('b.cost_centre IN ('.implode(',', $cc_member).')');            
+            }else{
+                $arr['group_by'] = 'a.id,a.account_code,a.account_name,b.cost_centre,a.urutan';
+                $arr['join'] = $buildTemplateJoins('b.cost_centre ="'.$cost_centre.'"');            
+            }
 
         if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
             if($costCentreUser) $arr['where']['__m2'] = '(b.cost_centre IN ('.implode(',', $costCentreUser).') OR b.cost_centre IS NULL)';
@@ -179,18 +212,18 @@ class Budget_by_deptnew_actual extends BE_Controller {
             sum(b.EST_07) as EST_07, sum(b.EST_08) as EST_08, sum(b.EST_09) as EST_09,
             sum(b.EST_10) as EST_10, sum(b.EST_11) as EST_11, sum(b.EST_12) as EST_12,
             
-            sum(b.total_budget) as total_budget, sum(total_le) as total_le';
+            sum(IFNULL(b.total_budget, (b.B_01+b.B_02+b.B_03+b.B_04+b.B_05+b.B_06+b.B_07+b.B_08+b.B_09+b.B_10+b.B_11+b.B_12))) as total_budget, sum(b.total_le) as total_le';
 
         $customSelect2 = 'a.account_code,
-        sum(B_01) as B_01,sum(B_02) as B_02,sum(B_03) as B_03,sum(B_04) as B_04,
-        sum(B_05) as B_05,sum(B_06) as B_06,sum(B_07) as B_07,sum(B_08) as B_08,
-        sum(B_09) as B_09,sum(B_10) as B_10,sum(B_11) as B_11,sum(B_12) as B_12, 
+        sum(a.B_01) as B_01,sum(a.B_02) as B_02,sum(a.B_03) as B_03,sum(a.B_04) as B_04,
+        sum(a.B_05) as B_05,sum(a.B_06) as B_06,sum(a.B_07) as B_07,sum(a.B_08) as B_08,
+        sum(a.B_09) as B_09,sum(a.B_10) as B_10,sum(a.B_11) as B_11,sum(a.B_12) as B_12, 
         
-        sum(EST_01) as EST_01,sum(EST_02) as EST_02,sum(EST_03) as EST_03,sum(EST_04) as EST_04,
-        sum(EST_05) as EST_05,sum(EST_06) as EST_06,sum(EST_07) as EST_07,sum(EST_08) as EST_08,
-        sum(EST_09) as EST_09,sum(EST_10) as EST_10,sum(EST_11) as EST_11,sum(EST_12) as EST_12, 
+        sum(a.EST_01) as EST_01,sum(a.EST_02) as EST_02,sum(a.EST_03) as EST_03,sum(a.EST_04) as EST_04,
+        sum(a.EST_05) as EST_05,sum(a.EST_06) as EST_06,sum(a.EST_07) as EST_07,sum(a.EST_08) as EST_08,
+        sum(a.EST_09) as EST_09,sum(a.EST_10) as EST_10,sum(a.EST_11) as EST_11,sum(a.EST_12) as EST_12, 
         
-        sum(total_budget) as total_budget, sum(total_le) as total_le';
+        sum(IFNULL(a.total_budget, (a.B_01+a.B_02+a.B_03+a.B_04+a.B_05+a.B_06+a.B_07+a.B_08+a.B_09+a.B_10+a.B_11+a.B_12))) as total_budget, sum(a.total_le) as total_le';
 
         if($isAllHrd){
             $customSelect = '
@@ -253,6 +286,11 @@ class Budget_by_deptnew_actual extends BE_Controller {
             SUM(IF(a.cost_centre = "1200", (IF(substr(a.account_code,1,3) != "721", a.total_budget, 0)), a.total_budget)) as total_budget, 
             SUM(IF(a.cost_centre = "1200", (IF(substr(a.account_code,1,3) != "721", a.total_le, 0)), a.total_le)) as total_le';
         }
+
+        if($prevTable){
+            $customSelect = str_replace('IFNULL(b.total_budget, (b.B_01+b.B_02+b.B_03+b.B_04+b.B_05+b.B_06+b.B_07+b.B_08+b.B_09+b.B_10+b.B_11+b.B_12))', 'IFNULL(bp.total_budget, (b.B_01+b.B_02+b.B_03+b.B_04+b.B_05+b.B_06+b.B_07+b.B_08+b.B_09+b.B_10+b.B_11+b.B_12))', $customSelect);
+            $customSelect2 = str_replace('IFNULL(a.total_budget, (a.B_01+a.B_02+a.B_03+a.B_04+a.B_05+a.B_06+a.B_07+a.B_08+a.B_09+a.B_10+a.B_11+a.B_12))', 'IFNULL(bp.total_budget, (a.B_01+a.B_02+a.B_03+a.B_04+a.B_05+a.B_06+a.B_07+a.B_08+a.B_09+a.B_10+a.B_11+a.B_12))', $customSelect2);
+        }
         foreach($data['mst_account'][0] as $m0) {
 
             $customWhere = [
@@ -278,13 +316,13 @@ class Budget_by_deptnew_actual extends BE_Controller {
 
             if($cost_centre == 'ALL') {
                 $arr['group_by'] = 'a.id,a.account_code,a.account_name,a.urutan'; 
-                $arr['join'] =   $table . ' b on a.account_code = b.account_code and b.id_ccallocation = "'.$status.'" type LEFT';            
+                $arr['join'] = $buildTemplateJoins('');            
             }elseif($group_cc == true){
                 $arr['group_by'] = 'a.id,a.account_code,a.account_name,a.urutan';
-                $arr['join'] =   $table . ' b on a.account_code = b.account_code and b.cost_centre IN ('.implode(',', $cc_member).') and b.id_ccallocation = "'.$status.'" type LEFT';            
+                $arr['join'] = $buildTemplateJoins('b.cost_centre IN ('.implode(',', $cc_member).')');            
             }else{
                 $arr['group_by'] = 'a.id,a.account_code,a.account_name,b.cost_centre,a.urutan';
-                $arr['join'] =   $table . ' b on a.account_code = b.account_code and b.cost_centre ="'.$cost_centre.'" and b.id_ccallocation = "'.$status.'" type LEFT';            
+                $arr['join'] = $buildTemplateJoins('b.cost_centre ="'.$cost_centre.'"');            
 
             }
 
@@ -323,13 +361,13 @@ class Budget_by_deptnew_actual extends BE_Controller {
 
                 if($cost_centre == 'ALL') {
                     $arr['group_by'] = 'a.id,a.account_code,a.account_name,a.urutan'; 
-                    $arr['join'] =   $table . ' b on a.account_code = b.account_code and b.id_ccallocation = "'.$status.'" type LEFT';            
+                    $arr['join'] = $buildTemplateJoins('');            
                 }elseif($group_cc == true){
                     $arr['group_by'] = 'a.id,a.account_code,a.account_name,a.urutan';
-                    $arr['join'] =   $table . ' b on a.account_code = b.account_code and b.cost_centre IN ('.implode(',', $cc_member).') and b.id_ccallocation = "'.$status.'" type LEFT';            
+                    $arr['join'] = $buildTemplateJoins('b.cost_centre IN ('.implode(',', $cc_member).')');            
                 }else{
                     $arr['group_by'] = 'a.id,a.account_code,a.account_name,b.cost_centre,a.urutan';
-                    $arr['join'] =   $table . ' b on a.account_code = b.account_code and b.cost_centre ="'.$cost_centre.'" and b.id_ccallocation = "'.$status.'" type LEFT';            
+                    $arr['join'] = $buildTemplateJoins('b.cost_centre ="'.$cost_centre.'"');            
                 }
 
                 if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
@@ -370,13 +408,13 @@ class Budget_by_deptnew_actual extends BE_Controller {
 
                     if($cost_centre == 'ALL') {
                         $arr['group_by'] = 'a.id,a.account_code,a.account_name,a.urutan'; 
-                        $arr['join'] =   $table . ' b on a.account_code = b.account_code and b.id_ccallocation = "'.$status.'" type LEFT';            
+                        $arr['join'] = $buildTemplateJoins('');            
                     }elseif($group_cc == true){
                         $arr['group_by'] = 'a.id,a.account_code,a.account_name,a.urutan';
-                        $arr['join'] =   $table . ' b on a.account_code = b.account_code and b.cost_centre IN ('.implode(',', $cc_member).') and b.id_ccallocation = "'.$status.'" type LEFT';            
+                        $arr['join'] = $buildTemplateJoins('b.cost_centre IN ('.implode(',', $cc_member).')');            
                     }else{
                         $arr['group_by'] = 'a.id,a.account_code,a.account_name,b.cost_centre,a.urutan';
-                        $arr['join'] =   $table . ' b on a.account_code = b.account_code and b.cost_centre ="'.$cost_centre.'" and b.id_ccallocation = "'.$status.'" type LEFT';            
+                        $arr['join'] = $buildTemplateJoins('b.cost_centre ="'.$cost_centre.'"');            
 
                     }
 
@@ -486,9 +524,9 @@ class Budget_by_deptnew_actual extends BE_Controller {
                 $arr = [
                     'select' => $customSelect2,
                     'where' => [
-                        'account_code' => $acc,
+                        'a.account_code' => $acc,
                         // 'cost_centre' => $cca,
-                        'id_ccallocation' => $status
+                        'a.id_ccallocation' => $status
                     ],
                 ];
 
@@ -497,7 +535,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
                 }
 
                 if($cost_centre !='ALL') {
-                   $arr['where']['cost_centre'] = $cost_centre;
+                   $arr['where']['a.cost_centre'] = $cost_centre;
                 }
 
                 // $arr['where']['cost_centre'] = $cca;
@@ -507,17 +545,33 @@ class Budget_by_deptnew_actual extends BE_Controller {
                 //     $arr['where']['__m'] = '(substr(a.account_code,1,3) != "721" and a.cost_centre ="1200")' ;
                 // }
 
+                if($prevTable){
+                    $arr['join'] = $buildDataJoin();
+                }
+
                 $sum = get_data($table . ' a',$arr)->row();
             }else{
-                $sum = get_data($table . ' a',[
+                $arr = [
                     'select' => $customSelect2,
                     'where' => [
-                        'account_code' => 0,
-                        'cost_centre' => '0',
+                        'a.account_code' => 0,
+                        'a.cost_centre' => '0',
                     ],
-                ])->row();
+                ];
+
+                if($prevTable){
+                    $arr['join'] = $buildDataJoin();
+                }
+
+                $sum = get_data($table . ' a',$arr)->row();
             }
 
+
+            $totalBudgetMonthly = 0;
+            for($i = 1; $i <= 12; $i++) {
+                $field = 'B_' . sprintf('%02d', $i);
+                $totalBudgetMonthly += $sum->$field;
+            }
 
             $data['total_header'][$th->id] =
             [
@@ -533,7 +587,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
                 'B_10' => $sum->B_10,
                 'B_11' => $sum->B_11,
                 'B_12' => $sum->B_12,
-                'total' => $sum->total_budget,
+                'total' => $totalBudgetMonthly,
 
                 'EST_01' => $sum->EST_01,
                 'EST_02' => $sum->EST_02,
@@ -597,12 +651,22 @@ class Budget_by_deptnew_actual extends BE_Controller {
             // $arr['where']['cost_centre'] = $cca;
             if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
                 if($costCentreUser) $arr['where']['__m'] = '(a.cost_centre IN ('.implode(',', $costCentreUser).') OR a.cost_centre IS NULL)';
-                $arr['where']['__m'] = 'substr(account_code,1,2) != "72"' ;
+                $arr['where']['__m'] = 'substr(a.account_code,1,2) != "72"' ;
             }elseif(user('id_group') == HRD){
                 // $arr['where']['__m'] = '(substr(a.account_code,1,3) != "721" and a.cost_centre ="1200")' ;
             }
 
+            if($prevTable){
+                $arr['join'] = $buildDataJoin();
+            }
+
             $sum = get_data($table . ' a',$arr)->row();
+
+            $labourBudgetMonthly = 0;
+            for($i = 1; $i <= 12; $i++) {
+                $field = 'B_' . sprintf('%02d', $i);
+                $labourBudgetMonthly += $sum->$field;
+            }
 
             $data['total_labour'][$m->id] =
             [
@@ -618,7 +682,8 @@ class Budget_by_deptnew_actual extends BE_Controller {
                 'B_10' => $sum->B_10,
                 'B_11' => $sum->B_11,
                 'B_12' => $sum->B_12,
-                'total' => $sum->total_budget,
+                'total' => $labourBudgetMonthly,
+                'total_budget' => $sum->total_budget !== null ? $sum->total_budget : $labourBudgetMonthly,
 
                 'EST_01' => $sum->EST_01,
                 'EST_02' => $sum->EST_02,
