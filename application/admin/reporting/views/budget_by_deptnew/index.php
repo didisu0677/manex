@@ -61,9 +61,9 @@
 		</div>
 	</div>
 
-<div class="content-body table-freeze-fullwidth">
+<div class="content-body">
 	<div class="card">
-		<div class="card-header pl-3 pr-3">
+		<div class="card-body pb-2">
 			<ul class="nav nav-pills card-header-pills">
 				<li class="nav-item">
 					<a class="nav-link active" id="overall-tab" data-toggle="pill" href="#overall" role="tab" aria-controls="overall" aria-selected="true">Actual & Estimate <?php echo user('tahun_budget') - 1 ; ?></a>
@@ -74,9 +74,9 @@
 			</ul>
 		</div>
 
-		<div class="card-body tab-content" id="pills-tabContent">
+		<div class="card-body tab-content pt-0" id="pills-tabContent">
 			<div class="tab-pane fade show active" id="overall" role="tabpanel" aria-labelledby="overall-tab">
-				<div class="table-responsive" id="result">
+					<div class="table-responsive height-window" id="result">
 							<?php
 							table_open('table table-bordered table-app table-hover table-1');
 								thead();
@@ -100,7 +100,7 @@
 			</div>
 
 			<div class="tab-pane fade" id="budget" role="tabpanel" aria-labelledby="budget-tab">
-				<div class="table-responsive" id="result2">
+				<div class="table-responsive height-window" id="result2">
 							<?php
 							table_open('table table-bordered table-app table-hover table-2');
 								thead();
@@ -121,6 +121,57 @@
 		</div>
 	</div>
 </div>
+
+<style>
+.table-1 thead th,
+.table-2 thead th {
+	position: sticky !important;
+	top: 0 !important;
+	z-index: 5 !important;
+	background-color: #4a5569 !important;
+	color: #fff !important;
+	font-weight: bold !important;
+}
+
+.table-1 thead th:first-child,
+.table-2 thead th:first-child {
+	left: 0 !important;
+	z-index: 6 !important;
+}
+
+.table-1 tbody td:first-child,
+.table-2 tbody td:first-child {
+	position: sticky;
+	left: 0;
+	z-index: 4;
+	background-color: #f8f9fa;
+	font-weight: bold;
+}
+
+.height-window {
+	height: calc(100vh - 140px);
+	overflow: auto;
+}
+
+.table-1 th,
+.table-1 td,
+.table-2 th,
+.table-2 td {
+	white-space: nowrap;
+	min-width: 60px;
+}
+
+.btn,
+.select2,
+.custom-select,
+input,
+select,
+button,
+textarea {
+	pointer-events: auto !important;
+	z-index: 1000 !important;
+}
+</style>
 <?php
 modal_open('modal-import',lang('impor'));
 	modal_body();
@@ -145,21 +196,6 @@ $(document).ready(function () {
     $('#filter_cost_centre').trigger('change')
 	$(document).on('keyup', '.budget', function (e) {
     	calculate();
-    });
-
-    // Initialize Bootstrap tabs properly
-    $('a[data-toggle="pill"]').tab();
-    
-    // Re-adjust when tab is switched
-    $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-        setTimeout(function(){
-            adjustStickyHeader();
-        }, 100);
-        
-        // Force another adjustment after a bit longer delay
-        setTimeout(function(){
-            adjustStickyHeader();
-        }, 300);
     });
 });	
 
@@ -193,11 +229,6 @@ function getData() {
 				$('.table-1 tbody').html(response.table);
 				$('.table-2 tbody').html(response.table2);
 				cLoader.close();
-
-				// Ensure sticky header is properly positioned after data load
-				setTimeout(function(){
-					adjustStickyHeader();
-				}, 100);
 
 			// $('.overlay-wrap').addClass('hidden');	
 			}
@@ -284,53 +315,6 @@ function calculate() {
 	});
 }
 
-
-
-// Function to adjust sticky header position for both tables
-function adjustStickyHeader() {
-    // Calculate the tab header height
-    var tabHeaderHeight = $('.card-header').outerHeight() || 60;
-    
-    // Only apply if this page has tabs (card-header exists)
-    if($('.content-body.table-freeze-fullwidth .card-header').length > 0) {
-        // Ensure tab header is at top
-        $('.content-body.table-freeze-fullwidth .card-header').css({
-            'position': 'sticky',
-            'top': '0px',
-            'z-index': '1001',
-            'background-color': '#fff',
-            'box-shadow': '0 2px 4px rgba(0, 0, 0, 0.1)'
-        });
-        
-        // Adjust the top position for sticky table header (below tab header) - using same color as CSS
-        $('.content-body.table-freeze-fullwidth .table-1 thead th, .content-body.table-freeze-fullwidth .table-2 thead th').css({
-            'position': 'sticky',
-            'top': tabHeaderHeight + 'px',
-            'z-index': '1000',
-            'background-color': '#495057',
-            'color': '#ffffff',
-            'font-weight': 'bold',
-            'font-size': '12px',
-            'padding': '8px 6px'
-        });
-        
-        // Special handling for headcol class - using same color as CSS
-        $('.content-body.table-freeze-fullwidth .headcol').css({
-            'position': 'sticky',
-            'top': tabHeaderHeight + 'px',
-            'z-index': '1000',
-            'background-color': '#495057',
-            'color': '#ffffff',
-            'font-weight': 'bold',
-            'font-size': '12px',
-            'padding': '8px 6px'
-        });
-    }
-
-    
-
-}
-
 $(document).on('click','.btn-save',function(){
 	var i = 0;
 	$('.edited').each(function(){
@@ -374,7 +358,7 @@ function save_perubahan() {
 }
 
 let activeTable = '#result';
-	let judul = 'Actual and Estimate' 
+let judul = 'Actual and Estimate';
 
 	$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
         var activeTab = $(e.target).attr('href'); // Get the current active tab href attribute
@@ -388,16 +372,6 @@ let activeTable = '#result';
 			activeTable = '#result3'
 			judul = 'Yearly Budget'
 		}
-		
-		// Adjust sticky header after tab switch
-		setTimeout(function(){
-			adjustStickyHeader();
-		}, 100);
-		
-		// Double check after longer delay
-		setTimeout(function(){
-			adjustStickyHeader();
-		}, 300);
     });
 
 $('.btn-act-import').click(function(){

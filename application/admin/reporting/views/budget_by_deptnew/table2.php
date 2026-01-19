@@ -66,9 +66,9 @@ foreach($mst_account[0] as $m0) {
 			}
 
 
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right total_budget" data-name="total_budget"  data-value="'.$xtotal0.'">'.$xtotal0.'</td>';
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right total_le" data-name="total_le"  data-value="'.$xtotal00.'">'.$xtotal00.'</td>';
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right increase money-custom" data-name="increase"  data-value=""></td>';
+			echo '<td style="background: '.($bgedit !== '' ? $bgedit : '#f8f9fa').'"><div style="background:'.($bgedit !== '' ? $bgedit : '#f8f9fa').'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right total_budget" data-name="total_budget"  data-value="'.$xtotal0.'">'.$xtotal0.'</td>';
+			echo '<td style="background: '.($bgedit !== '' ? $bgedit : '#f8f9fa').'"><div style="background:'.($bgedit !== '' ? $bgedit : '#f8f9fa').'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right total_le" data-name="total_le"  data-value="'.$xtotal00.'">'.$xtotal00.'</td>';
+			echo '<td style="background: '.($bgedit !== '' ? $bgedit : '#f8f9fa').'"><div style="background:'.($bgedit !== '' ? $bgedit : '#f8f9fa').'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right increase money-custom" data-name="increase"  data-value=""></td>';
 			$gtotal0 += $m0->total_budget; 
 			$jan0 += $m0->B_01;
 			$feb0 += $m0->B_02;
@@ -160,9 +160,9 @@ foreach($mst_account[0] as $m0) {
 					}
 				}
 			}
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right total_budget" data-name="total_budget" data-id="'.$m1->id_trx.'" data-value="'.$xtotal1.'">'.$xtotal1.'</td>';
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right total_le" data-name="total_le"  data-value="'.$xtotal11.'">'.$xtotal11.'</td>';
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right increase money-custom" data-name="increase"  data-value="">'.number_format($incr1,2) . ' ' .$prsn.'</td>';
+			echo '<td style="background: '.($bgedit !== '' ? $bgedit : '#f8f9fa').'"><div style="background:'.($bgedit !== '' ? $bgedit : '#f8f9fa').'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right total_budget" data-name="total_budget" data-id="'.$m1->id_trx.'" data-value="'.$xtotal1.'">'.$xtotal1.'</td>';
+			echo '<td style="background: '.($bgedit !== '' ? $bgedit : '#f8f9fa').'"><div style="background:'.($bgedit !== '' ? $bgedit : '#f8f9fa').'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right total_le" data-name="total_le"  data-value="'.$xtotal11.'">'.$xtotal11.'</td>';
+			echo '<td style="background: '.($bgedit !== '' ? $bgedit : '#f8f9fa').'"><div style="background:'.($bgedit !== '' ? $bgedit : '#f8f9fa').'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right increase money-custom" data-name="increase"  data-value="">'.number_format($incr1,2) . ' ' .$prsn.'</td>';
 
 			$gtotal1 += $m1->total_budget; 
 			$jan1 += $m1->B_01;
@@ -244,9 +244,9 @@ foreach($mst_account[0] as $m0) {
 					}
 				}
 			}
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right total_budget" data-name="total_budget" data-id="'.$m2->id_trx.'" data-value="'.$xtotal2.'">'.$xtotal2.'</td>';
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right total_le" data-name="total_le"  data-value="'.$xtotal22.'">'.$xtotal22.'</td>';
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right increase money-custom" data-name="increase"  data-value="">'.number_format($incr2,2) . ' ' .$prsn.'</td>';
+			echo '<td style="background: '.($bgedit !== '' ? $bgedit : '#f8f9fa').'"><div style="background:'.($bgedit !== '' ? $bgedit : '#f8f9fa').'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right total_budget" data-name="total_budget" data-id="'.$m2->id_trx.'" data-value="'.$xtotal2.'">'.$xtotal2.'</td>';
+			echo '<td style="background: '.($bgedit !== '' ? $bgedit : '#f8f9fa').'"><div style="background:'.($bgedit !== '' ? $bgedit : '#f8f9fa').'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right total_le" data-name="total_le"  data-value="'.$xtotal22.'">'.$xtotal22.'</td>';
+			echo '<td style="background: '.($bgedit !== '' ? $bgedit : '#f8f9fa').'"><div style="background:'.($bgedit !== '' ? $bgedit : '#f8f9fa').'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false"  class="edit-value text-right increase money-custom" data-name="increase"  data-value="">'.number_format($incr2,2) . ' ' .$prsn.'</td>';
 
 			?>
 			</tr>
