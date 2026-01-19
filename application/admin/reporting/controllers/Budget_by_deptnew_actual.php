@@ -8,8 +8,15 @@ class Budget_by_deptnew_actual extends BE_Controller {
     
     function index() {
 
-        $data['tahun'] = get_data('tbl_fact_tahun_budget', 'is_active',1)->result();   
+        // $data['tahun'] = get_data('tbl_fact_tahun_budget', 'is_active',1)->result();   
         // $data['cc'] = get_data('tbl_fact_cost_centre', 'is_active',1)->result(); 
+
+        $data['tahun'] = get_data('tbl_fact_tahun_budget', [
+            'where' => [
+                'is_active'=>1,
+                'tahun' => user('tahun_budget') - 1
+            ]
+        ])->result();  
 
         $arr = [
             'select' => 'a.cost_centre as kode, b.cost_centre',
@@ -44,8 +51,8 @@ class Budget_by_deptnew_actual extends BE_Controller {
 		ini_set('memory_limit', '-1');
 
         $status = 0;
-        $table = 'tbl_fact_lstbudget_' . $tahun ;
-        $prevYear = is_numeric($tahun) ? (int)$tahun - 1 : null;
+        $table = 'tbl_fact_lstbudget_' . ($tahun + 1) ;
+        $prevYear = is_numeric($tahun) ? (int)$tahun : null;
         $prevTable = ($prevYear && $prevYear > 0) ? 'tbl_fact_lstbudget_' . $prevYear : null;
         $costCentreUser = getCostCenterByUser(user('id'), $tahun);
 
