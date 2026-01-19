@@ -3,6 +3,8 @@
 $gnTotal = "";
 $gnTotal_le = 0;
 $gnTotal_budget = 0;
+$grandTotalLe = 0;
+$grandTotalBudget = 0;
 for ($i = 1; $i <= 12; $i++) { 
 	$gnTotal = "gTotal_" . sprintf('%02d', $i);
 	$$gnTotal = 0;
@@ -38,10 +40,14 @@ foreach($mst_account[0] as $m0) {
 				}else{
 					$xtotal0 = '';
 				}
-				$gnTotal_le += str_replace(['.',','],'',$xtotal0) ;
+				$xtotal0Numeric = (int) str_replace(['.',','],'',$xtotal0);
+				$gnTotal_le += $xtotal0Numeric;
+				$grandTotalLe += $xtotal0Numeric;
 				// Total Budget
 				$xtotal_budget0 = ($contentedit == 'true' && in_array($m0->account_code,$user_akses_account) ? number_format($m0->total_budget) : '');
-				$gnTotal_budget += str_replace(['.',','],'',$xtotal_budget0) ;
+				$xtotalBudget0Numeric = (int) str_replace(['.',','],'',$xtotal_budget0);
+				$gnTotal_budget += $xtotalBudget0Numeric;
+				$grandTotalBudget += $xtotalBudget0Numeric;
 				for ($i = 1; $i <= 12; $i++) { 
 					$field0 = 'EST_' . sprintf('%02d', $i);
 					if($i > setting('actual_budget')) {
@@ -168,13 +174,17 @@ foreach($mst_account[0] as $m0) {
 					}else{
 						$xtotal1 = '';
 					}
-					$gnTotal_le += str_replace(['.',','],'',$xtotal1) ;
+					$xtotal1Numeric = (int) str_replace(['.',','],'',$xtotal1);
+					$gnTotal_le += $xtotal1Numeric;
+					$grandTotalLe += $xtotal1Numeric;
 
-					$sTotal_le += str_replace(['.',','],'',$xtotal1) ;
+					$sTotal_le += $xtotal1Numeric;
 					// Total Budget
 					$xtotal_budget1 = ($contentedit == 'true' && in_array($m1->account_code,$user_akses_account) ? number_format($m1->total_budget) : '');
-					$sTotal_budget += str_replace(['.',','],'',$xtotal_budget1) ;
-					$gnTotal_budget += str_replace(['.',','],'',$xtotal_budget1) ;
+					$xtotalBudget1Numeric = (int) str_replace(['.',','],'',$xtotal_budget1);
+					$sTotal_budget += $xtotalBudget1Numeric;
+					$gnTotal_budget += $xtotalBudget1Numeric;
+					$grandTotalBudget += $xtotalBudget1Numeric;
 
 
 					for ($i = 1; $i <= 12; $i++) { 
@@ -293,13 +303,17 @@ foreach($mst_account[0] as $m0) {
 				}else{
 					$xtotal2 = '';
 				}
-				$gnTotal_le += str_replace(['.',','],'',$xtotal2) ;
+				$xtotal2Numeric = (int) str_replace(['.',','],'',$xtotal2);
+				$gnTotal_le += $xtotal2Numeric;
+				$grandTotalLe += $xtotal2Numeric;
 
-				$sTotal_le += str_replace(['.',','],'',$xtotal2) ;
+				$sTotal_le += $xtotal2Numeric;
 				// Total Budget
 				$xtotal_budget2 = ($contentedit == 'true' && in_array($m2->account_code,$user_akses_account) ? number_format($m2->total_budget) : '');
-				$sTotal_budget += str_replace(['.',','],'',$xtotal_budget2) ;
-				$gnTotal_budget += str_replace(['.',','],'',$xtotal_budget2) ;
+				$xtotalBudget2Numeric = (int) str_replace(['.',','],'',$xtotal_budget2);
+				$sTotal_budget += $xtotalBudget2Numeric;
+				$gnTotal_budget += $xtotalBudget2Numeric;
+				$grandTotalBudget += $xtotalBudget2Numeric;
 
 				for ($i = 1; $i <= 12; $i++) { 
 					$field2 = 'EST_' . sprintf('%02d', $i);
@@ -484,7 +498,11 @@ foreach($mst_account[0] as $m0) {
 						}
 
 					}
+					$xtotal3Numeric = (int) str_replace(['.',','],'',$xtotal3);
+					$grandTotalLe += $xtotal3Numeric;
 					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right total_le" data-name="total_le" data-id="'.$m3->id_trx.'" data-value="'.$xtotal3.'">'.$xtotal3.'</td>';
+					$xtotalBudget3Numeric = (int) str_replace(['.',','],'',$xtotal_budget3);
+					$grandTotalBudget += $xtotalBudget3Numeric;
 					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right total_budget" data-name="total_budget" data-id="'.$m3->id_trx.'" data-value="'.$xtotal_budget3.'">'.$xtotal_budget3.'</td>';
 					// BvA Analysis
 					if($xtotal3 === '' || $xtotal_budget3 === '') {
@@ -565,11 +583,12 @@ foreach($mst_account[0] as $m0) {
 		<td class="text-right" bgcolor="#D2691E" style="color: white; background-color: #D2691E !important;"><?php echo number_format($$gnTotal);?></td>
 		<?php
 	}
-	echo '<td class="text-right" bgcolor="#D2691E" style="color: white; background-color: #D2691E !important;"><div style="min-height: 10px; overflow: visible;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($gnTotal_le).'</div></td>';
-	echo '<td class="text-right" bgcolor="#D2691E" style="color: white; background-color: #D2691E !important;"><div style="min-height: 10px; overflow: visible;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($gnTotal_budget).'</div></td>';
+	$grandTotalRemaining = $grandTotalBudget - $grandTotalLe;
+	echo '<td class="text-right" bgcolor="#D2691E" style="color: white; background-color: #D2691E !important;"><div style="min-height: 10px; overflow: visible;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($grandTotalLe).'</div></td>';
+	echo '<td class="text-right" bgcolor="#D2691E" style="color: white; background-color: #D2691E !important;"><div style="min-height: 10px; overflow: visible;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($grandTotalBudget).'</div></td>';
 	// BvA Analysis
-	$gnBva = $gnTotal_budget - $gnTotal_le;
-	echo '<td class="text-right" bgcolor="#D2691E" style="color: white; background-color: #D2691E !important;"><div style="min-height: 10px; overflow: visible;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($gnBva).'</div></td>';
+	$gnBva = $grandTotalRemaining;
+	echo '<td class="text-right" bgcolor="#D2691E" style="color: white; background-color: #D2691E !important;"><div style="min-height: 10px; overflow: visible;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($grandTotalRemaining).'</div></td>';
 
 	?>	
 
