@@ -6,7 +6,7 @@ for ($i = 1; $i <= 12; $i++) {
 	$$gnTotal = 0;
 }
 
-foreach($mst_account[0] as $m0) { 
+foreach ($mst_account[0] as $m0): 
 	if(count(@$mst_account[$m0->id]) >=1 ) {
 		$bgedit ="";
 		$contentedit ="false" ;
@@ -77,7 +77,7 @@ foreach($mst_account[0] as $m0) {
 				}
 			}
 
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right total_le" data-name="total_le"  data-value="'.$xtotal0.'">'.$xtotal0.'</td>';
+			echo '<td style="background: '.($bgedit !== '' ? $bgedit : '#f8f9fa').'"><div style="background:'.($bgedit !== '' ? $bgedit : '#f8f9fa').'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right total_le" data-name="total_le"  data-value="'.$xtotal0.'">'.$xtotal0.'</td>';
 
 			?>
 	</tr>
@@ -91,7 +91,7 @@ foreach($mst_account[0] as $m0) {
 
 	$sTotalH = 0;
 	$sTotal_le = 0;
-	foreach($mst_account[$m0->id] as $m1) { 
+	foreach ($mst_account[$m0->id] as $m1): 
 
 		if(count(@$mst_account[$m1->id]) >=1 ) {
 			// $bgedit ="#A9A9A9";
@@ -171,13 +171,13 @@ foreach($mst_account[0] as $m0) {
 					}
 				}
 			}
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right total_le" data-name="total_le" data-id="'.$m1->id_trx.'" data-value="'.$xtotal1.'">'.$xtotal1.'</td>';
+			echo '<td style="background: '.($bgedit !== '' ? $bgedit : '#f8f9fa').'"><div style="background:'.($bgedit !== '' ? $bgedit : '#f8f9fa').'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right total_le" data-name="total_le" data-id="'.$m1->id_trx.'" data-value="'.$xtotal1.'">'.$xtotal1.'</td>';
 
 
 			?>
 		</tr>
 		<?php 
-		foreach($mst_account[$m1->id] as $m2) { 
+		foreach ($mst_account[$m1->id] as $m2): 
 			if(count(@$mst_account[$m2->id]) >=1 ) {
 				$bgedit ="";
 				$contentedit ="false" ;
@@ -249,14 +249,14 @@ foreach($mst_account[0] as $m0) {
 					}
 				}
 			}
-			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right total_le" data-name="total_le" data-id="'.$m2->id_trx.'" data-value="'.$xtotal2.'">'.$xtotal2.'</td>';
+			echo '<td style="background: '.($bgedit !== '' ? $bgedit : '#f8f9fa').'"><div style="background:'.($bgedit !== '' ? $bgedit : '#f8f9fa').'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right total_le" data-name="total_le" data-id="'.$m2->id_trx.'" data-value="'.$xtotal2.'">'.$xtotal2.'</td>';
 
 
 			?>
 			</tr>
 			
 			<?php 
-			foreach($mst_account[$m2->id] as $m3) { 
+			foreach ($mst_account[$m2->id] as $m3): 
 				if(count(@$mst_account[$m3->id]) >=1 ) {
 					$bgedit ="";
 					$contentedit ="false" ;
@@ -323,18 +323,20 @@ foreach($mst_account[0] as $m0) {
 										$contentedit ="true" ;
 									}
 								}
-							}
-						}
 
+						}
 					}
-					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right total_le" data-name="total_le" data-id="'.$m3->id_trx.'" data-value="'.$xtotal3.'">'.$xtotal3.'</td>';
+				}
+
+				$bgTotal = ($bgedit !== '' ? $bgedit : '#f8f9fa');
+				echo '<td style="background: '.$bgTotal.'"><div style="background:'.$bgTotal.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right total_le" data-name="total_le" data-id="'.$m3->id_trx.'" data-value="'.$xtotal3.'">'.$xtotal3.'</td>';
 			
 	
 			?>
 				</tr>
-			<?php } ?>
-		<?php } ?>
-	<?php } ?>
+			<?php endforeach; ?>
+		<?php endforeach; ?>
+	<?php endforeach; ?>
 	<tr>
 		<td bgcolor="#778899" style="color: white; font-weight: bold; background-color: #778899 !important;">SUB TOTAL <?php echo strtoupper($m0->account_name);?></td>
 		<?php
@@ -373,7 +375,7 @@ foreach($mst_account[0] as $m0) {
 
 		?>
 	</tr>
-<?php } ?>
+<?php endforeach; ?>
 
 
 	<tr>
@@ -385,7 +387,7 @@ foreach($mst_account[0] as $m0) {
 			<td class="text-right" bgcolor="#D2691E" style="color: white;"><?php echo number_format($$gnTotal);?></td>
 			<?php
 		}
-		echo '<td class="text-right" bgcolor="#D2691E" style="color: white;"><div style="min-height: 10px; overflow: visible;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($gnTotal_le).'</div></td>';
+		echo '<td class="text-right" bgcolor="#D2691E" style="color: white;"><div style="min-height: 10px; overflow: visible; background-color: #D2691E;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($gnTotal_le).'</div></td>';
 
 		?>	
 	
