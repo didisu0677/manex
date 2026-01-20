@@ -1,52 +1,3 @@
-<style>
-.table-freeze-fullwidth .table thead th {
-	position: sticky;
-	top: 60px;
-	z-index: 1000;
-	background-color: #495057;
-	color: #ffffff;
-}
-
-.table-freeze-fullwidth .headcol {
-	position: sticky;
-	left: 0px;
-	z-index: 999;
-	background-color: #495057;
-	color: #ffffff;
-}
-
-.table-freeze-fullwidth .card-header {
-	position: sticky;
-	top: 0px;
-	z-index: 1001;
-	background-color: #fff;
-}
-
-/* Force untuk table-3 secara brutal */
-#result3 {
-	position: relative !important;
-	overflow: auto !important;
-	height: 70vh !important;
-}
-
-#result3 .table-3 thead th {
-	position: sticky !important;
-	top: 0px !important;
-	z-index: 1000 !important;
-	background-color: #495057 !important;
-	color: #ffffff !important;
-}
-
-#result3 .table-3 .headcol {
-	position: sticky !important;
-	left: 0px !important;
-	top: 0px !important;
-	z-index: 999 !important;
-	background-color: #495057 !important;
-	color: #ffffff !important;
-}
-</style>
-
 <div class="content-header page-data" data-additional="<?= $access_additional ?>">
 	<div class="main-container position-relative">
 		<div class="header-info">
@@ -109,9 +60,10 @@
 	</div>
 </div>
 
-<div class="content-body table-freeze-fullwidth">
+
+<div class="content-body">
 	<div class="card">
-		<div class="card-header pl-3 pr-3">
+		<div class="card-body pb-2">
 			<ul class="nav nav-pills card-header-pills">
 				<li class="nav-item">
 					<a class="nav-link active" id="overall-tab" data-toggle="pill" href="#overall" role="tab" aria-controls="overall" aria-selected="true">Actual & Estimate <?php echo user('tahun_budget') - 1 ; ?></a>
@@ -124,17 +76,17 @@
 				</li>
 			</ul>
 		</div>
-		
-		<div class="card-body tab-content" id="pills-tabContent">
+
+		<div class="card-body tab-content pt-0" id="pills-tabContent">
 			<div class="tab-pane fade show active" id="overall" role="tabpanel" aria-labelledby="overall-tab">
-				<div class="table-responsive" id="result">
-							<?php
-							table_open('table table-bordered table-app table-hover table-1');
-							thead();
-							tr();
-							th('Product', '', 'class="text-center align-middle headcol"');
-							th('Code', '', 'class="text-center align-middle headcol"');
-							th('Sector', '', 'class="text-center align-middle headcol"');
+				<div class="table-responsive height-window" id="result">
+						<?php
+						table_open('table table-bordered table-app table-hover table-1');
+						thead();
+						tr();
+					th(lang('product'),'', 'class="text-center align-middle headcol" style="min-width:250px"');
+					th(lang('code'),'', 'class="text-center align-middle" style="min-width:120px"');
+					th('Sector','', 'class="text-center align-middle" style="min-width:150px"');
 							for ($i = 1; $i <= 12; $i++) {
 								$actual = "";
 								if($i <= setting('actual_budget')) {
@@ -153,14 +105,14 @@
 			</div>
 
 			<div class="tab-pane fade" id="budget" role="tabpanel" aria-labelledby="budget-tab">
-				<div class="table-responsive" id="result2">
-							<?php
-							table_open('table table-bordered table-app table-hover table-2');
-							thead();
-							tr();
-							th('Product', '', 'class="text-center align-middle headcol"');
-							th('Code', '', 'class="text-center align-middle headcol"');
-							th('Sector', '', 'class="text-center align-middle headcol"');
+				<div class="table-responsive height-window" id="result2">
+						<?php
+						table_open('table table-bordered table-app table-hover table-2');
+						thead();
+						tr();
+					th(lang('product'),'', 'class="text-center align-middle headcol" style="min-width:250px"');
+					th(lang('code'),'', 'class="text-center align-middle" style="min-width:120px"');
+					th('Sector','', 'class="text-center align-middle" style="min-width:150px"');
 							for ($i = 1; $i <= 12; $i++) {
 	
 								th(month_lang($i), '', 'class="text-center" style="min-width:60px"');
@@ -172,14 +124,14 @@
 			</div>
 
 			<div class="tab-pane fade" id="detail" role="tabpanel" aria-labelledby="detail-tab">
-				<div class="table-responsive" id="result3">
-							<?php
-							table_open('table table-bordered table-app table-hover table-3');
-							thead();
-							tr();
-							th('Product', '', 'class="text-center align-middle headcol"');
-							th('Code', '', 'class="text-center align-middle headcol"');
-							th('Sector', '', 'class="text-center align-middle headcol"');
+				<div class="table-responsive height-window" id="result3">
+						<?php
+						table_open('table table-bordered table-app table-hover table-3');
+						thead();
+						tr();
+					th(lang('product'),'', 'class="text-center align-middle headcol" style="min-width:250px"');
+					th(lang('code'),'', 'class="text-center align-middle" style="min-width:120px"');
+					th('Sector','', 'class="text-center align-middle" style="min-width:150px"');
 							th('Actual ' . (user('tahun_budget') -1), '', 'class="text-center" style="min-width:60px"');
 
 							for ($i = user('tahun_budget'); $i <= user('tahun_budget')+10; $i++) {
@@ -194,6 +146,62 @@
 		</div>
 	</div>
 </div>
+
+			<style>
+			.table-1 thead th,
+			.table-2 thead th,
+			.table-3 thead th {
+				position: sticky !important;
+				top: 0 !important;
+				z-index: 5 !important;
+				background-color: #4a5569 !important;
+				color: #fff !important;
+				font-weight: bold !important;
+			}
+
+			.table-1 thead th:first-child,
+			.table-2 thead th:first-child,
+			.table-3 thead th:first-child {
+				left: 0 !important;
+				z-index: 6 !important;
+			}
+
+			.table-1 tbody td:first-child,
+			.table-2 tbody td:first-child,
+			.table-3 tbody td:first-child {
+				position: sticky;
+				left: 0;
+				z-index: 4;
+				background-color: #f8f9fa;
+				font-weight: bold;
+			}
+
+			.height-window {
+				height: calc(100vh - 140px);
+				overflow: auto;
+			}
+
+			.table-1 th,
+			.table-1 td,
+			.table-2 th,
+			.table-2 td,
+			.table-3 th,
+			.table-3 td {
+				white-space: nowrap;
+				min-width: 60px;
+			}
+
+			.btn,
+			.select2,
+			.custom-select,
+			input,
+			select,
+			button,
+			textarea {
+				pointer-events: auto !important;
+				z-index: 1000 !important;
+			}
+			</style>
 
 <?php
 modal_open('modal-import',lang('impor') . ' Price list ');
@@ -220,6 +228,20 @@ modal_close();
 		});
 
 		getData();
+
+		$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+			var activeTab = $(e.target).attr('href');
+			if(activeTab == '#overall'){
+				activeTable = '#result';
+				judul = 'Actual and Estimate';
+			}else if(activeTab == '#budget'){
+				activeTable = '#result2';
+				judul = 'Budget by Month';
+			}else if(activeTab == '#detail'){
+				activeTable = '#result3';
+				judul = 'Yearly Budget';
+			}
+		});
 	});
 
 	$('#filter_tahun').change(function() {
@@ -310,10 +332,6 @@ modal_close();
                 cLoader.close();
                 $('.overlay-wrap').addClass('hidden');
                 
-                // Apply sticky header after data load
-                setTimeout(function(){
-                    adjustStickyHeader();
-                }, 100);
             }
         });
     }
@@ -416,66 +434,6 @@ modal_close();
 
 		});
 	}
-
-	// Function to adjust sticky header position
-	function adjustStickyHeader() {
-		// Get tab header height
-		var tabHeaderHeight = $('.card-header').outerHeight() || 60;
-		
-		// Apply freeze untuk table-1 dan table-2 saja (yang sudah bekerja)
-		$('.content-body.table-freeze-fullwidth .table-1 thead th, .content-body.table-freeze-fullwidth .table-2 thead th').css({
-			'position': 'sticky',
-			'top': tabHeaderHeight + 'px',
-			'z-index': '1000',
-			'background-color': '#495057',
-			'color': '#ffffff'
-		});
-		
-		$('.content-body.table-freeze-fullwidth .table-1 .headcol, .content-body.table-freeze-fullwidth .table-2 .headcol').css({
-			'position': 'sticky',
-			'left': '0px',
-			'z-index': '999',
-			'background-color': '#495057',
-			'color': '#ffffff'
-		});
-		
-		// Fix card header positioning
-		$('.content-body.table-freeze-fullwidth .card-header').css({
-			'position': 'sticky',
-			'top': '0px',
-			'z-index': '1001',
-			'background-color': '#fff'
-		});
-		
-		// Table-3 biarkan CSS yang handle
-	}
-
-	$(document).ready(function(){
-		// Adjust sticky header when page loads
-		adjustStickyHeader();
-		
-		// Re-adjust when tab is switched
-		$('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
-			var activeTab = $(e.target).attr('href');
-	        if(activeTab == '#overall'){
-				activeTable = '#result'
-				judul = 'Actual and Estimate'
-			}else if(activeTab == '#budget'){
-				activeTable = '#result2'
-				judul = "Budget by Month"
-			}else if(activeTab == '#detail'){
-				activeTable = '#result3'
-				judul = 'Yearly Budget'
-			}
-			
-			adjustStickyHeader();
-		});
-		
-		// Re-adjust on window resize
-		$(window).resize(function(){
-			adjustStickyHeader();
-		});
-	});
 
 	$(document).on('click', '.btn-export', function() {
 		var i = 0;

@@ -44,46 +44,53 @@
 		</div>
 	</div>
 
-<div class="content-body table-freeze-fullwidth">
+<div class="content-body mt-6">
 
-		<div class="table-responsive tab-pane fade active show" id="result">
-	    				<?php
-						table_open('table table-bordered table-app table-hover table-1');
-							thead();
+	<div class="main-container mt-2">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="card">
+					<div class="card-body">
+						<div class="table-responsive tab-pane fade active show height-window" id="result">
+	    		<?php
+					table_open('table table-bordered table-app table-hover table-1');
+						thead();
 
-								tr();
-									th(lang('product'),'','colspan="2" class="text-center align-middle headcol"');
-									th('Raw Material','','colspan="5" class="text-center align-middle headcol" ');
-									th('Variable Overhead / Unit','','colspan ="4" class="text-center align-middle headcol" ');
-									th('Fixed Overhead / Unit','','colspan ="6" class="text-center align-middle headcol" ');
-									th('&nbsp;','','colspan="4" class="text-center align-middle headcol" ');
+						tr();
+							th(lang('product'),'','colspan="2" class="text-center align-middle headcol"');
+							th('Raw Material','','colspan="5" class="text-center align-middle headcol" ');
+							th('Variable Overhead / Unit','','colspan ="4" class="text-center align-middle headcol" ');
+							th('Fixed Overhead / Unit','','colspan ="6" class="text-center align-middle headcol" ');
+							th('Overhead / Unit','','rowspan="2" class="text-center align-middle headcol" ');
+							th('Unit Cost','','rowspan="2" class="text-center align-middle headcol" ');
+							th('Volume Produksi','','rowspan="2" class="text-center align-middle headcol" ');
+							th('Total COGM','','rowspan="2" class="text-center align-middle headcol" ');
 
-								tr();
-									th(lang('description'),'','rowspan="" class="text-center align-middle headcol" style="min-width:200px"');
-									th(lang('code'),'','rowspan="" class="text-center align-middle headcol" ');
-									foreach($material as $m) {
-										th($m->material,'','rowspan="" class="text-center align-middle headcol" ');
-									}
-									th('total material','','rowspan="" class="text-center align-middle headcol" ');
-									foreach($variable as $v) {
-										th($v->account_name,'','rowspan="" class="text-center align-middle headcol" ');
-									}
-									th('total variable','','rowspan="" class="text-center align-middle headcol" ');
-									foreach($fixed as $f) {
-										th($f->account_name,'','rowspan="" class="text-center align-middle headcol" ');
-									}
-									th('total fixed','','rowspan="" class="text-center align-middle headcol" ');
-									th('Overhead / Unit','','class="text-center align-middle headcol" ');
-									th('Total Cost','','class="text-center align-middle headcol" ');
-									th('Volume Produksi','','class="text-center align-middle headcol" ');
-									th('Total COGM','','class="text-center align-middle headcol"');
+						tr();
+							th(lang('description'),'','rowspan="" width="300" class="text-center align-middle headcol" ');
+							th(lang('code'),'','rowspan="" class="text-center align-middle headcol" ');
+							foreach($material as $m) {
+								th($m->material,'','rowspan="" class="text-center align-middle headcol" ');
+							}
+							th('total material','','rowspan="" class="text-center align-middle headcol" ');
+							foreach($variable as $v) {
+								th($v->account_name,'','rowspan="" class="text-center align-middle headcol" ');
+							}
+							th('total variable','','rowspan="" class="text-center align-middle headcol" ');
+							foreach($fixed as $f) {
+								th($f->account_name,'','rowspan="" class="text-center align-middle headcol" ');
+							}
+							th('total fixed','','rowspan="" class="text-center align-middle headcol" ');
 
-
-
-							tbody();
-						table_close();
-						?>
+						tbody();
+					table_close();
+					?>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
+	</div>
 </div>
 	
 	<div class="overlay-wrap hidden">
@@ -252,3 +259,234 @@ function lanjut() {
 }
 
 </script>
+
+<style>
+/* Force white font for ALL headers */
+.table-1 th, 
+.table-1 th *,
+.table-1 thead th,
+.table-1 thead th * { 
+	color: #fff !important; 
+	background-color: #4a5569 !important; 
+	font-weight: bold !important;
+}
+
+/* Header positioning and styling */
+.table-1 th { 
+	position: sticky !important; 
+	top: 0 !important; 
+	z-index: 5 !important; 
+	padding: 4px 6px !important; /* More compact padding */
+	line-height: 1.1 !important; /* Tighter line height */
+	font-size: 13px !important; /* Slightly smaller font */
+}
+
+/* Header row positioning - handle multi-row headers */
+.table-1 thead tr:first-child th { 
+	top: 0 !important; 
+	z-index: 6 !important; 
+	border-bottom: 1px solid #dee2e6 !important; /* Thin border between header rows */
+}
+
+.table-1 thead tr:nth-child(2) th { 
+	top: 28px !important; /* Exact match with first row height */
+	z-index: 6 !important; 
+}
+
+/* First row - "Product" spans 2 columns, freeze it */
+.table-1 thead tr:first-child th:first-child { 
+	left: 0 !important; 
+	z-index: 16 !important; 
+	border-right: 2px solid #fff !important;
+	min-width: 400px !important; /* Covers both Description + Code columns */
+}
+
+/* Second row - freeze "Description" and "Code" columns separately */
+.table-1 thead tr:nth-child(2) th:first-child { 
+	left: 0 !important; 
+	z-index: 15 !important; 
+	border-right: 2px solid #fff !important;
+	min-width: 300px !important;
+}
+
+.table-1 thead tr:nth-child(2) th:nth-child(2) { 
+	left: 300px !important; 
+	z-index: 14 !important; 
+	border-right: 2px solid #fff !important;
+	min-width: 100px !important;
+}
+
+/* Special handling for rowspan columns - unit cost etc */
+.table-1 thead tr:first-child th[rowspan="2"] { 
+	top: 0 !important;
+	z-index: 7 !important;
+	border-bottom: 1px solid #dee2e6 !important; /* Same thin border */
+	vertical-align: middle !important;
+	height: 56px !important; /* Double the row height (28px x 2) */
+}
+
+/* Body column styling - freeze first 2 columns */
+.table-1 tbody td:first-child { 
+	position: sticky !important; 
+	left: 0 !important; 
+	z-index: 10 !important; 
+	background-color: #f8f9fa !important; 
+	font-weight: bold !important; 
+	border-right: 2px solid #dee2e6 !important;
+	min-width: 300px !important;
+}
+
+.table-1 tbody td:nth-child(2) { 
+	position: sticky !important; 
+	left: 300px !important; 
+	z-index: 9 !important; 
+	background-color: #f8f9fa !important; 
+	font-weight: bold !important; 
+	border-right: 2px solid #dee2e6 !important;
+	min-width: 100px !important;
+}
+
+/* Total columns styling - highlight last 4 columns */
+.table-1 td:nth-last-child(-n+4) { 
+	background-color: #f0f8ff !important; 
+	font-weight: bold !important; 
+	border-left: 2px solid #007bff !important; 
+}
+
+/* Table container */
+.height-window { 
+	height: calc(100vh - 140px) !important; 
+	overflow: auto !important; 
+}
+
+.table-1 { 
+	border-collapse: collapse !important; 
+	width: 100% !important; 
+}
+
+.table-1 th, .table-1 td { 
+	white-space: nowrap !important; 
+	min-width: 60px !important; 
+}
+
+/* Compact header styling */
+.table-1 thead tr {
+	height: 28px !important; /* Fixed minimal height */
+}
+
+.table-1 thead th {
+	border-width: 1px !important;
+	border-style: solid !important;
+	border-color: #dee2e6 !important;
+	height: 28px !important; /* Match row height */
+	vertical-align: middle !important;
+}
+
+/* Subtotal rows - maintain background for frozen columns */
+.table-1 tbody tr.bg-grey-3 td:first-child,
+.table-1 tbody tr.bg-grey-3 td:nth-child(2) { 
+	background-color: #778899 !important; 
+	color: white !important;
+	position: sticky !important;
+	left: 0 !important;
+	z-index: 10 !important;
+}
+
+.table-1 tbody tr.bg-grey-3 td:nth-child(2) {
+	left: 300px !important;
+	z-index: 9 !important;
+}
+
+.table-1 tbody tr.bg-grey-2 td:first-child,
+.table-1 tbody tr.bg-grey-2 td:nth-child(2) { 
+	background-color: #D2691E !important; 
+	color: white !important;
+	position: sticky !important;
+	left: 0 !important;
+	z-index: 10 !important;
+}
+
+.table-1 tbody tr.bg-grey-2 td:nth-child(2) {
+	left: 300px !important;
+	z-index: 9 !important;
+}
+
+/* Grouping rows styling */
+.table-1 .bg-grey-3 th {
+	font-weight: bold !important;
+}
+
+.table-1 .bg-grey-2 td {
+	font-weight: bold !important;
+}
+
+/* Additional CSS classes for consistent styling */
+.bg-grey-3 {
+	background-color: #778899 !important;
+}
+
+.bg-grey-2 {
+	background-color: #D2691E !important;
+}
+
+.bg-grey-3 th,
+.bg-grey-3 td,
+.bg-grey-2 th,
+.bg-grey-2 td {
+	color: #fff !important;
+}
+
+/* Ensure money format alignment */
+.table-1 .money {
+	text-align: right !important;
+}
+
+/* Center alignment for summary rows */
+.table-1 .text-center {
+	text-align: center !important;
+}
+
+/* CRITICAL: Ensure editable elements remain functional */
+.table-1 .edit-value {
+	pointer-events: auto !important;
+	user-select: text !important;
+	cursor: text !important;
+	z-index: 100 !important; /* Higher than frozen columns */
+}
+
+/* Ensure contenteditable elements work properly */
+.table-1 [contenteditable="true"] {
+	pointer-events: auto !important;
+	user-select: text !important;
+	cursor: text !important;
+	z-index: 100 !important;
+}
+
+/* Ensure div inside td doesn't interfere */
+.table-1 td div[contenteditable] {
+	pointer-events: auto !important;
+	user-select: text !important;
+	cursor: text !important;
+	z-index: 100 !important;
+}
+
+/* CRITICAL: Ensure buttons and form controls remain functional */
+.btn, .btn-proses, .btn-save, .btn-export, .btn-act-import, .btn-template {
+	pointer-events: auto !important;
+	cursor: pointer !important;
+	z-index: 1000 !important;
+}
+
+/* Ensure select dropdowns work */
+.select2, .custom-select {
+	pointer-events: auto !important;
+	cursor: pointer !important;
+	z-index: 1000 !important;
+}
+
+/* Ensure all form controls work */
+input, select, button, textarea {
+	pointer-events: auto !important;
+	z-index: 1000 !important;
+}
+</style>

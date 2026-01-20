@@ -9,8 +9,10 @@
 	$sum_cogm = 0;
 	$sum_rm = 0;
 	foreach($grup[0] as $m0) { ?>
-		<tr>
-			<th colspan="21" style="background: #757575;" style="min-height: 10px; width: 50px; overflow: hidden;"><font color="#fff"><?php echo $m0->cost_centre; ?></font></th>
+		<tr class="bg-grey-3">
+			<th colspan="21" style="background: #778899 !important; color: white !important; font-weight: bold !important;">
+				<?php echo $m0->cost_centre; ?>
+			</th>
 		</tr>		
   	<?php
 
@@ -116,53 +118,53 @@
 		</tr>
 	<?php 
 	} ?>
-	<tr>
+	<tr class="bg-grey-3">
 		<?php
-			echo '<td colspan ="2"><b>TOTAL '.$m0->cost_centre.'</b></td>';
-			echo '<td></td>';
-			echo '<td></td>';
-			echo '<td></td>';
-			echo '<td></td>';
-			echo '<td class="text-right"><b>'.number_format($stotal_rm).'</b></td>';
-			echo '<td></td>';
-			echo '<td></td>';
-			echo '<td></td>';
-			echo '<td class="text-right"><b>'.number_format($stotal_variable).'</b></td>';
-			echo '<td></td>';
-			echo '<td></td>';
-			echo '<td></td>';
-			echo '<td></td>';
-			echo '<td></td>';
-			echo '<td class="text-right"><b>'.number_format($stotal_fixed).'</b></td>';
-			echo '<td class="text-right"><b>'.number_format($stotal_ovh).'</b></td>';
-			echo '<td class="text-right"><b>'.number_format($stotal_unitcost).'</b></td>';
-			echo '<td class="text-right"><b>'.number_format($stotal_qty).'</b></td>';
-			echo '<td class="text-right"><b>'.number_format($stotal_cogm).'</b></td>';
+			echo '<td colspan ="2" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>TOTAL '.$m0->cost_centre.'</b></td>';
+			echo '<td style="background: #778899 !important; color: white !important;"></td>';
+			echo '<td style="background: #778899 !important; color: white !important;"></td>';
+			echo '<td style="background: #778899 !important; color: white !important;"></td>';
+			echo '<td style="background: #778899 !important; color: white !important;"></td>';
+			echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($stotal_rm,2).'</b></td>';
+			echo '<td style="background: #778899 !important; color: white !important;"></td>';
+			echo '<td style="background: #778899 !important; color: white !important;"></td>';
+			echo '<td style="background: #778899 !important; color: white !important;"></td>';
+			echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($stotal_variable,2).'</b></td>';
+			echo '<td style="background: #778899 !important; color: white !important;"></td>';
+			echo '<td style="background: #778899 !important; color: white !important;"></td>';
+			echo '<td style="background: #778899 !important; color: white !important;"></td>';
+			echo '<td style="background: #778899 !important; color: white !important;"></td>';
+			echo '<td style="background: #778899 !important; color: white !important;"></td>';
+			echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($stotal_fixed,2).'</b></td>';
+			echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($stotal_ovh,2).'</b></td>';
+			echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($stotal_unitcost,2).'</b></td>';
+			echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($stotal_qty).'</b></td>';
+			echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($stotal_cogm,2).'</b></td>';
 		?>
 	</tr>
 <?php } ?>
-<tr>
+<tr class="bg-grey-2">
 	<?php
-		echo '<td colspan ="2"><b>GRAND TOTAL</b></td>';
-		echo '<td></td>';
-		echo '<td></td>';
-		echo '<td></td>';
-		echo '<td></td>';
-		echo '<td class="text-right"><b>'.number_format($sum_rm).'</b></td>';
-		echo '<td></td>';
-		echo '<td></td>';
-		echo '<td></td>';
-		echo '<td class="text-right"><b>'.number_format($sum_totalvariable).'</b></td>';
-		echo '<td></td>';
-		echo '<td></td>';
-		echo '<td></td>';
-		echo '<td></td>';
-		echo '<td></td>';
-		echo '<td class="text-right"><b>'.number_format($sum_totalfixed).'</b></td>';
-		echo '<td class="text-right"><b>'.number_format($sum_totalovh).'</b></td>';
-		echo '<td class="text-right"><b>'.number_format($sum_unitcost).'</b></td>';
-		echo '<td class="text-right"><b>'.number_format($sum_qty).'</b></td>';
-		echo '<td class="text-right"><b>'.number_format($sum_cogm).'</b></td>';
+		echo '<td colspan ="2" style="background: #D2691E !important; color: white !important; font-weight: bold !important;"><b>GRAND TOTAL</b></td>';
+		echo '<td style="background: #D2691E !important; color: white !important;"></td>';
+		echo '<td style="background: #D2691E !important; color: white !important;"></td>';
+		echo '<td style="background: #D2691E !important; color: white !important;"></td>';
+		echo '<td style="background: #D2691E !important; color: white !important;"></td>';
+		echo '<td class="text-right" style="background: #D2691E !important; color: white !important; font-weight: bold !important;"><b>'.number_format($sum_rm,2).'</b></td>';
+		echo '<td style="background: #D2691E !important; color: white !important;"></td>';
+		echo '<td style="background: #D2691E !important; color: white !important;"></td>';
+		echo '<td style="background: #D2691E !important; color: white !important;"></td>';
+		echo '<td class="text-right" style="background: #D2691E !important; color: white !important; font-weight: bold !important;"><b>'.number_format($sum_totalvariable,2).'</b></td>';
+		echo '<td style="background: #D2691E !important; color: white !important;"></td>';
+		echo '<td style="background: #D2691E !important; color: white !important;"></td>';
+		echo '<td style="background: #D2691E !important; color: white !important;"></td>';
+		echo '<td style="background: #D2691E !important; color: white !important;"></td>';
+		echo '<td style="background: #D2691E !important; color: white !important;"></td>';
+		echo '<td class="text-right" style="background: #D2691E !important; color: white !important; font-weight: bold !important;"><b>'.number_format($sum_totalfixed,2).'</b></td>';
+		echo '<td class="text-right" style="background: #D2691E !important; color: white !important; font-weight: bold !important;"><b>'.number_format($sum_totalovh,2).'</b></td>';
+		echo '<td class="text-right" style="background: #D2691E !important; color: white !important; font-weight: bold !important;"><b>'.number_format($sum_unitcost,2).'</b></td>';
+		echo '<td class="text-right" style="background: #D2691E !important; color: white !important; font-weight: bold !important;"><b>'.number_format($sum_qty).'</b></td>';
+		echo '<td class="text-right" style="background: #D2691E !important; color: white !important; font-weight: bold !important;"><b>'.number_format($sum_cogm,2).'</b></td>';
 	?>
 </tr>
 

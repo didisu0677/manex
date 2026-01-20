@@ -1,50 +1,94 @@
 <style>
-/* Container utama untuk freeze header */
-#result, #result2, #result3 {
+:root {
+	--qty-col1-width: 260px;
+	--qty-col2-width: 120px;
+	--qty-col3-width: 150px;
+}
+
+/* Wrapper scroll untuk masing-masing tab */
+#result,
+#result2,
+#result3 {
 	position: relative !important;
 	overflow: auto !important;
-	height: 70vh !important;
+	height: calc(100vh - 150px) !important;
 	width: 100% !important;
 }
 
-/* Header sticky untuk semua table */
-#result .table thead th,
-#result2 .table thead th,
-#result3 .table thead th {
+/* Sticky header berbasis CSS murni */
+.table-1 thead th,
+.table-2 thead th,
+.table-3 thead th {
 	position: sticky !important;
-	top: 0px !important;
-	z-index: 1000 !important;
-	background-color: #495057 !important;
-	color: #ffffff !important;
+	top: 0 !important;
+	z-index: 5 !important;
+	background-color: #4a5569 !important;
+	color: #fff !important;
+	font-weight: 600 !important;
 }
 
-/* Frozen column untuk semua table */
-#result .headcol,
-#result2 .headcol,
-#result3 .headcol {
+/* Kolom Product */
+.table-1 thead th:nth-child(1),
+.table-2 thead th:nth-child(1),
+.table-3 thead th:nth-child(1),
+.table-1 tbody td:nth-child(1),
+.table-2 tbody td:nth-child(1),
+.table-3 tbody td:nth-child(1) {
 	position: sticky !important;
-	left: 0px !important;
-	z-index: 999 !important;
-	background-color: #495057 !important;
-	color: #ffffff !important;
+	left: 0 !important;
+	z-index: 6 !important;
+	min-width: var(--qty-col1-width) !important;
 }
 
-/* Kombinasi header + frozen column */
-#result .table thead th.headcol,
-#result2 .table thead th.headcol,
-#result3 .table thead th.headcol {
-	z-index: 1001 !important;
+/* Kolom Code */
+.table-1 thead th:nth-child(2),
+.table-2 thead th:nth-child(2),
+.table-3 thead th:nth-child(2),
+.table-1 tbody td:nth-child(2),
+.table-2 tbody td:nth-child(2),
+.table-3 tbody td:nth-child(2) {
 	position: sticky !important;
-	top: 0px !important;
-	left: 0px !important;
-	background-color: #495057 !important;
-	color: #ffffff !important;
+	left: var(--qty-col1-width) !important;
+	z-index: 6 !important;
+	min-width: var(--qty-col2-width) !important;
 }
 
-/* Maksimalkan lebar table */
-.table {
-	width: 100% !important;
-	margin: 0 !important;
+/* Kolom Sector */
+.table-1 thead th:nth-child(3),
+.table-2 thead th:nth-child(3),
+.table-3 thead th:nth-child(3),
+.table-1 tbody td:nth-child(3),
+.table-2 tbody td:nth-child(3),
+.table-3 tbody td:nth-child(3) {
+	position: sticky !important;
+	left: calc(var(--qty-col1-width) + var(--qty-col2-width)) !important;
+	z-index: 6 !important;
+	min-width: var(--qty-col3-width) !important;
+}
+
+/* Pastikan header kolom beku selalu di atas */
+.table-1 thead th:nth-child(-n+3),
+.table-2 thead th:nth-child(-n+3),
+.table-3 thead th:nth-child(-n+3) {
+	z-index: 8 !important;
+}
+
+/* Warna latar untuk kolom yang dibekukan */
+.table-1 tbody td:nth-child(-n+3),
+.table-2 tbody td:nth-child(-n+3),
+.table-3 tbody td:nth-child(-n+3) {
+	background-color: #f8f9fa !important;
+	font-weight: 600 !important;
+}
+
+.table-1 th,
+.table-1 td,
+.table-2 th,
+.table-2 td,
+.table-3 th,
+.table-3 td {
+	white-space: nowrap !important;
+	min-width: 60px !important;
 }
 </style>
 
@@ -108,9 +152,9 @@
 	</div>
 </div>
 
-<div class="content-body table-freeze-fullwidth">
+<div class="content-body">
 	<div class="card">
-		<div class="card-header pl-3 pr-3">
+		<div class="card-body pb-2">
 			<ul class="nav nav-pills card-header-pills">
 				<li class="nav-item">
 					<a class="nav-link active" id="overall-tab" data-toggle="pill" href="#overall" role="tab" aria-controls="overall" aria-selected="true">Actual & Estimate</a>
@@ -123,10 +167,10 @@
 				</li>
 			</ul>
 		</div>
-		
-		<div class="card-body tab-content" id="pills-tabContent">
+
+		<div class="card-body tab-content pt-0" id="pills-tabContent">
 			<div class="tab-pane fade show active" id="overall" role="tabpanel" aria-labelledby="overall-tab">
-				<div class="table-responsive" id="result">
+				<div class="table-responsive height-window" id="result">
 							<?php
 							table_open('table table-bordered table-app table-hover table-1');
 							thead();
@@ -157,7 +201,7 @@
 			</div>
 
 			<div class="tab-pane fade" id="budget" role="tabpanel" aria-labelledby="budget-tab">
-				<div class="table-responsive" id="result2">
+				<div class="table-responsive height-window" id="result2">
 							<?php
 							table_open('table table-bordered table-app table-hover table-2');
 							thead();
@@ -177,7 +221,7 @@
 			</div>
 
 			<div class="tab-pane fade" id="detail" role="tabpanel" aria-labelledby="detail-tab">
-				<div class="table-responsive" id="result3">
+				<div class="table-responsive height-window" id="result3">
 							<?php
 							table_open('table table-bordered table-app table-hover table-3');
 							thead();

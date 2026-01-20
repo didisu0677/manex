@@ -1,5 +1,7 @@
 {
     "sector": "Sector",
     "import_data" : "Data Import",
-    "tab_import" : "Import Key"
+    "tab_import" : "Import Key",
+    "product": "Product",
+    "code": "Code"
 }
