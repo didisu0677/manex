@@ -46,7 +46,7 @@
 
 <div class="content-body">
 	<div class="card">
-		<div class="card-header"><b>ACTUAL VS BUDGET</div>
+		<div class="card-header"><b>ACTUAL VS BUDGET <?php echo user('tahun_budget')-1; ?></b></div>
 		<div class="card-body">
 			<div class="table-responsive height-window" id="result">
 					<?php
@@ -59,8 +59,8 @@
 
 								th($actual . ' ' . month_lang($i), '', 'class="text-center align-middle" style="min-width:60px"');
 							}
-							th(lang('total_actual'),'','class="text-center align-middle headcol"style="min-width:60px"');
-							th(lang('total_budget'),'','class="text-center align-middle headcol"style="min-width:60px"');
+							th(lang('total_actual') . ' ' . (user('tahun_budget')-1),'','class="text-center align-middle headcol"style="min-width:60px"');
+							th(lang('total_budget') . ' ' . (user('tahun_budget')-1),'','class="text-center align-middle headcol"style="min-width:60px"');
 							th(lang('budget_remaining'),'','class="text-center align-middle headcol"style="min-width:60px"');
 
 						tbody();
