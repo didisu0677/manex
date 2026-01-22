@@ -139,6 +139,9 @@ modal_close();
 ?>
 <script type="text/javascript">
 
+let activeTable = '#result';
+let judul = 'Actual and Estimate';
+
 $(document).ready(function () {
 	getData();
 

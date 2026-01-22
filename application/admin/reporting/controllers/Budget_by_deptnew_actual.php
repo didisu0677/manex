@@ -131,35 +131,23 @@ class Budget_by_deptnew_actual extends BE_Controller {
 
         // debug($acc_akses);die;
 
-        $buildTemplateJoins = function($costClause) use ($table, $prevTable, $status) {
-            $joins = [];
+        $prevCostCentres = $this->determinePrevCostCentres($cost_centre, $group_cc, $cc_member, $costCentreUser);
+        $matchCostCentre = !($cost_centre == 'ALL' || $group_cc);
+        $includeNullCostCentre = false;
+        if($group_cc) {
+            $includeNullCostCentre = true;
+        }
+        if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC]) && !empty($costCentreUser)) {
+            $includeNullCostCentre = true;
+        }
+
+        $buildTemplateJoins = function($costClause) use ($table, $status) {
             $baseCondition = 'a.account_code = b.account_code';
             if($costClause){
                 $baseCondition .= ' and ' . $costClause;
             }
             $baseCondition .= ' and b.id_ccallocation = "' . $status . '"';
-            $joins[] = $table . ' b on ' . $baseCondition . ' type LEFT';
-
-            if($prevTable){
-                $prevCondition = 'bp.account_code = b.account_code and bp.id_ccallocation = b.id_ccallocation';
-                $prevCondition .= ' and ((bp.cost_centre = b.cost_centre) OR (bp.cost_centre IS NULL AND b.cost_centre IS NULL))';
-                if($costClause){
-                    $prevCondition .= ' and ' . str_replace('b.', 'bp.', $costClause);
-                }
-                $prevSource = '(SELECT account_code, cost_centre, id_ccallocation, SUM(IFNULL(B_01,0)+IFNULL(B_02,0)+IFNULL(B_03,0)+IFNULL(B_04,0)+IFNULL(B_05,0)+IFNULL(B_06,0)+IFNULL(B_07,0)+IFNULL(B_08,0)+IFNULL(B_09,0)+IFNULL(B_10,0)+IFNULL(B_11,0)+IFNULL(B_12,0)) total_budget FROM ' . $prevTable . ' WHERE id_ccallocation = "' . $status . '" GROUP BY account_code, cost_centre, id_ccallocation)';
-                $joins[] = $prevSource . ' bp on ' . $prevCondition . ' type LEFT';
-                return $joins;
-            }
-
-            return $joins[0];
-        };
-
-        $buildDataJoin = function() use ($prevTable, $status) {
-            if(!$prevTable){
-                return null;
-            }
-            $prevSource = '(SELECT account_code, cost_centre, id_ccallocation, SUM(IFNULL(B_01,0)+IFNULL(B_02,0)+IFNULL(B_03,0)+IFNULL(B_04,0)+IFNULL(B_05,0)+IFNULL(B_06,0)+IFNULL(B_07,0)+IFNULL(B_08,0)+IFNULL(B_09,0)+IFNULL(B_10,0)+IFNULL(B_11,0)+IFNULL(B_12,0)) total_budget FROM ' . $prevTable . ' WHERE id_ccallocation = "' . $status . '" GROUP BY account_code, cost_centre, id_ccallocation)';
-            return $prevSource . ' bp on a.account_code = bp.account_code and ((bp.cost_centre = a.cost_centre) OR (bp.cost_centre IS NULL AND a.cost_centre IS NULL)) and bp.id_ccallocation = a.id_ccallocation type LEFT';
+            return $table . ' b on ' . $baseCondition . ' type LEFT';
         };
 
         $arr = [
@@ -207,8 +195,9 @@ class Budget_by_deptnew_actual extends BE_Controller {
             $arr['where']['__m31'] = '(b.cost_centre IN ('.implode(',', $cc_member).') OR b.cost_centre IS NULL)';
         }
 
-        $data['mst_account'][0] = get_data('tbl_fact_template_report a',$arr)->result();
         $isAllHrd = user('id_group') == HRD && $cost_centre == 'ALL';
+        $data['mst_account'][0] = get_data('tbl_fact_template_report a',$arr)->result();
+        $this->setPrevBudgetForRows($data['mst_account'][0], $prevTable, $status, $prevCostCentres, $matchCostCentre, $isAllHrd, $includeNullCostCentre);
         $customSelect = 'sum(b.B_01) as B_01, sum(b.B_02) as B_02, sum(b.B_03) as B_03, 
             sum(b.B_04) as B_04, sum(b.B_05) as B_05, sum(b.B_06) as B_06, 
             sum(b.B_07) as B_07, sum(b.B_08) as B_08, sum(b.B_09) as B_09,
@@ -294,10 +283,6 @@ class Budget_by_deptnew_actual extends BE_Controller {
             SUM(IF(a.cost_centre = "1200", (IF(substr(a.account_code,1,3) != "721", a.total_le, 0)), a.total_le)) as total_le';
         }
 
-        if($prevTable){
-            $customSelect = str_replace('IFNULL(b.total_budget, (b.B_01+b.B_02+b.B_03+b.B_04+b.B_05+b.B_06+b.B_07+b.B_08+b.B_09+b.B_10+b.B_11+b.B_12))', 'IFNULL(bp.total_budget, (b.B_01+b.B_02+b.B_03+b.B_04+b.B_05+b.B_06+b.B_07+b.B_08+b.B_09+b.B_10+b.B_11+b.B_12))', $customSelect);
-            $customSelect2 = str_replace('IFNULL(a.total_budget, (a.B_01+a.B_02+a.B_03+a.B_04+a.B_05+a.B_06+a.B_07+a.B_08+a.B_09+a.B_10+a.B_11+a.B_12))', 'IFNULL(bp.total_budget, (a.B_01+a.B_02+a.B_03+a.B_04+a.B_05+a.B_06+a.B_07+a.B_08+a.B_09+a.B_10+a.B_11+a.B_12))', $customSelect2);
-        }
         foreach($data['mst_account'][0] as $m0) {
 
             $customWhere = [
@@ -347,6 +332,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
             }
 
             $data['mst_account'][$m0->id] = get_data('tbl_fact_template_report a',$arr)->result();
+            $this->setPrevBudgetForRows($data['mst_account'][$m0->id], $prevTable, $status, $prevCostCentres, $matchCostCentre, $isAllHrd, $includeNullCostCentre);
             foreach($data['mst_account'][$m0->id] as $m1) {
                 $customWhere = [
                     '__m0'=>'(a.parent_id = "'.$m1->id.'")',
@@ -392,6 +378,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
                 // }
 
                 $data['mst_account'][$m1->id] = get_data('tbl_fact_template_report a',$arr)->result();
+                $this->setPrevBudgetForRows($data['mst_account'][$m1->id], $prevTable, $status, $prevCostCentres, $matchCostCentre, $isAllHrd, $includeNullCostCentre);
 
                 foreach($data['mst_account'][$m1->id] as $m2) {
                     $customWhere = [
@@ -439,6 +426,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
                     }
 
                     $data['mst_account'][$m2->id] = get_data('tbl_fact_template_report a',$arr)->result();
+                    $this->setPrevBudgetForRows($data['mst_account'][$m2->id], $prevTable, $status, $prevCostCentres, $matchCostCentre, $isAllHrd, $includeNullCostCentre);
                 }
             }
         }
@@ -552,11 +540,8 @@ class Budget_by_deptnew_actual extends BE_Controller {
                 //     $arr['where']['__m'] = '(substr(a.account_code,1,3) != "721" and a.cost_centre ="1200")' ;
                 // }
 
-                if($prevTable){
-                    $arr['join'] = $buildDataJoin();
-                }
-
                 $sum = get_data($table . ' a',$arr)->row();
+                $sum->total_budget = $this->sumPrevTotalBudget($prevTable, $status, $acc, $prevCostCentres, $isAllHrd, $includeNullCostCentre);
             }else{
                 $arr = [
                     'select' => $customSelect2,
@@ -566,11 +551,8 @@ class Budget_by_deptnew_actual extends BE_Controller {
                     ],
                 ];
 
-                if($prevTable){
-                    $arr['join'] = $buildDataJoin();
-                }
-
                 $sum = get_data($table . ' a',$arr)->row();
+                $sum->total_budget = 0;
             }
 
 
@@ -595,6 +577,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
                 'B_11' => $sum->B_11,
                 'B_12' => $sum->B_12,
                 'total' => $totalBudgetMonthly,
+                'total_budget' => $sum->total_budget,
 
                 'EST_01' => $sum->EST_01,
                 'EST_02' => $sum->EST_02,
@@ -636,11 +619,12 @@ class Budget_by_deptnew_actual extends BE_Controller {
         $data['labour'] = [];
         $data['id_labour'] = [];
         foreach($total_labour as $m) {
+            $labourAccountCodes = json_decode($m->sum_of, true);
 
             $arr = [
                 'select' => $customSelect2,
                 'where' => [
-                    'a.account_code' => json_decode($m->sum_of),
+                    'a.account_code' => $labourAccountCodes,
                     // 'a.cost_centre' => $cca,
                     'a.id_ccallocation' => $status
                 ],
@@ -663,11 +647,8 @@ class Budget_by_deptnew_actual extends BE_Controller {
                 // $arr['where']['__m'] = '(substr(a.account_code,1,3) != "721" and a.cost_centre ="1200")' ;
             }
 
-            if($prevTable){
-                $arr['join'] = $buildDataJoin();
-            }
-
             $sum = get_data($table . ' a',$arr)->row();
+            $sum->total_budget = $this->sumPrevTotalBudget($prevTable, $status, $labourAccountCodes, $prevCostCentres, $isAllHrd, $includeNullCostCentre);
 
             $labourBudgetMonthly = 0;
             for($i = 1; $i <= 12; $i++) {
@@ -690,7 +671,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
                 'B_11' => $sum->B_11,
                 'B_12' => $sum->B_12,
                 'total' => $labourBudgetMonthly,
-                'total_budget' => $sum->total_budget !== null ? $sum->total_budget : $labourBudgetMonthly,
+                'total_budget' => $sum->total_budget !== null ? $sum->total_budget : 0,
 
                 'EST_01' => $sum->EST_01,
                 'EST_02' => $sum->EST_02,
@@ -724,6 +705,198 @@ class Budget_by_deptnew_actual extends BE_Controller {
 	   
 	    render($response,'json');
 	}
+
+
+    private function fetchPrevTotalBudget($prevTable, $status, $accountCodes = [], $costCentres = null, $groupByCostCentre = false, $includeNullCostCentre = false) {
+        if(!$prevTable || empty($accountCodes)) {
+            return [];
+        }
+
+        if(!is_array($accountCodes)) {
+            $accountCodes = [$accountCodes];
+        }
+
+        $accountCodes = array_values(array_filter(array_unique($accountCodes), function($value) {
+            return $value !== '' && $value !== null;
+        }));
+        if(empty($accountCodes)) {
+            return [];
+        }
+
+        $where = [
+            'id_ccallocation' => $status,
+            'account_code' => $accountCodes,
+        ];
+
+        if(is_array($costCentres) && !empty($costCentres)) {
+            $where['cost_centre'] = $costCentres;
+        }
+
+        $select = 'account_code, SUM(IFNULL(total_budget,0)) as total_budget';
+        $groupBy = 'account_code';
+
+        if($groupByCostCentre) {
+            $select .= ', cost_centre';
+            $groupBy .= ', cost_centre';
+        }
+
+        $query = [
+            'select' => $select,
+            'where' => $where,
+            'group_by' => $groupBy,
+        ];
+
+        $rows = get_data($prevTable . ' p', $query)->result();
+
+        if($includeNullCostCentre && $groupByCostCentre && is_array($costCentres) && !empty($costCentres)) {
+            $nullWhere = $where;
+            unset($nullWhere['cost_centre']);
+            $nullWhere['__null_cost_centre'] = '(p.cost_centre IS NULL)';
+            $nullQuery = [
+                'select' => $select,
+                'where' => $nullWhere,
+                'group_by' => $groupBy,
+            ];
+            $nullRows = get_data($prevTable . ' p', $nullQuery)->result();
+            if(!empty($nullRows)) {
+                $rows = array_merge($rows, $nullRows);
+            }
+        }
+        $map = [];
+        foreach($rows as $row) {
+            $key = $row->account_code;
+            if($groupByCostCentre) {
+                $ccKey = isset($row->cost_centre) ? trim((string)$row->cost_centre) : '__NULL__';
+                if($ccKey === '') {
+                    $ccKey = '__NULL__';
+                }
+                $key .= '|' . $ccKey;
+        }
+            $map[$key] = isset($row->total_budget) ? (float)$row->total_budget : 0;
+        }
+
+        return $map;
+    }
+
+    private function sumPrevTotalBudget($prevTable, $status, $accountCodes = [], $costCentres = null, $isAllHrd = false, $includeNullCostCentre = false) {
+        if(!$prevTable || empty($accountCodes)) {
+            return 0;
+        }
+
+        $rows = $this->fetchPrevTotalBudget($prevTable, $status, $accountCodes, $costCentres, true, $includeNullCostCentre);
+        if(empty($rows)) {
+            return 0;
+        }
+
+        $grouped = [];
+        foreach($rows as $key => $value) {
+            list($account, $cc) = array_pad(explode('|', $key, 2), 2, '__NULL__');
+            if(!isset($grouped[$account])) {
+                $grouped[$account] = [];
+            }
+            $grouped[$account][$cc] = $value;
+        }
+
+        $total = 0;
+        foreach($grouped as $account => $ccData) {
+            foreach($ccData as $cc => $value) {
+                if($isAllHrd && substr($account,0,3) === '721' && $cc === '1200') {
+                    continue;
+                }
+                $total += $value;
+            }
+        }
+
+        return $total;
+    }
+
+    private function setPrevBudgetForRows(&$rows, $prevTable, $status, $costCentres, $matchCostCentre, $isAllHrd = false, $includeNullCostCentre = false) {
+        if(empty($rows) || !is_array($rows)) {
+            return;
+        }
+
+        $accountCodes = [];
+        foreach($rows as $row) {
+            if(isset($row->account_code) && $row->account_code !== '') {
+                $accountCodes[] = $row->account_code;
+            }
+        }
+
+        $accountCodes = array_values(array_unique($accountCodes));
+        if(!$prevTable || empty($accountCodes)) {
+            foreach($rows as $row) {
+                if(isset($row->account_code)) {
+                    $row->total_budget = 0;
+                }
+            }
+            return;
+        }
+
+        $totals = $this->fetchPrevTotalBudget($prevTable, $status, $accountCodes, $costCentres, true, $includeNullCostCentre);
+        $grouped = [];
+        foreach($totals as $key => $value) {
+            list($account, $cc) = array_pad(explode('|', $key, 2), 2, '__NULL__');
+            $cc = $cc === '' ? '__NULL__' : $cc;
+            if(!isset($grouped[$account])) {
+                $grouped[$account] = [];
+            }
+            $grouped[$account][$cc] = $value;
+        }
+
+        foreach($rows as $row) {
+            if(!isset($row->account_code)) {
+                continue;
+            }
+            $account = $row->account_code;
+            if(!isset($grouped[$account])) {
+                $row->total_budget = 0;
+                continue;
+            }
+            if($matchCostCentre) {
+                $ccKey = isset($row->cost_centre) ? trim((string)$row->cost_centre) : '__NULL__';
+                if($ccKey === '') {
+                    $ccKey = '__NULL__';
+                }
+                $row->total_budget = isset($grouped[$account][$ccKey]) ? $grouped[$account][$ccKey] : 0;
+                continue;
+            }
+
+            $row->total_budget = 0;
+            foreach($grouped[$account] as $ccKey => $value) {
+                if($isAllHrd && substr($account,0,3) === '721' && $ccKey === '1200') {
+                    continue;
+                }
+                $row->total_budget += $value;
+            }
+        }
+    }
+
+    private function determinePrevCostCentres($costCentre, $groupCc, $ccMember, $costCentreUser) {
+        $centres = null;
+
+        if($groupCc && !empty($ccMember)) {
+            $centres = $ccMember;
+        } elseif($costCentre !== 'ALL' && $costCentre !== '') {
+            $centres = [$costCentre];
+        }
+
+        if(is_array($costCentreUser) && !empty($costCentreUser)) {
+            if($centres === null) {
+                $centres = $costCentreUser;
+            } else {
+                $intersection = array_values(array_intersect($centres, $costCentreUser));
+                $centres = !empty($intersection) ? $intersection : $costCentreUser;
+            }
+        }
+
+        if(is_array($centres)) {
+            $centres = array_values(array_filter(array_unique($centres), function($value) {
+                return $value !== '' && $value !== null;
+            }));
+        }
+
+        return $centres;
+    }
 
 
     function get_subaccount(){
@@ -776,156 +949,6 @@ class Budget_by_deptnew_actual extends BE_Controller {
         $res['user'] = get_data('tbl_user','id',json_decode($r->user_id,true))->result_array();
 
 		render($res['user'], 'json');
-	}
-
-	function get_data() {
-		$data = get_data('tbl_m_bottomup_besaran','id',post('id'))->row_array();
-		render($data,'json');
-	}	
-
-    function save_perubahan() {       
-
-        $table = 'tbl_fact_lstbudget_' . user('tahun_budget');
-        $data   = json_decode(post('json'),true);
-
-        foreach($data as $id => $record) {
-            $result = $record;
-            foreach ($result as $r => $v) {               
-                update_data($table, $result,'id',$id);
-
-                $upd = get_data($table, 'id',$id)->row();
-                $field = '';
-                $total = 0;
-                for ($i = 1; $i <= 12; $i++) { 
-                    $field = 'B_' . sprintf('%02d', $i);
-                    $total += $upd->$field ;
-                }
-                update_data($table,['total_budget' => $total],'id',$upd->id);
-            }        
-        }
-    }
-
-    function import() {
-		ini_set('memory_limit', '-1');
-
-        $table = 'tbl_fact_lstbudget_' .post('tahun');
-        $cost_centre = post('cost_centre');
-        $filter = post();
-        
-        if($filter['tab'] == '#result2'){
-            $col = ['ACCOUNT_CODE', 'SUB_ACCOUNT', 'JANUARY','FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
-        } elseif($filter['tab'] == '#result') {
-            $col = ['ACCOUNT_CODE', 'SUB_ACCOUNT', 'EST_01', 'EST_02', 'EST_03', 'EST_04', 'EST_05', 'EST_06', 'EST_07', 'EST_08', 'EST_09', 'EST_10', 'EST_11', 'EST_12'];
-        } elseif($filter['tab'] == '#result3'){
-            $col = ['ACCOUNT_CODE', 'SUB_ACCOUNT', 'THN_01', 'THN_02', 'THN_03', 'THN_04', 'THN_05', 'THN_06', 'THN_07', 'THN_08', 'THN_09', 'THN_10'];
-        }
-
-    
-		$file = post('fileimport');
-
-
-		$this->load->library('simpleexcel');
-		$this->simpleexcel->define_column($col);
-		$jml = $this->simpleexcel->read($file);
-
-		$c = 0;
-        $save = 0;
-		foreach($jml as $i => $k) {
-			if($i==0) {
-				for($j = 11; $j <= $k; $j++) {
-					$data = $this->simpleexcel->parsing($i,$j);
-
-                    if($cost_centre == 'ALL') {
-                        $response = [
-                            'status' => 'failed',
-                            'message' => 'Silakan pilih cost centre untuk import data'
-                        ];
-                        render($response,'json');
-                        return ;
-                    }
-
-                    $sub_acc = get_data('tbl_fact_cost_centre',[
-                        'select' => 'id_sub_account',
-                        'where' => [
-                            'kode' => $cost_centre,
-                        ],
-                    ])->row();
-
-                    if(isset($sub_acc->id_sub_account)) {
-
-                        $id_sub_acc1 = json_decode($sub_acc->id_sub_account);
-                         $id_sub_acc = get_data('tbl_fact_sub_account','id', $id_sub_acc1[0])->row();
-
- 
-                    // debug($data['januari']);die;
-                        // debug($data['januari']);die;
-                        if($filter['tab'] == "#result"){
-                            $data2['EST_01'] = (isset($data['EST_01']) ? str_replace(['.',','],'',$data['EST_01']) : 0);
-                            $data2['EST_02'] = (isset($data['EST_02']) ? str_replace(['.',','],'',$data['EST_02']) : 0);
-                            $data2['EST_03'] = (isset($data['EST_03']) ? str_replace(['.',','],'',$data['EST_03']) : 0);
-                            $data2['EST_04'] = (isset($data['EST_04']) ? str_replace(['.',','],'',$data['EST_04']) : 0);
-                            $data2['EST_05'] = (isset($data['EST_05']) ? str_replace(['.',','],'',$data['EST_05']) : 0);
-                            $data2['EST_06'] = (isset($data['EST_06']) ? str_replace(['.',','],'',$data['EST_06']) : 0);
-                            $data2['EST_07'] = (isset($data['EST_07']) ? str_replace(['.',','],'',$data['EST_07']) : 0);
-                            $data2['EST_08'] = (isset($data['EST_08']) ? str_replace(['.',','],'',$data['EST_08']) : 0);
-                            $data2['EST_09'] = (isset($data['EST_09']) ? str_replace(['.',','],'',$data['EST_09']) : 0);
-                            $data2['EST_10'] = (isset($data['EST_10']) ? str_replace(['.',','],'',$data['EST_10']) : 0);
-                            $data2['EST_11'] = (isset($data['EST_11']) ? str_replace(['.',','],'',$data['EST_11']) : 0);
-                            $data2['EST_12'] = (isset($data['EST_12']) ? str_replace(['.',','],'',$data['EST_12']) : 0);
-        
-                            $field = "" ;
-                            for ($j = 1; $j <= setting('actual_budget'); $j++) {
-                                $field = 'EST_' . sprintf('%02d', $j);
-                                unset($data2[$field]) ;                    
-                            }
-                            
-                        } else if($filter['tab'] == '#result2'){
-                            $data2['B_01'] = (isset($data['JANUARY']) ? str_replace(['.',','],'', $data['JANUARY']) : 0);
-                            $data2['B_02'] = (isset($data['FEBRUARY']) ? str_replace(['.',','],'',$data['FEBRUARY']) : 0);
-                            $data2['B_03'] = (isset($data['MARCH']) ? str_replace(['.',','],'',$data['MARCH']) : 0);
-                            $data2['B_04'] = (isset($data['APRIL']) ? str_replace(['.',','],'',$data['APRIL']) : 0);
-                            $data2['B_05'] = (isset($data['MAY']) ? str_replace(['.',','],'',$data['MAY']) : 0);
-                            $data2['B_06'] = (isset($data['JUNE']) ? str_replace(['.',','],'',$data['JUNE']) : 0);
-                            $data2['B_07'] = (isset($data['JULY']) ? str_replace(['.',','],'',$data['JULY']) : 0);
-                            $data2['B_08'] = (isset($data['AUGUST']) ? str_replace(['.',','],'',$data['AUGUST']) : 0);
-                            $data2['B_09'] = (isset($data['SEPTEMBER']) ? str_replace(['.',','],'',$data['SEPTEMBER']) : 0);
-                            $data2['B_10'] = (isset($data['OCTOBER']) ? str_replace(['.',','],'',$data['OCTOBER']) : 0);
-                            $data2['B_11'] = (isset($data['NOVEMBER']) ? str_replace(['.',','],'',$data['NOVEMBER']) : 0);
-                            $data2['B_12'] = (isset($data['DECEMBER']) ? str_replace(['.',','],'',$data['DECEMBER']) : 0);
-                        } else if($filter['tab'] == '#result3'){
-                            $data2['THN_01'] = (isset($data['THN_01']) ? str_replace(['.',','],'',$data['THN_01']) : 0);
-                            $data2['THN_02'] = (isset($data['THN_02']) ? str_replace(['.',','],'',$data['THN_02']) : 0);
-                            $data2['THN_03'] = (isset($data['THN_03']) ? str_replace(['.',','],'',$data['THN_03']) : 0);
-                            $data2['THN_04'] = (isset($data['THN_04']) ? str_replace(['.',','],'',$data['THN_04']) : 0);
-                            $data2['THN_05'] = (isset($data['THN_05']) ? str_replace(['.',','],'',$data['THN_05']) : 0);
-                            $data2['THN_06'] = (isset($data['THN_06']) ? str_replace(['.',','],'',$data['THN_06']) : 0);
-                            $data2['THN_07'] = (isset($data['THN_07']) ? str_replace(['.',','],'',$data['THN_07']) : 0);
-                            $data2['THN_08'] = (isset($data['THN_08']) ? str_replace(['.',','],'',$data['THN_08']) : 0);
-                            $data2['THN_09'] = (isset($data['THN_09']) ? str_replace(['.',','],'',$data['THN_09']) : 0);
-                            $data2['THN_10'] = (isset($data['THN_10']) ? str_replace(['.',','],'',$data['THN_10']) : 0);
-                        }
-
-                        
-                        $data2['create_at'] = date('Y-m-d H:i:s');
-                        $data2['create_by'] = user('nama');
-                        // if(in_array($data['Code'],$acc1))
-                        $save = update_data($table,$data2,['account_code'=>$data['ACCOUNT_CODE'],'cost_centre'=>$cost_centre,'sub_account'=>$id_sub_acc->sub_account]);					
-                        if($save) $c++;
-                    }
-				}
-			}
-		}
-
-
-		
-
-		
-		$response = [
-			'status' => 'success',
-			'message' => $c.' '.lang('data_berhasil_disimpan').'.'
-		];
-		@unlink($file);
-		render($response,'json');
 	}
 
     function isi_listbudget($tahun="",$cc=""){
