@@ -52,8 +52,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
 
         $status = 0;
         $table = 'tbl_fact_lstbudget_' . ($tahun + 1) ;
-        $prevYear = is_numeric($tahun) ? (int)$tahun : null;
-        $prevTable = ($prevYear && $prevYear > 0) ? 'tbl_fact_lstbudget_' . $prevYear : null;
+        $prevTable = 'tbl_fact_lstbudget_' . ($tahun) ;
         $costCentreUser = getCostCenterByUser(user('id'), $tahun);
 
         $group_cc = false ;
@@ -131,16 +130,6 @@ class Budget_by_deptnew_actual extends BE_Controller {
 
         // debug($acc_akses);die;
 
-        $prevCostCentres = $this->determinePrevCostCentres($cost_centre, $group_cc, $cc_member, $costCentreUser);
-        $matchCostCentre = !($cost_centre == 'ALL' || $group_cc);
-        $includeNullCostCentre = false;
-        if($group_cc) {
-            $includeNullCostCentre = true;
-        }
-        if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC]) && !empty($costCentreUser)) {
-            $includeNullCostCentre = true;
-        }
-
         $buildTemplateJoins = function($costClause) use ($table, $status) {
             $baseCondition = 'a.account_code = b.account_code';
             if($costClause){
@@ -148,6 +137,68 @@ class Budget_by_deptnew_actual extends BE_Controller {
             }
             $baseCondition .= ' and b.id_ccallocation = "' . $status . '"';
             return $table . ' b on ' . $baseCondition . ' type LEFT';
+        };
+
+        $overrideTotalBudget = function(&$rows, $queryConfig) use ($prevTable, $table) {
+            if(!$prevTable || empty($rows) || !is_array($rows) || !isset($queryConfig['join'])) {
+                return;
+            }
+
+            $prevArr = $queryConfig;
+            $prevArr['join'] = str_replace($table, $prevTable, $queryConfig['join']);
+            $groupBy = isset($queryConfig['group_by']) ? $queryConfig['group_by'] : '';
+            $groupByString = is_array($groupBy) ? implode(',', $groupBy) : (string)$groupBy;
+            $groupByUsesCostCentre = stripos($groupByString, 'cost_centre') !== false;
+            $normaliseCostCentre = function($value) {
+                if($value === null) {
+                    return '';
+                }
+                return trim((string)$value);
+            };
+            $prevRows = get_data('tbl_fact_template_report a',$prevArr)->result();
+            if(!$prevRows) {
+                return;
+            }
+
+            $prevTotals = [];
+            $prevAccountTotals = [];
+            foreach($prevRows as $prevRow) {
+                if(!isset($prevRow->account_code)) {
+                    continue;
+                }
+                $baseKey = $prevRow->account_code;
+                if($groupByUsesCostCentre) {
+                    $ccKey = $normaliseCostCentre(isset($prevRow->cost_centre) ? $prevRow->cost_centre : '');
+                    $baseKey .= '|' . $ccKey;
+                }
+                $mapKey = $baseKey;
+                $budgetValue = isset($prevRow->total_budget) ? (float)$prevRow->total_budget : 0;
+                $prevTotals[$mapKey] = $budgetValue;
+                if(!isset($prevAccountTotals[$prevRow->account_code])) {
+                    $prevAccountTotals[$prevRow->account_code] = 0;
+                }
+                $prevAccountTotals[$prevRow->account_code] += $budgetValue;
+            }
+
+            if(empty($prevTotals)) {
+                return;
+            }
+
+            foreach($rows as $row) {
+                if(!isset($row->account_code)) {
+                    continue;
+                }
+                $mapKey = $row->account_code;
+                if($groupByUsesCostCentre) {
+                    $ccKey = $normaliseCostCentre(isset($row->cost_centre) ? $row->cost_centre : '');
+                    $mapKey .= '|' . $ccKey;
+                }
+                if(isset($prevTotals[$mapKey])) {
+                    $row->total_budget = $prevTotals[$mapKey];
+                } elseif(isset($prevAccountTotals[$row->account_code])) {
+                    $row->total_budget = $prevAccountTotals[$row->account_code];
+                }
+            }
         };
 
         $arr = [
@@ -197,7 +248,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
 
         $isAllHrd = user('id_group') == HRD && $cost_centre == 'ALL';
         $data['mst_account'][0] = get_data('tbl_fact_template_report a',$arr)->result();
-        $this->setPrevBudgetForRows($data['mst_account'][0], $prevTable, $status, $prevCostCentres, $matchCostCentre, $isAllHrd, $includeNullCostCentre);
+        $overrideTotalBudget($data['mst_account'][0], $arr);
         $customSelect = 'sum(b.B_01) as B_01, sum(b.B_02) as B_02, sum(b.B_03) as B_03, 
             sum(b.B_04) as B_04, sum(b.B_05) as B_05, sum(b.B_06) as B_06, 
             sum(b.B_07) as B_07, sum(b.B_08) as B_08, sum(b.B_09) as B_09,
@@ -332,7 +383,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
             }
 
             $data['mst_account'][$m0->id] = get_data('tbl_fact_template_report a',$arr)->result();
-            $this->setPrevBudgetForRows($data['mst_account'][$m0->id], $prevTable, $status, $prevCostCentres, $matchCostCentre, $isAllHrd, $includeNullCostCentre);
+            $overrideTotalBudget($data['mst_account'][$m0->id], $arr);
             foreach($data['mst_account'][$m0->id] as $m1) {
                 $customWhere = [
                     '__m0'=>'(a.parent_id = "'.$m1->id.'")',
@@ -378,7 +429,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
                 // }
 
                 $data['mst_account'][$m1->id] = get_data('tbl_fact_template_report a',$arr)->result();
-                $this->setPrevBudgetForRows($data['mst_account'][$m1->id], $prevTable, $status, $prevCostCentres, $matchCostCentre, $isAllHrd, $includeNullCostCentre);
+                $overrideTotalBudget($data['mst_account'][$m1->id], $arr);
 
                 foreach($data['mst_account'][$m1->id] as $m2) {
                     $customWhere = [
@@ -426,7 +477,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
                     }
 
                     $data['mst_account'][$m2->id] = get_data('tbl_fact_template_report a',$arr)->result();
-                    $this->setPrevBudgetForRows($data['mst_account'][$m2->id], $prevTable, $status, $prevCostCentres, $matchCostCentre, $isAllHrd, $includeNullCostCentre);
+                    $overrideTotalBudget($data['mst_account'][$m2->id], $arr);
                 }
             }
         }
@@ -541,7 +592,8 @@ class Budget_by_deptnew_actual extends BE_Controller {
                 // }
 
                 $sum = get_data($table . ' a',$arr)->row();
-                $sum->total_budget = $this->sumPrevTotalBudget($prevTable, $status, $acc, $prevCostCentres, $isAllHrd, $includeNullCostCentre);
+                $sum_budget = get_data($prevTable . ' a',$arr)->row();
+                $sum_budget->total_budget = isset($sum_budget->total_budget) ? (float)$sum_budget->total_budget : 0;
             }else{
                 $arr = [
                     'select' => $customSelect2,
@@ -552,14 +604,15 @@ class Budget_by_deptnew_actual extends BE_Controller {
                 ];
 
                 $sum = get_data($table . ' a',$arr)->row();
-                $sum->total_budget = 0;
+                $sum_budget = get_data($prevTable . ' a',$arr)->row();
+                $sum_budget->total_budget = 0;
             }
 
 
             $totalBudgetMonthly = 0;
             for($i = 1; $i <= 12; $i++) {
                 $field = 'B_' . sprintf('%02d', $i);
-                $totalBudgetMonthly += $sum->$field;
+                $totalBudgetMonthly += $sum_budget->$field;
             }
 
             $data['total_header'][$th->id] =
@@ -577,7 +630,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
                 'B_11' => $sum->B_11,
                 'B_12' => $sum->B_12,
                 'total' => $totalBudgetMonthly,
-                'total_budget' => $sum->total_budget,
+                'total_budget' => $sum_budget->total_budget,
 
                 'EST_01' => $sum->EST_01,
                 'EST_02' => $sum->EST_02,
@@ -648,45 +701,25 @@ class Budget_by_deptnew_actual extends BE_Controller {
             }
 
             $sum = get_data($table . ' a',$arr)->row();
-            $sum->total_budget = $this->sumPrevTotalBudget($prevTable, $status, $labourAccountCodes, $prevCostCentres, $isAllHrd, $includeNullCostCentre);
+            $prevSum = get_data($prevTable . ' a',$arr)->row();
 
             $labourBudgetMonthly = 0;
+            $labourData = [];
             for($i = 1; $i <= 12; $i++) {
-                $field = 'B_' . sprintf('%02d', $i);
-                $labourBudgetMonthly += $sum->$field;
+                $budgetField = 'B_' . sprintf('%02d', $i);
+                $estField = 'EST_' . sprintf('%02d', $i);
+                $budgetValue = ($sum && isset($sum->$budgetField)) ? (float)$sum->$budgetField : 0;
+                $estValue = ($sum && isset($sum->$estField)) ? (float)$sum->$estField : 0;
+                $labourData[$budgetField] = $budgetValue;
+                $labourData[$estField] = $estValue;
+                $labourBudgetMonthly += $budgetValue;
             }
 
-            $data['total_labour'][$m->id] =
-            [
-                'B_01' => $sum->B_01,
-                'B_02' => $sum->B_02,
-                'B_03' => $sum->B_03,
-                'B_04' => $sum->B_04,
-                'B_05' => $sum->B_05,
-                'B_06' => $sum->B_06,
-                'B_07' => $sum->B_07,
-                'B_08' => $sum->B_08,
-                'B_09' => $sum->B_09,
-                'B_10' => $sum->B_10,
-                'B_11' => $sum->B_11,
-                'B_12' => $sum->B_12,
-                'total' => $labourBudgetMonthly,
-                'total_budget' => $sum->total_budget !== null ? $sum->total_budget : 0,
+            $labourData['total'] = $labourBudgetMonthly;
+            $labourData['total_budget'] = ($prevSum && isset($prevSum->total_budget)) ? (float)$prevSum->total_budget : 0;
+            $labourData['total_le'] = ($sum && isset($sum->total_le)) ? (float)$sum->total_le : 0;
 
-                'EST_01' => $sum->EST_01,
-                'EST_02' => $sum->EST_02,
-                'EST_03' => $sum->EST_03,
-                'EST_04' => $sum->EST_04,
-                'EST_05' => $sum->EST_05,
-                'EST_06' => $sum->EST_06,
-                'EST_07' => $sum->EST_07,
-                'EST_08' => $sum->EST_08,
-                'EST_09' => $sum->EST_09,
-                'EST_10' => $sum->EST_10,
-                'EST_11' => $sum->EST_11,
-                'EST_12' => $sum->EST_12,
-                'total_le' => $sum->total_le,
-            ];
+            $data['total_labour'][$m->id] = $labourData;
 
             $data['id_labour'][] = $m->id;
         }
@@ -705,198 +738,6 @@ class Budget_by_deptnew_actual extends BE_Controller {
 	   
 	    render($response,'json');
 	}
-
-
-    private function fetchPrevTotalBudget($prevTable, $status, $accountCodes = [], $costCentres = null, $groupByCostCentre = false, $includeNullCostCentre = false) {
-        if(!$prevTable || empty($accountCodes)) {
-            return [];
-        }
-
-        if(!is_array($accountCodes)) {
-            $accountCodes = [$accountCodes];
-        }
-
-        $accountCodes = array_values(array_filter(array_unique($accountCodes), function($value) {
-            return $value !== '' && $value !== null;
-        }));
-        if(empty($accountCodes)) {
-            return [];
-        }
-
-        $where = [
-            'id_ccallocation' => $status,
-            'account_code' => $accountCodes,
-        ];
-
-        if(is_array($costCentres) && !empty($costCentres)) {
-            $where['cost_centre'] = $costCentres;
-        }
-
-        $select = 'account_code, SUM(IFNULL(total_budget,0)) as total_budget';
-        $groupBy = 'account_code';
-
-        if($groupByCostCentre) {
-            $select .= ', cost_centre';
-            $groupBy .= ', cost_centre';
-        }
-
-        $query = [
-            'select' => $select,
-            'where' => $where,
-            'group_by' => $groupBy,
-        ];
-
-        $rows = get_data($prevTable . ' p', $query)->result();
-
-        if($includeNullCostCentre && $groupByCostCentre && is_array($costCentres) && !empty($costCentres)) {
-            $nullWhere = $where;
-            unset($nullWhere['cost_centre']);
-            $nullWhere['__null_cost_centre'] = '(p.cost_centre IS NULL)';
-            $nullQuery = [
-                'select' => $select,
-                'where' => $nullWhere,
-                'group_by' => $groupBy,
-            ];
-            $nullRows = get_data($prevTable . ' p', $nullQuery)->result();
-            if(!empty($nullRows)) {
-                $rows = array_merge($rows, $nullRows);
-            }
-        }
-        $map = [];
-        foreach($rows as $row) {
-            $key = $row->account_code;
-            if($groupByCostCentre) {
-                $ccKey = isset($row->cost_centre) ? trim((string)$row->cost_centre) : '__NULL__';
-                if($ccKey === '') {
-                    $ccKey = '__NULL__';
-                }
-                $key .= '|' . $ccKey;
-        }
-            $map[$key] = isset($row->total_budget) ? (float)$row->total_budget : 0;
-        }
-
-        return $map;
-    }
-
-    private function sumPrevTotalBudget($prevTable, $status, $accountCodes = [], $costCentres = null, $isAllHrd = false, $includeNullCostCentre = false) {
-        if(!$prevTable || empty($accountCodes)) {
-            return 0;
-        }
-
-        $rows = $this->fetchPrevTotalBudget($prevTable, $status, $accountCodes, $costCentres, true, $includeNullCostCentre);
-        if(empty($rows)) {
-            return 0;
-        }
-
-        $grouped = [];
-        foreach($rows as $key => $value) {
-            list($account, $cc) = array_pad(explode('|', $key, 2), 2, '__NULL__');
-            if(!isset($grouped[$account])) {
-                $grouped[$account] = [];
-            }
-            $grouped[$account][$cc] = $value;
-        }
-
-        $total = 0;
-        foreach($grouped as $account => $ccData) {
-            foreach($ccData as $cc => $value) {
-                if($isAllHrd && substr($account,0,3) === '721' && $cc === '1200') {
-                    continue;
-                }
-                $total += $value;
-            }
-        }
-
-        return $total;
-    }
-
-    private function setPrevBudgetForRows(&$rows, $prevTable, $status, $costCentres, $matchCostCentre, $isAllHrd = false, $includeNullCostCentre = false) {
-        if(empty($rows) || !is_array($rows)) {
-            return;
-        }
-
-        $accountCodes = [];
-        foreach($rows as $row) {
-            if(isset($row->account_code) && $row->account_code !== '') {
-                $accountCodes[] = $row->account_code;
-            }
-        }
-
-        $accountCodes = array_values(array_unique($accountCodes));
-        if(!$prevTable || empty($accountCodes)) {
-            foreach($rows as $row) {
-                if(isset($row->account_code)) {
-                    $row->total_budget = 0;
-                }
-            }
-            return;
-        }
-
-        $totals = $this->fetchPrevTotalBudget($prevTable, $status, $accountCodes, $costCentres, true, $includeNullCostCentre);
-        $grouped = [];
-        foreach($totals as $key => $value) {
-            list($account, $cc) = array_pad(explode('|', $key, 2), 2, '__NULL__');
-            $cc = $cc === '' ? '__NULL__' : $cc;
-            if(!isset($grouped[$account])) {
-                $grouped[$account] = [];
-            }
-            $grouped[$account][$cc] = $value;
-        }
-
-        foreach($rows as $row) {
-            if(!isset($row->account_code)) {
-                continue;
-            }
-            $account = $row->account_code;
-            if(!isset($grouped[$account])) {
-                $row->total_budget = 0;
-                continue;
-            }
-            if($matchCostCentre) {
-                $ccKey = isset($row->cost_centre) ? trim((string)$row->cost_centre) : '__NULL__';
-                if($ccKey === '') {
-                    $ccKey = '__NULL__';
-                }
-                $row->total_budget = isset($grouped[$account][$ccKey]) ? $grouped[$account][$ccKey] : 0;
-                continue;
-            }
-
-            $row->total_budget = 0;
-            foreach($grouped[$account] as $ccKey => $value) {
-                if($isAllHrd && substr($account,0,3) === '721' && $ccKey === '1200') {
-                    continue;
-                }
-                $row->total_budget += $value;
-            }
-        }
-    }
-
-    private function determinePrevCostCentres($costCentre, $groupCc, $ccMember, $costCentreUser) {
-        $centres = null;
-
-        if($groupCc && !empty($ccMember)) {
-            $centres = $ccMember;
-        } elseif($costCentre !== 'ALL' && $costCentre !== '') {
-            $centres = [$costCentre];
-        }
-
-        if(is_array($costCentreUser) && !empty($costCentreUser)) {
-            if($centres === null) {
-                $centres = $costCentreUser;
-            } else {
-                $intersection = array_values(array_intersect($centres, $costCentreUser));
-                $centres = !empty($intersection) ? $intersection : $costCentreUser;
-            }
-        }
-
-        if(is_array($centres)) {
-            $centres = array_values(array_filter(array_unique($centres), function($value) {
-                return $value !== '' && $value !== null;
-            }));
-        }
-
-        return $centres;
-    }
 
 
     function get_subaccount(){
