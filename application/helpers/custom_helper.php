@@ -537,10 +537,25 @@ function rm_js($content='') {
 }
 
 function setting($key='') {
+    static $cache = [];
+
+    if($key === '') {
+        return '';
+    }
+
+    if(array_key_exists($key, $cache)) {
+        return $cache[$key];
+    }
+
     $CI = get_instance();
 
     if($key === 'actual_budget') {
-        $tahunActive = setting('tahun_budget');
+        $tahunActive = $CI->config->item('setting_tahun_budget');
+        if($tahunActive === null || $tahunActive === '') {
+            $tahunActive = $CI->config->item('user_tahun_budget');
+        }
+
+        $value = 0;
         if($tahunActive) {
             $row = get_data('tbl_fact_tahun_budget',[
                 'select' => 'actual_manex',
@@ -548,19 +563,17 @@ function setting($key='') {
                 'limit' => 1,
             ])->row();
             if($row && isset($row->actual_manex)) {
-                return (int)$row->actual_manex;
+                $value = (int)$row->actual_manex;
             }
         }
 
-        return 0;
+        $cache[$key] = $value;
+        return $value;
     }
 
-    $userValue = $CI->config->item('user_'.$key);
-    if($userValue !== null && $userValue !== '') {
-        return $userValue;
-    }
-
-    return $CI->config->item('setting_'.$key) ? $CI->config->item('setting_'.$key) : '';
+    $configValue = $CI->config->item('setting_'.$key);
+    $cache[$key] = $configValue ? $configValue : '';
+    return $cache[$key];
 }
 
 function user($key='') {
