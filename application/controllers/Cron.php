@@ -52,14 +52,14 @@ class Cron extends MY_Controller {
             ]
         ])->result();
 
-        debug($res);die;
-
         $jum = 0;
         $old_table = '';
         $new_table = '';
         foreach($res as $v) {
             $old_table = ($v->table_name);
             $new_table = str_replace($tahun0, $tahun1, $old_table);
+
+            debug($old_table . ' => ' . $new_table);die;
 
             $sql = "CREATE TABLE $new_table LIKE $old_table";
 
