@@ -48,155 +48,98 @@ class Tahun_budget extends BE_Controller {
 
 		$response = save_data('tbl_fact_tahun_budget',$data,post(':validation'));
 
-		// if($response['status'] = 'success') {
-		// 	$this->copy_budget(post('tahun'));
-		// }
+		if (isset($response['status']) && $response['status'] === 'success' && !empty($data['tahun'])) {
+			$this->create_file_budget($data['tahun']);
+			$this->create_budget_pic($data['tahun']);
+		}
 
 		render($response,'json');
 	}
 
-	function copy_budget($tahun){
-		
-		$current_tahun = date('Y');
-		die;
+	function create_file_budget($tahun="") {
 
-		$current_user_acc = get_data($this->tbl_user_act_account, [
-			'where_array' => ['tahun_budget' => $current_tahun]
-		])->result_array();
-		$current_user_pra = get_data($this->tbl_user_prnalokasi, [
-			'where_array' => ['tahun_budget' => $current_tahun]
-		])->result_array();
-		$current_user_atr = get_data($this->tbl_user_atribute, [
-			'where_array' => ['tahun_budget' => $current_tahun]
-		])->result_array();
-		
-		delete_data($this->tbl_user_act_account, 'tahun_budget', $tahun);
-		delete_data($this->tbl_user_prnalokasi, 'tahun_budget', $tahun);
-		delete_data($this->tbl_user_atribute, 'tahun_budget', $tahun);
+        $tahun1 = $tahun ;
+        $tahun0 = $tahun - 1 ;
+    
+        $res = get_data('information_schema.tables',[
+            'select' => 'table_name',
+            'where' => [
+                'table_schema' => 'manex',     
+                'table_name REGEXP' => '_[0-9]{4}$',
+                'table_name like' => "%_" . $tahun0,
+                '__m' => "(substr(table_name, 1, 4) != 'act_' AND substr(table_name, 1, 4) != 'sim_')"
+ 
+            ]
+        ])->result();
 
-		foreach($current_user_acc as $v){
-			$v['tahun_budget'] = $tahun;
-			insert_data($this->tbl_user_act_account,$v);
+        $jum = 0;
+        $old_table = '';
+        $new_table = '';
+        foreach($res as $v) {
+            $old_table = ($v->TABLE_NAME);
+            $new_table = str_replace($tahun0, $tahun1, $old_table);
+
+            $sql = "CREATE TABLE $new_table LIKE $old_table";
+
+            if(!table_exists($new_table)) {
+                $this->db->query($sql);
+                $jum++;
+            }
+        }
+
+    }
+
+	function create_budget_pic($tahun = '') {
+		$tahun = (int) $tahun;
+		if ($tahun <= 0) {
+			return;
 		}
 
-		foreach($current_user_pra as $v){
-			$v['tahun_budget'] = $tahun;
-			insert_data($this->tbl_user_prnalokasi,$v);
-		}
-		
-		foreach($current_user_atr as $v){
-			unset($v['id']);
-			$v['tahun_budget'] = $tahun;
-			insert_data($this->tbl_user_atribute,$v);
+		$tahun_sebelumnya = $tahun - 1;
+		$fields = $this->db->list_fields('tbl_fact_pic_budget');
+		if (empty($fields)) {
+			return;
 		}
 
+		if (!in_array('tahun', $fields, true)) {
+			return;
+		}
 
+		$columns = [];
+		$selects = [];
+		foreach ($fields as $field) {
+			if ($field === 'id') {
+				continue;
+			}
 
-	}
+			$identifier = $this->db->protect_identifiers($field);
+			$columns[] = $identifier;
+			if ($field === 'tahun') {
+				$selects[] = $this->db->escape($tahun) . ' AS ' . $identifier;
+				continue;
+			}
 
-	function create_tbl_trx_budget($tahun){
+			$selects[] = 'src.' . $identifier;
+		}
 
-		if(!table_exists('tbl_budget_byprod_'.$tahun))
-		$this->db->query('CREATE TABLE IF NOT EXISTS tbl_budget_byprod_'.$tahun.' (
-			id int(9) NOT NULL primary key auto_increment,
-			gl_account varchar(6) NOT NULL,
-			sub_account varchar(4) DEFAULT NULL,
-			kode_proses varchar(25) DEFAULT NULL,
-			prsn_alokasi double(9,2) NOT NULL,
-			bisunit varchar(10) NOT NULL,
-			B_01 double(14,2) NOT NULL,
-			B_02 double(14,2) NOT NULL,
-			B_03 double(14,2) NOT NULL,
-			B_04 double(14,2) NOT NULL,
-			B_05 double(14,2) NOT NULL,
-			B_06 double(14,2) NOT NULL,
-			B_07 double(14,2) NOT NULL,
-			B_08 double(14,2) NOT NULL,
-			B_09 double(14,2) NOT NULL,
-			B_10 double(14,2) NOT NULL,
-			B_11 double(14,2) NOT NULL,
-			B_12 double(14,2) NOT NULL,
-			total_budget double(14,2) NOT NULL,
-			last_update datetime DEFAULT NULL,
-			imported_id int(11) DEFAULT NULL,
-			imported_name varchar(35) DEFAULT NULL
-		  ) ENGINE=MyISAM;');
+		if (empty($columns) || empty($selects)) {
+			return;
+		}
 
-		  if(!table_exists('tbl_lstbudget_'.$tahun))
-		  $this->db->query('CREATE TABLE IF NOT EXISTS tbl_lstbudget_'.$tahun.' (
-			id int(11) NOT NULL primary key auto_increment,
-			username varchar(100) NOT NULL,
-			gl_account varchar(6) DEFAULT NULL,
-			gl_description varchar(50) DEFAULT NULL,
-			entity varchar(10) DEFAULT NULL,
-			cost_center varchar(4) DEFAULT NULL,
-			id_alokasi int(4) NOT NULL,
-			sub_account varchar(4) NOT NULL,
-			bisunit varchar(30) NOT NULL,
-			parent_id int(14) NOT NULL,
-			prsn_alokasi double(9,2) NOT NULL,
-			ytd_cur bigint(20) NOT NULL,
-			estimate bigint(20) NOT NULL,
-			B_01 bigint(20) NOT NULL,
-			B_02 bigint(20) NOT NULL,
-			B_03 bigint(20) NOT NULL,
-			B_04 bigint(20) NOT NULL,
-			B_05 bigint(20) NOT NULL,
-			B_06 bigint(20) NOT NULL,
-			B_07 bigint(20) NOT NULL,
-			B_08 bigint(20) NOT NULL,
-			B_09 bigint(20) NOT NULL,
-			B_10 bigint(20) NOT NULL,
-			B_11 bigint(20) NOT NULL,
-			B_12 bigint(20) NOT NULL,
-			total_budget bigint(20) NOT NULL,
-			urutan int(10) NOT NULL,
-			status int(10) NOT NULL,
-			status_alokasi int(1) NOT NULL DEFAULT 0
-		  ) ENGINE=MyISAM;');
+		// Copy prior-year PIC assignments into the newly created budget year.
+		$table = $this->db->protect_identifiers('tbl_fact_pic_budget');
+		$where_column = $this->db->protect_identifiers('tahun');
+		$sql = 'INSERT INTO ' . $table . ' (' . implode(',', $columns) . ') ' .
+			'SELECT ' . implode(',', $selects) . ' FROM ' . $table . ' src ' .
+			'WHERE src.' . $where_column . ' = ' . $this->db->escape($tahun_sebelumnya);
 
-		  if(!table_exists('tbl_trial_balance_'.($tahun-1)))
-		  $this->db->query('CREATE TABLE IF NOT EXISTS tbl_trial_balance_'.($tahun-1).' (
-			id int(11) NOT NULL primary key auto_increment,
-			`gl_account` varchar(6) NOT NULL,
-			`cost_center` varchar(4) NOT NULL,
-			`cost_center_name` varchar(100) NOT NULL,
-			`sub_account` varchar(4) NOT NULL,
-			`sub_account_name` varchar(100) NOT NULL,
-			`bisunit` varchar(15) NOT NULL,
-			`end_balance` double(14,2) NOT NULL,
-			`imported_id` int(4) NOT NULL,
-			`import_name` varchar(50) NOT NULL,
-			`periode` varchar(50) NOT NULL
-		  ) ENGINE=MyISAM;');
+		if (in_array('id_cost_centre', $fields, true)) {
+			$id_cost_centre = $this->db->protect_identifiers('id_cost_centre');
+			$sql .= ' AND NOT EXISTS (SELECT 1 FROM ' . $table . ' dst WHERE dst.' . $where_column . ' = ' .
+				$this->db->escape($tahun) . ' AND dst.' . $id_cost_centre . ' = src.' . $id_cost_centre . ')';
+		}
 
-		  $budget_by_prod = get_data('tbl_trx_lock', [
-			'where_array' => [
-				'tabel' => 'tbl_budget_byprod_'.$tahun,
-				'tahun' => $tahun
-			]
-		  ])->row_array();
-		  if(!$budget_by_prod) insert_data('tbl_trx_lock', [
-			'tahun' => $tahun,
-			'tabel' => 'tbl_budget_byprod_'.$tahun,
-			'description' => 'Summary Budget',
-			'lock' => 0,
-			'status' => 1
-		  ]);
-
-		  $lstbudget = get_data('tbl_trx_lock', [
-			'where_array' => [
-				'tabel' => 'tbl_lstbudget_'.$tahun,
-				'tahun' => $tahun
-			]
-		  ])->row_array();
-		  if(!$lstbudget) insert_data('tbl_trx_lock', [
-			'tahun' => $tahun,
-			'tabel' => 'tbl_lstbudget_'.$tahun,
-			'description' => 'List Budget',
-			'lock' => 0,
-			'status' => 1
-		  ]);
+		$this->db->query($sql);
 	}
 
 	function delete() {
@@ -204,56 +147,6 @@ class Tahun_budget extends BE_Controller {
 		render($response,'json');
 	}
 
-	function template() {
-		ini_set('memory_limit', '-1');
-		$arr = ['tahun' => 'tahun','description' => 'description','is_active' => 'is_active'];
-		$config[] = [
-			'title' => 'template_import_tahun_budget',
-			'header' => $arr,
-		];
-		$this->load->library('simpleexcel',$config);
-		$this->simpleexcel->export();
-	}
-
-	function import() {
-		ini_set('memory_limit', '-1');
-		$file = post('fileimport');
-		$col = ['tahun','description','is_active'];
-		$this->load->library('simpleexcel');
-		$this->simpleexcel->define_column($col);
-		$jml = $this->simpleexcel->read($file);
-		$c = 0;
-		foreach($jml as $i => $k) {
-			if($i==0) {
-				for($j = 2; $j <= $k; $j++) {
-					$data = $this->simpleexcel->parsing($i,$j);
-					$data['create_at'] = date('Y-m-d H:i:s');
-					$data['create_by'] = user('nama');
-					$save = insert_data('tbl_fact_tahun_budget',$data);
-					if($save) $c++;
-				}
-			}
-		}
-		$response = [
-			'status' => 'success',
-			'message' => $c.' '.lang('data_berhasil_disimpan').'.'
-		];
-		@unlink($file);
-		render($response,'json');
-	}
-
-	function export() {
-		ini_set('memory_limit', '-1');
-		$arr = ['tahun' => 'Tahun','description' => 'Description','is_active' => 'Aktif'];
-		$data = get_data('tbl_fact_tahun_budget')->result_array();
-		$config = [
-			'title' => 'data_tahun_budget',
-			'data' => $data,
-			'header' => $arr,
-		];
-		$this->load->library('simpleexcel',$config);
-		$this->simpleexcel->export();
-	}
 
 	function unlock() {
 
