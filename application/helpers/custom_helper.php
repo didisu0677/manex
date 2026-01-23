@@ -543,6 +543,19 @@ function setting($key='') {
 
 function user($key='') {
     $CI     = get_instance();
+    if($key === 'actual_budget') {
+        $tahunActive = setting('tahun_budget');
+        if($tahunActive) {
+            $row = get_data('tbl_fact_tahun_budget',[
+                'select' => 'actual_manex',
+                'where' => ['tahun' => $tahunActive],
+                'limit' => 1,
+            ])->row();
+            if($row && isset($row->actual_manex)) {
+                return (int)$row->actual_manex;
+            }
+        }
+    }
     return $CI->config->item('user_'.$key) ? $CI->config->item('user_'.$key) : '';
 }
 

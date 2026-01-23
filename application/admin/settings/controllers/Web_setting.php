@@ -112,6 +112,12 @@ class Web_setting extends BE_Controller {
 					insert_data('tbl_setting',array('_value'=>$v,'_key'=>$k));
 				}
 			}
+			
+			$cek_tahun_budget = get_data('tbl_fact_tahun_budget','tahun',user('tahun_budget'))->row();
+			if(isset($cek_tahun_budget->tahun)) {
+				update_data('tbl_fact_tahun_budget',array('actual_manex'=>post('actual_budget')),'tahun',user('tahun_budget'));
+			}
+
 		}
 		$css_path	= FCPATH . 'assets/css/';
 		@unlink($css_path.'template.css');
