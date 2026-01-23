@@ -88,7 +88,7 @@ class Budget_pic extends BE_Controller {
                     'b.id_group_department' => $m0->id,
                     'a.tahun' => $tahun
                 ],
-                'sort_by' => 'b.id_group_department'
+                'sort_by' => 'b.id_group_department, b.cost_centre'
             ])->result();
 
         }
