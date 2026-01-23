@@ -537,12 +537,8 @@ function rm_js($content='') {
 }
 
 function setting($key='') {
-    $CI     = get_instance();
-    return $CI->config->item('setting_'.$key) ? $CI->config->item('setting_'.$key) : '';
-}
+    $CI = get_instance();
 
-function user($key='') {
-    $CI     = get_instance();
     if($key === 'actual_budget') {
         $tahunActive = setting('tahun_budget');
         if($tahunActive) {
@@ -555,7 +551,20 @@ function user($key='') {
                 return (int)$row->actual_manex;
             }
         }
+
+        return 0;
     }
+
+    $userValue = $CI->config->item('user_'.$key);
+    if($userValue !== null && $userValue !== '') {
+        return $userValue;
+    }
+
+    return $CI->config->item('setting_'.$key) ? $CI->config->item('setting_'.$key) : '';
+}
+
+function user($key='') {
+    $CI     = get_instance();
     return $CI->config->item('user_'.$key) ? $CI->config->item('user_'.$key) : '';
 }
 
