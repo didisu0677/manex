@@ -59,8 +59,6 @@ class Cron extends MY_Controller {
             $old_table = ($v->TABLE_NAME);
             $new_table = str_replace($tahun0, $tahun1, $old_table);
 
-            debug($old_table . ' => ' . $new_table);die;
-
             $sql = "CREATE TABLE $new_table LIKE $old_table";
 
             if(!table_exists($new_table)) {
