@@ -21,9 +21,9 @@ class Budget_by_deptnew extends BE_Controller {
                 'group_by' => 'a.cost_centre',
         ];
 
-        if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
+        if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT])) {
             $xid = "%".user('id')."%";
-            $arr['where']['__m'] = 'user_id like "'.$xid.'"' ;
+            $arr['where']['__m'] = 'user_id like"'.$xid.'"' ;
         }
 
 
