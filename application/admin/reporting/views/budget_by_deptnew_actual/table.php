@@ -128,6 +128,15 @@ foreach($mst_account[0] as $m0) {
 		$bva0 = number_format(str_replace(['.',','],'',$xtotal_budget0) - str_replace(['.',','],'',$xtotal0));
 	}
 	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right bva_analysis" data-name="bva_analysis"  data-value="'.$bva0.'">'.$bva0.'</td>';
+	// Ratio Budget
+	if($xtotal0 === '' || $xtotal_budget0 === '') {
+		$ratio0 = '';
+	} else {
+		$actual_numeric = str_replace(['.',','],'',$xtotal0);
+		$budget_numeric = str_replace(['.',','],'',$xtotal_budget0);
+		$ratio0 = ($budget_numeric != 0) ? number_format(($actual_numeric / $budget_numeric) * 100, 2) : '';
+	}
+	echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right ratio_budget" data-name="ratio_budget"  data-value="'.$ratio0.'">'.$ratio0.''.($ratio0 !== '' ? '%' : '').'</td>';
 			?>
 	</tr>
 	<?php 
@@ -269,8 +278,17 @@ foreach($mst_account[0] as $m0) {
 				$bva1 = number_format(str_replace(['.',','],'',$xtotal_budget1) - str_replace(['.',','],'',$xtotal1));
 			}
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right bva_analysis" data-name="bva_analysis" data-id="'.$m1->id_trx.'" data-value="'.$bva1.'">'.$bva1.'</td>';
+		// Ratio Budget
+		if($xtotal1 === '' || $xtotal_budget1 === '') {
+			$ratio1 = '';
+		} else {
+			$actual_numeric = str_replace(['.',','],'',$xtotal1);
+			$budget_numeric = str_replace(['.',','],'',$xtotal_budget1);
+			$ratio1 = ($budget_numeric != 0) ? number_format(($actual_numeric / $budget_numeric) * 100, 2) : '';
+		}
+		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right ratio_budget" data-name="ratio_budget" data-id="'.$m1->id_trx.'" data-value="'.$ratio1.'">'.$ratio1.''.($ratio1 !== '' ? '%' : '').'</td>';
 
-			?>
+		?>
 		</tr>
 		<?php 
 		foreach($mst_account[$m1->id] as $m2) { 
@@ -281,7 +299,7 @@ foreach($mst_account[0] as $m0) {
 				$bgedit ="";
 				$contentedit ="true" ;
 			}
-			
+
 			?>
 			<tr>
 				<td class="sub-2"><?php echo $m2->account_code . '-' .$m2->account_name; ?></td>
@@ -393,22 +411,30 @@ foreach($mst_account[0] as $m0) {
 				$bva2 = number_format(str_replace(['.',','],'',$xtotal_budget2) - str_replace(['.',','],'',$xtotal2));
 			}
 			echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right bva_analysis" data-name="bva_analysis" data-id="'.$m2->id_trx.'" data-value="'.$bva2.'">'.$bva2.'</td>';
+		// Ratio Budget
+		if($xtotal2 === '' || $xtotal_budget2 === '') {
+			$ratio2 = '';
+		} else {
+			$actual_numeric = str_replace(['.',','],'',$xtotal2);
+			$budget_numeric = str_replace(['.',','],'',$xtotal_budget2);
+			$ratio2 = ($budget_numeric != 0) ? number_format(($actual_numeric / $budget_numeric) * 100, 2) : '';
+		}
+		echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right ratio_budget" data-name="ratio_budget" data-id="'.$m2->id_trx.'" data-value="'.$ratio2.'">'.$ratio2.''.($ratio2 !== '' ? '%' : '').'</td>';
+
+		?>
+		</tr>
+		<?php 
+		foreach($mst_account[$m2->id] as $m3) { 
+			if(count(@$mst_account[$m3->id]) >=1 ) {
+				$bgedit ="";
+				$contentedit ="false" ;
+			}else{
+				$bgedit ="";
+				$contentedit ="true" ;
+			}
 
 			?>
-			</tr>
-			
-			<?php 
-			foreach($mst_account[$m2->id] as $m3) { 
-				if(count(@$mst_account[$m3->id]) >=1 ) {
-					$bgedit ="";
-					$contentedit ="false" ;
-				}else{
-					$bgedit ="";
-					$contentedit ="true" ;
-				}
-
-				?>
-				<tr>
+			<tr>
 					<td class="sub-3"><?php echo $m3->account_code . '-' .$m3->account_name; ?></td>
 					<?php
 					$field3 = '';
@@ -511,20 +537,30 @@ foreach($mst_account[0] as $m0) {
 						$bva3 = number_format(str_replace(['.',','],'',$xtotal_budget3) - str_replace(['.',','],'',$xtotal3));
 					}
 					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right bva_analysis" data-name="bva_analysis" data-id="'.$m3->id_trx.'" data-value="'.$bva3.'">'.$bva3.'</td>';
-			
-	
-			?>
-				</tr>
-			<?php } ?>
-		<?php } ?>
-	<?php } ?>
-	<tr>
-		<td bgcolor="#778899" style="color: white; font-weight: bold; background-color: #778899 !important;">SUB TOTAL <?php echo strtoupper($m0->account_name);?></td>
-		<?php
+				// Ratio Budget
+				if($xtotal3 === '' || $xtotal_budget3 === '') {
+					$ratio3 = '';
+				} else {
+					$actual_numeric = str_replace(['.',','],'',$xtotal3);
+					$budget_numeric = str_replace(['.',','],'',$xtotal_budget3);
+					$ratio3 = ($budget_numeric != 0) ? number_format(($actual_numeric / $budget_numeric) * 100, 2) : '';
+				}
+				echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right ratio_budget" data-name="ratio_budget" data-id="'.$m3->id_trx.'" data-value="'.$ratio3.'">'.$ratio3.''.($ratio3 !== '' ? '%' : '').'</td>';
 
-		$subtotalPrinted = false;
-		$field0 = '';
-		foreach($total_header as $h => $th){
+			?>
+			</tr>
+			<?php 
+		} ?>
+	<?php } ?>
+	<?php } ?>
+
+<tr>
+	<td bgcolor="#778899" style="color: white; font-weight: bold; background-color: #778899 !important;">SUB TOTAL <?php echo strtoupper($m0->account_name);?></td>
+	<?php
+
+	$subtotalPrinted = false;
+	$field0 = '';
+	foreach($total_header as $h => $th){
 			if($m0->id == $h) {
 				$subtotalPrinted = true;
 				for ($i = 1; $i <= 12; $i++) { 
@@ -534,8 +570,9 @@ foreach($mst_account[0] as $m0) {
 				echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.number_format($sTotal_le).'</td>';
 				echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.number_format($sTotal_budget).'</td>';
 				$sBva = $sTotal_budget - $sTotal_le;
-				echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.number_format($sBva).'</td>';
-				break;
+				echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.number_format($sBva).'</td>';			// Ratio Budget
+			$sRatio = ($sTotal_budget != 0) ? number_format(($sTotal_le / $sTotal_budget) * 100, 2) : '';
+			echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.$sRatio.''.($sRatio !== '' ? '%' : '').'</td>';				break;
 			}
 		}
 
@@ -553,8 +590,11 @@ foreach($mst_account[0] as $m0) {
 					echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.$labourTotalActual.'</td>';
 					echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.$labourTotalBudget.'</td>';
 					$bvaLabourNumeric = (float)str_replace([','], '', $labourTotalBudget) - (float)str_replace([','], '', $labourTotalActual);
-					echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.number_format($bvaLabourNumeric).'</td>';
-					break;
+					echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.number_format($bvaLabourNumeric).'</td>';				// Ratio Budget
+				$labourActualNumeric = (float)str_replace([','], '', $labourTotalActual);
+				$labourBudgetNumeric = (float)str_replace([','], '', $labourTotalBudget);
+				$labourRatio = ($labourBudgetNumeric != 0) ? number_format(($labourActualNumeric / $labourBudgetNumeric) * 100, 2) : '';
+				echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.$labourRatio.''.($labourRatio !== '' ? '%' : '').'</td>';					break;
 				}
 			}
 		}
@@ -568,9 +608,12 @@ foreach($mst_account[0] as $m0) {
 			echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.number_format($sTotal_le).'</td>';
 			echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.number_format($sTotal_budget).'</td>';
 			$sBvaFallback = $sTotal_budget - $sTotal_le;
-			echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.number_format($sBvaFallback).'</td>';
-		}
-		?>
+		echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.number_format($sBvaFallback).'</td>';
+		// Ratio Budget
+		$sFallbackRatio = ($sTotal_budget != 0) ? number_format(($sTotal_le / $sTotal_budget) * 100, 2) : '';
+		echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.$sFallbackRatio.''.($sFallbackRatio !== '' ? '%' : '').'</td>';
+	}
+	?>
 </tr>
 <?php } ?>
 
@@ -589,10 +632,10 @@ foreach($mst_account[0] as $m0) {
 	// BvA Analysis
 	$gnBva = $grandTotalRemaining;
 	echo '<td class="text-right" bgcolor="#D2691E" style="color: white; background-color: #D2691E !important;"><div style="min-height: 10px; overflow: visible;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.number_format($grandTotalRemaining).'</div></td>';
+	// Ratio Budget
+	$grandRatio = ($grandTotalBudget != 0) ? number_format(($grandTotalLe / $grandTotalBudget) * 100, 2) : '';
+	echo '<td class="text-right" bgcolor="#D2691E" style="color: white; background-color: #D2691E !important;"><div style="min-height: 10px; overflow: visible;" contenteditable="false" class="edit-value text-right"  data-id="" data-value="">'.$grandRatio.''.($grandRatio !== '' ? '%' : '').'</div></td>';
 
 	?>	
 
 </tr>
-
-
-			
