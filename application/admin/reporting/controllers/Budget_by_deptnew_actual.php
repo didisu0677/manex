@@ -30,7 +30,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
 
         if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT])) {
             $xid = "%".user('id')."%";
-            $arr['where']['__m'] = 'user_id like1 "'.$xid.'"' ;
+            $arr['where']['__m'] = 'user_id like "'.$xid.'"' ;
         }
 
 
