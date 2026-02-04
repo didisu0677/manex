@@ -71,6 +71,8 @@
 									th('Overhead / Unit','','rowspan="2" class="text-center align-middle headcol" ');
 									th('Volume Produksi','','rowspan="2" class="text-center align-middle headcol" ');
 									th('Total FOH','','rowspan="2" class="text-center align-middle headcol"');
+									th('Budget Ovh Per unit','','rowspan="2" class="text-center align-middle headcol" ');
+									th('% Variance','','rowspan="2" class="text-center align-middle headcol" ');
 								
 								tr();
 									th(lang('description'),'','rowspan="" width="300"class="text-center align-middle headcol" ');
