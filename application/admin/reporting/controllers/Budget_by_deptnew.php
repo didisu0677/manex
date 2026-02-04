@@ -21,7 +21,7 @@ class Budget_by_deptnew extends BE_Controller {
                 'group_by' => 'a.cost_centre',
         ];
 
-        if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT])) {
+        if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT,ENG,MPD])) {
             $xid = "%".user('id')."%";
             $arr['where']['__m'] = 'user_id like"'.$xid.'"' ;
         }
@@ -66,7 +66,7 @@ class Budget_by_deptnew extends BE_Controller {
                     'group_by' => 'a.cost_centre',
             ];
 
-            if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
+            if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT,ENG,MPD])) {
                 $xid = "%".user('id')."%";
                 $arr_cc['where']['__m'] = 'user_id like "'.$xid.'"' ;
             }
@@ -154,7 +154,7 @@ class Budget_by_deptnew extends BE_Controller {
             $arr['join'] =   $table . ' b on a.account_code = b.account_code and b.cost_centre ="'.$cost_centre.'" and b.id_ccallocation = "'.$status.'" type LEFT';            
         }
 
-        if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
+        if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT,ENG,MPD])) {
             if($costCentreUser) $arr['where']['__m2'] = '(b.cost_centre IN ('.implode(',', $costCentreUser).') OR b.cost_centre IS NULL)';
              $arr['where']['__m'] = 'substr(a.account_code,1,2) != "72"' ;
         }elseif(user('id_group') == HRD && $cost_centre == '1200'){
@@ -288,7 +288,7 @@ class Budget_by_deptnew extends BE_Controller {
 
             }
 
-            if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
+            if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT,ENG,MPD])) {
                 if($costCentreUser) $arr['where']['__m2'] = '(b.cost_centre IN ('.implode(',', $costCentreUser).') OR b.cost_centre IS NULL)';
                 $arr['where']['__m'] = 'substr(a.account_code,1,2) != "72"' ;
             }elseif(user('id_group') == HRD && $cost_centre == '1200'){
@@ -332,7 +332,7 @@ class Budget_by_deptnew extends BE_Controller {
                     $arr['join'] =   $table . ' b on a.account_code = b.account_code and b.cost_centre ="'.$cost_centre.'" and b.id_ccallocation = "'.$status.'" type LEFT';            
                 }
 
-                if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
+                if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT,ENG,MPD])) {
                     if($costCentreUser) $arr['where']['__m2'] = '(b.cost_centre IN ('.implode(',', $costCentreUser).') OR b.cost_centre IS NULL)';
                     $arr['where']['__m1'] = 'substr(a.account_code,1,2) != "72"' ;
                 }elseif(user('id_group') == HRD && $cost_centre == '1200'){
@@ -380,7 +380,7 @@ class Budget_by_deptnew extends BE_Controller {
 
                     }
 
-                    if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
+                    if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT,ENG,MPD])) {
                         if($costCentreUser) $arr['where']['__m2'] = '(b.cost_centre IN ('.implode(',', $costCentreUser).') OR b.cost_centre IS NULL)';
                         $arr['where']['__m'] = 'substr(a.account_code,1,2) != "72"' ;
                     }elseif(user('id_group') == HRD && $cost_centre == '1200'){
@@ -409,7 +409,7 @@ class Budget_by_deptnew extends BE_Controller {
             'sort_by' => 'urutan',
         ];
 
-        if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
+        if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT,ENG,MPD])) {
             if($costCentreUser) $arr['where']['__m2'] = '(a.cost_centre IN ('.implode(',', $costCentreUser).') OR a.cost_centre IS NULL)';
             $arrh['where']['__m'] = 'substr(account_code,1,2) != "72"' ;
         }elseif(user('id_group') == HRD && $cost_centre == '1200'){
@@ -501,7 +501,7 @@ class Budget_by_deptnew extends BE_Controller {
                 }
 
                 // $arr['where']['cost_centre'] = $cca;
-                if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
+                if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT,ENG,MPD])) {
                     $arr['where']['__m'] = 'substr(a.account_code,1,2) != "72"' ;
                 }//elseif(user('id_group') == HRD){
                 //     $arr['where']['__m'] = '(substr(a.account_code,1,3) != "721" and a.cost_centre ="1200")' ;
@@ -561,7 +561,7 @@ class Budget_by_deptnew extends BE_Controller {
             'sort_by' => 'urutan',
         ];
 
-        if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
+        if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT,ENG,MPD])) {
             $arrl['where']['__m'] = 'substr(account_code,1,2) != "72"' ;
         }
 
@@ -590,7 +590,7 @@ class Budget_by_deptnew extends BE_Controller {
             // $arr['where']['cost_centre'] = $cca;
 
             // $arr['where']['cost_centre'] = $cca;
-            if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC])) {
+            if(in_array(user('id_group'), [BUDGET_PIC_FACTORY,SCM,OPR,QC,IT,ENG,MPD])) {
                 if($costCentreUser) $arr['where']['__m'] = '(a.cost_centre IN ('.implode(',', $costCentreUser).') OR a.cost_centre IS NULL)';
                 $arr['where']['__m'] = 'substr(account_code,1,2) != "72"' ;
             }elseif(user('id_group') == HRD){
