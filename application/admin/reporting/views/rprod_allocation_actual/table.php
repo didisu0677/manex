@@ -32,14 +32,16 @@
 			$total_ovh = 0;
 			foreach($variable as $v) {
 				// debug($total_biaya[$m1->kode]);die;
-				foreach($total_biaya[$m1->kode] as $t =>$v1)
-					// debug($t);die;
-					{
-					if($t==$v->account_code) {
-						if(in_array($v->account_code,['7211'])) {
-							$x = $v1 * ($m1->manwh_prsn);
-						}else{
-							$x = $v1 * ($m1->macwh_prsn);
+				$x = 0;
+				if (!empty($total_biaya[$m1->kode])) {
+					foreach($total_biaya[$m1->kode] as $t =>$v1) {
+						// debug($t);die;
+						if($t==$v->account_code) {
+							if(in_array($v->account_code,['7211'])) {
+								$x = $v1 * ($m1->manwh_prsn);
+							}else{
+								$x = $v1 * ($m1->macwh_prsn);
+							}
 						}
 					}
 				}
@@ -51,14 +53,16 @@
 			
 			$total_fixed = 0;
 			foreach($fixed as $f) {
-				foreach($total_biaya[$m1->kode] as $t1 =>$v11)
-					// debug($t);die;
-					{
-					if($t1==$f->account_code) {
-						if(in_array($f->account_code,['7212'])) {
-							$x1 = $v11 * ($m1->manwh_prsn);
-						}else{
-							$x1 = $v11 * ($m1->macwh_prsn);
+				$x1 = 0;
+				if (!empty($total_biaya[$m1->kode])) {
+					foreach($total_biaya[$m1->kode] as $t1 =>$v11) {
+						// debug($t);die;
+						if($t1==$f->account_code) {
+							if(in_array($f->account_code,['7212'])) {
+								$x1 = $v11 * ($m1->manwh_prsn);
+							}else{
+								$x1 = $v11 * ($m1->macwh_prsn);
+							}
 						}
 					}
 				}
