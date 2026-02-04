@@ -157,15 +157,15 @@
 			echo '<td class="text-right" style="background: #778899 !important; color: white !important;"></td>';
 		}
 		echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($sum_totalfixed,4).'</b></td>';
-		echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($sum_totalovh,4).'</b></td>';
+		echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"></td>';
 		echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($sum_totalqty).'</b></td>';
 		echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($sum_totalfoh).'</b></td>';
-		echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($sum_budget_ovh,4).'</b></td>';
+		echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"></td>';
 		$sum_variance_pct = 0;
 		if($sum_budget_ovh != 0) {
 			$sum_variance_pct = (($sum_totalovh - $sum_budget_ovh) / $sum_budget_ovh) * 100;
 		}
-		echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($sum_variance_pct,2).'%</b></td>';
+		echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"></td>';
 		?>
 	</tr>
 <?php } ?>
@@ -182,15 +182,15 @@
 		echo '<td class="text-right" style="background: #778899 !important; color: white !important;"></td>';
 	}
 	echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($grand_totalfixed,4).'</b></td>';
-	echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($grand_totalovh,4).'</b></td>';
+	echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"></td>';
 	echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($grand_totalqty).'</b></td>';
 	echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($grand_totalfoh).'</b></td>';
-	echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($grand_budget_ovh,4).'</b></td>';
+	echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"></td>';
 	$grand_variance_pct = 0;
 	if($grand_budget_ovh != 0) {
 		$grand_variance_pct = (($grand_totalovh - $grand_budget_ovh) / $grand_budget_ovh) * 100;
 	}
-	echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"><b>'.number_format($grand_variance_pct,2).'%</b></td>';
+	echo '<td class="text-right" style="background: #778899 !important; color: white !important; font-weight: bold !important;"></td>';
 
 	?>
 </tr>

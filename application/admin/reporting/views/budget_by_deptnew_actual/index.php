@@ -62,10 +62,11 @@
 							th(lang('total_actual') . ' ' . (user('tahun_budget')-1),'','class="text-center align-middle headcol"style="min-width:60px"');
 							th(lang('total_budget') . ' ' . (user('tahun_budget')-1),'','class="text-center align-middle headcol"style="min-width:60px"');
 							th(lang('budget_remaining'),'','class="text-center align-middle headcol"style="min-width:60px"');
+							th('Ratio Budget','','class="text-center align-middle headcol"style="min-width:60px"');
 
 						tbody();
-						table_close();
-						?>
+
+					?>
 			</div>
 		</div>
 	</div>
