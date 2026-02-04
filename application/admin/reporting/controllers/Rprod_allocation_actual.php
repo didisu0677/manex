@@ -97,15 +97,10 @@ class Rprod_allocation_actual extends BE_Controller {
                 ]
             ])->result();
 
-     
-
             foreach($biaya as $b) {
                 // $data['total_biaya'][$m0->kode][$b->manex_account] = $b->total; 
                 $data['total_biaya'][$m0->kode][$b->manex_account] = $b->after_idle;  //diganti after idle allocation
             }
-
-            // debug($data['total_biaya'][$m0->kode]);die;
-
         }
 
         $data['variable'] = get_data('tbl_fact_manex_account a',[
@@ -122,8 +117,6 @@ class Rprod_allocation_actual extends BE_Controller {
                 'grup' => 'FIXED OVERHEAD',
             ],
         ])->result();
-
-    //    debug($total_biaya);die;
 
         $response	= array(
             'table'		=> $this->load->view('reporting/rprod_allocation_actual/table',$data,true),
