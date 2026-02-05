@@ -276,9 +276,15 @@ $(document).ready(function () {
     	calculate();
     });
 
-	$('#result').on('click', function(){
+	// Update activeTable saat tab diklik
+	$('#yearly-tab').on('click', function(){
 		activeTable = '#result';
 		judul = 'Actual and Estimate';
+	});
+
+	$('#monthly-tab').on('click', function(){
+		activeTable = '#result-monthly';
+		judul = 'Actual and Estimate Monthly';
 	});
 });	
 
@@ -355,8 +361,25 @@ $(document).on('click','.btn-export',function(){
 
 	table += $(activeTable).html();
 	
-	var target = table;
-	window.open('data:application/vnd.ms-excel,' + encodeURIComponent(target));
+	// Create blob and download link
+	var blob = new Blob([table], {
+		type: 'application/vnd.ms-excel'
+	});
+	var url = URL.createObjectURL(blob);
+	
+	// Create temporary link and trigger download
+	var a = document.createElement('a');
+	a.href = url;
+	a.download = 'Budget_Report_' + $('#filter_tahun').val() + '_' + $('#filter_cost_centre').val() + '.xls';
+	document.body.appendChild(a);
+	a.click();
+	
+	// Cleanup
+	setTimeout(function() {
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	}, 100);
+	
 	$('.bg-grey-1,.bg-grey-2.bg-grey-2-1,.bg-grey-2-2,.bg-grey-3').each(function(){
 		$(this).removeAttr('bgcolor');
 	});
