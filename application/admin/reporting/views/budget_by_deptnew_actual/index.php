@@ -91,9 +91,9 @@
 							for ($i = 1; $i <= 12; $i++) {
 								th(month_lang($i), '', 'class="text-center align-middle" colspan="4"');
 							}
-				th(lang('total_actual') . ' ' . (user('tahun_budget')-1),'','class="text-center align-middle headcol" rowspan="2" style="min-width:90px"');
-				th(lang('total_budget') . ' ' . (user('tahun_budget')-1),'','class="text-center align-middle headcol" rowspan="2" style="min-width:90px"');
-				th(lang('budget_remaining'),'','class="text-center align-middle headcol" rowspan="2" style="min-width:90px"');
+				th(lang('t_actual') . ' ' . (user('tahun_budget')-1),'','class="text-center align-middle headcol" rowspan="2" style="min-width:90px"');
+				th(lang('t_budget') . ' ' . (user('tahun_budget')-1),'','class="text-center align-middle headcol" rowspan="2" style="min-width:90px"');
+				th(lang('b_remaining'),'','class="text-center align-middle headcol" rowspan="2" style="min-width:90px"');
 				th('Ratio Budget','','class="text-center align-middle headcol" rowspan="2" style="min-width:70px"');
 							// Header row 2: Sub-column names
 							tr();							for ($i = 1; $i <= 12; $i++) {

@@ -23,5 +23,8 @@
     "setelah_jam_transfer" : "Setelah Jam Transfer",
     "total_actual": "Total Actual",
     "total_budget": "Total Budget", 
-    "budget_remaining": "Budget Remaining"
+    "budget_remaining": "Budget Remaining",
+    "t_actual": "T. ACT",
+    "t_budget": "T. BGT",
+    "b_remaining": "B. Remaining"
 }
