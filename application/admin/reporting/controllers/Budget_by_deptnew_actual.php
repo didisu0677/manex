@@ -793,7 +793,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
             for($i = 1; $i <= 12; $i++) {
                 $budgetField = 'B_' . sprintf('%02d', $i);
                 $estField = 'EST_' . sprintf('%02d', $i);
-                $budgetValue = ($sum && isset($sum->$budgetField)) ? (float)$sum->$budgetField : 0;
+                $budgetValue = ($prevSum && isset($prevSum->$budgetField)) ? (float)$prevSum->$budgetField : 0;
                 $estValue = ($sum && isset($sum->$estField)) ? (float)$sum->$estField : 0;
                 $labourData[$budgetField] = $budgetValue;
                 $labourData[$estField] = $estValue;
