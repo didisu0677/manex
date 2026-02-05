@@ -94,12 +94,12 @@ foreach($mst_account[0] as $m0) {
 					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_dev"  data-value="'.$xdev0.'">'.$xdev0.'</td>';
 					
 					// Percentage Column
-					if($x0 === '' || $xb0 === '') {
+					if($x0 === '' || $xb0 === '' || $xdev0 === '') {
 						$xpct0 = '';
 					} else {
-						$x0_numeric = str_replace(['.',','],'',$x0);
+						$xdev0_numeric = str_replace(['.',','],'',$xdev0);
 						$xb0_numeric = str_replace(['.',','],'',$xb0);
-						$xpct0 = ($xb0_numeric != 0) ? number_format(($x0_numeric / $xb0_numeric) * 100, 2) : '';
+						$xpct0 = ($xb0_numeric != 0) ? number_format(($xdev0_numeric / $xb0_numeric) * 100, 2) : '';
 					}
 					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_pct"  data-value="'.$xpct0.'">'.$xpct0.''.($xpct0 !== '' ? '%' : '').'</td>';
 					
@@ -167,12 +167,12 @@ foreach($mst_account[0] as $m0) {
 							echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_dev"  data-value="'.$xdev0.'">'.$xdev0.'</td>';
 							
 							// Percentage Column
-							if($x0 === '' || $xb0 === '') {
+							if($x0 === '' || $xb0 === '' || $xdev0 === '') {
 								$xpct0 = '';
 							} else {
-								$x0_numeric = str_replace(['.',','],'',$x0);
+								$xdev0_numeric = str_replace(['.',','],'',$xdev0);
 								$xb0_numeric = str_replace(['.',','],'',$xb0);
-								$xpct0 = ($xb0_numeric != 0) ? number_format(($x0_numeric / $xb0_numeric) * 100, 2) : '';
+								$xpct0 = ($xb0_numeric != 0) ? number_format(($xdev0_numeric / $xb0_numeric) * 100, 2) : '';
 							}
 							echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_pct"  data-value="'.$xpct0.'">'.$xpct0.''.($xpct0 !== '' ? '%' : '').'</td>';
 							}
@@ -302,12 +302,12 @@ foreach($mst_account[0] as $m0) {
 						echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_dev" data-id="'.$m1->id_trx.'" data-value="'.$xdev1.'">'.$xdev1.'</td>';
 						
 						// Percentage Column
-						if($x1 === '' || $xb1 === '') {
+						if($x1 === '' || $xb1 === '' || $xdev1 === '') {
 							$xpct1 = '';
 						} else {
-							$x1_numeric = str_replace(['.',','],'',$x1);
+							$xdev1_numeric = str_replace(['.',','],'',$xdev1);
 							$xb1_numeric = str_replace(['.',','],'',$xb1);
-							$xpct1 = ($xb1_numeric != 0) ? number_format(($x1_numeric / $xb1_numeric) * 100, 2) : '';
+							$xpct1 = ($xb1_numeric != 0) ? number_format(($xdev1_numeric / $xb1_numeric) * 100, 2) : '';
 						}
 						echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_pct" data-id="'.$m1->id_trx.'" data-value="'.$xpct1.'">'.$xpct1.''.($xpct1 !== '' ? '%' : '').'</td>';
 						
@@ -377,12 +377,12 @@ foreach($mst_account[0] as $m0) {
 							echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_dev"  data-value="'.$xdev1.'">'.$xdev1.'</td>';
 							
 							// Percentage Column
-							if($x1 === '' || $xb1 === '') {
-								$xpct1 = '';
-							} else {
-								$x1_numeric = str_replace(['.',','],'',$x1);
-								$xb1_numeric = str_replace(['.',','],'',$xb1);
-								$xpct1 = ($xb1_numeric != 0) ? number_format(($x1_numeric / $xb1_numeric) * 100, 2) : '';
+								if($x1 === '' || $xb1 === '' || $xdev1 === '') {
+									$xpct1 = '';
+								} else {
+									$xdev1_numeric = str_replace(['.',','],'',$xdev1);
+									$xb1_numeric = str_replace(['.',','],'',$xb1);
+									$xpct1 = ($xb1_numeric != 0) ? number_format(($xdev1_numeric / $xb1_numeric) * 100, 2) : '';
 							}
 							echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_pct"  data-value="'.$xpct1.'">'.$xpct1.''.($xpct1 !== '' ? '%' : '').'</td>';
 							}
@@ -497,12 +497,12 @@ foreach($mst_account[0] as $m0) {
 					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_dev" data-id="'.$m2->id_trx.'" data-value="'.$xdev2.'">'.$xdev2.'</td>';
 					
 					// Percentage Column
-					if($x2 === '' || $xb2 === '') {
+					if($x2 === '' || $xb2 === '' || $xdev2 === '') {
 						$xpct2 = '';
 					} else {
-						$x2_numeric = str_replace(['.',','],'',$x2);
+						$xdev2_numeric = str_replace(['.',','],'',$xdev2);
 						$xb2_numeric = str_replace(['.',','],'',$xb2);
-						$xpct2 = ($xb2_numeric != 0) ? number_format(($x2_numeric / $xb2_numeric) * 100, 2) : '';
+						$xpct2 = ($xb2_numeric != 0) ? number_format(($xdev2_numeric / $xb2_numeric) * 100, 2) : '';
 					}
 					echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_pct" data-id="'.$m2->id_trx.'" data-value="'.$xpct2.'">'.$xpct2.''.($xpct2 !== '' ? '%' : '').'</td>';
 					
@@ -562,12 +562,12 @@ foreach($mst_account[0] as $m0) {
 							echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_dev"  data-value="'.$xdev2.'">'.$xdev2.'</td>';
 							
 							// Percentage Column
-							if($x2 === '' || $xb2 === '') {
-								$xpct2 = '';
-							} else {
-								$x2_numeric = str_replace(['.',','],'',$x2);
-								$xb2_numeric = str_replace(['.',','],'',$xb2);
-								$xpct2 = ($xb2_numeric != 0) ? number_format(($x2_numeric / $xb2_numeric) * 100, 2) : '';
+								if($x2 === '' || $xb2 === '' || $xdev2 === '') {
+									$xpct2 = '';
+								} else {
+									$xdev2_numeric = str_replace(['.',','],'',$xdev2);
+									$xb2_numeric = str_replace(['.',','],'',$xb2);
+									$xpct2 = ($xb2_numeric != 0) ? number_format(($xdev2_numeric / $xb2_numeric) * 100, 2) : '';
 							}
 							echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_pct"  data-value="'.$xpct2.'">'.$xpct2.''.($xpct2 !== '' ? '%' : '').'</td>';
 							
@@ -678,12 +678,12 @@ foreach($mst_account[0] as $m0) {
 							echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_dev" data-id="'.$m3->id_trx.'" data-value="'.$xdev3.'">'.$xdev3.'</td>';
 							
 							// Percentage Column
-							if($x3 === '' || $xb3 === '') {
+							if($x3 === '' || $xb3 === '' || $xdev3 === '') {
 								$xpct3 = '';
 							} else {
-								$x3_numeric = str_replace(['.',','],'',$x3);
+								$xdev3_numeric = str_replace(['.',','],'',$xdev3);
 								$xb3_numeric = str_replace(['.',','],'',$xb3);
-								$xpct3 = ($xb3_numeric != 0) ? number_format(($x3_numeric / $xb3_numeric) * 100, 2) : '';
+								$xpct3 = ($xb3_numeric != 0) ? number_format(($xdev3_numeric / $xb3_numeric) * 100, 2) : '';
 							}
 							echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_pct" data-id="'.$m3->id_trx.'" data-value="'.$xpct3.'">'.$xpct3.''.($xpct3 !== '' ? '%' : '').'</td>';
 							
@@ -743,12 +743,12 @@ foreach($mst_account[0] as $m0) {
 									echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_dev"  data-value="'.$xdev3.'">'.$xdev3.'</td>';
 									
 									// Percentage Column
-									if($x3 === '' || $xb3 === '') {
+									if($x3 === '' || $xb3 === '' || $xdev3 === '') {
 										$xpct3 = '';
 									} else {
-										$x3_numeric = str_replace(['.',','],'',$x3);
+										$xdev3_numeric = str_replace(['.',','],'',$xdev3);
 										$xb3_numeric = str_replace(['.',','],'',$xb3);
-										$xpct3 = ($xb3_numeric != 0) ? number_format(($x3_numeric / $xb3_numeric) * 100, 2) : '';
+										$xpct3 = ($xb3_numeric != 0) ? number_format(($xdev3_numeric / $xb3_numeric) * 100, 2) : '';
 									}
 									echo '<td style="background: '.$bgedit.'"><div style="background:'.$bgedit.'" style="min-height: 10px; width: 50px; overflow: hidden;" contenteditable="false" class="edit-value text-right budget" data-name="'.$fieldB.'_pct"  data-value="'.$xpct3.'">'.$xpct3.''.($xpct3 !== '' ? '%' : '').'</td>';
 									
@@ -816,11 +816,11 @@ foreach($mst_account[0] as $m0) {
 					echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.number_format($sTotalBudgetValue).'</td>';
 					
 					// Deviation
-					$sDeviation = $sTotalBudgetValue - $sTotalValue;
+					$sDeviation = $sTotalValue - $sTotalBudgetValue;
 					echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.number_format($sDeviation).'</td>';
 					
 					// Percentage
-					$sPercentage = ($sTotalBudgetValue != 0) ? number_format(($sTotalValue / $sTotalBudgetValue) * 100, 2) : '';
+					$sPercentage = ($sTotalBudgetValue != 0) ? number_format(($sDeviation / $sTotalBudgetValue) * 100, 2) : '';
 					echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.$sPercentage.''.($sPercentage !== '' ? '%' : '').'</td>';
 				}
 				echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.number_format($sTotal_le).'</td>';
@@ -851,11 +851,12 @@ foreach($mst_account[0] as $m0) {
 						// Deviation
 						$x00_numeric = (float)str_replace([','], '', $x00);
 						$xb00_numeric = (float)str_replace([','], '', $xb00);
-						$xdev00 = number_format($xb00_numeric - $x00_numeric);
+						$xdev00_numeric = $x00_numeric - $xb00_numeric;
+						$xdev00 = number_format($xdev00_numeric);
 						echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.$xdev00.'</td>';
 						
 						// Percentage
-						$xpct00 = ($xb00_numeric != 0) ? number_format(($x00_numeric / $xb00_numeric) * 100, 2) : '';
+						$xpct00 = ($xb00_numeric != 0) ? number_format(($xdev00_numeric / $xb00_numeric) * 100, 2) : '';
 						echo '<td class="text-right" bgcolor="#778899" style="color: white; background-color: #778899 !important;">'.$xpct00.''.($xpct00 !== '' ? '%' : '').'</td>';
 					}
 					$labourTotalActual = isset($th['total_le']) ? number_format($th['total_le']) : 0;
@@ -919,9 +920,10 @@ foreach($mst_account[0] as $m0) {
 		<!-- Budget -->
 		<td class="text-right" bgcolor="#D2691E" style="color: white; background-color: #D2691E !important;"><?php echo number_format($gnValueBudget);?></td>
 		<!-- Deviation -->
-		<td class="text-right" bgcolor="#D2691E" style="color: white; background-color: #D2691E !important;"><?php echo number_format($gnValueBudget - $gnValue);?></td>
+		<?php $gnDeviation = $gnValue - $gnValueBudget; ?>
+		<td class="text-right" bgcolor="#D2691E" style="color: white; background-color: #D2691E !important;"><?php echo number_format($gnDeviation);?></td>
 		<!-- Percentage -->
-		<td class="text-right" bgcolor="#D2691E" style="color: white; background-color: #D2691E !important;"><?php echo ($gnValueBudget != 0) ? number_format(($gnValue / $gnValueBudget) * 100, 2) : ''; ?><?php echo ($gnValueBudget != 0) ? '%' : ''; ?></td>
+		<td class="text-right" bgcolor="#D2691E" style="color: white; background-color: #D2691E !important;"><?php echo ($gnValueBudget != 0) ? number_format(($gnDeviation / $gnValueBudget) * 100, 2) : ''; ?><?php echo ($gnValueBudget != 0) ? '%' : ''; ?></td>
 		<?php
 	}
 	$grandTotalRemaining = $grandTotalBudget - $grandTotalLe;
