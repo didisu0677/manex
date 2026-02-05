@@ -201,6 +201,87 @@ class Budget_by_deptnew_actual extends BE_Controller {
             }
         };
 
+        $overrideBudgetMonths = function(&$rows, $queryConfig) use ($prevTable, $table) {
+            if(!$prevTable || empty($rows) || !is_array($rows) || !isset($queryConfig['join'])) {
+                return;
+            }
+
+            $prevArr = $queryConfig;
+            $prevArr['join'] = str_replace($table, $prevTable, $queryConfig['join']);
+            $groupBy = isset($queryConfig['group_by']) ? $queryConfig['group_by'] : '';
+            $groupByString = is_array($groupBy) ? implode(',', $groupBy) : (string)$groupBy;
+            $groupByUsesCostCentre = stripos($groupByString, 'cost_centre') !== false;
+            $normaliseCostCentre = function($value) {
+                if($value === null) {
+                    return '';
+                }
+                return trim((string)$value);
+            };
+            $prevRows = get_data('tbl_fact_template_report a',$prevArr)->result();
+            if(!$prevRows) {
+                return;
+            }
+
+            $prevBudgets = [];
+            $prevAccountBudgets = [];
+            foreach($prevRows as $prevRow) {
+                if(!isset($prevRow->account_code)) {
+                    continue;
+                }
+                $baseKey = $prevRow->account_code;
+                if($groupByUsesCostCentre) {
+                    $ccKey = $normaliseCostCentre(isset($prevRow->cost_centre) ? $prevRow->cost_centre : '');
+                    $baseKey .= '|' . $ccKey;
+                }
+                
+                // Store monthly budget values
+                $monthlyData = [];
+                for($i = 1; $i <= 12; $i++) {
+                    $fieldName = 'B_' . sprintf('%02d', $i);
+                    $monthlyData[$fieldName] = isset($prevRow->$fieldName) ? (float)$prevRow->$fieldName : 0;
+                }
+                
+                $prevBudgets[$baseKey] = $monthlyData;
+                if(!isset($prevAccountBudgets[$prevRow->account_code])) {
+                    $prevAccountBudgets[$prevRow->account_code] = [];
+                    for($i = 1; $i <= 12; $i++) {
+                        $fieldName = 'B_' . sprintf('%02d', $i);
+                        $prevAccountBudgets[$prevRow->account_code][$fieldName] = 0;
+                    }
+                }
+                for($i = 1; $i <= 12; $i++) {
+                    $fieldName = 'B_' . sprintf('%02d', $i);
+                    $prevAccountBudgets[$prevRow->account_code][$fieldName] += $monthlyData[$fieldName];
+                }
+            }
+
+            if(empty($prevBudgets)) {
+                return;
+            }
+
+            foreach($rows as $row) {
+                if(!isset($row->account_code)) {
+                    continue;
+                }
+                $mapKey = $row->account_code;
+                if($groupByUsesCostCentre) {
+                    $ccKey = $normaliseCostCentre(isset($row->cost_centre) ? $row->cost_centre : '');
+                    $mapKey .= '|' . $ccKey;
+                }
+                
+                // Override monthly budget from prevTable
+                if(isset($prevBudgets[$mapKey])) {
+                    foreach($prevBudgets[$mapKey] as $fieldName => $value) {
+                        $row->$fieldName = $value;
+                    }
+                } elseif(isset($prevAccountBudgets[$row->account_code])) {
+                    foreach($prevAccountBudgets[$row->account_code] as $fieldName => $value) {
+                        $row->$fieldName = $value;
+                    }
+                }
+            }
+        };
+
         $arr = [
             'select' => 'a.id,a.account_code,a.account_name,b.cost_centre, b.cost_centre,a.urutan, 
                          sum(b.B_01) as B_01, sum(b.B_02) as B_02, sum(b.B_03) as B_03, 
@@ -249,6 +330,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
         $isAllHrd = user('id_group') == HRD && $cost_centre == 'ALL';
         $data['mst_account'][0] = get_data('tbl_fact_template_report a',$arr)->result();
         $overrideTotalBudget($data['mst_account'][0], $arr);
+        $overrideBudgetMonths($data['mst_account'][0], $arr);
         $customSelect = 'sum(b.B_01) as B_01, sum(b.B_02) as B_02, sum(b.B_03) as B_03, 
             sum(b.B_04) as B_04, sum(b.B_05) as B_05, sum(b.B_06) as B_06, 
             sum(b.B_07) as B_07, sum(b.B_08) as B_08, sum(b.B_09) as B_09,
@@ -384,6 +466,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
 
             $data['mst_account'][$m0->id] = get_data('tbl_fact_template_report a',$arr)->result();
             $overrideTotalBudget($data['mst_account'][$m0->id], $arr);
+            $overrideBudgetMonths($data['mst_account'][$m0->id], $arr);
             foreach($data['mst_account'][$m0->id] as $m1) {
                 $customWhere = [
                     '__m0'=>'(a.parent_id = "'.$m1->id.'")',
@@ -430,6 +513,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
 
                 $data['mst_account'][$m1->id] = get_data('tbl_fact_template_report a',$arr)->result();
                 $overrideTotalBudget($data['mst_account'][$m1->id], $arr);
+                $overrideBudgetMonths($data['mst_account'][$m1->id], $arr);
 
                 foreach($data['mst_account'][$m1->id] as $m2) {
                     $customWhere = [
@@ -478,6 +562,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
 
                     $data['mst_account'][$m2->id] = get_data('tbl_fact_template_report a',$arr)->result();
                     $overrideTotalBudget($data['mst_account'][$m2->id], $arr);
+                    $overrideBudgetMonths($data['mst_account'][$m2->id], $arr);
                 }
             }
         }
