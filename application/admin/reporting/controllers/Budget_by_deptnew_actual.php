@@ -734,6 +734,7 @@ class Budget_by_deptnew_actual extends BE_Controller {
 
         $response	= array(
             'table'		=> $this->load->view('reporting/budget_by_deptnew_actual/table',$data,true),
+            'table2'		=> $this->load->view('reporting/budget_by_deptnew_actual/table2',$data,true),
         );
 	   
 	    render($response,'json');
