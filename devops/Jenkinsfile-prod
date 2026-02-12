@@ -17,7 +17,7 @@ pipeline {
         IMAGE_NAME = "factory/manex"
         //server info
         SERVER_IP = "10.3.102.91"
-        REMOTE_DIR = "/home/it/repo-infra-factory/docker-compose/factory/manex"
+        REMOTE_DIR = "/home/it/repo-infra-finance/docker-compose/factory/manex"
     }
     
     parameters {
@@ -85,16 +85,16 @@ pipeline {
                             git pull
 
                             echo "Pulling latest image ${REGISTRY}/${IMAGE_NAME}:${TAGS}..."
-                            docker compose pull
+                            docker-compose pull
 
                             echo "Restarting services..."
-                            docker compose up -d --no-deps
+                            docker-compose up -d --no-deps
                             
                             echo "add nginx reload"
                             docker exec reverse-proxy nginx -s reload
 
                             echo 'Checking container status...'
-                            docker compose ps -a
+                            docker-compose ps -a
                         '
                     """
                 }
