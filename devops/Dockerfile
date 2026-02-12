@@ -9,6 +9,10 @@ RUN composer install --no-dev --optimize-autoloader
 # Copy project files
 COPY . /var/www/html
 
+# Copy entrypoint script
+COPY devops/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 # Remove docker files not needed in production
 RUN rm -rf docker docker-compose.yml
 
@@ -36,6 +40,9 @@ RUN chown -R www-data:www-data /var/www/html \
 
 # Expose PHP-FPM port
 EXPOSE 9000
+
+# Set entrypoint to ensure directories exist on container start
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 # Start PHP-FPM
 CMD ["php-fpm"]
