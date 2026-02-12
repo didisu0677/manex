@@ -12,12 +12,13 @@ mkdir -p /var/www/html/assets/uploads/manex/temp \
          /var/www/html/assets/uploads/manex/import \
          /var/www/html/assets/uploads/manex/user \
          /var/www/html/assets/uploads/manex/setting \
-         /var/www/html/assets/cache/manex
+         /var/www/html/assets/cache/manex \
+         /var/www/html/assets/manex/uploads
 
 # Create symlinks from expected paths to actual volume paths
 echo "Creating symlinks for volume mounts..."
 
-# Handle uploads symlinks
+# Handle uploads symlinks for application use
 for dir in temp dokumen_file import user setting; do
     TARGET="/var/www/html/assets/uploads/$dir"
     SOURCE="/var/www/html/assets/uploads/manex/$dir"
@@ -32,6 +33,23 @@ for dir in temp dokumen_file import user setting; do
         echo "Created symlink: $TARGET -> $SOURCE"
     fi
 done
+
+# IMPORTANT: Create symlink in manex-assets volume for nginx access
+# Nginx mounts manex-assets at /var/www/html/manex/assets/
+# So nginx will access: /var/www/html/manex/assets/uploads/
+# This needs to point to the actual upload location
+echo "Creating uploads symlink for nginx access..."
+NGINX_UPLOADS_LINK="/var/www/html/assets/manex/uploads"
+NGINX_UPLOADS_SOURCE="/var/www/html/assets/uploads/manex"
+
+if [ -d "$NGINX_UPLOADS_LINK" ] && [ ! -L "$NGINX_UPLOADS_LINK" ]; then
+    rm -rf "$NGINX_UPLOADS_LINK"
+fi
+
+if [ ! -e "$NGINX_UPLOADS_LINK" ]; then
+    ln -sf "$NGINX_UPLOADS_SOURCE" "$NGINX_UPLOADS_LINK"
+    echo "Created nginx uploads symlink: $NGINX_UPLOADS_LINK -> $NGINX_UPLOADS_SOURCE"
+fi
 
 # Handle cache symlink - only if cache/manex exists (mounted volume)
 if [ -d "/var/www/html/assets/cache/manex" ]; then
