@@ -55,30 +55,33 @@ fi
 if [ -d "/var/www/html/assets/cache/manex" ]; then
     echo "Cache volume detected at /assets/cache/manex"
     
-    # Copy existing cache files to mounted volume before creating symlink
-    if [ -d "/var/www/html/assets/cache" ] && [ ! -L "/var/www/html/assets/cache" ]; then
+    # Check if cache is already a symlink
+    if [ -L "/var/www/html/assets/cache" ]; then
+        echo "Cache is already a symlink, skipping migration"
+    elif [ -d "/var/www/html/assets/cache" ]; then
+        # Copy existing cache files to mounted volume before removing
         echo "Migrating existing cache files to mounted volume..."
-        find /var/www/html/assets/cache -maxdepth 1 -type f \( -name "*.js" -o -name "*.css" \) -exec cp -p {} /var/www/html/assets/cache/manex/ \; 2>/dev/null || true
+        cp -rp /var/www/html/assets/cache/* /var/www/html/assets/cache/manex/ 2>/dev/null || true
         
         # Remove original cache directory
         echo "Removing original cache directory..."
-        rm -rf /var/www/html/assets/cache
-    fi
-    
-    # Create symlink from expected cache path to mounted volume
-    if [ ! -e "/var/www/html/assets/cache" ]; then
+        rm -rf /var/www/html/assets/cache || true
+        
+        # Create symlink
+        ln -sf /var/www/html/assets/cache/manex /var/www/html/assets/cache
+        echo "Created cache symlink: /var/www/html/assets/cache -> /var/www/html/assets/cache/manex"
+    elif [ ! -e "/var/www/html/assets/cache" ]; then
+        # Cache doesn't exist, just create symlink
         ln -sf /var/www/html/assets/cache/manex /var/www/html/assets/cache
         echo "Created cache symlink: /var/www/html/assets/cache -> /var/www/html/assets/cache/manex"
     fi
     
-    # Verify symlink
-    if [ -L "/var/www/html/assets/cache" ]; then
-        echo "Cache symlink verified OK"
-        ls -la /var/www/html/assets/cache | head -5
-    fi
+    # Verify
+    echo "Cache structure:"
+    ls -la /var/www/html/assets/ | grep cache || true
 else
     echo "No cache volume mount detected, using local directory"
-    mkdir -p /var/www/html/assets/cache
+    mkdir -p /var/www/html/assets/cache || true
 fi
 
 # Create other necessary directories
