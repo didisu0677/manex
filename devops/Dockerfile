@@ -18,7 +18,12 @@ RUN mkdir -p \
     /var/www/html/assets/cache \
     /var/www/html/assets/manex/cache \
     /var/www/html/assets/manex/uploads \
-    /var/www/html/assets/manex/writable
+    /var/www/html/assets/manex/writable \
+    /var/www/html/assets/uploads/temp \
+    /var/www/html/assets/uploads/dokumen_file \
+    /var/www/html/assets/uploads/import \
+    /var/www/html/assets/uploads/user \
+    /var/www/html/assets/uploads/setting
 
 # Set ownership and permissions
 RUN chown -R www-data:www-data /var/www/html \
@@ -26,7 +31,8 @@ RUN chown -R www-data:www-data /var/www/html \
     && find /var/www/html -type f -exec chmod 644 {} \; \
     && chmod -R 775 /var/www/html/application/cache \
     && chmod -R 775 /var/www/html/assets/cache \
-    && chmod -R 775 /var/www/html/assets/manex
+    && chmod -R 775 /var/www/html/assets/manex \
+    && chmod -R 775 /var/www/html/assets/uploads
 
 # Expose PHP-FPM port
 EXPOSE 9000
