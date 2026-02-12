@@ -53,17 +53,32 @@ fi
 
 # Handle cache symlink - only if cache/manex exists (mounted volume)
 if [ -d "/var/www/html/assets/cache/manex" ]; then
-    echo "Cache volume detected, creating symlink..."
-    # Remove existing cache directory if it's not a symlink
+    echo "Cache volume detected at /assets/cache/manex"
+    
+    # Copy existing cache files to mounted volume before creating symlink
     if [ -d "/var/www/html/assets/cache" ] && [ ! -L "/var/www/html/assets/cache" ]; then
-        echo "Backing up existing cache..."
-        mv /var/www/html/assets/cache /var/www/html/assets/cache.bak 2>/dev/null || true
+        echo "Migrating existing cache files to mounted volume..."
+        find /var/www/html/assets/cache -maxdepth 1 -type f \( -name "*.js" -o -name "*.css" \) -exec cp -p {} /var/www/html/assets/cache/manex/ \; 2>/dev/null || true
+        
+        # Remove original cache directory
+        echo "Removing original cache directory..."
+        rm -rf /var/www/html/assets/cache
     fi
     
+    # Create symlink from expected cache path to mounted volume
     if [ ! -e "/var/www/html/assets/cache" ]; then
         ln -sf /var/www/html/assets/cache/manex /var/www/html/assets/cache
-        echo "Created symlink: /var/www/html/assets/cache -> /var/www/html/assets/cache/manex"
+        echo "Created cache symlink: /var/www/html/assets/cache -> /var/www/html/assets/cache/manex"
     fi
+    
+    # Verify symlink
+    if [ -L "/var/www/html/assets/cache" ]; then
+        echo "Cache symlink verified OK"
+        ls -la /var/www/html/assets/cache | head -5
+    fi
+else
+    echo "No cache volume mount detected, using local directory"
+    mkdir -p /var/www/html/assets/cache
 fi
 
 # Create other necessary directories
