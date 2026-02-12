@@ -12,7 +12,6 @@ mkdir -p /var/www/html/assets/uploads/manex/temp \
          /var/www/html/assets/uploads/manex/import \
          /var/www/html/assets/uploads/manex/user \
          /var/www/html/assets/uploads/manex/setting \
-         /var/www/html/assets/cache/manex \
          /var/www/html/assets/manex/uploads
 
 # Create symlinks from expected paths to actual volume paths
@@ -51,38 +50,9 @@ if [ ! -e "$NGINX_UPLOADS_LINK" ]; then
     echo "Created nginx uploads symlink: $NGINX_UPLOADS_LINK -> $NGINX_UPLOADS_SOURCE"
 fi
 
-# Handle cache symlink - only if cache/manex exists (mounted volume)
-if [ -d "/var/www/html/assets/cache/manex" ]; then
-    echo "Cache volume detected at /assets/cache/manex"
-    
-    # Check if cache is already a symlink
-    if [ -L "/var/www/html/assets/cache" ]; then
-        echo "Cache is already a symlink, skipping migration"
-    elif [ -d "/var/www/html/assets/cache" ]; then
-        # Copy existing cache files to mounted volume before removing
-        echo "Migrating existing cache files to mounted volume..."
-        cp -rp /var/www/html/assets/cache/* /var/www/html/assets/cache/manex/ 2>/dev/null || true
-        
-        # Remove original cache directory
-        echo "Removing original cache directory..."
-        rm -rf /var/www/html/assets/cache || true
-        
-        # Create symlink
-        ln -sf /var/www/html/assets/cache/manex /var/www/html/assets/cache
-        echo "Created cache symlink: /var/www/html/assets/cache -> /var/www/html/assets/cache/manex"
-    elif [ ! -e "/var/www/html/assets/cache" ]; then
-        # Cache doesn't exist, just create symlink
-        ln -sf /var/www/html/assets/cache/manex /var/www/html/assets/cache
-        echo "Created cache symlink: /var/www/html/assets/cache -> /var/www/html/assets/cache/manex"
-    fi
-    
-    # Verify
-    echo "Cache structure:"
-    ls -la /var/www/html/assets/ | grep cache || true
-else
-    echo "No cache volume mount detected, using local directory"
-    mkdir -p /var/www/html/assets/cache || true
-fi
+# Cache directory - no symlink needed, mounted directly by docker-compose
+mkdir -p /var/www/html/assets/cache
+echo "Cache directory ready"
 
 # Create other necessary directories
 mkdir -p /var/www/html/application/cache/session \
