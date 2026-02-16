@@ -93,28 +93,16 @@ ErrorDocument 503 /errors/503.html
     php_value max_input_vars 100000
     php_value post_max_size 100M
     php_value upload_max_filesize 100M
-    php_flag expose_php Off
-    php_flag display_errors Off
-    php_flag display_startup_errors Off
-    php_flag log_errors On
 </IfModule>
 
 <IfModule mod_php7.c>
     php_value max_input_vars 100000
     php_value post_max_size 100M
     php_value upload_max_filesize 100M
-    php_flag expose_php Off
-    php_flag display_errors Off
-    php_flag display_startup_errors Off
-    php_flag log_errors On
 </IfModule>
 
 <IfModule mod_php8.c>
     php_value max_input_vars 100000
     php_value post_max_size 100M
     php_value upload_max_filesize 100M
-    php_flag expose_php Off
-    php_flag display_errors Off
-    php_flag display_startup_errors Off
-    php_flag log_errors On
 </IfModule>
