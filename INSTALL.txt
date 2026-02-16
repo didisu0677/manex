@@ -1,0 +1,52 @@
+=============================================
+  SECURITY TEMPLATE - PANDUAN INSTALASI
+=============================================
+
+CARA PAKAI:
+1. Upload file security-template.zip ke root website
+2. Backup .htaccess lama:  cp .htaccess .htaccess.bak
+3. Unzip:  unzip -o security-template.zip
+4. Selesai!
+
+STRUKTUR FILE:
+├── .htaccess                          → Root (UTAMA - ganti yang lama)
+├── .user.ini                          → PHP-FPM config (display_errors off)
+├── errors/
+│   ├── .htaccess                      → Proteksi folder errors
+│   ├── 403.html                       → Halaman Akses Ditolak
+│   ├── 404.html                       → Halaman Tidak Ditemukan
+│   ├── 500.html                       → Halaman Server Error
+│   └── 503.html                       → Halaman Maintenance
+├── assets/
+│   ├── .htaccess                      → Blokir PHP execution di assets
+│   ├── uploads/.htaccess              → Blokir PHP di uploads
+│   └── backup/.htaccess               → Blokir akses backup
+├── log/
+│   └── .htaccess                      → Blokir akses log
+├── websocket/
+│   └── .htaccess                      → Blokir akses websocket
+└── application/views/errors/html/
+    ├── error_404.php                  → CI error 404
+    ├── error_general.php              → CI error 500
+    ├── error_db.php                   → CI error database
+    ├── error_exception.php            → CI error exception
+    └── error_php.php                  → CI error PHP
+
+CATATAN:
+- File .htaccess root AKAN MENIMPA yang lama, backup dulu!
+- Sesuaikan .htaccess root jika ada konfigurasi khusus per server
+  (misal: php_value, RewriteBase, dll)
+- Folder errors/, log/, websocket/ akan dibuat otomatis
+- Pastikan mod_rewrite dan mod_headers aktif di Apache
+
+YANG DIPROTEKSI:
+- Directory listing (browsing folder)
+- File sensitif (.sql, .tar, .gz, .zip, .bak, .log, .env, dll)
+- Dotfiles (.git, .env, .user.ini, dll)
+- adminer.php, db.php, db.json, composer.json
+- Folder application/, system/, log/, websocket/
+- PHP execution di folder assets & uploads
+- Security headers (X-Frame-Options, XSS Protection, dll)
+- Custom error pages (403, 404, 500, 503)
+- display_errors = Off (via .htaccess + .user.ini)
+- expose_php = Off
