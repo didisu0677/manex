@@ -1,2 +1,43 @@
-RewriteEngine On
+# Disable directory listing
 Options -Indexes
+
+# Disable PHP execution in assets directory
+<IfModule mod_php5.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+# For PHP-FPM/FastCGI: deny PHP files
+<FilesMatch "\.ph(p[3457]?|t|tml|ar)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Block hidden files
+<FilesMatch "^\.">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Block dangerous file types
+<FilesMatch "\.(sql|tar|gz|zip|bak|old|log|ini|env|sh|py|rb|pl|cgi)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Deny from all
+    </IfModule>
+</FilesMatch>
