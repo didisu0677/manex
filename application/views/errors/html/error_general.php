@@ -1,64 +1,36 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?><!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 <meta charset="utf-8">
-<title>Error</title>
-<style type="text/css">
-
-::selection { background-color: #E13300; color: white; }
-::-moz-selection { background-color: #E13300; color: white; }
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>500 - Terjadi Kesalahan</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-	background-color: #fff;
-	margin: 40px;
-	font: 13px/20px normal Helvetica, Arial, sans-serif;
-	color: #4F5155;
+    background: rgba(0,0,0,.04);
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: #484848;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
-a {
-	color: #003399;
-	background-color: transparent;
-	font-weight: normal;
-}
-
-h1 {
-	color: #444;
-	background-color: transparent;
-	border-bottom: 1px solid #D0D0D0;
-	font-size: 19px;
-	font-weight: normal;
-	margin: 0 0 14px 0;
-	padding: 14px 15px 10px 15px;
-}
-
-code {
-	font-family: Consolas, Monaco, Courier New, Courier, monospace;
-	font-size: 12px;
-	background-color: #f9f9f9;
-	border: 1px solid #D0D0D0;
-	color: #002166;
-	display: block;
-	margin: 14px 0 14px 0;
-	padding: 12px 10px 12px 10px;
-}
-
-#container {
-	margin: 10px;
-	border: 1px solid #D0D0D0;
-	box-shadow: 0 0 8px #D0D0D0;
-}
-
-p {
-	margin: 12px 15px 12px 15px;
-}
+.container { width: 100%; max-width: 600px; padding: 0 15px; text-align: center; }
+.error-number { font-size: 9rem; color: #ccc; text-shadow: .125rem .125rem #fff; line-height: 1; margin-bottom: .5rem; }
+.error-message { font-size: 1rem; color: #484848; margin-bottom: .5rem; }
+.btn { display: inline-block; padding: 8px 20px; font-size: 14px; color: #fff; background-color: #17a2b8; border: 1px solid #17a2b8; border-radius: 4px; text-decoration: none; transition: background-color .15s; }
+.btn:hover { background-color: #138496; border-color: #117a8b; }
+p { color: #666; margin-bottom: 1rem; }
 </style>
 </head>
 <body>
-	<div id="container">
-		<h1><?php echo $heading; ?></h1>
-		<?php echo $message; ?>
-	</div>
+<div class="container">
+    <div class="error-number">500</div>
+    <h6 class="error-message">Terjadi Kesalahan</h6>
+    <p>Mohon maaf, terjadi kesalahan pada server. Silakan coba beberapa saat lagi.</p>
+    <a href="javascript:history.back()" class="btn">Kembali</a>
+</div>
 </body>
 </html>

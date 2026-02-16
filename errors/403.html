@@ -1,11 +1,9 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>404 - Halaman Tidak Ditemukan</title>
+<title>403 - Akses Ditolak</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -18,18 +16,40 @@ body {
     justify-content: center;
 }
 .container { width: 100%; max-width: 600px; padding: 0 15px; text-align: center; }
-.error-number { font-size: 9rem; color: #ccc; text-shadow: .125rem .125rem #fff; line-height: 1; margin-bottom: .5rem; }
-.error-message { font-size: 1rem; color: #484848; margin-bottom: .5rem; }
-.btn { display: inline-block; padding: 8px 20px; font-size: 14px; color: #fff; background-color: #17a2b8; border: 1px solid #17a2b8; border-radius: 4px; text-decoration: none; transition: background-color .15s; }
+.error-number {
+    font-size: 9rem;
+    color: #ccc;
+    text-shadow: .125rem .125rem #fff;
+    line-height: 1;
+    margin-bottom: .5rem;
+}
+.error-message {
+    font-size: 1rem;
+    color: #484848;
+    margin-bottom: .5rem;
+}
+.btn {
+    display: inline-block;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #fff;
+    background-color: #17a2b8;
+    border: 1px solid #17a2b8;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color .15s;
+}
 .btn:hover { background-color: #138496; border-color: #117a8b; }
 p { color: #666; margin-bottom: 1rem; }
 </style>
 </head>
 <body>
 <div class="container">
-    <div class="error-number">404</div>
-    <h6 class="error-message">Halaman Tidak Ditemukan</h6>
-    <p>Halaman yang anda tuju tidak tersedia, atau sedang dalam perbaikan.</p>
+    <div class="error-number">403</div>
+    <h6 class="error-message">Akses Ditolak</h6>
+    <p>Anda tidak memiliki izin untuk mengakses halaman ini.</p>
     <a href="javascript:history.back()" class="btn">Kembali</a>
 </div>
 </body>
