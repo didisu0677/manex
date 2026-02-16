@@ -1,64 +1,10 @@
-# ==============================================================  
-# CODEIGNITER 3 PRODUCTION READY .HTACCESS  
-# ==============================================================  
+RewriteEngine on
 
-# Disable directory listing
-Options -Indexes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule .* index.php/$0 [PT,L]
 
-# Disable server signature
-ServerSignature Off
+php_value upload_max_filesize 20M
+php_value post_max_size 20M
 
-# ==============================================================  
-# CUSTOM ERROR PAGES (pastikan folder /errors ada)  
-# ==============================================================  
-ErrorDocument 403 /errors/403.html
-ErrorDocument 404 /errors/404.html
-ErrorDocument 500 /errors/500.html
-
-# ==============================================================  
-# SECURITY HEADERS  
-# ==============================================================  
-<IfModule mod_headers.c>
-    Header set X-Robots-Tag "noindex, nofollow, nosnippet, noarchive"
-    Header set X-Content-Type-Options "nosniff"
-    Header set X-Frame-Options "SAMEORIGIN"
-    Header set X-XSS-Protection "1; mode=block"
-    Header set Referrer-Policy "strict-origin-when-cross-origin"
-</IfModule>
-
-# ==============================================================  
-# BLOCK ACCESS TO SENSITIVE FILES & DOTFILES  
-# ==============================================================  
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-
-    # Allow errors folder
-    RewriteRule ^errors/ - [L]
-
-    # Block dotfiles except .well-known
-    RewriteCond %{REQUEST_URI} !^/\.well-known/
-    RewriteRule (^|/)\. - [F,L]
-
-    # Block specific sensitive files
-    RewriteRule ^(adminer\.php|db\.(php|json|sql)|composer\.(json|lock))$ - [F,L]
-
-    # Block system folders (application, system, writable, log, tests)
-    RewriteRule ^(application|system|writable|log|tests)(/.*)?$ - [F,L]
-
-    # CI3 front controller
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php/$1 [L]
-</IfModule>
-
-# ==============================================================  
-# BLOCK SENSITIVE FILE TYPES (fallback)  
-# ==============================================================  
-<FilesMatch "\.(sql|tar|gz|zip|bak|old|log|ini|env|git|svn)$">
-    <IfModule mod_authz_core.c>
-        Require all denied
-    </IfModule>
-    <IfModule !mod_authz_core.c>
-        Deny from all
-    </IfModule>
-</FilesMatch>
+Header append X-FRAME-OPTIONS "SAMEORIGIN"
